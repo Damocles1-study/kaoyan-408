@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 数感速查 · 数字直觉</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --amber:#a3762a; --amber-soft:#f7efdd;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --green:#7fb98d; --green-soft:#26362b;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+      --red:#d98876; --red-soft:#3d2a26;
+      --amber:#d9b06a; --amber-soft:#3d3520;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.75;padding-bottom:80px}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.6rem;line-height:1.35}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  .usage{font-size:.83rem;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:18px}
+  .usage b{color:var(--accent)}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px;position:sticky;top:0;background:var(--bg);padding:10px 0;z-index:10}
+  .fbtn{font-size:.8rem;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .fbtn.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+  .allbtn{margin-left:auto;font-size:.78rem;border:1px solid var(--accent);background:none;color:var(--accent);border-radius:8px;padding:4px 12px;cursor:pointer}
+  .cardk{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
+  .chead{padding:13px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
+  .chead:hover{background:var(--accent-soft)}
+  .chead .name{font-weight:650;font-size:.98rem}
+  .badge{font-size:.7rem;padding:1px 8px;border-radius:999px;white-space:nowrap}
+  .b-zc{background:var(--blue-soft);color:var(--blue)}
+  .b-os{background:var(--green-soft);color:var(--green)}
+  .b-net{background:var(--purple-soft);color:var(--purple)}
+  .b-ds{background:var(--amber-soft);color:var(--amber)}
+  .b-all{background:var(--accent-soft);color:var(--accent)}
+  .arrow{color:var(--muted);font-size:.75rem;transition:transform .2s}
+  .cardk.open .arrow{transform:rotate(90deg)}
+  .cbody{display:none;padding:4px 18px 16px;border-top:1px dashed var(--line)}
+  .cardk.open .cbody{display:block}
+  .row{margin-top:10px;font-size:.9rem;padding:9px 12px;border-radius:8px}
+  .row b{font-size:.72rem;display:block;margin-bottom:3px;letter-spacing:.08em}
+  .r-f{background:var(--accent-soft)} .r-f b{color:var(--accent)}
+  .r-intu{background:var(--green-soft)} .r-intu b{color:var(--green)}
+  .r-warn{background:var(--red-soft)} .r-warn b{color:var(--red)}
+  .cbody table{border-collapse:collapse;width:100%;font-size:.88rem;margin-top:10px}
+  .cbody th,.cbody td{border:1px solid var(--line);padding:6px 10px;text-align:center;vertical-align:top}
+  .cbody th{background:var(--accent-soft);color:var(--accent);font-weight:600;white-space:nowrap}
+  .cbody td.l{text-align:left}
+  .tblwrap{overflow-x:auto}
+  code{background:var(--accent-soft);border-radius:4px;padding:0 5px;font-size:.9em}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
+  <header>
+    <h1>408 数感速查 · 数字直觉</h1>
+    <div class="sub">10 张卡 · 408 的计算题一半是「数字换算的熟练度」:2ⁿ 要像九九表,见 4096 要条件反射出「页」,见 64 要想到「最小帧」</div>
+  </header>
+
+  <div class="usage"><b>用法:</b>默认收起当自测——看标题先报数,点开核对。做计算题前先过「位数速算」那张;选择题对答案量级存疑时查「见数反应表」。</div>
+
+  <div class="toolbar">
+    <button class="fbtn on" data-f="all">全部</button>
+    <button class="fbtn" data-f="zc">组成</button>
+    <button class="fbtn" data-f="os">操统</button>
+    <button class="fbtn" data-f="net">网络</button>
+    <button class="fbtn" data-f="ds">数构</button>
+    <button class="allbtn" onclick="toggleAll()">全部展开 / 收起</button>
+  </div>
+
+  <div class="cardk" data-g="all">
+    <div class="chead"><span class="badge b-all">通用</span><span class="name">2ⁿ 九九表(像乘法口诀一样报数)</span><span class="arrow">▶</span></div>
+    <div class="cbody">
+      <div class="tblwrap"><table>
+        <tr><th>n</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>12</th><th>16</th><th>20</th><th>30</th></tr>
+        <tr><td>2ⁿ</td><td>16</td><td>32</td><td>64</td><td>128</td><td>256</td><td>512</td><td><b>1K</b></td><td>4K</td><td>64K</td><td><b>1M</b></td><td><b>1G</b></td></tr>
+      </table></div>
+      <div class="row r-intu"><b>反向更重要</b>见容量报位数:256=8 位,4K=12 位,64K=16 位,16M=24 位,4G=32 位。拆法:$2^{22}=2^2\cdot2^{20}$=4M——「个位记零头,十位记单位」,任何 2ⁿ 两秒拆完。</div>
+      <div class="row r-warn"><b>陷阱</b>容量的 K/M/G 是 2 的幂(KB=1024B);<b style="display:inline">传输速率的 k/M 是 10 的幂</b>(kb/s=1000b/s)——网络计算题两套单位混用是第一大坑,做题先看题干约定。</div>
+    </div>
+  </div>
+
+  <div class="cardk" data-g="all zc os">
+    <div class="chead"><span class="badge b-all">通用</span><span class="name">位数速算三板斧(地址结构题的心算引擎)</span><span class="arrow">▶</span></div>
+    <div class="cbody">
+      <div class="row r-f"><b>板斧① 容量→位数</b>能编 $2^n$ 个号就要 $n$ 位:1MB 主存→20 位地址;4KB 页→<b style="display:inline">页内偏移 12 位</b>;64B Cache 行→块内 6 位;1K 个页表项→索引 10 位。</div>
+      <div class="row r-f"><b>板斧② 地址三段切</b>Cache:<code>标记 | 组号 | 块内</code>;分页:<code>页号 | 页内偏移</code>;IP:<code>网络号 | 主机号</code>——总位数固定,先算右段(块内/页内/主机),再算中段(组数/页表项/子网),<b style="display:inline">剩下全归左段(标记)</b>。</div>
+      <div class="row r-f"><b>板斧③ 条目数×条目宽=表大小</b>页表大小=页表项数×项宽:32 位地址、4KB 页 → $2^{20}$ 项,每项 4B → 4MB(这就是为什么需要二级页表:切成 1K×1K,每级索引 10 位)。Cache 总容量要不要算标记位、有效位?——题目说「数据容量」就不算,说「总容量」就要算。</div>
+      <div class="row r-warn"><b>陷阱</b>按<b style="display:inline">字节</b>编址还是按<b style="display:inline">字</b>编址,先看题干——同一容量差 4 倍位数账;组相联的「组号位数」用组数算,不是用行数算。</div>
+    </div>
+  </div>
+
+  <div class="cardk" data-g="zc">
+    <div class="chead"><span class="badge b-zc">组成</span><span class="name">整数表示范围:补码一家的报数</span><span class="arrow">▶</span></div>
+    <div class="cbody">
+      <div class="tblwrap"><table>
+        <tr><th>n 位</th><th>无符号</th><th>补码</th><th>原码/反码</th></tr>
+        <tr><td>8</td><td>0 ~ 255</td><td><b>−128 ~ 127</b></td><td>−127 ~ 127</td></tr>
+        <tr><td>16</td><td>0 ~ 65535</td><td>−32768 ~ 32767</td><td>−32767 ~ 32767</td></tr>
+        <tr><td>n</td><td>$0\sim2^n-1$</td><td>$-2^{n-1}\sim2^{n-1}-1$</td><td>$\pm(2^{n-1}-1)$</td></tr>
+      </table></div>
+      <div class="row r-intu"><b>直觉</b>补码比原码多出的那个数就是 $-2^{n-1}$(即 <code>1000…0</code>,它没有对应的正数,取负会溢出——选择题常客);0 在补码里唯一,在原码/反码里有 ±0 两个。</div>
+      <div class="row r-warn"><b>陷阱</b>「−128 的补码取反加一还是它自己」→ 溢出;比较大小先看符号位再比,无符号和带符号混合比较是 C 语言题的暗坑。</div>
+    </div>
+  </div>
+
+  <div class="cardk" data-g="zc">
+    <div class="chead"><span class="badge b-zc">组成</span><span class="name">IEEE 754:两套格式的骨架数字</span><span class="arrow">▶</span></div>
+    <div class="cbody">
+      <div class="tblwrap"><table>
+        <tr><th></th><th>符号</th><th>阶码</th><th>尾数</th><th>偏置</th><th>十进制精度</th></tr>
+        <tr><td>float(32 位)</td><td>1</td><td><b>8</b></td><td><b>23</b></td><td><b>127</b></td><td>约 7 位</td></tr>
+        <tr><td>double(64 位)</td><td>1</td><td>11</td><td>52</td><td>1023</td><td>约 16 位</td></tr>
+      </table></div>
+      <div class="row r-f"><b>骨架</b>规格化数 = $(-1)^s\times1.M\times2^{E-127}$,尾数有<b style="display:inline">隐含的 1</b>(白赚一位精度);阶码全 0 → 非规格化数/0,阶码全 1 → ∞/NaN(两端被特殊值征用,真实阶范围 −126~127)。</div>
+      <div class="row r-intu"><b>直觉</b>float 最大约 $3.4\times10^{38}$,但 7 位精度意味着 <code>16777216+1</code>(即 $2^{24}+1$)在 float 里存不下——「大数吃小数」是浮点加法题和 C 语言判断题的共同题眼。</div>
+    </div>
+  </div>
+
+  <div class="cardk" data-g="zc os">
+    <div class="chead"><span class="badge b-zc">组成</span><span class="name">时间量级表 + 磁盘三延迟</span><span class="arrow">▶</span></div>
+    <div class="cbody">
+      <div class="tblwrap"><table>
+        <tr><th>部件</th><th>寄存器</th><th>Cache</th><th>主存 DRAM</th><th>SSD</th><th>机械磁盘</th></tr>
+        <tr><td>量级</td><td>~0.3ns</td><td>~1ns</td><td>~50ns</td><td>~0.1ms</td><td><b>~ms 级</b></td></tr>
+      </table></div>
+      <div class="row r-f"><b>磁盘三延迟</b>寻道(题目给,~几 ms)+ 旋转(<b style="display:inline">平均=转半圈</b>:7200rpm → 一圈 $\frac{60000}{7200}\approx8.33$ms → 平均 4.17ms)+ 传输(数据量÷传输率)。三段相加,谁也别漏。</div>
+      <div class="row r-intu"><b>直觉</b>Cache 与磁盘差 6 个数量级——这就是「为什么整个计算机体系都在围着存储层次转」的数字答案;缺页一次代价≈执行百万条指令,所以页面置换算法值得单独一章。</div>
+    </div>
+  </div>
+
+  <div class="cardk" data-g="net">
+    <div class="chead"><span class="badge b-net">网络</span><span class="name">网络数字包①:长度与地址(见数报身份)</span><span class="arrow">▶</span></div>
+    <div class="cbody">
+      <div class="tblwrap"><table>
+        <tr><th>数字</th><th>身份</th></tr>
+        <tr><td><b>64B / 46B</b></td><td class="l">以太网最小帧长 / 最小数据字段(64−14 头−4 FCS);争用期内必须还没发完 → 最小帧长=争用期×速率</td></tr>
+        <tr><td><b>1500B / 1518B</b></td><td class="l">以太网 MTU(最大数据) / 最大帧长;IP 包超 MTU 就分片</td></tr>
+        <tr><td><b>512 bit</b></td><td class="l">经典 10Mbps 以太网争用期 2τ=51.2μs 对应的比特数(=64B,和最小帧长自洽)</td></tr>
+        <tr><td><b>20B</b></td><td class="l">IP 头最小长度 = TCP 头最小长度(都可带选项到 60B);UDP 头固定 <b>8B</b>;以太网头 14B+FCS 4B</td></tr>
+        <tr><td><b>32 / 48 / 128 位</b></td><td class="l">IPv4 地址 / MAC 地址 / IPv6 地址</td></tr>
+      </table></div>
+      <div class="row r-intu"><b>直觉</b>「TCP 报文段数据最多 1500−20−20=1460B(MSS)」这条链算一遍,上面一半数字就串起来了。</div>
+    </div>
+  </div>
+
+  <div class="cardk" data-g="net">
+    <div class="chead"><span class="badge b-net">网络</span><span class="name">网络数字包②:端口 · 私有地址 · 常用换算</span><span class="arrow">▶</span></div>
+    <div class="cbody">
+      <div class="row r-f"><b>熟知端口(0–1023)</b>FTP <b>21</b>(控制)/<b>20</b>(数据) · Telnet <b>23</b> · SMTP <b>25</b> · DNS <b>53</b> · DHCP <b>67/68</b> · HTTP <b>80</b> · POP3 <b>110</b> · HTTPS <b>443</b> · RIP <b>520</b>。端口号 16 位,最大 <b>65535</b>。</div>
+      <div class="row r-f"><b>私有地址三段(NAT 考点)</b><code>10.0.0.0/8</code> · <code>172.16.0.0/12</code> · <code>192.168.0.0/16</code>;回环 <code>127.0.0.1</code>;/n 后缀→主机位 32−n → 可用主机数 $2^{32-n}-2$(减网络地址和广播)。</div>
+      <div class="row r-warn"><b>陷阱</b>速率换算除以 8:100Mbps=12.5MB/s;RTT 是「来回」,单程传播时延=RTT/2;信道利用率题里发送时延用帧长÷带宽,传播时延用距离÷传播速度,两个「时延」别互串。</div>
+    </div>
+  </div>
+
+  <div class="cardk" data-g="ds">
+    <div class="chead"><span class="badge b-ds">数构</span><span class="name">数据结构的等式反射(见结构报数字)</span><span class="arrow">▶</span></div>
+    <div class="cbody">
+      <div class="tblwrap"><table>
+        <tr><th>等式/数字</th><th>身份</th></tr>
+        <tr><td>$n_0=n_2+1$</td><td class="l">二叉树叶子数=双分支结点数+1(任何二叉树,证明用「边数守恒」)</td></tr>
+        <tr><td>边 $=n-1$</td><td class="l">n 结点的树/连通无环图;少了不连通,多了必有环——判「能否构成树」秒答</td></tr>
+        <tr><td>$\lceil\log_2(n+1)\rceil$</td><td class="l">完全二叉树的高度 = 折半查找最大比较次数(<b>同一个数!</b>判定树就是完全二叉树)</td></tr>
+        <tr><td>$2n-1$</td><td class="l">n 个叶子的哈夫曼树总结点数(全是 0 度和 2 度)</td></tr>
+        <tr><td>$\log_2(n!)\approx n\log_2n$</td><td class="l">基于比较的排序下界——为什么快排/归并/堆是 $O(n\log n)$ 到头了</td></tr>
+        <tr><td>$\lfloor n/2\rfloor$</td><td class="l">堆(完全二叉树)最后一个非叶结点的编号;建堆从它开始往前筛</td></tr>
+      </table></div>
+      <div class="row r-intu"><b>复杂度锚点</b>$n=10^6$:$\log_2 n\approx20$,$n\log n\approx2\times10^7$(1 秒内),$n^2=10^{12}$(几分钟,超时)——算法题估「能不能过」用这三个数。</div>
+    </div>
+  </div>
+
+  <div class="cardk" data-g="zc net">
+    <div class="chead"><span class="badge b-zc">组成</span><span class="name">校验数字:码距 · 海明 · CRC</span><span class="arrow">▶</span></div>
+    <div class="cbody">
+      <div class="row r-f"><b>码距 d 的能力</b>检 $e$ 位错需 $d\ge e+1$;纠 $t$ 位错需 $d\ge 2t+1$。奇偶校验 d=2 → 只能检 1 位错、不能纠。</div>
+      <div class="row r-f"><b>海明码</b>校验位 $r$ 满足 $2^r\ge k+r+1$($k$ 为数据位):8 位数据 → 4 位校验;32 位数据 → 6 位校验。校验位插在 $2^i$ 号位上。</div>
+      <div class="row r-f"><b>CRC</b>校验位位数 = 生成多项式最高次数($G(x)=x^3+x+1$ → 补 3 个 0 再模 2 除,余数 3 位);模 2 除法=按位异或,不借位。</div>
+      <div class="row r-intu"><b>直觉</b>三种校验强度递进:奇偶(1 位查错)→ 海明(1 位纠错)→ CRC(突发错误检测,链路层标配)。谁在哪层用:内存条用海明/ECC,以太网帧尾 FCS 用 CRC。</div>
+    </div>
+  </div>
+
+  <div class="cardk" data-g="all">
+    <div class="chead"><span class="badge b-all">通用</span><span class="name">见数反应总表(408 版条件反射)</span><span class="arrow">▶</span></div>
+    <div class="cbody">
+      <div class="tblwrap"><table>
+        <tr><th>看到</th><th>条件反射</th></tr>
+        <tr><td><b>1024</b></td><td class="l">$2^{10}$=1K;也是「熟知端口的上界」</td></tr>
+        <tr><td><b>4096 / 12</b></td><td class="l">4KB 页 / 页内偏移 12 位——分页题的默认配置</td></tr>
+        <tr><td><b>127</b></td><td class="l">float 偏置;8 位补码最大值;回环地址头段——一数三吃</td></tr>
+        <tr><td><b>128</b></td><td class="l">$|-128|$:8 位补码最小值的绝对值;IPv6 位数</td></tr>
+        <tr><td><b>255</b></td><td class="l">8 位全 1:无符号最大 / 子网掩码段 / 广播地址段</td></tr>
+        <tr><td><b>65535</b></td><td class="l">16 位全 1:端口最大 / 无符号 short 最大 / IP 总长度字段上限</td></tr>
+        <tr><td><b>64 / 46 / 1500</b></td><td class="l">以太网:最小帧 / 最小数据 / MTU</td></tr>
+        <tr><td><b>20</b></td><td class="l">IP 头 = TCP 头最小长度;也是 1M 的位数——看语境</td></tr>
+        <tr><td><b>8.33ms / 4.17ms</b></td><td class="l">7200rpm 磁盘转一圈 / 平均旋转延迟</td></tr>
+        <tr><td><b>2n−1 / n−1</b></td><td class="l">哈夫曼总结点 / 树的边数(也是归并趟数无关的「比较次数下界」现场)</td></tr>
+      </table></div>
+      <div class="row r-intu"><b>用法</b>和数学的见数反应表同一个原理:算出的数能在表里认出身份=大概率对;认不出=回头查。选择题里出题人爱用这些数当正确项<b style="display:inline">也爱用它们当干扰项</b>——认得越熟越不上当。</div>
+    </div>
+  </div>
+
+  <footer>408 数感速查 · 10 张 · 由 Claude 编写并自查 · 与四科卡库/知识串联页配套</footer>
+</div>
+
+<script>
+document.querySelectorAll('.chead').forEach(h=>h.addEventListener('click',()=>h.parentElement.classList.toggle('open')));
+let allOpen=false;
+function toggleAll(){
+  allOpen=!allOpen;
+  document.querySelectorAll('.cardk').forEach(c=>{if(c.style.display!=='none')c.classList.toggle('open',allOpen)});
+}
+document.querySelectorAll('.fbtn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const f=b.dataset.f;
+  document.querySelectorAll('.cardk').forEach(c=>{
+    c.style.display=(f==='all'||(c.dataset.g||'').split(' ').includes(f))?'':'none';
+  });
+}));
+</script>
+</body>
+</html>

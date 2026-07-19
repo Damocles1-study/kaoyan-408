@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 知识串联 · 四科主线与跨科连接</title>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true, theme:'neutral', flowchart:{curve:'basis'}});
+</script>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --amber:#a3762a; --amber-soft:#f7efdd;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --green:#7fb98d; --green-soft:#26362b;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+      --red:#d98876; --red-soft:#3d2a26;
+      --amber:#d9b06a; --amber-soft:#3d3520;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.75;padding-bottom:80px}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.6rem;line-height:1.35}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:22px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  h2 .n{font-size:.72rem;background:var(--accent);color:var(--card);border-radius:6px;padding:1px 7px}
+  .note{font-size:.85rem;color:var(--muted);margin-bottom:12px}
+  .note b{color:var(--accent)}
+  pre.mermaid{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto;display:flex;justify-content:center}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;margin-top:8px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--accent-soft);color:var(--accent);font-weight:600;white-space:nowrap}
+  .tblwrap{overflow-x:auto}
+  td a{color:var(--accent)}
+  .ok{color:var(--green);font-weight:600}
+  .gap{color:var(--red);font-weight:600}
+  .hub{background:var(--amber-soft);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:10px 14px;font-size:.88rem;margin-top:12px}
+  .hub b{color:var(--amber)}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
+  <header>
+    <h1>408 知识串联 · 四科主线与跨科连接</h1>
+    <div class="sub">408 的可怕不在单科,在于四科是同一台机器的四个剖面——串起来学,一份力气四科收钱;实线=科内依赖,虚线=跨科连接(综合题命题点)</div>
+  </header>
+
+  <section class="card">
+    <h2><span class="n">01</span>数据结构:结构 × 算法两条腿</h2>
+    <pre class="mermaid">
+flowchart LR
+  A["线性表<br/>顺序·链式"] --> B["栈与队列"]
+  B --> C["树与二叉树<br/>遍历·哈夫曼·B/B+"]
+  C --> D["图<br/>遍历·最短路·生成树"]
+  D --> E["查找<br/>折半·散列·B+树"]
+  E --> F["排序<br/>八大排序"]
+  B -.栈=递归/遍历的引擎.-> C
+  B -.队列=BFS/层次遍历.-> D
+  C -.B+树是文件与数据库的索引.-> E
+  A -.顺序vs链式的取舍贯穿全书.-> F
+    </pre>
+    <div class="hub"><b>总纲:</b>每个结构只问三件事——怎么存(逻辑/物理)、怎么走(遍历)、多快(复杂度)。大题 41 题的本质是「在对的结构上套对的走法」,<a href="算法题_代码手册.html" style="color:var(--accent)">代码手册</a>的 14 个模板就是「走法」的全集。</div>
+  </section>
+
+  <section class="card">
+    <h2><span class="n">02</span>组成原理:从一个比特到一条流水线</h2>
+    <pre class="mermaid">
+flowchart LR
+  A["数据表示<br/>补码·IEEE754·校验"] --> B["运算方法与ALU"]
+  B --> C["存储层次<br/>Cache·主存·虚存"]
+  C --> D["指令系统<br/>寻址方式·CISC/RISC"]
+  D --> E["CPU<br/>数据通路·中断·流水线"]
+  E --> F["总线与 I/O<br/>中断·DMA"]
+  A -.溢出判断是ALU考点.-> B
+  C -.Cache缺失与缺页共用局部性.-> E
+  E -.中断机制是IO的地基.-> F
+    </pre>
+    <div class="hub"><b>总纲:</b>组成就是「一条指令的一生」:取指(存储层次)→ 译码(指令系统)→ 执行(ALU/通路)→ 访存(Cache/虚存)→ 写回,流水线把一生切成五段重叠。做题时把自己当那条指令走一遍,比背结构图牢。</div>
+  </section>
+
+  <section class="card">
+    <h2><span class="n">03</span>操作系统:管理四种资源</h2>
+    <pre class="mermaid">
+flowchart LR
+  A["进程与线程<br/>状态·切换"] --> B["调度<br/>FCFS/SJF/RR/优先级"]
+  A --> C["同步互斥<br/>PV·信号量"]
+  C --> D["死锁<br/>四条件·银行家"]
+  A --> E["内存管理<br/>分页分段·虚存·置换"]
+  E --> F["文件系统<br/>索引·目录·空闲管理"]
+  F --> G["I/O 管理<br/>缓冲·磁盘调度·SPOOLing"]
+  B -.就绪队列=队列结构.-> A
+  E -.页面置换与Cache替换同源.-> F
+    </pre>
+    <div class="hub"><b>总纲:</b>OS 四大管理(CPU=进程调度、内存、文件、设备)全是同一句话:「资源少、进程多,怎么分才又快又不打架」。PV 大题=「打架」的形式化,银行家=「分不分」的形式化,置换算法=「腾谁」的形式化。</div>
+  </section>
+
+  <section class="card">
+    <h2><span class="n">04</span>计算机网络:自底向上五层楼</h2>
+    <pre class="mermaid">
+flowchart LR
+  A["物理层<br/>码元·带宽·奈奎斯特/香农"] --> B["链路层<br/>成帧·CSMA/CD·交换机"]
+  B --> C["网络层<br/>IP·子网·路由"]
+  C --> D["传输层<br/>TCP/UDP·可靠传输·拥塞"]
+  D --> E["应用层<br/>DNS·HTTP·邮件"]
+  B -.可靠传输GBN/SR在传输层重考一遍.-> D
+  C -.IP分片受链路层MTU牵制.-> B
+  E -.DNS先行是一切应用的第0步.-> C
+    </pre>
+    <div class="hub"><b>总纲:</b>网络只有一道大题:「一个数据包的旅行」——应用层出发,层层<b>封装</b>下楼,过交换机(看 MAC)、过路由器(看 IP、换 MAC),到对面层层<b>解封</b>上楼。任何协议题先问:它在哪层?看什么地址?</div>
+  </section>
+
+  <section class="card">
+    <h2><span class="n">05</span>跨科枢纽:一份力气四科收钱</h2>
+    <div class="tblwrap"><table>
+      <tr><th>枢纽思想</th><th>它在四科的分身(全是考点)</th></tr>
+      <tr><td><b>局部性原理</b></td><td>组成:Cache 命中的全部理由;OS:页面置换(LRU 赌的就是它)、TLB;数构:顺序表缓存友好;网络:Web 缓存/CDN。<b>一条原理吃四科的题。</b></td></tr>
+      <tr><td><b>滑动窗口</b></td><td>链路层 GBN/SR 与 TCP 流量控制是<b>同一个协议的两次出场</b>——发送窗口/接收窗口/累计确认一套话术,学一次考两层。</td></tr>
+      <tr><td><b>中断</b></td><td>组成:中断的硬件流程(关中断→保存断点→找入口);OS:系统调用、进程切换、时钟中断全骑在它上面;I/O:程序查询→中断→DMA 的演进主线。</td></tr>
+      <tr><td><b>分块 + 映射</b></td><td>Cache 行 / 内存页 / 磁盘块 / 文件簇 / 网络分组(MTU)——全是「定长切块 + 地址映射」同一个动作。地址结构题(标记|组号|块内)与(页号|页内)与(网络号|主机号)是<b>三胞胎</b>。</td></tr>
+      <tr><td><b>队列与缓冲</b></td><td>数构:队列本体;OS:就绪队列、缓冲池、SPOOLing;组成:指令预取队列;网络:路由器排队与丢包(拥塞的物理根源)。</td></tr>
+      <tr><td><b>树</b></td><td>数构:二叉树/哈夫曼/B+树;OS:多级页表是树、目录树;文件系统与数据库索引=B+树;网络:交换机生成树协议(STP)。</td></tr>
+      <tr><td><b>栈</b></td><td>数构:栈本体、表达式求值、递归;组成/OS:函数调用栈、中断现场保存;编译递归下降。<b>「递归改非递归」大题=手工模拟调用栈。</b></td></tr>
+      <tr><td><b>流水/并行</b></td><td>组成:五段流水线与冒险;网络:连续 ARQ 本质是「发送流水线」;OS:多道程序=宏观并行。信道利用率公式和流水线吞吐率公式长得像不是巧合。</td></tr>
+    </table></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="n">06</span>考纲覆盖对照:站内资源地图</h2>
+    <p class="note"><span class="ok">✓</span>=卡库/模拟器/手册已覆盖主干;<span class="gap">△</span>=依赖后续错题页补细节。408 错题页目前为 0——这是计划内的(先卡库后错题),不是遗漏。</p>
+    <div class="tblwrap"><table>
+      <tr><th>考纲科目</th><th>站内资源</th><th>覆盖</th></tr>
+      <tr><td>数据结构(45')</td><td><a href="卡库_数据结构.html">卡库 41 张</a> + <a href="模拟器_排序过程.html">排序模拟器</a> + <a href="算法题_代码手册.html">算法题代码手册 14 模板</a></td><td class="ok">✓</td></tr>
+      <tr><td>组成原理(45')</td><td><a href="卡库_计算机组成原理.html">卡库 39 张</a> + <a href="数感速查_数字直觉.html">数感页(补码/IEEE754/位数速算)</a></td><td class="ok">✓(浮点运算细节△)</td></tr>
+      <tr><td>操作系统(35')</td><td><a href="卡库_操作系统.html">卡库 42 张</a> + <a href="模拟器_页面置换.html">页面置换</a>/<a href="模拟器_地址转换.html">地址转换</a>模拟器</td><td class="ok">✓</td></tr>
+      <tr><td>计算机网络(25')</td><td><a href="卡库_计算机网络.html">卡库 40 张</a> + 数感页(帧长/端口/头部长度)</td><td class="ok">✓(应用层协议细节△)</td></tr>
+    </table></div>
+    <div class="hub"><b>用法:</b>王道学到哪科哪章,先看该科主线图确认「自己在哪一格」,学完当天翻对应卡库 + 玩对应模拟器;跨科枢纽表在二轮串联时整表过一遍——408 选择题里约两成是跨科缝合题,枢纽表就是为它们准备的。</div>
+  </section>
+
+  <footer>408 知识串联 · 四科主线 · 由 Claude 编写 · 与卡库/模拟器/数感页配套</footer>
+</div>
+</body>
+</html>
