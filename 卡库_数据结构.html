@@ -46,6 +46,9 @@
   .fbtn{font-size:.8rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:4px 14px;cursor:pointer}
   .fbtn.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
   .fbtn .cnt{opacity:.7;font-size:.72rem}
+  .quizbtn{font-size:.8rem;border:1px solid var(--purple);background:var(--purple-soft);color:var(--purple);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .quizbtn:hover{filter:brightness(.95)}
+  .reveal{display:block;margin:16px auto 4px;font-size:.85rem;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:6px 18px;cursor:pointer}
 
   .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
   .vitem{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s}
@@ -94,7 +97,7 @@
     <main>
       <section class="card">
         <h2>卡片列表（点卡看详情）</h2>
-        <p class="selftest">自测法：看到卡名先<b>在心里说出定义和易混点</b>，再点开验证。红色「易混辨析」是 408 选择题的命脉，优先记。</p>
+        <p class="selftest">自测法：看到卡名先<b>在心里说出定义和易混点</b>，再点开验证；或点 🎲 随机抽卡盲测。相关模拟器：<a href="模拟器_排序过程.html" style="color:var(--green)">排序过程</a></p>
         <div class="filters" id="filters"></div>
         <div class="vgrid" id="vgrid"></div>
       </section>
@@ -324,6 +327,20 @@ fs.forEach(([k,label],j)=>{
   b.addEventListener('click',()=>{document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderGrid(k)});
   fdiv.appendChild(b);
 });
+function quiz(){
+  const pool=K.map((d,i)=>[d,i]).filter(([d])=>curFilter==='all'||d.ch===curFilter);
+  const [d,i]=pool[Math.floor(Math.random()*pool.length)];
+  curIdx=-1;
+  document.querySelectorAll('.vitem').forEach(e=>e.classList.remove('active'));
+  panel.innerHTML=`<button class="close" onclick="panel.classList.remove('open')">✕</button>
+  <div class="wcard"><div class="head"><span class="w">🎲 ${d.name}</span><span class="pos">${CH[d.ch]}</span></div>
+  <div class="hint" style="padding:20px 6px;color:var(--muted);font-size:.85rem;text-align:center">先在心里说出<b>定义</b>和<b>易混点</b>……</div>
+  <button class="reveal" onclick="showCard(${i})">想好了，看答案</button>
+  <button class="reveal" style="background:none;border-color:var(--line);color:var(--muted)" onclick="quiz()">换一张</button></div>`;
+  if(isMobile())panel.classList.add('open');
+}
+const qb=document.createElement('button');qb.className='quizbtn';qb.textContent='🎲 随机抽卡自测';
+qb.addEventListener('click',quiz);fdiv.appendChild(qb);
 renderGrid('all');
 </script>
 </body>

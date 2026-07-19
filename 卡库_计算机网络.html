@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 概念卡库 · 计算机网络</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:120px}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem;line-height:1.3}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  .layout{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+  @media (max-width:900px){.layout{grid-template-columns:1fr}}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:16px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .fbtn{font-size:.8rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .fbtn.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+  .fbtn .cnt{opacity:.7;font-size:.72rem}
+  .quizbtn{font-size:.8rem;border:1px solid var(--purple);background:var(--purple-soft);color:var(--purple);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .quizbtn:hover{filter:brightness(.95)}
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+  .vitem{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s}
+  .vitem:hover{border-color:var(--accent)}
+  .vitem.active{border-color:var(--accent);background:var(--accent-soft)}
+  .vitem .w{font-weight:bold}
+  .vitem .cn{font-size:.82rem;color:var(--muted);margin-top:2px}
+  .chip{float:right;font-size:.68rem;padding:1px 8px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+  aside{position:sticky;top:20px}
+  #panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;min-height:200px}
+  #panel .hint{color:var(--muted);font-size:.88rem;text-align:center;padding:40px 10px}
+  .wcard .head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .wcard .w{font-family:var(--serif);font-size:1.25rem;font-weight:bold}
+  .wcard .pos{font-size:.72rem;color:var(--blue);background:var(--blue-soft);padding:1px 8px;border-radius:999px}
+  .wcard .row{margin-top:10px;font-size:.87rem;padding:9px 11px;border-radius:8px}
+  .wcard .row b{font-size:.72rem;display:block;margin-bottom:2px;letter-spacing:.06em}
+  .r-def{background:var(--hl)} .r-def b{color:var(--hl-border)}
+  .r-conf{background:var(--red-soft)} .r-conf b{color:var(--red)}
+  .r-mem{background:var(--green-soft)} .r-mem b{color:var(--green)}
+  .r-exam{background:var(--blue-soft)} .r-exam b{color:var(--blue)}
+  .r-src{margin-top:10px;font-size:.76rem;color:var(--muted)}
+  .r-link{margin-top:4px;font-size:.76rem;color:var(--muted)}
+  .r-link a{color:var(--green)}
+  .reveal{display:block;margin:16px auto 4px;font-size:.85rem;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:6px 18px;cursor:pointer}
+  #panel .close{display:none}
+  @media (max-width:900px){
+    aside{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:0 8px 8px}
+    #panel{box-shadow:0 -6px 24px rgba(0,0,0,.18);max-height:60vh;overflow-y:auto;display:none}
+    #panel.open{display:block}
+    #panel .close{display:block;float:right;border:none;background:var(--line);border-radius:8px;padding:2px 10px;cursor:pointer;color:var(--ink)}
+  }
+  .selftest{font-size:.8rem;color:var(--muted);margin-bottom:14px}
+  .selftest b{color:var(--accent)}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
+  <header>
+    <h1>概念卡库 · 计算机网络（40 张）</h1>
+    <div class="sub">严格限 408 考纲范围 · 每卡 = 定义 + 易混辨析 + 记忆法 + 408 考法 · 命脉：拥塞vs流量控制 / 滑动窗口 / IP 计算</div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <section class="card">
+        <h2>卡片列表（点卡看详情）</h2>
+        <p class="selftest">自测法：看到卡名先<b>在心里说出定义和易混点</b>再点开验证；或点 🎲 随机抽卡盲测。网络的辨析题最多，红色区域是主战场。</p>
+        <div class="filters" id="filters"></div>
+        <div class="vgrid" id="vgrid"></div>
+      </section>
+    </main>
+    <aside>
+      <div id="panel"><div class="hint">👆 点击左侧任意卡片<br>详情会出现在这里</div></div>
+    </aside>
+  </div>
+
+  <footer>408 概念卡库 · 计算机网络 · 由 Claude 生成并独立校核 · 知识点均在 408 考纲内</footer>
+</div>
+
+<script>
+const CH = {base:"体系结构",phy:"物理层",dll:"数据链路层",net:"网络层",trans:"传输层",app:"应用层"};
+const K = [
+{ch:"base",name:"OSI 与 TCP/IP 分层",def:"OSI 七层：物理—链路—网络—传输—会话—表示—应用；TCP/IP 四层。数据单元：比特—帧—分组（IP数据报）—报文段。",
+ mix:"设备工作层次：集线器/中继器=物理层，交换机/网桥=链路层，路由器=网络层。「交换机根据 IP 转发」是错误选项。OSI 先有模型后有协议，TCP/IP 相反。",
+ mem:"「物链网传会表应」七字诀。",
+ exam:"设备与层次对应选择题年年见。"},
+{ch:"base",name:"时延四件套",def:"发送时延 = 帧长/带宽；传播时延 = 距离/传播速率；处理时延；排队时延。时延带宽积 = 传播时延 × 带宽。",
+ mix:"⚠️ 带宽只影响发送时延、距离只影响传播时延——「提高带宽能缩短传播时延」是经典错误。时延带宽积 =「链路能装多少比特」，是滑动窗口计算的地基。",
+ mem:"发送是「倒水出壶」，传播是「水流过管」。",
+ exam:"计算总时延，几乎年年一题。"},
+{ch:"base",name:"电路·报文·分组交换",def:"电路交换先建链独占带宽；报文交换整报存储转发；分组交换分片存储转发、可流水。",
+ mix:"k 段链路传 x bit（分成 p 个分组）：分组交换总时延 ≈ x/b + (k−1)×(分组长/b)（忽略传播）。分组交换时延通常最小但有首部开销与乱序问题。电路交换建立后无转发时延。",
+ mem:"分组交换 = 车队分小车，过桥能流水。",
+ exam:"三种方式时延对比计算，高频。"},
+
+{ch:"phy",name:"奈奎斯特与香农",def:"无噪声：C = 2W·log₂V（W 带宽 Hz，V 码元种类）；有噪声：C = W·log₂(1+S/N)。",
+ mix:"S/N 常以分贝给出：dB = 10·lg(S/N)，30dB → S/N=1000。两个公式各算一遍取小者才是实际极限。奈氏的 2W 是码元速率上限，乘 log₂V 才是比特率。",
+ mem:"奈氏管码元，香农管噪声。",
+ exam:"计算极限速率，几乎必考一题。"},
+{ch:"phy",name:"编码与调制",def:"数字基带：NRZ、曼彻斯特（每比特中间跳变，自同步）、差分曼彻斯特（看边界有无跳变）；数字→模拟：ASK/FSK/PSK/QAM。",
+ mix:"⚠️ 比特率 = 波特率 × log₂V（V 是一个码元的取值种类数）；曼彻斯特编码 1 比特占 2 个信号周期，波特率 = 2×比特率。QAM-16 一码元载 4 比特。",
+ mem:"波特数「个数」，比特数「信息」。",
+ exam:"码型识图+速率换算，选择题高频。"},
+{ch:"phy",name:"物理层设备",def:"中继器放大再生信号；集线器 = 多口中继器，物理星形、逻辑总线。",
+ mix:"集线器不隔离冲突域也不隔离广播域——所有端口共享带宽，同时只能一对通信。中继器两端必须是同一协议网段。「集线器能存储转发」错。",
+ mem:"集线器只是个大喇叭。",
+ exam:"配合「数冲突域/广播域」考。"},
+
+{ch:"dll",name:"封装成帧与透明传输",def:"帧定界方法：字符计数、字节（字符）填充、比特填充（标志 01111110，数据中连续五个 1 后插 0）、违规编码。",
+ mix:"比特填充计算：发送方「见五个 1 插 0」，接收方「见五个 1 删后面的 0」。字符计数法一处出错全部错位。透明传输 = 数据里出现啥都不怕。",
+ mem:"五个 1 后必插 0，机械执行别犹豫。",
+ exam:"写出插 0 后的发送序列，选择题高频。"},
+{ch:"dll",name:"停等协议与信道利用率",def:"发一帧等一帧确认；利用率 = T发 / (T发 + RTT + T确认)。",
+ mix:"想达到利用率目标反推窗口大小：W ≥ 1 + RTT×带宽/帧长（即 1+2a）。停等的序号 1 位就够（0/1 交替）。确认帧发送时延常忽略，看题目条件。",
+ mem:"路上太久，就得多发几帧填满管道。",
+ exam:"利用率/最小窗口计算，年年见。"},
+{ch:"dll",name:"GBN vs SR",def:"GBN：发送窗 ≤ 2ⁿ−1、接收窗 = 1、累计确认、出错后全部重发；SR：收发窗都 > 1、逐帧确认、只重传出错帧，窗口 ≤ 2ⁿ⁻¹。",
+ mix:"⚠️ 窗口上限背反是重灾区：n 位序号下 GBN 是 2ⁿ−1，SR 是 2ⁿ⁻¹（发送窗+接收窗 ≤ 2ⁿ）。GBN 接收方只按序接收；SR 接收方要能缓存失序帧。",
+ mem:"GBN「错一罚十」，SR「精准补刀、窗口减半」。",
+ exam:"给序号位数求最大窗口，几乎必考。"},
+{ch:"dll",name:"CSMA/CD 与最小帧长",def:"先听后发、边听边发、冲突停发、随机重发；最小帧长 = 2τ × 带宽（争用期 2τ 内必须仍在发送才能检测到冲突）。",
+ mix:"10Mbps 以太网争用期 51.2μs、最小帧 64B。距离越长/速率越高，最小帧长要求越大。二进制指数退避从 {0..2^k−1} 选随机数（k=min(重传次数,10)，16 次失败放弃）。",
+ mem:"帧太短，撞了都不知道。",
+ exam:"最小帧长/最远距离计算，高频。"},
+{ch:"dll",name:"CSMA/CA 与无线网",def:"802.11 用碰撞避免：帧间间隔 IFS + 随机退避 + 链路层确认 ACK，可选 RTS/CTS 预约。",
+ mix:"无线不能用 CD 的原因：① 发送时自己的信号太强，听不出别人的（无法边发边听）；② 隐蔽站问题。CA 有确认重传（802.11 链路层可靠），以太网 CD 没有 ACK。",
+ mem:"无线喊话听不见别人，只能先举手预约。",
+ exam:"CD/CA 对比辨析，选择题常客。"},
+{ch:"dll",name:"以太网与 MAC 帧",def:"MAC 帧：目的地址6B + 源地址6B + 类型2B + 数据46~1500B + FCS4B；无连接、不可靠（差错帧直接丢弃）。",
+ mix:"以太网不重传坏帧，可靠性交给高层（TCP）。类型字段标识上层协议（0x0800 IP，0x0806 ARP）。数据不足 46B 要填充——这就是最小帧 64B 的组成。",
+ mem:"以太网只管送到门口，不管签收。",
+ exam:"帧结构字段/最小最大帧长选择题。"},
+{ch:"dll",name:"交换机与自学习",def:"根据帧的源 MAC 学习端口映射，按目的 MAC 转发；表中没有则向除入口外所有端口泛洪。",
+ mix:"⚠️ 冲突域/广播域统计：集线器都不隔离；交换机每个端口一个冲突域、但同属一个广播域；路由器两个都隔离；VLAN 在交换机内隔离广播域。全双工交换机端口无碰撞、不需 CSMA/CD。",
+ mem:"看源学地址，看目的做转发。",
+ exam:"数冲突域/广播域 + 自学习表演变，几乎必考。"},
+{ch:"dll",name:"PPP 协议",def:"点对点链路（拨号/专线）；面向字节，字节填充转义；提供不可靠服务（有 FCS 检错但不纠错不重传）。",
+ mix:"PPP 无序号无确认；支持身份认证与多网络层协议。与以太网一样把可靠性交给上层。标志字节 0x7E，转义字节 0x7D。",
+ mem:"PPP = 两点之间的老实搬运工。",
+ exam:"特性判断选择题中频。"},
+
+{ch:"net",name:"IPv4 数据报格式",def:"首部 20~60B；关键字段：TTL（每经一个路由器减 1，为 0 丢弃并回 ICMP）、协议（6=TCP，17=UDP）、首部检验和（只检首部）。",
+ mix:"⚠️ 三个字段三种单位：首部长度以 4B 为单位、总长度以 1B 为单位、片偏移以 8B 为单位——「4、1、8」是分片计算的命门。每经路由器 TTL 减 1 且检验和要重算。",
+ mem:"单位口诀「首4总1偏8」。",
+ exam:"字段含义+单位换算选择题年年见。"},
+{ch:"net",name:"IP 分片计算",def:"数据部分按 MTU 切片，除最后一片外每片数据长必须是 8 的倍数；MF=1 表示后面还有分片，DF=1 禁止分片。",
+ mix:"每个分片都带完整 20B 首部：MTU 1500 → 每片数据最多 1480B。片偏移 = 本片数据首字节序号 / 8。分片可在沿途任何路由器发生，但重组只在最终目的主机。",
+ mem:"切蛋糕每块都配个盘子（首部）。",
+ exam:"求分片数/各片偏移，计算题高频。"},
+{ch:"net",name:"IP 地址与 CIDR",def:"无分类编址 a.b.c.d/n，前 n 位网络前缀；子网掩码前 n 位全 1；每个子网可用主机数 = 2^h − 2。",
+ mix:"减 2 是去掉主机号全 0（网络地址）和全 1（定向广播地址）。判断两地址是否同网段：分别与掩码按位与后比较。路由器各接口属于不同网段。",
+ mem:"掩码就是一把切地址的尺子。",
+ exam:"子网划分/可用地址数计算，必考。"},
+{ch:"net",name:"路由聚合与最长前缀匹配",def:"聚合：取多个网络的公共前缀合成一条路由；查表时多条匹配取前缀最长（最具体）的一条。",
+ mix:"聚合后的超网可能覆盖并不存在的网段（以表项数换精确性）。默认路由 0.0.0.0/0 前缀最短、最后兜底。做题先把地址写成二进制找公共前缀。",
+ mem:"越长越具体，越具体越优先。",
+ exam:"求聚合地址/选转发接口，大题选择都常考。"},
+{ch:"net",name:"特殊 IP 与私有地址",def:"127.0.0.1 环回；私有地址：10/8、172.16/12、192.168/16；255.255.255.255 受限广播；主机号全 1 定向广播。",
+ mix:"私有地址不能在公网路由，出门必须 NAT。169.254.x.x 是 DHCP 失败的链路本地地址。受限广播不出路由器。「路由器转发目的为 127.x 的分组」错。",
+ mem:"「10、172.16、192.168」三段私房。",
+ exam:"判断地址合法性/类型，选择题高频。"},
+{ch:"net",name:"NAT",def:"网络地址转换：路由器改写 IP+端口，维护 NAT 表（私网 IP:端口 ↔ 公网 IP:端口）。",
+ mix:"NAPT 用端口号区分多台内网主机，一个公网 IP 就够。NAT 修改 IP 首部与传输层端口，检验和都要重算。外网无法主动发起访问内网（表中无映射）。",
+ mem:"小区传达室：统一门牌，分机号区分住户。",
+ exam:"给 NAT 表填转换结果，考过大题。"},
+{ch:"net",name:"ARP",def:"由 IP 地址解析 MAC 地址：同网段广播请求、单播应答，结果存 ARP 缓存。",
+ mix:"⚠️ 目的主机在其他网段时，ARP 解析到的是默认网关的 MAC。ARP 报文直接封装在以太帧中（类型 0x0806），不封装在 IP 里。ARP 表项有寿命，会过期重查。",
+ mem:"出小区先问门卫（网关）的脸。",
+ exam:"「主机 A 发给跨网段主机 B，ARP 查谁」几乎必考。"},
+{ch:"net",name:"IP 与 MAC 沿途变化",def:"无 NAT 时：源/目的 IP 全程不变；MAC 地址每经过一个路由器换一对（当前链路的发送口与接收口）。",
+ mix:"路由器转发时改 MAC、TTL 减 1、重算首部检验和，但不改源目的 IP。交换机什么都不改。抓包题给某链路上的帧，四个地址要能全部写对。",
+ mem:"IP 是收件人，MAC 是每一程的快递员。",
+ exam:"大题选择都爱考的「填地址表」。"},
+{ch:"net",name:"DHCP 与 ICMP",def:"DHCP：UDP 67/68，发现→提供→请求→确认四步，首程全程广播；ICMP：IP 层差错报告（不可达/超时/参数错/重定向）与询问（回送）。",
+ mix:"DHCP 客户端初始无 IP，源地址用 0.0.0.0。ping 用 ICMP 回送请求/回答；traceroute 利用 TTL 递增触发超时报文。对 ICMP 差错报文不再产生差错报文。ICMP 封装在 IP 数据报内。",
+ mem:"DHCP 领身份证，ICMP 送病危通知。",
+ exam:"报文类型/封装关系选择题高频。"},
+{ch:"net",name:"RIP",def:"距离向量协议：以跳数为度量，最大 15 跳，16 = 不可达；每 30s 与相邻路由器交换整张路由表；封装在 UDP（端口 520）。",
+ mix:"「坏消息传得慢」：链路故障后要多轮更新甚至计数到无穷才收敛。更新规则：来自邻居 X 的表，距离全部 +1 后与本表比较，取小者/以新替旧（同下一跳必须更新）。",
+ mem:"RIP 只跟邻居闲聊，眼界 15 跳。",
+ exam:"按更新规则改路由表，计算题高频。"},
+{ch:"net",name:"OSPF",def:"链路状态协议：洪泛链路状态通告（LSA）使全网拓扑一致，各自跑 Dijkstra 算最短路；支持划分区域；直接封装在 IP（协议号 89）。",
+ mix:"只在链路状态变化时洪泛（不是周期发全表）；收敛快、无坏消息问题；度量可以是费用而非跳数。三大协议承载：RIP→UDP、OSPF→IP、BGP→TCP，必背。",
+ mem:"OSPF 人手一张全国地图，各自导航。",
+ exam:"RIP/OSPF 特性对比选择题几乎必考。"},
+{ch:"net",name:"BGP",def:"自治系统（AS）之间的路径向量协议：交换「可达网络 + 完整 AS 路径」，基于策略选路；用 TCP（端口 179）。",
+ mix:"BGP 追求「可达 + 符合策略」而不是最短；AS 路径可防环路。内部网关协议（RIP/OSPF）管 AS 内，BGP 管 AS 间——层级别搞混。",
+ mem:"BGP 是国与国的外交，讲政策不讲近路。",
+ exam:"三大路由协议对比表，选择题常客。"},
+{ch:"net",name:"IPv6",def:"128 位地址，冒号十六进制记法（:: 双冒号只能出现一次）；基本首部 40B 定长；取消首部检验和；路由器不分片（源端处理）。",
+ mix:"IPv6 用扩展首部取代 IPv4 的选项字段；无广播（用组播替代）。过渡技术：双协议栈、隧道。地址压缩规则做题要会展开。",
+ mem:"地址翻四倍，首部反而更清爽。",
+ exam:"特性判断/地址缩写选择题。"},
+
+{ch:"trans",name:"UDP",def:"无连接、不可靠、面向报文；首部仅 8B：源端口、目的端口、长度、检验和。",
+ mix:"UDP 对应用层报文不合并不拆分（面向报文）；TCP 面向字节流。UDP 检验和可选，计算时加伪首部（含 IP 地址）。用 UDP 的应用：DNS、DHCP、RIP、TFTP、SNMP、实时音视频。",
+ mem:"UDP = 明信片，写完就扔进邮筒。",
+ exam:"「哪些应用用 UDP」选择题年年见。"},
+{ch:"trans",name:"TCP 报文段首部",def:"序号 = 本段第一个数据字节的编号；确认号 = 期望收到的下一个字节编号；SYN 与 FIN 各消耗一个序号。",
+ mix:"数据偏移（首部长度）以 4B 为单位，首部 20~60B。窗口字段通告的是接收窗口 rwnd。ACK 标志位与确认号字段是两回事：ACK=1 确认号才有效。",
+ mem:"确认号 =「我收齐到 x−1，请从 x 发」。",
+ exam:"序号/确认号计算，几乎年年考。"},
+{ch:"trans",name:"三次握手",def:"SYN(seq=x) → SYN+ACK(seq=y, ack=x+1) → ACK(seq=x+1, ack=y+1)；同步双方初始序号。",
+ mix:"为什么不能两次：防止失效的旧 SYN 突然到达造成服务器空等（也无法确认双向序号）。第三次握手可以携带数据，前两次不能。SYN 洪泛攻击打的就是半连接队列。",
+ mem:"「你能听到吗—能，你呢—我也能」。",
+ exam:"填握手报文的 seq/ack 数值，高频计算。"},
+{ch:"trans",name:"四次挥手与 TIME_WAIT",def:"FIN → ACK → FIN → ACK；主动关闭方最后进入 TIME_WAIT，等 2MSL 再彻底关闭。",
+ mix:"2MSL 的两个目的：① 最后的 ACK 若丢失可重发；② 让旧连接报文在网络中消亡。CLOSE_WAIT 出现在被动方（收到 FIN 还没发自己的 FIN）。挥手中间是半关闭状态：不发但还能收。",
+ mem:"分手要说四句话，说完还要冷静 2MSL。",
+ exam:"状态归属判断选择题高频。"},
+{ch:"trans",name:"TCP 重传机制",def:"超时重传：RTO 由加权平均 RTT 自适应估算；快重传：连续收到 3 个冗余 ACK 立即重传，不等超时。",
+ mix:"RTO 应略大于 RTT。Karn 算法：重传报文段的 RTT 样本不参与估算（分不清确认的是哪次）。快重传是「接收方每收失序段就重发当前 ACK」触发的。",
+ mem:"三张催单立刻补货，不等闹钟。",
+ exam:"与拥塞控制连考，判断触发哪种重传。"},
+{ch:"trans",name:"流量控制 vs 拥塞控制",def:"流量控制：端到端问题，接收方用 rwnd 限制发送方，防淹没接收方；拥塞控制：全局问题，用 cwnd 防压垮网络。发送窗口 = min(rwnd, cwnd)。",
+ mix:"⚠️ 408 级易混命门：一个管「对方受不了」、一个管「路上受不了」。rwnd 由接收方通告，cwnd 由发送方根据网络状况自己维护。零窗口后发送方启动坚持定时器发 1 字节探测报文，防互等死锁。",
+ mem:"流控看对方脸色，拥控看马路堵不堵。",
+ exam:"辨析 + min 取值计算，必考。"},
+{ch:"trans",name:"拥塞控制四算法",def:"慢开始：cwnd 从 1 MSS 起每 RTT 翻倍；到 ssthresh 转拥塞避免（每 RTT +1）；超时：ssthresh=cwnd/2、cwnd=1 重新慢开始；3 冗余 ACK：快重传 + 快恢复（ssthresh=cwnd/2、cwnd=ssthresh 起线性增）。",
+ mix:"⚠️「慢开始不慢」——指数增长，名慢实快，「慢」指起点低。超时与快重传的处理不同是计算题核心：一个回到 1，一个减半继续。画 cwnd 折线图必须能徒手复现。",
+ mem:"「指数爬坡、线性巡航；超时归零、三催减半」。",
+ exam:"算第 n 个 RTT 的 cwnd / 画曲线，几乎年年考。"},
+
+{ch:"app",name:"DNS",def:"层次域名系统：本地域名服务器 → 根 → 顶级 → 权限；递归查询（替你问到底）vs 迭代查询（只告诉你下一家）；UDP 53。",
+ mix:"主机对本地服务器通常递归，本地服务器对外通常迭代。算「最少/最多查询次数」：缓存命中最少 0 次网外查询。区分域名解析顺序与投递顺序。",
+ mem:"递归是「全权代办」，迭代是「给你指路」。",
+ exam:"查询流程/次数选择题高频。"},
+{ch:"app",name:"FTP",def:"文件传输：控制连接（端口 21，整个会话保持）+ 数据连接（每次传输临时建立）；基于 TCP。",
+ mix:"控制与数据分离是 FTP 特色。主动模式：服务器从 20 端口主动连客户端；被动模式：客户端连服务器的临时端口（穿透防火墙友好）。控制连接传命令，不传文件内容。",
+ mem:"一条线聊天，一条线搬货。",
+ exam:"双连接/端口辨析选择题高频。"},
+{ch:"app",name:"电子邮件协议",def:"发送用 SMTP（25，推协议）；读取用 POP3（110，下载后默认删除）或 IMAP（在线管理，多端同步）；均基于 TCP。",
+ mix:"⚠️ 链路别配反：发件人→发送服务器与服务器之间都是 SMTP；只有收件人取信那一段才是 POP3/IMAP。SMTP 只传 ASCII，非文本靠 MIME 编码扩展。",
+ mem:"SMTP 一路推，最后一步拉。",
+ exam:"协议搭配选择题几乎必考。"},
+{ch:"app",name:"HTTP",def:"Web 传输协议：TCP 80，无状态；1.0 非持久连接（每对象新建 TCP），1.1 默认持久连接（可流水线）。",
+ mix:"计算题套路：非持久每对象约 2 个 RTT（TCP 握手 1 + 请求响应 1）；持久+流水线取回 n 个对象可近 1 个 RTT。无状态靠 Cookie 弥补。HTTP 本身可靠性来自 TCP。",
+ mem:"1.0 一趟一辆车，1.1 一辆车拉到底。",
+ exam:"RTT 总时间计算，高频大题选择。"},
+{ch:"app",name:"常用端口速查",def:"FTP 21/20、SSH 22、Telnet 23、SMTP 25、DNS 53、DHCP 67/68、HTTP 80、POP3 110、HTTPS 443。",
+ mix:"配套记传输层协议：DNS/DHCP 用 UDP（DNS 区域传送用 TCP），其余上面列的基于 TCP。「HTTP 用 UDP」「SMTP 用 UDP」是常见错误选项。",
+ mem:"端口+TCP/UDP 打包成对背。",
+ exam:"直接考端口号与协议搭配，送分题别丢。"},
+{ch:"app",name:"从输入 URL 到页面显示",def:"（可选 DHCP 获取配置）→ DNS 解析域名 → ARP 求网关 MAC → TCP 三次握手 → HTTP 请求响应 → 渲染。",
+ mix:"综合大题模板：每一步说清「哪层、什么协议、单播还是广播」。DNS 之前可能先查本机缓存/hosts；对象分布在多服务器时要多次 DNS+TCP。",
+ mem:"配置→查号→问路→握手→取货。",
+ exam:"408 网络大题最爱的全流程叙事题。"}
+];
+
+/* ===== 渲染（与其余卡库同模板） ===== */
+const panel=document.getElementById('panel');
+const vg=document.getElementById('vgrid');
+const isMobile=()=>window.innerWidth<=900;
+let curFilter='all', curIdx=-1;
+
+function cardHTML(d){
+  return `<div class="wcard">
+    <div class="head"><span class="w">${d.name}</span><span class="pos">${CH[d.ch]}</span></div>
+    <div class="row r-def"><b>一句话定义</b>${d.def}</div>
+    <div class="row r-conf"><b>易混辨析（408 命脉）</b>${d.mix}</div>
+    <div class="row r-mem"><b>怎么记</b>${d.mem}</div>
+    <div class="row r-exam"><b>408 考法</b>${d.exam}</div>
+    ${d.src?`<div class="r-src">📦 提炼自：${d.src}</div>`:''}
+    <div class="r-link">🔗 真题出处：待错题页生成后回链点亮</div>
+  </div>`;
+}
+function showCard(i){
+  const d=K[i]; curIdx=i;
+  document.querySelectorAll('.vitem').forEach(e=>e.classList.toggle('active', +e.dataset.i===i));
+  panel.innerHTML=`<button class="close" onclick="panel.classList.remove('open')">✕</button>`+cardHTML(d);
+  if(isMobile())panel.classList.add('open');
+}
+function quiz(){
+  const pool=K.map((d,i)=>[d,i]).filter(([d])=>curFilter==='all'||d.ch===curFilter);
+  const [d,i]=pool[Math.floor(Math.random()*pool.length)];
+  curIdx=-1;
+  document.querySelectorAll('.vitem').forEach(e=>e.classList.remove('active'));
+  panel.innerHTML=`<button class="close" onclick="panel.classList.remove('open')">✕</button>
+  <div class="wcard"><div class="head"><span class="w">🎲 ${d.name}</span><span class="pos">${CH[d.ch]}</span></div>
+  <div class="hint" style="padding:20px 6px;color:var(--muted);font-size:.85rem;text-align:center">先在心里说出<b>定义</b>和<b>易混点</b>……</div>
+  <button class="reveal" onclick="showCard(${i})">想好了，看答案</button>
+  <button class="reveal" style="background:none;border-color:var(--line);color:var(--muted)" onclick="quiz()">换一张</button></div>`;
+  if(isMobile())panel.classList.add('open');
+}
+function renderGrid(f){
+  curFilter=f; vg.innerHTML='';
+  K.forEach((d,i)=>{
+    if(f!=='all'&&d.ch!==f)return;
+    const div=document.createElement('div');div.className='vitem';div.dataset.i=i;
+    if(i===curIdx)div.classList.add('active');
+    div.innerHTML=`<span class="chip">${CH[d.ch]}</span><div class="w">${d.name}</div><div class="cn">${d.def.length>38?d.def.slice(0,38)+'…':d.def}</div>`;
+    div.addEventListener('click',()=>{showCard(i);if(!isMobile())window.scrollTo({top:0,behavior:'smooth'})});
+    vg.appendChild(div);
+  });
+}
+const fdiv=document.getElementById('filters');
+const counts={};K.forEach(d=>counts[d.ch]=(counts[d.ch]||0)+1);
+const fs=[['all','全部 '+K.length]].concat(Object.keys(CH).map(k=>[k,CH[k]+' '+counts[k]]));
+fs.forEach(([k,label],j)=>{
+  const b=document.createElement('button');b.className='fbtn'+(j===0?' on':'');
+  b.innerHTML=label.replace(/ (\d+)$/,' <span class="cnt">$1</span>');
+  b.addEventListener('click',()=>{document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderGrid(k)});
+  fdiv.appendChild(b);
+});
+const qb=document.createElement('button');qb.className='quizbtn';qb.textContent='🎲 随机抽卡自测';
+qb.addEventListener('click',quiz);fdiv.appendChild(qb);
+renderGrid('all');
+</script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 概念卡库 · 计算机组成原理</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:120px}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem;line-height:1.3}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  .layout{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+  @media (max-width:900px){.layout{grid-template-columns:1fr}}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:16px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .fbtn{font-size:.8rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .fbtn.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+  .fbtn .cnt{opacity:.7;font-size:.72rem}
+  .quizbtn{font-size:.8rem;border:1px solid var(--purple);background:var(--purple-soft);color:var(--purple);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .quizbtn:hover{filter:brightness(.95)}
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+  .vitem{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s}
+  .vitem:hover{border-color:var(--accent)}
+  .vitem.active{border-color:var(--accent);background:var(--accent-soft)}
+  .vitem .w{font-weight:bold}
+  .vitem .cn{font-size:.82rem;color:var(--muted);margin-top:2px}
+  .chip{float:right;font-size:.68rem;padding:1px 8px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+  aside{position:sticky;top:20px}
+  #panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;min-height:200px}
+  #panel .hint{color:var(--muted);font-size:.88rem;text-align:center;padding:40px 10px}
+  .wcard .head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .wcard .w{font-family:var(--serif);font-size:1.25rem;font-weight:bold}
+  .wcard .pos{font-size:.72rem;color:var(--blue);background:var(--blue-soft);padding:1px 8px;border-radius:999px}
+  .wcard .row{margin-top:10px;font-size:.87rem;padding:9px 11px;border-radius:8px}
+  .wcard .row b{font-size:.72rem;display:block;margin-bottom:2px;letter-spacing:.06em}
+  .r-def{background:var(--hl)} .r-def b{color:var(--hl-border)}
+  .r-conf{background:var(--red-soft)} .r-conf b{color:var(--red)}
+  .r-mem{background:var(--green-soft)} .r-mem b{color:var(--green)}
+  .r-exam{background:var(--blue-soft)} .r-exam b{color:var(--blue)}
+  .r-src{margin-top:10px;font-size:.76rem;color:var(--muted)}
+  .r-link{margin-top:4px;font-size:.76rem;color:var(--muted)}
+  .r-link a{color:var(--green)}
+  .reveal{display:block;margin:16px auto 4px;font-size:.85rem;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:6px 18px;cursor:pointer}
+  #panel .close{display:none}
+  @media (max-width:900px){
+    aside{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:0 8px 8px}
+    #panel{box-shadow:0 -6px 24px rgba(0,0,0,.18);max-height:60vh;overflow-y:auto;display:none}
+    #panel.open{display:block}
+    #panel .close{display:block;float:right;border:none;background:var(--line);border-radius:8px;padding:2px 10px;cursor:pointer;color:var(--ink)}
+  }
+  .selftest{font-size:.8rem;color:var(--muted);margin-bottom:14px}
+  .selftest b{color:var(--accent)}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
+  <header>
+    <h1>概念卡库 · 计算机组成原理（39 张）</h1>
+    <div class="sub">严格限 408 考纲范围 · 每卡 = 定义 + 易混辨析 + 记忆法 + 408 考法 · 命脉章：数据表示 / Cache / 流水线</div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <section class="card">
+        <h2>卡片列表（点卡看详情）</h2>
+        <p class="selftest">自测法：看到卡名先<b>在心里说出定义和易混点</b>再点开验证；或点 🎲 随机抽卡盲测。组成的计算题多，卡片里的公式要能默写。</p>
+        <div class="filters" id="filters"></div>
+        <div class="vgrid" id="vgrid"></div>
+      </section>
+    </main>
+    <aside>
+      <div id="panel"><div class="hint">👆 点击左侧任意卡片<br>详情会出现在这里</div></div>
+    </aside>
+  </div>
+
+  <footer>408 概念卡库 · 计算机组成原理 · 由 Claude 生成并独立校核 · 知识点均在 408 考纲内</footer>
+</div>
+
+<script>
+const CH = {ov:"系统概述",num:"数据表示与运算",mem:"存储系统",ins:"指令系统",cpu:"中央处理器",bus:"总线与I/O"};
+const K = [
+{ch:"ov",name:"性能指标：主频·CPI·MIPS",def:"CPU 执行时间 = 指令条数 × CPI × 时钟周期 = 指令条数 × CPI / 主频；MIPS = 主频 / (CPI×10⁶)。",
+ mix:"主频高 ≠ 快：三因素（指令数、CPI、主频）缺一不可。不同指令集的 MIPS 不可比（一条复杂指令顶多条简单指令）。CPI 是「平均每条指令的时钟周期数」，混合指令流要按频率加权。",
+ mem:"「跑多少条 × 每条几拍 × 每拍多久」。",
+ exam:"加权 CPI / 加速比计算，选择题高频。"},
+{ch:"ov",name:"机器字长与 MAR/MDR",def:"机器字长 = ALU 一次能处理的位数（通常等于通用寄存器宽度）；MAR 位数决定可编址单元数，MDR 位数 = 存储字长。",
+ mix:"机器字长、指令字长、存储字长三者可以互不相等。按字节编址 vs 按字编址的换算是万年坑：4GB 按字节编址 → MAR 32 位；同容量按 32 位字编址 → MAR 30 位。",
+ mem:"MAR 管「多少间房」，MDR 管「门有多宽」。",
+ exam:"MAR/MDR 位数计算年年见。"},
+
+{ch:"num",name:"原码·反码·补码·移码",def:"补码：正数同原码，负数=取反加一；n 位补码范围 −2ⁿ⁻¹ ~ 2ⁿ⁻¹−1，0 唯一。移码 = 补码符号位取反，用于阶码。",
+ mix:"原码/反码有 ±0，补码多表示一个最小负数 −2ⁿ⁻¹（它没有对应正数，取负会溢出）。移码全 0 表示最小值，便于浮点阶码比大小。补码的模是 2ⁿ。",
+ mem:"补码取负 =「按位取反，末位加一」。",
+ exam:"表示范围/互相转换选择题必考。"},
+{ch:"num",name:"补码加减与溢出判断",def:"减法转加法：A−B = A+(−B) 补。溢出判断三法：双符号位 01 上溢 / 10 下溢；符号位进位与最高数值位进位异或为 1；两同号数相加结果异号。",
+ mix:"⚠️ 无符号数的进位（CF）与有符号数的溢出（OF）是两回事，同一运算两个标志可任意组合。异号相加、同号相减永不溢出。",
+ mem:"双符号位「01 冲上天，10 掉下地」。",
+ exam:"判断哪个运算溢出，选择题高频。"},
+{ch:"num",name:"移位·扩展·截断",def:"算术右移补符号位、逻辑右移补 0；短转长：有符号做符号扩展、无符号做零扩展；长转短：直接截断低位。",
+ mix:"补码算术左移可能溢出（符号位被挤掉），右移不会但丢精度。截断后的值可能面目全非（符号都会变）。char 默认是否有符号看编译器，408 题目会指明。",
+ mem:"算术移位保符号，逻辑移位只管 0。",
+ exam:"结合 C 变量赋值考察，408 特色。"},
+{ch:"num",name:"C 语言整型转换陷阱",def:"signed 与 unsigned 混合运算时 signed 被转为 unsigned；−1 转 unsigned 变最大数。",
+ mix:"int→float 可能丢精度（float 有效位数只有 24 位 < 32）；float→int 截断小数部分且可能溢出；int↔long 按符号扩展/截断。比较 −1 < 1U 的结果是假——408 考过同款。",
+ mem:"位模式不变，解释方式变。",
+ exam:"408 特色题型，几乎年年一题。"},
+{ch:"num",name:"IEEE 754 单精度",def:"1 位符号 + 8 位阶码（偏置 127）+ 23 位尾数（隐藏整数位 1）；值 = (−1)^s × 1.M × 2^(E−127)。",
+ mix:"阶码全 0：非规格化数（隐藏位为 0，指数按 −126 算）；阶码全 1：∞（尾数 0）或 NaN（尾数非 0）。最小正规格化数 2⁻¹²⁶。双精度偏置 1023。「偏置 128」是移码定义与 754 的差异点，看清题目。",
+ mem:"「藏个 1，减 127」。",
+ exam:"与十进制互化、比较大小，计算题必考。"},
+{ch:"num",name:"浮点加减五步",def:"对阶（小阶向大阶）→ 尾数加减 → 规格化（左规/右规）→ 舍入（0 舍 1 入/恒置 1）→ 溢出判断。",
+ mix:"为什么小阶向大阶：小数右移丢的是低位，大数左移丢的是高位。浮点溢出看阶码：尾数溢出可右规挽救（阶码+1），阶码上溢才是真溢出，阶码下溢按 0 处理。",
+ mem:"「对尾规舍溢」五字诀。",
+ exam:"步骤排序/手算结果，选择题高频。"},
+{ch:"num",name:"奇偶·海明·CRC 校验",def:"奇偶校验只能发现奇数位错、不能纠错；海明码 2^k ≥ n+k+1 可纠 1 位错；CRC 用生成多项式做模 2 除法，余数作校验位。",
+ mix:"海明码「纠 1 检 2」需再加一位全校验位。CRC 校验位数 = 生成多项式最高次数；模 2 除法就是异或、不借位。校验能力与码距有关：纠 1 位错需码距 ≥3。",
+ mem:"模 2 除法 = 只做异或的除法。",
+ exam:"求海明校验位数 / CRC 余数，计算题高频。"},
+{ch:"num",name:"大小端与边界对齐",def:"大端：高字节存低地址（符合书写习惯）；小端：低字节存低地址。边界对齐：数据按自身长度的整数倍地址存放。",
+ mix:"给内存转储图判断端序时，先找最高有效字节的位置。对齐会浪费空间但一次访存取全数据；不对齐省空间但可能两次访存。结构体大小要算入填充字节。",
+ mem:"大端像人写数：先写高位。",
+ exam:"结合 C 结构体/联合体考察，408 特色。"},
+
+{ch:"mem",name:"存储层次与局部性",def:"Cache—主存层解决速度不匹配（硬件自动，对所有程序员透明）；主存—辅存层解决容量（硬件+OS，对应用程序员透明）。",
+ mix:"时间局部性 = 刚用过的还会用（循环变量）；空间局部性 = 邻居马上被用（顺序数组）。二维数组按行访问空间局部性好、按列差——408 考过程序改写对比。",
+ mem:"快的贵而小，慢的廉而大，靠局部性粘合。",
+ exam:"局部性分析选择题高频。"},
+{ch:"mem",name:"SRAM vs DRAM",def:"SRAM 用触发器、不刷新、快而贵 → Cache；DRAM 用电容、需定期刷新、密度高 → 主存。",
+ mix:"DRAM 刷新按行进行、对 CPU 透明；有集中/分散/异步三种刷新方式。DRAM 地址复用（行/列分两次送），引脚约减半。DRAM 读出是破坏性的，读后要再生。",
+ mem:"S=Static 稳得住；D=Dynamic 会漏电要充。",
+ exam:"刷新与引脚数计算，选择题高频。"},
+{ch:"mem",name:"主存扩展与片选",def:"位扩展（加宽字长，各片同时选中）、字扩展（加大容量，高位地址译码片选）、字位同时扩展。",
+ mix:"芯片数 = 总容量 / 单片容量。字扩展时低位地址线接每片、高位做片选；由起始地址反推片选逻辑是大题套路。8K×8 芯片组成 64K×16 需 8K×8 → 16 片（8 组×2 片）。",
+ mem:"位扩展并排站，字扩展排队叫号。",
+ exam:"求芯片数/地址范围/片选信号，大题曾多次考。"},
+{ch:"mem",name:"多模块存储器",def:"低位交叉编址：连续地址分布在不同模块，可流水存取，m 模块理论带宽提升至 m 倍。",
+ mix:"高位交叉编址只是单纯扩容（连续访问集中在一个模块，不加速）。流水存取时间 = T + (n−1)r（T 存取周期，r 总线传送周期，需 m ≥ T/r）。存取周期 > 存取时间（含恢复时间）。",
+ mem:"低位交叉像发牌，连续地址轮流落到各家。",
+ exam:"连续读 n 个字的总时间计算，选择题高频。"},
+{ch:"mem",name:"Cache 三种映射",def:"直接映射：行号 = 块号 mod 行数；全相联：任意行；组相联：组间直接、组内全相联。地址划分 = 标记 + 组号/行号 + 块内偏移。",
+ mix:"划分口诀「从右往左切」：先块内偏移（log₂块大小），再组号/行号，剩下全是标记。直接映射冲突率高但无需替换算法；全相联标记最长、比较器最多。n 路组相联 = 每组 n 行。",
+ mem:"直接=固定车位，全相联=随便停，组相联=按楼层随便停。",
+ exam:"年年必考：给地址求映射到哪一组/命中判断。"},
+{ch:"mem",name:"Cache 容量与命中率计算",def:"Cache 总位数 = 数据阵列 + 标记阵列（tag+有效位+脏位+替换算法位）；平均访问时间 = H×t_c + (1−H)×(t_c+t_m) 或 t_c + (1−H)×缺失惩罚。",
+ mix:"算总容量最易漏：有效位每行 1 位必有；写回法才有脏位；LRU 位按每行 log₂(路数)。命中率与块大小不是单调关系（太大则行数少、冲突多）。",
+ mem:"「数据+标记+三小位」逐项点名再相加。",
+ exam:"总容量/平均访问时间计算，大题选择都爱考。"},
+{ch:"mem",name:"Cache 替换与写策略",def:"替换：LRU/FIFO/随机（直接映射无需替换算法）。写命中：写直达（同时写主存）vs 写回（只写 Cache 置脏位）；写不命中：写分配 vs 非写分配。",
+ mix:"经典搭配：写回+写分配、写直达+非写分配。写直达配写缓冲避免 CPU 等待；写回主存数据可能过期（一致性问题的来源）。",
+ mem:"写直达「随手同步」，写回「攒着一起还」。",
+ exam:"策略辨析+写操作访存次数计算，高频。"},
+{ch:"mem",name:"TLB·Page·Cache 命中组合",def:"页式虚存访存顺序：虚地址 → 查 TLB（缺则查页表）→ 物理地址 → 查 Cache（缺则访主存）。",
+ mix:"⚠️ 不可能的组合：TLB 命中而页表缺失（TLB 是页表子集）；缺页而 Cache 命中（数据不在主存就不可能在 Cache）。可能的三种：全命中；TLB 缺/页命中；缺页则全缺。",
+ mem:"下级缺，上级必缺——子集关系推一切。",
+ exam:"判断组合可能性，408 考过大题。"},
+{ch:"mem",name:"磁盘与固态硬盘 SSD",def:"磁盘容量 = 面数×磁道数×扇区数×扇区大小；SSD 基于闪存：按页读写、按块擦除，需磨损均衡。",
+ mix:"SSD 随机读远快于磁盘，但写前须擦除整块 → 写放大；磨损均衡把写操作摊匀延长寿命。磁盘转速 rpm 决定旋转延迟（平均半圈）。",
+ mem:"SSD 像铅笔字：写前要把整页擦干净。",
+ exam:"SSD 特性是新考纲考点，概念选择题。"},
+{ch:"mem",name:"RAID",def:"RAID0 条带化无冗余；RAID1 镜像；RAID5 分布式奇偶校验，容 1 盘故障。",
+ mix:"RAID0 提升速度但可靠性反而低于单盘（任一盘坏全坏）；RAID1 容量减半；RAID5 有效容量 = (n−1)/n。「RAID 都能提高可靠性」是错误选项（RAID0 不能）。",
+ mem:"0 求快，1 求稳，5 求平衡。",
+ exam:"概念选择题偶考。"},
+
+{ch:"ins",name:"指令格式与扩展操作码",def:"指令 = 操作码 + 地址码；扩展操作码：短操作码留出部分编码作为长操作码的前缀空间。",
+ mix:"计算「还能定义多少条 x 地址指令」：上层每留一个编码，下层就多 2^(地址字段位数) 个编码空间；已用编码不能是更长码的前缀。定长指令字中操作码变长是常态。",
+ mem:"像电话区号：短号用了的开头，长号不能再用。",
+ exam:"扩展操作码计算题高频。"},
+{ch:"ins",name:"寻址方式",def:"立即（数在指令中）、直接（地址在指令中）、间接（地址的地址）、寄存器、寄存器间接、相对（PC+偏移）、基址、变址。",
+ mix:"⚠️ 基址 vs 变址：基址寄存器面向系统、由 OS 管理（重定位用），基址不变形式地址变；变址寄存器面向用户、程序员可改（数组遍历），形式地址不变变址变。间接寻址访存次数比直接多一次。",
+ mem:"基址是「起点在哪」，变址是「走到第几个」。",
+ exam:"求有效地址/访存次数，年年见。"},
+{ch:"ins",name:"相对寻址计算",def:"转移目标 = PC + 偏移量；⚠️ 计算时 PC 已经指向下一条指令（取指后自动加了指令长度）。",
+ mix:"「取指后 PC 自增」是最大坑：偏移量 = 目标地址 −（本指令地址 + 指令长度）。偏移量是补码，可负。相对寻址的意义：程序整体搬家不用改转移指令（位置无关）。",
+ mem:"从「下一条」起跳，不是从本条。",
+ exam:"求转移目标/偏移量，选择题高频易错。"},
+{ch:"ins",name:"RISC vs CISC",def:"RISC：指令定长、种类少、只有 Load/Store 访存、寄存器多、大多单周期、硬布线为主、利于流水线。CISC 反之。",
+ mix:"「RISC 指令少所以程序短」错——完成同样功能 RISC 的指令条数反而多。RISC 也可以有微程序（以硬布线为主）。x86 是 CISC 但内部翻译成类 RISC 微操作执行。",
+ mem:"RISC = 乐高小积木，CISC = 整块预制件。",
+ exam:"特征对比选择题常客。"},
+{ch:"ins",name:"机器级表示：栈帧与 call/ret",def:"call 压入返回地址并跳转；ret 弹出返回地址。栈帧含返回地址、旧帧指针（ebp）、局部变量；参数按约定压栈或用寄存器传。",
+ mix:"栈向低地址增长，push 先减 sp；ebp 是当前帧基准，局部变量在 ebp 下方、参数在上方。看懂给出的汇编片段与 C 对照即可，408 不要求默写汇编。",
+ mem:"一次调用一层帧，ebp 是这层的地标。",
+ exam:"C 与汇编对照阅读题，新考纲趋势题型。"},
+{ch:"ins",name:"指令执行周期",def:"取指周期 →（间址周期）→ 执行周期 →（中断周期），由标志触发器区分。",
+ mix:"取指周期做的事对所有指令相同：取指令、PC 自增。间址周期只为间接寻址服务。中断周期由硬件完成保存断点、关中断——这是「中断隐指令」的舞台。",
+ mem:"取—（转）—做—（应答）。",
+ exam:"「PC 自增发生在哪个阶段」类选择题高频。"},
+
+{ch:"cpu",name:"CPU 寄存器与可见性",def:"程序员可见：通用寄存器、PC、PSW（标志）；不可见：MAR、MDR、IR、微指令寄存器。",
+ mix:"PC 对程序员可见（转移指令要用它），IR 不可见——两者常被出题互换。位数：PC 与 MAR ≥ 编址空间位数，MDR = 存储字长，IR = 指令字长。",
+ mem:"你能「用指令碰到」的才叫可见。",
+ exam:"判断可见性 + 位数计算，选择题年年见。"},
+{ch:"cpu",name:"单总线数据通路与微操作",def:"CPU 内部一条总线连接各寄存器；一个节拍内只允许一个部件向总线发送数据。",
+ mix:"ALU 是组合电路无记忆，输入端必须接暂存器（单总线下两个操作数不能同时上总线）。写微操作序列：取指固定三步 PC→MAR、M(MAR)→MDR→IR、PC+1；执行阶段按寻址方式展开。",
+ mem:"一条马路一次只过一辆车。",
+ exam:"补全微操作序列/控制信号，大题热点。"},
+{ch:"cpu",name:"硬布线 vs 微程序",def:"硬布线：控制信号由组合逻辑直接产生，快但难改（RISC）；微程序：每条机器指令对应控存里的一段微程序，灵活但慢（CISC）。",
+ mix:"一条微指令含多个微命令（并行发出）；微程序段数 ≈ 机器指令条数（+公共的取指微程序）。水平型微指令：并行强、字长长、程序短；垂直型相反。控存容量 = 微指令条数 × 微指令字长。",
+ mem:"硬布线是焊死的电路，微程序是查表念稿。",
+ exam:"概念对比+控存容量计算，选择题高频。"},
+{ch:"cpu",name:"流水线性能计算",def:"k 段流水线执行 n 条指令：T = (k+n−1)×Δt；吞吐率 = n/T；加速比 = kn/(k+n−1)；理想加速比 ≈ k。",
+ mix:"流水线时钟周期取最慢段（加锁存延迟）——各段不均衡时提速受限于短板。装入(k−1 拍)与排空使实际性能低于理想。流水线提高的是吞吐率，单条指令的执行时间反而略增。",
+ mem:"洗烘叠三台机器同时转，瓶颈是最慢那台。",
+ exam:"吞吐率/加速比计算，年年见。"},
+{ch:"cpu",name:"流水线三类冒险",def:"结构冒险（部件冲突）、数据冒险（RAW 为主）、控制冒险（转移指令）。",
+ mix:"数据冒险首选转发（旁路）解决；⚠️ load-use 冒险转发也救不了，必须停顿一拍。结构冒险经典解法：指令 Cache 与数据 Cache 分离。控制冒险：分支预测、延迟槽。数一数要插几个气泡是标准计算。",
+ mem:"「转发能救算术，救不了刚 load 的」。",
+ exam:"判断冒险类型/算停顿拍数，大题选择都常考。"},
+{ch:"cpu",name:"中断隐指令与屏蔽字",def:"中断隐指令 = 硬件自动完成：保存断点（PC/PSW）、关中断、取中断向量。屏蔽字动态调整「处理优先级」。",
+ mix:"保存断点是硬件，保存通用寄存器现场是软件（服务程序做）。响应优先级由硬件排队器固定，处理优先级可用屏蔽字改——屏蔽字设计题：1 表示屏蔽，自己通常屏蔽自己和更低者。",
+ mem:"隐指令 = 没有这条指令，硬件自己干了。",
+ exam:"屏蔽字表格+画中断处理轨迹，考过大题。"},
+{ch:"cpu",name:"超标量与多处理器概念",def:"超标量：每拍发射多条指令（空间并行）；超流水：把段切更细（时间并行）；VLIW 靠编译器打包。SISD/SIMD/MIMD 分类；多核共享主存。",
+ mix:"SIMD = 一条指令多组数据（向量、GPU）；多核属于 MIMD。硬件多线程让一个核交替跑多个线程隐藏延迟。考纲只要求基本概念，不深入。",
+ mem:"超标量是多车道，超流水是细工序。",
+ exam:"概念选择题，新考纲增补点。"},
+
+{ch:"bus",name:"总线分类与带宽",def:"片内总线 / 系统总线（数据、地址、控制）/ 通信总线；总线带宽 = 位宽 × 工作频率 / 8（B/s）。",
+ mix:"数据线双向、地址线单向（CPU 发出）。突发（猝发）传送：一次地址、连续多个数据。计算带宽注意 MHz→次/秒、位→字节，以及「每几个周期传一次」的条件。",
+ mem:"带宽 = 车道数 × 发车频率。",
+ exam:"带宽计算选择题高频。"},
+{ch:"bus",name:"同步 vs 异步定时",def:"同步：公共时钟统一节拍，速度快，适合高速近距离；异步：请求—应答握手，可靠灵活，适合速度差异大的设备。",
+ mix:"异步按握手完整度分不互锁/半互锁/全互锁。半同步（时钟+WAIT 信号）折中。「同步方式效率一定高」不严谨——慢设备被迫按最慢者定节拍时反而浪费。",
+ mem:"同步跳集体舞，异步打乒乓球。",
+ exam:"概念辨析选择题。"},
+{ch:"bus",name:"I/O 编址两种方式",def:"统一编址（内存映射 I/O）：端口占内存地址空间，用普通访存指令；独立编址：专用 IN/OUT 指令、独立地址空间。",
+ mix:"统一编址不需要专用 I/O 指令但挤占内存空间、地址译码慢；独立编址指令短、译码快，但需要专门指令和控制线。x86 是独立编址、ARM 是统一编址。",
+ mem:"统一 = 端口冒充内存单元。",
+ exam:"两种方式优缺点辨析，选择题高频。"},
+{ch:"bus",name:"查询·中断·DMA 开销对比",def:"程序查询全程占用 CPU；中断每传一个字/字符打断一次；DMA 整块传完才中断一次。",
+ mix:"计算题套路：中断开销 = 中断次数 ×（响应+服务时间）；查询开销看查询频率×每次时间。高速设备用中断可能来不及响应（数据丢失）→ 必须 DMA。",
+ mem:"CPU 被打扰的粒度：字符级 → 块级。",
+ exam:"CPU 时间占用率计算，年年见。"},
+{ch:"bus",name:"DMA 方式细节",def:"DMA 控制器代替 CPU 控制总线传数据；三种占用方式：停止 CPU 访存、周期挪用（窃取）、交替访问。",
+ mix:"周期挪用最常用：DMA 与 CPU 冲突时 I/O 优先（数据不等人）。DMA 传输前初始化（源/目的地址、计数器）和结束后处理仍靠 CPU（中断服务）。DMA 数据不经过 CPU 寄存器。",
+ mem:"挪用 = 趁 CPU 不用总线时偷偷搬。",
+ exam:"「DMA 中 CPU 何时介入」选择题高频。"},
+{ch:"bus",name:"I/O 接口的功能与组成",def:"接口 = 数据缓冲寄存器 + 状态/控制寄存器 + 地址译码 + 中断/握手逻辑，实现速度匹配、格式转换、通信控制。",
+ mix:"「端口」指接口中可编址的寄存器（数据口/状态口/控制口），端口 ≠ 接口。状态口与控制口可以共用一个地址（读状态、写控制）。",
+ mem:"接口是翻译官，端口是它的几个窗口。",
+ exam:"接口组成/端口概念选择题中频。"}
+];
+
+/* ===== 渲染（与其余卡库同模板） ===== */
+const panel=document.getElementById('panel');
+const vg=document.getElementById('vgrid');
+const isMobile=()=>window.innerWidth<=900;
+let curFilter='all', curIdx=-1;
+
+function cardHTML(d){
+  return `<div class="wcard">
+    <div class="head"><span class="w">${d.name}</span><span class="pos">${CH[d.ch]}</span></div>
+    <div class="row r-def"><b>一句话定义</b>${d.def}</div>
+    <div class="row r-conf"><b>易混辨析（408 命脉）</b>${d.mix}</div>
+    <div class="row r-mem"><b>怎么记</b>${d.mem}</div>
+    <div class="row r-exam"><b>408 考法</b>${d.exam}</div>
+    ${d.src?`<div class="r-src">📦 提炼自：${d.src}</div>`:''}
+    <div class="r-link">🔗 真题出处：待错题页生成后回链点亮</div>
+  </div>`;
+}
+function showCard(i){
+  const d=K[i]; curIdx=i;
+  document.querySelectorAll('.vitem').forEach(e=>e.classList.toggle('active', +e.dataset.i===i));
+  panel.innerHTML=`<button class="close" onclick="panel.classList.remove('open')">✕</button>`+cardHTML(d);
+  if(isMobile())panel.classList.add('open');
+}
+function quiz(){
+  const pool=K.map((d,i)=>[d,i]).filter(([d])=>curFilter==='all'||d.ch===curFilter);
+  const [d,i]=pool[Math.floor(Math.random()*pool.length)];
+  curIdx=-1;
+  document.querySelectorAll('.vitem').forEach(e=>e.classList.remove('active'));
+  panel.innerHTML=`<button class="close" onclick="panel.classList.remove('open')">✕</button>
+  <div class="wcard"><div class="head"><span class="w">🎲 ${d.name}</span><span class="pos">${CH[d.ch]}</span></div>
+  <div class="hint" style="padding:20px 6px;color:var(--muted);font-size:.85rem;text-align:center">先在心里说出<b>定义</b>和<b>易混点</b>……</div>
+  <button class="reveal" onclick="showCard(${i})">想好了，看答案</button>
+  <button class="reveal" style="background:none;border-color:var(--line);color:var(--muted)" onclick="quiz()">换一张</button></div>`;
+  if(isMobile())panel.classList.add('open');
+}
+function renderGrid(f){
+  curFilter=f; vg.innerHTML='';
+  K.forEach((d,i)=>{
+    if(f!=='all'&&d.ch!==f)return;
+    const div=document.createElement('div');div.className='vitem';div.dataset.i=i;
+    if(i===curIdx)div.classList.add('active');
+    div.innerHTML=`<span class="chip">${CH[d.ch]}</span><div class="w">${d.name}</div><div class="cn">${d.def.length>38?d.def.slice(0,38)+'…':d.def}</div>`;
+    div.addEventListener('click',()=>{showCard(i);if(!isMobile())window.scrollTo({top:0,behavior:'smooth'})});
+    vg.appendChild(div);
+  });
+}
+const fdiv=document.getElementById('filters');
+const counts={};K.forEach(d=>counts[d.ch]=(counts[d.ch]||0)+1);
+const fs=[['all','全部 '+K.length]].concat(Object.keys(CH).map(k=>[k,CH[k]+' '+counts[k]]));
+fs.forEach(([k,label],j)=>{
+  const b=document.createElement('button');b.className='fbtn'+(j===0?' on':'');
+  b.innerHTML=label.replace(/ (\d+)$/,' <span class="cnt">$1</span>');
+  b.addEventListener('click',()=>{document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderGrid(k)});
+  fdiv.appendChild(b);
+});
+const qb=document.createElement('button');qb.className='quizbtn';qb.textContent='🎲 随机抽卡自测';
+qb.addEventListener('click',quiz);fdiv.appendChild(qb);
+renderGrid('all');
+</script>
+</body>
+</html>

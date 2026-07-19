@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地址转换步骤机 · 页式 + TLB</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    --mono:"SF Mono","Menlo",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:60px}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:14px}
+  .ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .ctrl label{font-size:.85rem;color:var(--muted)}
+  select,input[type=text]{font-family:var(--sans);font-size:.9rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:5px 10px}
+  input[type=text]{width:150px}
+  .btn{font-size:.85rem;border:1px solid var(--accent);background:none;color:var(--accent);border-radius:8px;padding:5px 14px;cursor:pointer}
+  .btn:hover{background:var(--accent-soft)}
+  .btn.primary{background:var(--accent);color:var(--card)}
+  .btn:disabled{opacity:.4;cursor:default}
+
+  .stage{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  @media (max-width:760px){.stage{grid-template-columns:1fr}}
+  table{border-collapse:collapse;font-size:.82rem;width:100%}
+  th,td{border:1px solid var(--line);text-align:center;padding:4px 8px}
+  th{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  td{font-family:var(--mono)}
+  tr.scan td{background:var(--hl)}
+  tr.hitrow td{background:var(--green-soft);color:var(--green);font-weight:700}
+  tr.faultrow td{background:var(--red-soft);color:var(--red);font-weight:700}
+  .tbl-title{font-size:.8rem;color:var(--muted);margin:8px 0 4px}
+
+  .bits{font-family:var(--mono);font-size:1.05rem;display:flex;flex-wrap:wrap;gap:2px;margin:8px 0}
+  .bit{padding:2px 3px;border-radius:4px}
+  .b-page{background:var(--blue-soft);color:var(--blue)}
+  .b-off{background:var(--green-soft);color:var(--green)}
+  .b-frame{background:var(--purple-soft);color:var(--purple)}
+  .legend{font-size:.75rem;color:var(--muted)}
+  .legend span{display:inline-block;padding:0 8px;border-radius:6px;margin-right:6px}
+
+  .expl{background:var(--accent-soft);border-radius:10px;padding:14px 16px;font-size:.92rem;min-height:100px;margin-bottom:12px}
+  .expl b{color:var(--accent)}
+  .expl .ok{color:var(--green);font-weight:700}
+  .expl .bad{color:var(--red);font-weight:700}
+  .stepdots{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+  .dot{font-size:.75rem;padding:3px 12px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  .dot.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+  .dot.done{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+
+  .notes{font-size:.88rem}
+  .notes li{margin:6px 0 6px 18px}
+  .notes b{color:var(--accent)}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
+  <header>
+    <h1>地址转换步骤机</h1>
+    <div class="sub">页式存储 · 逻辑地址 → 拆分 → 查 TLB → 查页表（可触发缺页）→ 物理地址 · 16 位逻辑地址演示</div>
+  </header>
+
+  <section class="card">
+    <h2>设置</h2>
+    <div class="ctrl">
+      <label>页大小</label>
+      <select id="psize"><option value="1024">1KB（偏移 10 位）</option><option value="2048" selected>2KB（偏移 11 位）</option><option value="4096">4KB（偏移 12 位）</option></select>
+      <label>逻辑地址</label>
+      <input type="text" id="laddr" value="0x1A7F" placeholder="十进制或 0x 十六进制">
+      <button class="btn primary" id="go">开始转换</button>
+      <button class="btn" id="rand">随机地址</button>
+      <button class="btn" id="randfault">随机一个会缺页的地址</button>
+    </div>
+    <p class="legend">页表可直接改（块号 / 有效位），TLB 容量 2 项、FIFO 替换，转换过的映射会留在 TLB 里——连续转换几个地址能亲眼看到 TLB 从冷到热。</p>
+  </section>
+
+  <section class="card">
+    <h2>逐步演示</h2>
+    <div class="stepdots" id="dots"></div>
+    <div class="expl" id="expl">设置好后点「开始转换」。</div>
+    <div class="ctrl">
+      <button class="btn primary" id="next" disabled>下一步 ▶</button>
+      <button class="btn" id="reset">重置 TLB 与统计 ↺</button>
+      <span style="font-size:.82rem;color:var(--muted)" id="stats"></span>
+    </div>
+    <div class="stage">
+      <div>
+        <div class="tbl-title">地址拆分 / 拼接</div>
+        <div id="bitsview"><span class="legend">（开始转换后此处显示二进制拆分）</span></div>
+        <div class="tbl-title">TLB（快表，2 项，FIFO）</div>
+        <table id="tlbT"></table>
+      </div>
+      <div>
+        <div class="tbl-title">页表（8 页，可编辑）</div>
+        <table id="ptT"></table>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>考点速记</h2>
+    <ul class="notes">
+      <li><b>拆分永远是第一步</b>：偏移位数 = log₂(页大小)。页大小 2KB → 低 11 位是页内偏移，剩余高位是页号。<b>页内偏移不查表、原样拼接</b>。</li>
+      <li><b>访存次数</b>：TLB 命中 → 1 次访存（直接取数）；TLB 未命中 → 2 次（先访存查页表，再访存取数）；二级页表未命中 → 3 次。</li>
+      <li><b>有效访问时间 EAT</b> = 命中率×(t<sub>TLB</sub>+t<sub>mem</sub>) + (1−命中率)×(t<sub>TLB</sub>+2t<sub>mem</sub>)。题目说「快慢表同时查」时未命中不重复计 TLB 时间。</li>
+      <li><b>缺页流程</b>：有效位 0 → 缺页中断（内中断）→ OS 调页（无空闲块则先按置换算法淘汰，脏页要写回）→ 修改页表 → <b>重新执行访存指令</b>。</li>
+      <li><b>物理地址位数</b>由内存大小决定、<b>页号位数</b>由逻辑地址空间决定——块号和页号的位数可以不同，拼接时以块号位数为准。</li>
+    </ul>
+  </section>
+
+  <footer>地址转换步骤机 · 由 Claude 独立实现 · 流程与王道教材口径一致</footer>
+</div>
+
+<script>
+const NPAGES=8;
+let pt=[];            // {frame,valid}
+let tlb=[];           // {page,frame} 最多2项 FIFO
+let phases=[], phase=0;
+let nHit=0,nMiss=0,nFault=0;
+let freeFrames=[];
+
+function initPT(){
+  // 固定一个"教材感"页表:部分有效部分无效
+  const preset=[[5,1],[9,1],[0,0],[12,1],[0,0],[7,1],[3,1],[0,0]];
+  pt=preset.map(([f,v])=>({frame:f,valid:v}));
+  freeFrames=[2,4,6,8,10,11,13,14,15].filter(f=>!pt.some(e=>e.valid&&e.frame===f));
+  tlb=[];nHit=0;nMiss=0;nFault=0;
+}
+function offBits(){return Math.log2(+document.getElementById('psize').value)}
+function fmtBin(n,w){return n.toString(2).padStart(w,'0')}
+
+function renderTables(hl){
+  hl=hl||{};
+  let t='<tr><th>#</th><th>页号</th><th>块号</th></tr>';
+  for(let i=0;i<2;i++){
+    const e=tlb[i];
+    const cls=hl.tlbHit===i?'hitrow':(hl.tlbScan===i?'scan':'');
+    t+=`<tr class="${cls}"><td>${i}</td><td>${e?e.page:'—'}</td><td>${e?e.frame:'—'}</td></tr>`;
+  }
+  document.getElementById('tlbT').innerHTML=t;
+  let p='<tr><th>页号</th><th>块号</th><th>有效位</th></tr>';
+  for(let i=0;i<NPAGES;i++){
+    const cls=hl.ptHit===i?'hitrow':(hl.ptFault===i?'faultrow':(hl.ptScan===i?'scan':''));
+    p+=`<tr class="${cls}"><td>${i}</td>
+      <td><input type="text" data-pt="${i}" value="${pt[i].frame}" style="width:44px;text-align:center;font-family:var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--ink)"></td>
+      <td><select data-ptv="${i}" style="background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--ink)"><option value="1"${pt[i].valid?' selected':''}>1</option><option value="0"${pt[i].valid?'':' selected'}>0</option></select></td></tr>`;
+  }
+  document.getElementById('ptT').innerHTML=p;
+  document.querySelectorAll('[data-pt]').forEach(el=>el.addEventListener('change',()=>{pt[+el.dataset.pt].frame=Math.max(0,parseInt(el.value)||0)}));
+  document.querySelectorAll('[data-ptv]').forEach(el=>el.addEventListener('change',()=>{pt[+el.dataset.ptv].valid=+el.value}));
+  document.getElementById('stats').textContent=`TLB 命中 ${nHit} · TLB 未命中 ${nMiss} · 缺页 ${nFault}`;
+}
+
+function bitsHTML(la,ob,frame){
+  const laBits=fmtBin(la,16), p=la>>ob;
+  const pageBits=laBits.slice(0,16-ob), offBitsStr=laBits.slice(16-ob);
+  let h=`<div class="bits">逻辑&nbsp;${pageBits.split('').map(b=>`<span class="bit b-page">${b}</span>`).join('')}${offBitsStr.split('').map(b=>`<span class="bit b-off">${b}</span>`).join('')}</div>
+  <div class="legend"><span class="b-page">页号 p=${p}</span><span class="b-off">页内偏移 w=${la&((1<<ob)-1)}</span></div>`;
+  if(frame!==undefined&&frame!==null){
+    const fb=fmtBin(frame,4);
+    const pa=(frame<<ob)|(la&((1<<ob)-1));
+    h+=`<div class="bits" style="margin-top:10px">物理&nbsp;${fb.split('').map(b=>`<span class="bit b-frame">${b}</span>`).join('')}${offBitsStr.split('').map(b=>`<span class="bit b-off">${b}</span>`).join('')}</div>
+    <div class="legend"><span class="b-frame">块号 f=${frame}</span><span class="b-off">偏移原样拼接</span> → 物理地址 = ${pa}（0x${pa.toString(16).toUpperCase()}）</div>`;
+  }
+  document.getElementById('bitsview').innerHTML=h;
+}
+
+const DOTS=['① 拆分','② 查 TLB','③ 查页表','④ 拼物理地址'];
+function renderDots(){
+  document.getElementById('dots').innerHTML=DOTS.map((d,i)=>{
+    const st=phases.length?(i<phases[Math.min(phase,phases.length-1)].dot?'done':(i===phases[Math.min(phase,phases.length-1)].dot?'on':'')):'';
+    return `<span class="dot ${st}">${d}</span>`;
+  }).join('');
+}
+
+function buildPhases(la){
+  const ob=offBits(), maxLA=(1<<16)-1;
+  phases=[];phase=0;
+  if(la>maxLA){document.getElementById('expl').innerHTML=`<span class="bad">地址越界</span>：超出 16 位逻辑地址空间（最大 0x${maxLA.toString(16).toUpperCase()}）。`;return}
+  const p=la>>ob, w=la&((1<<ob)-1);
+  if(p>=NPAGES){
+    phases.push({dot:0,run:()=>{bitsHTML(la,ob);renderTables();
+      document.getElementById('expl').innerHTML=`<b>① 拆分</b>：页大小 ${1<<ob}B → 偏移占 ${ob} 位。页号 p=${p}，偏移 w=${w}。`}});
+    phases.push({dot:2,run:()=>{renderTables();
+      document.getElementById('expl').innerHTML=`<b>② 越界检查</b>：<span class="bad">页号 ${p} ≥ 页表长度 ${NPAGES} → 越界中断！</span>（这一步先于查表——408 爱考「先比长度再查表」）`}});
+    return;
+  }
+  // ① 拆分
+  phases.push({dot:0,run:()=>{bitsHTML(la,ob);renderTables();
+    document.getElementById('expl').innerHTML=`<b>① 拆分</b>：页大小 ${1<<ob}B → 偏移占低 ${ob} 位（log₂${1<<ob}=${ob}）。<br>页号 p = ${la} >> ${ob} = <b>${p}</b>，偏移 w = <b>${w}</b>。页号 ${p} < 页表长度 ${NPAGES}，不越界。`}});
+  // ② TLB
+  const ti=tlb.findIndex(e=>e.page===p);
+  if(ti>=0){
+    const f=tlb[ti].frame;
+    phases.push({dot:1,run:()=>{nHit++;renderTables({tlbHit:ti});
+      document.getElementById('expl').innerHTML=`<b>② 查 TLB</b>：并行比较所有表项…… <span class="ok">命中！</span>页号 ${p} → 块号 <b>${f}</b>。<br>不用访问内存中的页表，总访存 <b>1 次</b>（只取数据那次）。`}});
+    phases.push({dot:3,run:()=>{bitsHTML(la,ob,f);renderTables({tlbHit:ti});
+      document.getElementById('expl').innerHTML=`<b>④ 拼接</b>：物理地址 = 块号 ${f} × ${1<<ob} + ${w} = <b>${(f<<ob)|w}</b>（0x${((f<<ob)|w).toString(16).toUpperCase()}）。偏移不查表、原样搬过去。`}});
+    return;
+  }
+  phases.push({dot:1,run:()=>{nMiss++;renderTables({tlbScan:0});
+    document.getElementById('expl').innerHTML=`<b>② 查 TLB</b>：并行比较…… <span class="bad">未命中</span>（页号 ${p} 不在快表）。<br>只好去内存查页表——这就多了一次访存。`}});
+  // ③ 页表
+  const entry=pt[p];
+  if(entry.valid){
+    const f=entry.frame;
+    phases.push({dot:2,run:()=>{renderTables({ptHit:p});
+      document.getElementById('expl').innerHTML=`<b>③ 查页表</b>（第 1 次访存）：页表项 ${p} 有效位 = 1 → 块号 <b>${f}</b>。<br>同时把「${p}→${f}」装入 TLB${tlb.length>=2?'（FIFO 淘汰最老表项）':''}。`;
+      if(tlb.length>=2)tlb.shift(); tlb.push({page:p,frame:f}); renderTables({ptHit:p});}});
+    phases.push({dot:3,run:()=>{bitsHTML(la,ob,f);renderTables();
+      document.getElementById('expl').innerHTML=`<b>④ 拼接</b>：物理地址 = 块号 ${f} × ${1<<ob} + ${w} = <b>${(f<<ob)|w}</b>（0x${((f<<ob)|w).toString(16).toUpperCase()}）。<br>总访存 <b>2 次</b>：查页表 1 次 + 取数据 1 次。`}});
+  }else{
+    phases.push({dot:2,run:()=>{renderTables({ptFault:p});
+      document.getElementById('expl').innerHTML=`<b>③ 查页表</b>（第 1 次访存）：页表项 ${p} 有效位 = 0 → <span class="bad">缺页中断！</span>（内中断/异常）<br>CPU 陷入内核，OS 接管调页。`}});
+    phases.push({dot:2,run:()=>{
+      const f=freeFrames.length?freeFrames.shift():1;
+      pt[p]={frame:f,valid:1};
+      if(tlb.length>=2)tlb.shift(); tlb.push({page:p,frame:f});
+      nFault++;renderTables({ptHit:p});
+      document.getElementById('expl').innerHTML=`<b>③′ 缺页处理</b>：OS 从磁盘把页 ${p} 调入空闲块 <b>${f}</b>（若无空闲块则先运行页面置换算法淘汰一页，脏页还要写回磁盘）。<br>修改页表：有效位置 1、填块号；装入 TLB。然后<b>重新执行</b>刚才的访存指令。`;
+      phases[phases.length-1].frame=f;}});
+    phases.push({dot:3,run:function(){const f=pt[p].frame;bitsHTML(la,ob,f);renderTables();
+      document.getElementById('expl').innerHTML=`<b>④ 拼接</b>（指令重执行后）：物理地址 = 块号 ${f} × ${1<<ob} + ${w} = <b>${(f<<ob)|w}</b>（0x${((f<<ob)|w).toString(16).toUpperCase()}）。<br>缺页的代价 = 一次磁盘 I/O，比访存慢万倍以上——这就是为什么缺页率必须极低。`}});
+  }
+}
+
+function step(){
+  if(phase<phases.length){phases[phase].run();renderDots();phase++;}
+  document.getElementById('next').disabled=phase>=phases.length;
+}
+document.getElementById('go').addEventListener('click',()=>{
+  const s=document.getElementById('laddr').value.trim();
+  const la=s.toLowerCase().startsWith('0x')?parseInt(s,16):parseInt(s,10);
+  if(isNaN(la)||la<0){alert('地址格式不对：十进制或 0x 开头十六进制');return}
+  buildPhases(la);
+  document.getElementById('next').disabled=phases.length===0;
+  if(phases.length){step()}
+});
+document.getElementById('next').addEventListener('click',step);
+document.getElementById('rand').addEventListener('click',()=>{
+  const ob=offBits();
+  const valid=pt.map((e,i)=>e.valid?i:-1).filter(i=>i>=0);
+  const p=valid[Math.floor(Math.random()*valid.length)];
+  const la=(p<<ob)|Math.floor(Math.random()*(1<<ob));
+  document.getElementById('laddr').value='0x'+la.toString(16).toUpperCase();
+  document.getElementById('go').click();
+});
+document.getElementById('randfault').addEventListener('click',()=>{
+  const ob=offBits();
+  const invalid=pt.map((e,i)=>e.valid?-1:i).filter(i=>i>=0);
+  if(!invalid.length){alert('页表当前全部有效——把某页有效位改成 0 再试');return}
+  const p=invalid[Math.floor(Math.random()*invalid.length)];
+  const la=(p<<ob)|Math.floor(Math.random()*(1<<ob));
+  document.getElementById('laddr').value='0x'+la.toString(16).toUpperCase();
+  document.getElementById('go').click();
+});
+document.getElementById('reset').addEventListener('click',()=>{initPT();phases=[];phase=0;renderTables();renderDots();
+  document.getElementById('bitsview').innerHTML='<span class="legend">（开始转换后此处显示二进制拆分）</span>';
+  document.getElementById('expl').textContent='已重置。设置好后点「开始转换」。';
+  document.getElementById('next').disabled=true;});
+document.getElementById('psize').addEventListener('change',()=>{phases=[];phase=0;renderDots();
+  document.getElementById('expl').textContent='页大小已改，重新点「开始转换」。';});
+
+initPT();renderTables();renderDots();
+</script>
+</body>
+</html>

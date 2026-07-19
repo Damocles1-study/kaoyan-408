@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 概念卡库 · 操作系统</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:120px}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem;line-height:1.3}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  .layout{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+  @media (max-width:900px){.layout{grid-template-columns:1fr}}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:16px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .fbtn{font-size:.8rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .fbtn.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+  .fbtn .cnt{opacity:.7;font-size:.72rem}
+  .quizbtn{font-size:.8rem;border:1px solid var(--purple);background:var(--purple-soft);color:var(--purple);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .quizbtn:hover{filter:brightness(.95)}
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+  .vitem{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s}
+  .vitem:hover{border-color:var(--accent)}
+  .vitem.active{border-color:var(--accent);background:var(--accent-soft)}
+  .vitem .w{font-weight:bold}
+  .vitem .cn{font-size:.82rem;color:var(--muted);margin-top:2px}
+  .chip{float:right;font-size:.68rem;padding:1px 8px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+  aside{position:sticky;top:20px}
+  #panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;min-height:200px}
+  #panel .hint{color:var(--muted);font-size:.88rem;text-align:center;padding:40px 10px}
+  .wcard .head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .wcard .w{font-family:var(--serif);font-size:1.25rem;font-weight:bold}
+  .wcard .pos{font-size:.72rem;color:var(--blue);background:var(--blue-soft);padding:1px 8px;border-radius:999px}
+  .wcard .row{margin-top:10px;font-size:.87rem;padding:9px 11px;border-radius:8px}
+  .wcard .row b{font-size:.72rem;display:block;margin-bottom:2px;letter-spacing:.06em}
+  .r-def{background:var(--hl)} .r-def b{color:var(--hl-border)}
+  .r-conf{background:var(--red-soft)} .r-conf b{color:var(--red)}
+  .r-mem{background:var(--green-soft)} .r-mem b{color:var(--green)}
+  .r-exam{background:var(--blue-soft)} .r-exam b{color:var(--blue)}
+  .r-src{margin-top:10px;font-size:.76rem;color:var(--muted)}
+  .r-link{margin-top:4px;font-size:.76rem;color:var(--muted)}
+  .r-link a{color:var(--green)}
+  .reveal{display:block;margin:16px auto 4px;font-size:.85rem;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:6px 18px;cursor:pointer}
+  #panel .close{display:none}
+  @media (max-width:900px){
+    aside{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:0 8px 8px}
+    #panel{box-shadow:0 -6px 24px rgba(0,0,0,.18);max-height:60vh;overflow-y:auto;display:none}
+    #panel.open{display:block}
+    #panel .close{display:block;float:right;border:none;background:var(--line);border-radius:8px;padding:2px 10px;cursor:pointer;color:var(--ink)}
+  }
+  .selftest{font-size:.8rem;color:var(--muted);margin-bottom:14px}
+  .selftest b{color:var(--accent)}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
+  <header>
+    <h1>概念卡库 · 操作系统（42 张）</h1>
+    <div class="sub">严格限 408 考纲范围 · 每卡 = 定义 + 易混辨析 + 记忆法 + 408 考法 · 命脉章：进程线程 / PV / 内存管理</div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <section class="card">
+        <h2>卡片列表（点卡看详情）</h2>
+        <p class="selftest">自测法：看到卡名先<b>在心里说出定义和易混点</b>再点开验证；或点 🎲 随机抽卡盲测。相关模拟器：<a href="模拟器_页面置换.html" style="color:var(--green)">页面置换</a> · <a href="模拟器_地址转换.html" style="color:var(--green)">地址转换</a></p>
+        <div class="filters" id="filters"></div>
+        <div class="vgrid" id="vgrid"></div>
+      </section>
+    </main>
+    <aside>
+      <div id="panel"><div class="hint">👆 点击左侧任意卡片<br>详情会出现在这里</div></div>
+    </aside>
+  </div>
+
+  <footer>408 概念卡库 · 操作系统 · 由 Claude 生成并独立校核 · 知识点均在 408 考纲内</footer>
+</div>
+
+<script>
+const CH = {ov:"概述与中断",proc:"进程与调度",sync:"同步与死锁",mem:"内存管理",fs:"文件系统",io:"I/O 管理"};
+const K = [
+{ch:"ov",name:"内核态 vs 用户态",def:"CPU 两种特权级别；特权指令（I/O 指令、置时钟、开关中断、修改页表寄存器等）只能在内核态执行。",
+ mix:"访管指令（trap）本身在用户态执行——它是普通指令，作用是切入内核态。读时钟是非特权、置时钟是特权。用户态→内核态的唯一途径是中断/异常；内核态→用户态靠修改 PSW（特权操作）。",
+ mem:"能「管别人、管硬件」的都是特权指令。",
+ exam:"「下列哪些指令只能在内核态执行」选择题年年见。"},
+{ch:"ov",name:"中断 vs 异常",def:"外中断（狭义中断）来自 CPU 外部：时钟、I/O；内中断（异常）来自 CPU 内部：缺页、除 0、越界、trap。",
+ mix:"缺页属于异常，处理后要重新执行原指令；除 0/非法操作码则终止。时钟中断是外中断——「时钟中断是异常」是常见错误选项。外中断可屏蔽（可屏蔽/不可屏蔽两类），异常不可屏蔽。",
+ mem:"内因叫异常，外因叫中断。",
+ exam:"分类判断选择题高频，常与「哪个事件导致进程切换」连考。"},
+{ch:"ov",name:"系统调用",def:"操作系统提供给应用程序的接口，通过 trap（访管）指令陷入内核执行。",
+ mix:"系统调用的处理程序在内核态运行，但发起它的 trap 指令在用户态执行。库函数 ≠ 系统调用（printf 是库函数，底层封装 write）。「整个系统调用过程都在用户态完成」错。",
+ mem:"点菜的是你（用户态），做菜的是后厨（内核态）。",
+ exam:"执行过程中状态切换次序的选择题高频。"},
+{ch:"ov",name:"大内核 vs 微内核",def:"大内核把全部 OS 功能放内核态，性能高；微内核只留最基本功能（中断、调度、通信），其余作为用户态服务进程。",
+ mix:"微内核下驱动、文件系统在用户态，可靠性/可扩展性好，但用户态↔内核态切换频繁、性能低。判断「某功能在微内核的哪一态」是标准考法。",
+ mem:"微内核 = 只留骨架，其他外包。",
+ exam:"选择题中频，常与分层/模块化结构对比。"},
+{ch:"ov",name:"原语",def:"不可中断的原子操作，通常靠关中断/开中断实现，用于进程控制（创建、撤销、阻塞、唤醒）和 PV 操作。",
+ mix:"关中断是特权指令，故原语在内核态执行。「原语可以被更高优先级中断打断」错——不可分割正是它存在的意义。",
+ mem:"要么不做，要么一口气做完。",
+ exam:"概念判断选择题常客。"},
+
+{ch:"proc",name:"进程与 PCB",def:"进程 = 程序的一次执行过程，是资源分配的基本单位；PCB 是进程存在的唯一标志（PID、状态、寄存器上下文、资源清单）。",
+ mix:"程序是静态文件，进程是动态过程；一个程序可对应多个进程。进程映像 = 代码段 + 数据段 + PCB + 栈。PCB 常驻内存且只能被内核访问。",
+ mem:"PCB 是进程的「身份证 + 病历本」。",
+ exam:"「PCB 中包含哪些内容」选择题高频。"},
+{ch:"proc",name:"进程 vs 线程",def:"进程是资源分配的基本单位；线程是处理机调度的基本单位。",
+ mix:"同进程的线程共享地址空间、全局变量、打开的文件，但各有独立的栈、寄存器、状态。同进程内线程切换不切换地址空间（不刷新页表/TLB），开销远小于进程切换。用户级线程：一个阻塞则整个进程阻塞（内核不可见）；内核级线程可多核并行。",
+ mem:"进程分资源，线程抢 CPU。",
+ exam:"408 命脉级考点，选择题几乎年年考共享/独有清单。"},
+{ch:"proc",name:"进程五状态模型",def:"创建、就绪、运行、阻塞、终止。运行→阻塞（主动等资源）；阻塞→就绪（资源到位）；运行→就绪（时间片到/被抢占）。",
+ mix:"阻塞不能直接变运行（必须先回就绪）；就绪不能变阻塞（没上 CPU 谈不上等资源）。七状态模型的挂起是换出到外存，与阻塞正交（就绪挂起/阻塞挂起）。",
+ mem:"阻塞是缺资源，就绪是缺 CPU。",
+ exam:"「某事件后进程状态怎么变」选择题年年见。"},
+{ch:"proc",name:"进程通信（IPC）",def:"共享存储、消息传递（直接/间接信箱）、管道三大类。",
+ mix:"管道是半双工、FIFO 字节流：写满阻塞写者、读空阻塞读者；数据被读走就没了（不能多次读）。共享存储的互斥同步由用户程序自己负责，OS 只提供空间。",
+ mem:"管道 = 只能单向流的水管。",
+ exam:"管道特性判断选择题高频。"},
+{ch:"proc",name:"调度层次与不可调度时刻",def:"高级（作业）调度、中级（对换）调度、低级（进程）调度；低级调度频率最高。",
+ mix:"不能进行进程调度的时刻：① 处理中断的过程中；② 进程在操作系统内核临界区中；③ 原子操作过程中。注意：进程在普通临界区（如访问打印机）中是可以被调度走的——只是别的进程进不了该临界区。",
+ mem:"内核忙自己的事时不换人。",
+ exam:"408 考过原题的经典辨析，选择题高频。"},
+{ch:"proc",name:"FCFS / SJF / HRRN",def:"FCFS 先来先服务利于长作业；SJF 短作业优先平均等待时间最短但长作业饥饿；HRRN 响应比 =（等待+服务）/服务，两者折中。",
+ mix:"「SJF 平均周转时间最短」严格说需同时到达等前提；SJF 可能饥饿但不会死锁（饥饿是调度问题、死锁是互相等待）。HRRN 每次调度都要计算全部响应比，开销大。",
+ mem:"响应比：分子是「等+做」，分母是「做」。",
+ exam:"甘特图算周转时间，大题选择都常考。"},
+{ch:"proc",name:"RR / 优先级 / 多级反馈队列",def:"时间片轮转按片轮流；优先级分抢占/非抢占；多级反馈队列 = 优先级 + RR 综合：新进程入最高队，用完时间片降级，低队只有高队空才运行。",
+ mix:"时间片太大退化成 FCFS，太小则切换开销占比过高。多级反馈队列对短作业友好，但源源不断的短作业可使长作业饥饿。抢占式优先级在更高优先级进程到达时立即剥夺。",
+ mem:"多级反馈 = 新人从贵宾道排起，越用越降级。",
+ exam:"计算完成时间/画调度序列，年年见。"},
+{ch:"proc",name:"周转时间计算",def:"周转 = 完成 − 到达；带权周转 = 周转/服务（≥1）；等待 = 周转 − 服务。",
+ mix:"平均带权周转时间是「各带权周转的平均」，不是「总周转/总服务」。响应时间 = 首次获得 CPU − 到达。抢占调度画甘特图别忘中途切换点。",
+ mem:"一张甘特图解决一切，先画再算。",
+ exam:"计算题必考套路，大题选择都有。"},
+{ch:"proc",name:"进程切换 vs 模式切换",def:"模式切换 = 用户态↔内核态，进程不变；进程切换 = 换 PCB、换地址空间，必然发生在内核态。",
+ mix:"系统调用返回后往往还是原进程继续跑——发生了两次模式切换、零次进程切换。中断处理一定引起模式切换，但不一定引起进程切换。进程切换必伴随模式切换（反之不然）。",
+ mem:"换衣服（模式）不等于换人（进程）。",
+ exam:"辨析选择题高频。"},
+
+{ch:"sync",name:"临界区四原则",def:"空闲让进、忙则等待、有限等待、让权等待。",
+ mix:"单标志法（轮流制）违反空闲让进；双标志先检查违反忙则等待；Peterson 算法满足前三条但不满足让权等待（忙等）。关中断法只适用单处理机。",
+ mem:"「空忙有让」四字诀。",
+ exam:"判断某软件方法违反哪条原则，选择题高频。"},
+{ch:"sync",name:"信号量与 PV 操作",def:"wait(S)（P）与 signal(S)（V）是原子原语。互斥信号量初值 1；同步信号量初值 0（或资源初始数量）。",
+ mix:"S<0 时 |S| = 排队等待的进程数；S 的值 = 剩余可用资源数。互斥的 P、V 出现在同一进程一前一后；同步（前驱关系）的 P、V 分处两个进程。P 操作可能阻塞自己，V 操作唤醒别人、自己绝不阻塞。",
+ mem:"P 拿一个，V 还一个；先 P 后用，用完就 V。",
+ exam:"PV 大题 408 几乎年年一道，信号量初值设置是第一得分点。"},
+{ch:"sync",name:"生产者-消费者",def:"mutex=1（缓冲区互斥）、empty=n（空位）、full=0（产品数）；生产者 P(empty)→P(mutex)，消费者 P(full)→P(mutex)。",
+ mix:"⚠️ 两个 P 的顺序不能反：先 P(mutex) 再 P(empty) 时，缓冲区满的生产者会「抱着锁睡觉」→ 死锁。两个 V 的顺序无所谓（V 不阻塞）。多生产者时 mutex 不能省。",
+ mem:"先问有没有位置（同步），再抢钥匙（互斥）。",
+ exam:"PV 大题母题，一切变体（水果盘、理发师）都从它变形。"},
+{ch:"sync",name:"读者-写者 & 哲学家",def:"读者写者：读共享、写互斥；count 计读者数，第一个读者上锁、最后一个解锁。哲学家：防死锁需破坏循环等待。",
+ mix:"count 本身是共享变量，也要用 mutex 保护。读者优先会饿死写者；加 w 信号量可实现写优先/公平。哲学家防死锁三招：最多 4 人同坐、拿两筷做成原子、奇偶号先后手不同。",
+ mem:"第一个进门开灯，最后一个出门关灯。",
+ exam:"大题第二热门模板，变体常考。"},
+{ch:"sync",name:"管程",def:"共享数据 + 操作它的过程封装成一体，任一时刻至多一个进程在管程内执行；条件变量支持 wait/signal。",
+ mix:"条件变量与信号量的区别：条件变量没有值，signal 时若无等待者则信号丢失（信号量的 V 会累积计数）。管程的互斥由编译器/机制自动保证，不用程序员写 P V。",
+ mem:"管程 = 自带门禁的资源管理处。",
+ exam:"概念辨析选择题，偶考管程写法大题。"},
+{ch:"sync",name:"死锁四个必要条件",def:"互斥、占有并等待（请求与保持）、不可剥夺、循环等待——同时成立才可能死锁。",
+ mix:"循环等待是必要不充分条件：资源有多个实例时，有环不一定死锁。死锁 vs 饥饿：死锁必是一圈进程互相等待（至少两个），饥饿可以只有一个进程；死锁进程必处阻塞态，饥饿进程可能在就绪态干等。",
+ mem:"「互占不循」四条缺一不可。",
+ exam:"选择题高频，常问「破坏哪个条件」对应哪种策略。"},
+{ch:"sync",name:"死锁预防·避免·检测",def:"预防 = 静态破坏四条件之一；避免 = 动态用银行家算法保持安全状态；检测+解除 = 资源分配图化简、剥夺/撤销。",
+ mix:"不安全状态 ≠ 已死锁，只是可能死锁（死锁必在不安全状态中）；安全序列可能有多个，找到一个即安全。银行家算法需要预知各进程最大资源需求——这是它实用性差的原因。按序申请资源破坏的是循环等待。",
+ mem:"预防一刀切，避免走钢丝，检测事后算账。",
+ exam:"银行家算法手算安全序列，大题选择都常考。"},
+{ch:"sync",name:"死锁资源数计算",def:"n 个进程各最多需 k 个同类资源时，系统不死锁的最少资源数 = n(k−1)+1。",
+ mix:"逆向问法「m 个资源最多支持几个进程」解不等式即可。各进程需求不同时：资源数 ≥ Σ(需求_i − 1) + 1 则必不死锁。",
+ mem:"每人差一个就卡死，再多一个总有人能跑完。",
+ exam:"选择题几乎年年见的送分题，公式必须秒写。"},
+
+{ch:"mem",name:"连续分配与碎片",def:"动态分区算法：首次适应、最佳适应、最坏适应、邻近适应；动态分区产生外部碎片，固定分区产生内部碎片。",
+ mix:"最佳适应听着好，实际外部碎片最多（越切越碎）；首次适应综合表现通常最好。紧凑（拼接）可消外碎片，但需要动态重定位（基址寄存器）支持。",
+ mem:"内碎片在分区「内」浪费，外碎片是分区「间」的缝。",
+ exam:"给请求序列问分配到哪个分区，选择题高频。"},
+{ch:"mem",name:"分页存储基础",def:"内存和进程都按固定大小划分（页框/页）；逻辑地址 = 页号 + 页内偏移；页表记录页号→块号。",
+ mix:"地址拆分按二进制：页大小 4KB → 偏移占 12 位，页号 = 逻辑地址高位。分页有内部碎片（最后一页装不满）、无外部碎片。页表寄存器 PTBR 存页表起址，进程切换时更换。",
+ mem:"偏移位数 = log₂(页大小)，先算这个再谈别的。",
+ exam:"地址转换计算年年考 → 去「地址转换模拟器」亲手点。"},
+{ch:"mem",name:"页表项与页表大小",def:"页表项 = 块号 + 有效位 + 访问位 + 修改位 + 保护位；页表大小 = 页表项数 × 项大小。",
+ mix:"页表项数由逻辑地址空间决定（页数），块号位数由物理内存决定——两头别搞混。页表项大小按位数上取整到字节。「页内偏移也存在页表里」错——偏移直接拼接，不查表。",
+ mem:"逻辑管「几行」，物理管「每行多宽」。",
+ exam:"求页表占用空间的计算题高频易错。"},
+{ch:"mem",name:"TLB 与有效访问时间",def:"TLB（快表）是页表项的高速缓存，相联存储器按内容并行查找。EAT = 命中率×(t_TLB+t_mem) + (1−命中率)×(t_TLB+2·t_mem)。",
+ mix:"TLB 命中则总共只访存 1 次；未命中要先访存查页表再访存取数（2 次）。题目若说「TLB 与慢表同时查找」则未命中时不重复计 TLB 时间。TLB 是硬件，进程切换时要刷新。",
+ mem:"快表命中省一次访存。",
+ exam:"EAT 计算选择题高频，注意题干「同时/先后查找」措辞。"},
+{ch:"mem",name:"二级页表",def:"页表本身再分页；逻辑地址 = 一级页号 + 二级页号 + 页内偏移；一级页表（页目录）常驻内存。",
+ mix:"多级页表的目的是页表可离散存放、且可不全部调入内存——不是为了快（访存次数反而多一次：n 级页表要 n+1 次访存取数）。各级页表大小不得超过一个页面。",
+ mem:"给页表建目录，目录不许超一页。",
+ exam:"划分逻辑地址结构的计算题高频。"},
+{ch:"mem",name:"分页 vs 分段",def:"页是物理划分、定长、对用户透明、地址一维；段是逻辑划分、变长、用户可见、地址二维（段名+段内址）。",
+ mix:"分段利于共享和保护（按逻辑模块），有外部碎片；分页无外碎片有内碎片。越界检查：分页只查页号 < 页表长度；分段还要查段内偏移 < 段长。段页式 = 先分段、段内再分页，地址 = 段号+页号+偏移，访存 3 次（段表+页表+数据）。",
+ mem:"页管物理省空间，段管逻辑好共享。",
+ exam:"两者辨析选择题高频。"},
+{ch:"mem",name:"虚拟内存与请求分页",def:"基于局部性原理：部分装入、按需调页、必要时置换。页表项增加有效位/访问位/修改位。",
+ mix:"缺页中断是内中断（异常），一条指令执行中可产生多次缺页（操作数跨页）。虚存最大容量由计算机地址位数决定，不是「内存+外存容量之和」。虚拟内存的实现必须有硬件支持（页表机制+中断机构+地址变换）。",
+ mem:"用得着再搬进来，用不着先住外存。",
+ exam:"概念判断选择题高频。"},
+{ch:"mem",name:"页面置换算法",def:"OPT 淘汰将来最久不用（理论最优不可实现）；FIFO 淘汰最早进入；LRU 淘汰最久未使用；CLOCK 用使用位近似 LRU。",
+ mix:"只有 FIFO 会 Belady 异常（页框多缺页反增）；LRU 是栈式算法不会。LRU 手算技巧：从当前位置向左回看。改进 CLOCK 优先淘汰（访问0,修改0）。缺页时不一定发生置换（有空闲块就不换）。",
+ mem:"去「页面置换模拟器」亲手点一遍，比背表格牢。",
+ exam:"手算缺页次数年年考。"},
+{ch:"mem",name:"页框分配与抖动",def:"分配策略 = 固定/可变分配 × 局部/全局置换（固定+全局不存在）；抖动 = 页面频繁换入换出，CPU 利用率骤降。",
+ mix:"发现「CPU 利用率低、磁盘利用率高」→ 正在抖动，此时增加多道程序度反而更糟，应减少并发数或增加页框。工作集 = 时间窗口内实际访问的页集合，分配页框数应不小于工作集大小。",
+ mem:"人多粥少就抖，减人或加粥。",
+ exam:"场景判断选择题经典。"},
+
+{ch:"fs",name:"文件物理结构三种",def:"连续分配（随机访问快、不便增长）；链接分配（隐式链接逐块找 / 显式链接 FAT）；索引分配（每文件一索引块）。",
+ mix:"FAT 是显式链接：整张表常驻内存，查找链不用访盘，且支持相对随机的访问。隐式链接访问第 i 块要读 i 次盘。连续分配删除文件后产生外部碎片。",
+ mem:"连续像数组，链接像链表，索引像页表。",
+ exam:"「访问第 i 块需几次访盘」计算选择高频。"},
+{ch:"fs",name:"UNIX 混合索引",def:"inode 含若干直接地址 + 一级/二级/三级间接地址；最大文件长度 = (直接块数 + k + k² + k³) × 块大小，k = 每块可存地址数。",
+ mix:"算最大文件长度别忘直接块；读文件某偏移的访盘次数 = 间接级数 + 1（间址块本身也要读）。inode 在打开文件时调入内存。",
+ mem:"直接块是口袋，间址块是柜子、仓库、仓库群。",
+ exam:"最大文件大小/访盘次数计算，408 大题选择都爱考。"},
+{ch:"fs",name:"目录、硬链接与软链接",def:"目录项 = 文件名 + inode 号。硬链接 = 多个目录项指向同一 inode（计数+1）；软链接 = 存放路径字符串的新文件。",
+ mix:"删除硬链接只是计数减 1，计数为 0 才真正删除文件；删除源文件后软链接悬空失效。硬链接不能跨文件系统、通常不能指向目录；软链接都可以，但访问要多读一次（先读链接文件取路径）。",
+ mem:"硬链接是同一人多个名字，软链接是写着地址的便条。",
+ exam:"链接计数变化选择题高频。"},
+{ch:"fs",name:"空闲空间管理",def:"空闲表、空闲链表、位示图、成组链接四法；位示图 1 位对应 1 块。",
+ mix:"位示图计算：盘块号 = 字号×字长 + 位号（注意题目从 0 还是 1 编号，两种口径结果差 1）。成组链接是 UNIX 用法，超级块存第一组。",
+ mem:"位示图 = 一张座位表，1 占 0 空（或反之，看题目定义）。",
+ exam:"位示图字号位号互算，选择题高频。"},
+{ch:"fs",name:"磁盘调度算法",def:"FCFS、SSTF（最短寻道优先）、SCAN（电梯，到头才回）、LOOK（到最远请求即回）、C-SCAN（单向服务，回程不停）。",
+ mix:"SSTF 平均寻道短但两端请求饥饿；SCAN 与 LOOK 的区别（到不到磁盘边缘）、C-SCAN 回程不服务是采分细节。做题先把请求按柱面排成数轴再模拟。",
+ mem:"电梯来回扫，C 型单向转。",
+ exam:"算总寻道距离/服务序列，年年见。"},
+{ch:"fs",name:"磁盘存取时间",def:"存取时间 = 寻道时间 + 旋转延迟 + 传输时间；平均旋转延迟 = 转半圈的时间 = 1/(2r)。",
+ mix:"转速 rpm 先换算成每秒转数再算；传输时间 = 数据量/磁道容量 × 每转时间。减少旋转延迟的技巧：交替编号、错位命名。磁盘格式化后有效容量变小（间隙与校验开销）。",
+ mem:"找道→等转→读写，三段时间分开算。",
+ exam:"计算题高频，转速换算是易错点。"},
+
+{ch:"io",name:"I/O 控制方式四种",def:"程序查询（忙等）→ 中断驱动（每字符/字一次中断）→ DMA（每块一次中断）→ 通道（每组块一次中断）。",
+ mix:"DMA 数据传输不经过 CPU（直接内存↔设备），但初始化和结束处理仍需 CPU。大量数据时中断方式的 CPU 开销高于 DMA。通道是能执行通道程序的「小 CPU」，进一步解放主 CPU。",
+ mem:"CPU 参与度递减：全程盯→打断我→搬完叫我→整批完再叫我。",
+ exam:"算中断次数/CPU 占用时间，选择题高频。"},
+{ch:"io",name:"缓冲区计算",def:"单缓冲每块处理耗时 = max(C, T) + M；双缓冲 = max(C+M, T)。（T=输入，M=传送，C=计算）",
+ mix:"两个公式记反是重灾区：单缓冲时传送 M 与输入 T 不能并行（同一缓冲区），双缓冲可以。缓冲区设在内存。缓冲池 = 多个缓冲区共享。",
+ mem:"双缓冲「边倒边灌」，单缓冲「倒完再灌」。",
+ exam:"计算处理 n 块数据总时间，选择题常考。"},
+{ch:"io",name:"SPOOLing 假脱机",def:"用磁盘上的输入井/输出井 + 输入输出进程，把独占设备改造成逻辑上的共享设备（如打印机）。",
+ mix:"SPOOLing 需要多道程序技术支持，但不需要真的多台设备。井在磁盘上不在内存。用户进程的「打印」只是把数据送入输出井，物理打印由 SPOOLing 系统统一调度。",
+ mem:"每人发一台「虚拟打印机」，实际排队一台真机。",
+ exam:"概念判断选择题常客。"},
+{ch:"io",name:"I/O 层次与设备独立性",def:"用户层 I/O → 设备独立性软件（逻辑设备表 LUT）→ 设备驱动程序 → 中断处理程序 → 硬件。",
+ mix:"设备独立性 = 程序用逻辑设备名，映射到物理设备由 LUT 完成；换物理设备不用改程序。驱动程序与硬件相关，每类设备一个。「某功能属于哪一层」是标准考法（如缓冲管理在设备独立层）。",
+ mem:"越往上越抽象，越往下越懂硬件。",
+ exam:"层次归属选择题高频。"},
+{ch:"io",name:"设备分配",def:"按独占/共享/虚拟设备区分策略；数据结构：设备控制表 DCT、控制器表 COCT、通道表 CHCT、系统设备表 SDT。",
+ mix:"独占设备静态分配才安全（动态易死锁）；共享设备（磁盘）动态分配。安全分配方式：申请后阻塞直到分到——牺牲效率换安全。",
+ mem:"独占的慎重给，共享的排队用。",
+ exam:"概念选择题中频。"}
+];
+
+/* ===== 渲染（与其余卡库同模板） ===== */
+const panel=document.getElementById('panel');
+const vg=document.getElementById('vgrid');
+const isMobile=()=>window.innerWidth<=900;
+let curFilter='all', curIdx=-1;
+
+function cardHTML(d){
+  return `<div class="wcard">
+    <div class="head"><span class="w">${d.name}</span><span class="pos">${CH[d.ch]}</span></div>
+    <div class="row r-def"><b>一句话定义</b>${d.def}</div>
+    <div class="row r-conf"><b>易混辨析（408 命脉）</b>${d.mix}</div>
+    <div class="row r-mem"><b>怎么记</b>${d.mem}</div>
+    <div class="row r-exam"><b>408 考法</b>${d.exam}</div>
+    ${d.src?`<div class="r-src">📦 提炼自：${d.src}</div>`:''}
+    <div class="r-link">🔗 真题出处：待错题页生成后回链点亮</div>
+  </div>`;
+}
+function showCard(i){
+  const d=K[i]; curIdx=i;
+  document.querySelectorAll('.vitem').forEach(e=>e.classList.toggle('active', +e.dataset.i===i));
+  panel.innerHTML=`<button class="close" onclick="panel.classList.remove('open')">✕</button>`+cardHTML(d);
+  if(isMobile())panel.classList.add('open');
+}
+function quiz(){
+  const pool=K.map((d,i)=>[d,i]).filter(([d])=>curFilter==='all'||d.ch===curFilter);
+  const [d,i]=pool[Math.floor(Math.random()*pool.length)];
+  curIdx=-1;
+  document.querySelectorAll('.vitem').forEach(e=>e.classList.remove('active'));
+  panel.innerHTML=`<button class="close" onclick="panel.classList.remove('open')">✕</button>
+  <div class="wcard"><div class="head"><span class="w">🎲 ${d.name}</span><span class="pos">${CH[d.ch]}</span></div>
+  <div class="hint" style="padding:20px 6px;color:var(--muted);font-size:.85rem;text-align:center">先在心里说出<b>定义</b>和<b>易混点</b>……</div>
+  <button class="reveal" onclick="showCard(${i})">想好了，看答案</button>
+  <button class="reveal" style="background:none;border-color:var(--line);color:var(--muted)" onclick="quiz()">换一张</button></div>`;
+  if(isMobile())panel.classList.add('open');
+}
+function renderGrid(f){
+  curFilter=f; vg.innerHTML='';
+  K.forEach((d,i)=>{
+    if(f!=='all'&&d.ch!==f)return;
+    const div=document.createElement('div');div.className='vitem';div.dataset.i=i;
+    if(i===curIdx)div.classList.add('active');
+    div.innerHTML=`<span class="chip">${CH[d.ch]}</span><div class="w">${d.name}</div><div class="cn">${d.def.length>38?d.def.slice(0,38)+'…':d.def}</div>`;
+    div.addEventListener('click',()=>{showCard(i);if(!isMobile())window.scrollTo({top:0,behavior:'smooth'})});
+    vg.appendChild(div);
+  });
+}
+const fdiv=document.getElementById('filters');
+const counts={};K.forEach(d=>counts[d.ch]=(counts[d.ch]||0)+1);
+const fs=[['all','全部 '+K.length]].concat(Object.keys(CH).map(k=>[k,CH[k]+' '+counts[k]]));
+fs.forEach(([k,label],j)=>{
+  const b=document.createElement('button');b.className='fbtn'+(j===0?' on':'');
+  b.innerHTML=label.replace(/ (\d+)$/,' <span class="cnt">$1</span>');
+  b.addEventListener('click',()=>{document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderGrid(k)});
+  fdiv.appendChild(b);
+});
+const qb=document.createElement('button');qb.className='quizbtn';qb.textContent='🎲 随机抽卡自测';
+qb.addEventListener('click',quiz);fdiv.appendChild(qb);
+renderGrid('all');
+</script>
+</body>
+</html>
