@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 算法题训练场 · C 代码模板与默写</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --code-bg:#2b2925; --code-ink:#e8e4dc; --code-cmt:#9a8f7a;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    --mono:"SF Mono","Menlo",Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+      --code-bg:#171512; --code-ink:#e8e4dc; --code-cmt:#8a8070;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:60px}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:14px}
+
+  .strategy{font-size:.9rem}
+  .strategy li{margin:6px 0 6px 18px}
+  .strategy b{color:var(--accent)}
+  .strategy .em{color:var(--red);font-weight:700}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .fbtn{font-size:.8rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .fbtn.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+
+  .algo{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
+  .algo .head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;flex-wrap:wrap}
+  .algo .head:hover{background:var(--accent-soft)}
+  .algo .head .nm{font-weight:700}
+  .algo .head .arrow{margin-left:auto;color:var(--muted);transition:transform .2s}
+  .algo.open .head .arrow{transform:rotate(90deg)}
+  .tagc{font-size:.68rem;padding:1px 8px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+  .tagm{font-size:.68rem;padding:1px 8px;border-radius:999px;background:var(--red-soft);color:var(--red)}
+  .algo .body{display:none;padding:0 16px 16px;border-top:1px dashed var(--line)}
+  .algo.open .body{display:block}
+  .blk{margin-top:12px;font-size:.88rem;padding:10px 12px;border-radius:8px}
+  .blk b{font-size:.72rem;display:block;margin-bottom:3px;letter-spacing:.06em}
+  .b-q{background:var(--blue-soft)} .b-q b{color:var(--blue)}
+  .b-idea{background:var(--green-soft)} .b-idea b{color:var(--green)}
+  .b-trap{background:var(--red-soft)} .b-trap b{color:var(--red)}
+  .b-src{font-size:.76rem;color:var(--muted);margin-top:10px}
+
+  .codewrap{margin-top:12px;border-radius:10px;overflow:hidden}
+  .codebar{display:flex;align-items:center;gap:10px;background:var(--code-bg);padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .codebar .t{color:var(--code-cmt);font-size:.75rem;font-family:var(--mono)}
+  .mwbtn{margin-left:auto;font-size:.75rem;border:1px solid var(--code-cmt);background:none;color:var(--code-ink);border-radius:6px;padding:2px 10px;cursor:pointer}
+  .mwbtn:hover{border-color:#fff}
+  pre.code{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:.82rem;line-height:1.6;padding:12px 0;overflow-x:auto;margin:0}
+  .cl{display:block;padding:0 14px;white-space:pre;cursor:default}
+  .cl .no{display:inline-block;width:26px;color:var(--code-cmt);user-select:none;font-size:.72rem}
+  .cl .cmt{color:var(--code-cmt)}
+  .cl.masked{cursor:pointer}
+  .cl.masked .src{visibility:hidden}
+  .cl.masked{background:repeating-linear-gradient(90deg,transparent 0 40px,rgba(255,255,255,.04) 40px 41px)}
+  .cl.masked:hover{background:rgba(255,255,255,.07)}
+  .cl.masked::after{content:"点击揭示这一行";color:var(--code-cmt);font-size:.72rem;position:absolute}
+  .cl{position:relative}
+  .cl.masked::after{left:60px;top:0}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
+  <header>
+    <h1>算法题训练场（14 个模板）</h1>
+    <div class="sub">408 算法设计题（通常为第 41 题）的 C 语言弹药库 · 提炼自 826 代码默写手册，已转 408/王道 C 口径 · 每个模板可开「默写模式」逐行自测</div>
+  </header>
+
+  <section class="card">
+    <h2>先读：408 算法题得分学</h2>
+    <ul class="strategy">
+      <li><b>三段式作答，三段都给分</b>：① 算法思想（文字说清套路）② 代码（C / C++，规范伪代码通常也可）③ 时空复杂度。<span class="em">复杂度是白给的分，永远别忘写。</span></li>
+      <li><b>暴力保底</b>：想不出最优解就写 O(n²) 暴力——408 评分通常仍给大部分分数；<span class="em">空着才是 0 分</span>。先写个暴力占住分，有时间再优化。</li>
+      <li><b>先声明再动手</b>：结点/结构体定义、变量含义、边界假设先写清，阅卷人看得懂才有分。</li>
+      <li><b>套路优先</b>：408 算法题 80% 落在下面 14 个模板的变形上——反转、双指针、归并、划分、树递归、层次队列。先认出套路，再改模板。</li>
+      <li><b>默写训练法</b>：点开模板 → 读懂思路 → 开「默写模式」→ 在纸上写 → 逐行点击核对。合上书能写出【默】级模板，才算过关。</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>模板列表（点标题展开）</h2>
+    <div class="filters" id="filters"></div>
+    <div id="list"></div>
+  </section>
+
+  <footer>408 算法题训练场 · 由 Claude 生成并独立校核（826 代码手册提炼 + 408 C 口径改写）</footer>
+</div>
+
+<script>
+const TAGS={arr:"顺序表·数组",list:"链表",tree:"二叉树",graph:"图",ss:"查找·排序",str:"串"};
+const A=[
+{tag:"arr",must:1,name:"三步反转法（循环左移）",
+ q:"将数组 A[0..n-1] 循环左移 p 位，要求时间 O(n)、空间 O(1)。（408-2010 原题套路）",
+ idea:"记数组为 ab（a 是前 p 个）。目标是 ba。三步：先各自反转得 aᴿbᴿ，再整体反转得 (aᴿbᴿ)ᴿ = ba。写一个 Reverse 辅助函数复用三次。",
+ code:`void Reverse(int A[], int l, int r){      // 反转 A[l..r]
+    for(int i=l, j=r; i<j; i++, j--){
+        int t=A[i]; A[i]=A[j]; A[j]=t;
+    }
+}
+void LeftShift(int A[], int n, int p){    // 循环左移 p 位
+    Reverse(A, 0, p-1);                   // ① 反转前 p 个
+    Reverse(A, p, n-1);                   // ② 反转后 n-p 个
+    Reverse(A, 0, n-1);                   // ③ 整体反转
+}                                         // 时间 O(n) 空间 O(1)`,
+ trap:"暴力逐位移动是 O(n·p)，只能拿部分分；辅助数组法 O(n)/O(n) 分数也略低——三步反转才是满分解。答题时把「为什么三步反转正确」用 ab→ba 一行话写出来。",
+ src:"826 第2章向量（unshift 思想）→ 408-2010 真题经典解法"},
+
+{tag:"arr",must:1,name:"最大连续子序列和（Kadane）",
+ q:"求整数数组中和最大的连续子序列之和，要求 O(n)。（826-2018 算法题满分版）",
+ idea:"一路扫过去维护两个量：cur = 以当前元素结尾的最大和；best = 全局最大。关键决策一句话：前面攒下的 cur 若为正就带着走，为负就果断丢掉从头再来。",
+ code:`int MaxSub(int A[], int n){               // 非空子序列版
+    int best=A[0], cur=A[0];
+    for(int k=1; k<n; k++){
+        cur  = (cur>0) ? cur+A[k] : A[k]; // 前缀为正才带着走
+        best = (cur>best) ? cur : best;   // 全局择优
+    }
+    return best;
+}                                         // 时间 O(n) 空间 O(1)`,
+ trap:"「允许空序列」时 best 初值取 0；「必须非空」时初值取 A[0]（全负数组答案是最大的那个负数，初值 0 会答错）。这是 826 判断题也钉过的坑。",
+ src:"826 第1章 gs_LS【默】级 → 改写为 C"},
+
+{tag:"arr",must:0,name:"双指针原地去重 / 按条件搬移",
+ q:"有序数组原地删除重复元素，返回新长度；或把所有奇数移到偶数前面。",
+ idea:"快慢双指针：快指针 j 一路扫描负责「看」，慢指针 i 停在已处理区末尾负责「放」。满足条件的元素才搬到 i 的位置。整个数组每个元素只被看一次。",
+ code:`int Uniquify(int A[], int n){             // 有序数组去重
+    int i=0;                              // A[0..i] 是无重前缀
+    for(int j=1; j<n; j++)
+        if(A[j] != A[i])                  // 遇到新值
+            A[++i] = A[j];                // 收进前缀
+    return i+1;                           // 新长度
+}                                         // 时间 O(n) 空间 O(1)`,
+ trap:"逆命题注意：无序数组去重没有 O(n)/O(1) 通用解（要么先排序，要么用散列换空间）。「已处理区间的含义」写进注释是采分点。",
+ src:"826 第2章 uniquify 双指针【默】级"},
+
+{tag:"list",must:1,name:"单链表反转（三指针迭代）",
+ q:"原地反转单链表，返回新表头。几乎所有链表大题的零件。",
+ idea:"三个指针滚动前进：pre（已反转段头）、p（当前）、nxt（先存好的后继）。每步只做一件事——把 p 的箭头掉头指向 pre，然后三人整体右移一格。",
+ code:`LNode* Reverse(LNode *head){              // 不带头结点
+    LNode *pre=NULL, *p=head, *nxt;
+    while(p){
+        nxt = p->next;                    // ① 先存后继，防断链
+        p->next = pre;                    // ② 箭头掉头
+        pre = p;  p = nxt;                // ③ 整体右移
+    }
+    return pre;                          // 新表头 = 原表尾
+}                                         // 时间 O(n) 空间 O(1)`,
+ trap:"顺序不能乱：不先存 nxt 就掉头，后半条链直接丢失。带头结点版本：对 head->next 段做同样操作后重挂到头结点。",
+ src:"826 第3章列表操作思想 → 408 高频零件"},
+
+{tag:"list",must:1,name:"快慢指针：找中点 / 判环",
+ q:"一趟扫描找单链表中点；或判断链表是否有环。（408-2019 重排题的第一步就是找中点）",
+ idea:"快指针一次走两步、慢指针一次走一步：快的到尾，慢的恰在中点；若有环，两者必在环内相遇（追及问题）。",
+ code:`LNode* Middle(LNode *head){               // 快2慢1找中点
+    LNode *slow=head, *fast=head;
+    while(fast && fast->next){            // 偶数长停前半末尾
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow;
+}
+int HasCycle(LNode *head){                // 判环:相遇则有环
+    LNode *slow=head, *fast=head;
+    while(fast && fast->next){
+        slow=slow->next; fast=fast->next->next;
+        if(slow==fast) return 1;
+    }
+    return 0;
+}`,
+ trap:"while 条件必须同时查 fast 与 fast->next（否则空指针）。408-2019 真题（L1→Ln→L2→Ln-1…重排）= 找中点 + 反转后半 + 交替合并，三个模板拼装。",
+ src:"826 链表专题 → 408-2019 真题拆解"},
+
+{tag:"list",must:1,name:"合并两个有序链表 / 数组",
+ q:"把两个递增链表合并为一个递增链表（或两个有序数组归并到 C）。归并排序的核心零件。",
+ idea:"双指针各指一条链，谁小取谁挂到结果尾部；一条取完后把另一条整段接上。链表用哑结点（dummy）省去头部特判。",
+ code:`LNode* Merge(LNode *a, LNode *b){
+    LNode dummy, *tail=&dummy;            // 哑结点免特判
+    while(a && b){
+        if(a->data <= b->data){           // ≤ 保稳定
+            tail->next=a; a=a->next;
+        }else{
+            tail->next=b; b=b->next;
+        }
+        tail = tail->next;
+    }
+    tail->next = a ? a : b;               // 接上剩余整段
+    return dummy.next;
+}                                         // 时间 O(m+n)`,
+ trap:"取 ≤ 而非 < 才稳定（相等时先取前者）。数组版是同一套双指针，尾部两个 while 收残段。「合并 + 反转」「合并 + 去重」都是它的变形。",
+ src:"826 第2/3章 merge【默】级"},
+
+{tag:"ss",must:1,name:"二分查找（标准闭区间版）",
+ q:"有序数组查找 x；变形：找第一个 ≥ x 的位置、找插入位置。",
+ idea:"闭区间 [lo, hi] 不变式：答案若存在必在区间内。三分支：命中返回；A[mid] 偏小舍左半；偏大舍右半。区间为空（lo>hi）即不存在。",
+ code:`int BinSearch(int A[], int n, int x){
+    int lo=0, hi=n-1;                     // 闭区间 [lo,hi]
+    while(lo <= hi){                      // ≤ :区间非空
+        int mid = lo + (hi-lo)/2;         // 防溢出写法
+        if(A[mid] == x) return mid;
+        else if(A[mid] < x) lo = mid+1;   // 舍掉左半含mid
+        else hi = mid-1;                  // 舍掉右半含mid
+    }
+    return -1;
+}                                         // 时间 O(log n)`,
+ trap:"写法必须配套：闭区间 ⇒ lo<=hi ⇒ mid±1，三处错一处就死循环/漏元素。408-2011（两序列中位数）、2013（主元素）都可用二分/分治思想升级拿满分。",
+ src:"826 第2章 binSearch 版本C【默】级"},
+
+{tag:"ss",must:1,name:"快排划分 Partition（挖坑法）",
+ q:"一趟划分：小于枢轴的放左边、大于的放右边，枢轴归位。快排、第 k 小、荷兰国旗类题的核心。",
+ idea:"取首元素为枢轴挖出第一个坑；右指针从右向左找小者填左坑，左指针从左向右找大者填右坑，交替进行；指针相遇处填回枢轴——它已在最终位置。",
+ code:`int Partition(int A[], int lo, int hi){
+    int pivot = A[lo];                    // 挖出第一个坑
+    while(lo < hi){
+        while(lo<hi && A[hi]>=pivot) hi--;
+        A[lo] = A[hi];                    // 小者填左坑
+        while(lo<hi && A[lo]<=pivot) lo++;
+        A[hi] = A[lo];                    // 大者填右坑
+    }
+    A[lo] = pivot;                        // 枢轴归位
+    return lo;                            // 最终位置
+}`,
+ trap:"内层 while 必须带 lo<hi 防越界。求「第 k 小」：对 Partition 返回值与 k 比较，只递归一侧，平均 O(n)——比全排序 O(n log n) 高一档，是常见的满分/部分分分水岭。",
+ src:"826 速查表 + 排序模拟器同款挖坑法"},
+
+{tag:"ss",must:1,name:"堆：下滤 + Floyd 建堆",
+ q:"数组建大顶堆；输出前 k 大；堆排序。",
+ idea:"下滤：结点与较大孩子比，小则交换下沉，直到堆序满足。建堆：从最后一个分支结点 n/2-1 倒着逐个下滤——代价 O(n) 不是 O(n log n)。",
+ code:`void SiftDown(int A[], int i, int n){     // 大顶堆,0 起编号
+    while(2*i+1 < n){
+        int c = 2*i+1;                    // 左孩子
+        if(c+1<n && A[c+1]>A[c]) c++;     // 取大孩子
+        if(A[i] >= A[c]) break;           // 堆序已满足
+        int t=A[i]; A[i]=A[c]; A[c]=t;
+        i = c;                            // 继续下沉
+    }
+}
+void BuildHeap(int A[], int n){           // Floyd 建堆 O(n)
+    for(int i=n/2-1; i>=0; i--)
+        SiftDown(A, i, n);
+}`,
+ trap:"0 起编号孩子是 2i+1/2i+2；若题目 1 起编号则是 2i/2i+1，别混。「前 k 大」用 k 容量小顶堆扫全表 O(n log k)——比全排序优，采分点。",
+ src:"826 第10章 percolateDown/heapify【默】级 → 0起C版"},
+
+{tag:"tree",must:1,name:"二叉树递归模板（遍历/高度/计数）",
+ q:"遍历、求高度、数叶子、判相等、求 WPL……一切「对每个结点做点事」的树题。",
+ idea:"树题递归三问：① 递归出口（空树返回什么）② 左右子树各自给我什么 ③ 本层怎么合并。想清三问，代码就是填空。",
+ code:`void InOrder(BiTree T){                   // 遍历模板
+    if(T == NULL) return;                 // ① 出口
+    InOrder(T->lchild);                   // ② 问左子树
+    visit(T);                             // 根的位置=遍历序
+    InOrder(T->rchild);                   // ② 问右子树
+}
+int Height(BiTree T){                     // 求高度
+    if(T == NULL) return 0;
+    int hl = Height(T->lchild);
+    int hr = Height(T->rchild);
+    return (hl>hr ? hl : hr) + 1;         // ③ 合并
+}
+int CountLeaf(BiTree T){                  // 数叶子
+    if(T == NULL) return 0;
+    if(!T->lchild && !T->rchild) return 1;
+    return CountLeaf(T->lchild) + CountLeaf(T->rchild);
+}`,
+ trap:"带下传参数的变形（如 WPL 传深度：wpl(T->lchild, d+1)）是 408-2014 真题套路。递归函数一定先写出口，空树漏判是最常见丢分。",
+ src:"826 第5章递归四序【默】级"},
+
+{tag:"tree",must:1,name:"层次遍历模板（树题万金油）",
+ q:"层次遍历；求树宽度；求某层结点数；判完全二叉树——凡「按层」都用它。",
+ idea:"根入队；循环：出队访问，左右孩子依次入队。数组模拟队列时 front/rear 天然记录了访问历史，求宽度可按层计数（记录每层末尾）。",
+ code:`void LevelOrder(BiTree T){
+    BiTree Q[MAX]; int f=0, r=0;          // 数组模拟队列
+    if(T) Q[r++] = T;                     // 根入队
+    while(f < r){
+        BiTree p = Q[f++];                // 出队
+        visit(p);
+        if(p->lchild) Q[r++] = p->lchild;
+        if(p->rchild) Q[r++] = p->rchild;
+    }
+}`,
+ trap:"判完全二叉树：空孩子也入队，出队遇到第一个 NULL 后若还能出队到非空结点 → 不完全。求宽度：变量记录当前层结点数逐层推进。这两个变形都是 408 真题级考法。",
+ src:"826 第5章 levelorder【默】级"},
+
+{tag:"graph",must:0,name:"图 BFS / DFS 邻接表模板",
+ q:"连通性、最短路径（无权图）、求距离顶点 v 最远的结点、判断路径存在。",
+ idea:"BFS 用队列层层推进（无权图最短路）；DFS 递归一路到底。visited 数组防重复。邻接表遍历邻居：for(p=G.vex[u].first; p; p=p->next)。",
+ code:`void BFS(Graph G, int v, int visited[]){
+    int Q[MAX], f=0, r=0;
+    visited[v]=1; Q[r++]=v;               // 入队时标记!
+    while(f < r){
+        int u = Q[f++];
+        visit(u);
+        for(ArcNode *p=G.vex[u].first; p; p=p->next)
+            if(!visited[p->adj]){
+                visited[p->adj]=1;        // 防重复入队
+                Q[r++] = p->adj;
+            }
+    }
+}
+void DFS(Graph G, int v, int visited[]){
+    visited[v]=1; visit(v);               // 访问时标记
+    for(ArcNode *p=G.vex[v].first; p; p=p->next)
+        if(!visited[p->adj])
+            DFS(G, p->adj, visited);
+}`,
+ trap:"BFS 的标记必须在入队时（出队时标记会重复入队）。「距 v 最远的顶点」= BFS 最后一个出队者。非连通图要外层循环对每个未访问顶点再调一次。",
+ src:"826 第6章 BFS/DFS【懂】级 → C 邻接表版"},
+
+{tag:"str",must:0,name:"KMP：next 数组求法",
+ q:"手算 next/nextval 数组（几乎必考选择题）+ 读懂求 next 的代码。",
+ idea:"next[j] = 模式串前 j-1 个字符中最长相等前后缀长度+1（王道 1 起口径）。代码即「自己和自己匹配」：匹配上 i、j 同进并记录；失配则 j 回退到 next[j]。",
+ code:`void GetNext(char S[], int n, int next[]){
+    int i=1, j=0;                         // 王道下标从1起
+    next[1] = 0;
+    while(i < n){
+        if(j==0 || S[i]==S[j])
+            next[++i] = ++j;              // 匹配:同进+记录
+        else
+            j = next[j];                  // 失配:回退
+    }
+}                                         // O(m)`,
+ trap:"手算比代码更常考：next 全体右看一位、首位填 0（1 起口径）。不同教材 0 起/1 起差 1，考场以题目给的样例对齐。nextval 在 next 基础上把「回退后字符仍相同」的再往前引。",
+ src:"卡库·串 KMP 卡的代码面"},
+
+{tag:"ss",must:0,name:"分治思想题两例（中位数 / 主元素）",
+ q:"408-2011：两个等长有序序列求合并后中位数；408-2013：找出现次数 > n/2 的主元素。",
+ idea:"中位数：比较两序列各自中位数，每轮各舍一半，O(log n)（暴力归并数到第 n 个是 O(n)，也有大部分分）。主元素：摩尔投票——候选计数，相同 +1 不同 −1，归零换候选；最后再验证一遍，O(n)/O(1)。",
+ code:`int Majority(int A[], int n){             // 摩尔投票 O(n)/O(1)
+    int cand = A[0], cnt = 1;
+    for(int i=1; i<n; i++){
+        if(A[i]==cand) cnt++;
+        else if(--cnt==0){                // 抵消归零
+            cand = A[i]; cnt = 1;         // 换候选
+        }
+    }
+    cnt = 0;                              // 必须复核!
+    for(int i=0; i<n; i++)
+        if(A[i]==cand) cnt++;
+    return (cnt > n/2) ? cand : -1;       // -1=无主元素
+}`,
+ trap:"摩尔投票最后不复核是错的（候选未必真过半）。这两道真题的共同启示：排序 O(n log n) / 计数 O(n) 空间的次优解都有分——先保底再冲最优。",
+ src:"408-2011 / 408-2013 真题复盘"}
+];
+
+/* ===== 渲染 ===== */
+const list=document.getElementById('list');
+let curF='all';
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function codeHTML(code){
+  return code.split('\n').map((ln,i)=>{
+    const m=ln.match(/^(.*?)(\/\/.*)?$/);
+    const body=esc(m[1]||'')+(m[2]?`<span class="cmt">${esc(m[2])}</span>`:'');
+    return `<span class="cl" data-l="${i}"><span class="no">${i+1}</span><span class="src">${body||' '}</span></span>`;
+  }).join('');
+}
+function render(){
+  list.innerHTML='';
+  A.forEach((d,idx)=>{
+    if(curF!=='all'&&d.tag!==curF)return;
+    const div=document.createElement('div');div.className='algo';
+    div.innerHTML=`<div class="head"><span class="nm">${d.name}</span>
+      <span class="tagc">${TAGS[d.tag]}</span>${d.must?'<span class="tagm">【默】必默写</span>':'<span class="tagc" style="background:var(--purple-soft);color:var(--purple)">【懂】能讲思路</span>'}
+      <span class="arrow">▶</span></div>
+    <div class="body">
+      <div class="blk b-q"><b>典型设问</b>${d.q}</div>
+      <div class="blk b-idea"><b>思路（先想清再写码）</b>${d.idea}</div>
+      <div class="codewrap"><div class="codebar"><span class="t">C</span><button class="mwbtn" data-i="${idx}">🙈 默写模式</button></div>
+      <pre class="code">${codeHTML(d.code)}</pre></div>
+      <div class="blk b-trap"><b>坑与采分点</b>${d.trap}</div>
+      <div class="b-src">📦 ${d.src}</div>
+    </div>`;
+    div.querySelector('.head').addEventListener('click',()=>div.classList.toggle('open'));
+    const btn=div.querySelector('.mwbtn');
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      const pre=div.querySelector('pre.code');
+      const on=btn.dataset.on==='1';
+      pre.querySelectorAll('.cl').forEach(cl=>cl.classList.toggle('masked',!on));
+      btn.dataset.on=on?'0':'1';
+      btn.textContent=on?'🙈 默写模式':'👁 显示全部';
+    });
+    div.querySelectorAll('.cl').forEach(cl=>cl.addEventListener('click',()=>cl.classList.remove('masked')));
+    list.appendChild(div);
+  });
+}
+const fdiv=document.getElementById('filters');
+const counts={};A.forEach(d=>counts[d.tag]=(counts[d.tag]||0)+1);
+[['all','全部 '+A.length]].concat(Object.keys(TAGS).map(k=>[k,TAGS[k]+' '+counts[k]])).forEach(([k,label],j)=>{
+  const b=document.createElement('button');b.className='fbtn'+(j===0?' on':'');b.textContent=label;
+  b.addEventListener('click',()=>{document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');curF=k;render()});
+  fdiv.appendChild(b);
+});
+render();
+</script>
+</body>
+</html>
