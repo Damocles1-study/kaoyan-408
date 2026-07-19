@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 概念卡库 · 数据结构</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:120px}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem;line-height:1.3}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+
+  .layout{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+  @media (max-width:900px){.layout{grid-template-columns:1fr}}
+
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:16px}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .fbtn{font-size:.8rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .fbtn.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+  .fbtn .cnt{opacity:.7;font-size:.72rem}
+
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+  .vitem{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s}
+  .vitem:hover{border-color:var(--accent)}
+  .vitem.active{border-color:var(--accent);background:var(--accent-soft)}
+  .vitem .w{font-weight:bold}
+  .vitem .cn{font-size:.82rem;color:var(--muted);margin-top:2px}
+  .chip{float:right;font-size:.68rem;padding:1px 8px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+
+  aside{position:sticky;top:20px}
+  #panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;min-height:200px}
+  #panel .hint{color:var(--muted);font-size:.88rem;text-align:center;padding:40px 10px}
+  .wcard .head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .wcard .w{font-family:var(--serif);font-size:1.25rem;font-weight:bold}
+  .wcard .pos{font-size:.72rem;color:var(--blue);background:var(--blue-soft);padding:1px 8px;border-radius:999px}
+  .wcard .row{margin-top:10px;font-size:.87rem;padding:9px 11px;border-radius:8px}
+  .wcard .row b{font-size:.72rem;display:block;margin-bottom:2px;letter-spacing:.06em}
+  .r-def{background:var(--hl)} .r-def b{color:var(--hl-border)}
+  .r-conf{background:var(--red-soft)} .r-conf b{color:var(--red)}
+  .r-mem{background:var(--green-soft)} .r-mem b{color:var(--green)}
+  .r-exam{background:var(--blue-soft)} .r-exam b{color:var(--blue)}
+  .r-src{margin-top:10px;font-size:.76rem;color:var(--muted)}
+  .r-link{margin-top:4px;font-size:.76rem;color:var(--muted)}
+  .r-link a{color:var(--green)}
+  #panel .close{display:none}
+  @media (max-width:900px){
+    aside{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:0 8px 8px}
+    #panel{box-shadow:0 -6px 24px rgba(0,0,0,.18);max-height:60vh;overflow-y:auto;display:none}
+    #panel.open{display:block}
+    #panel .close{display:block;float:right;border:none;background:var(--line);border-radius:8px;padding:2px 10px;cursor:pointer;color:var(--ink)}
+  }
+  .selftest{font-size:.8rem;color:var(--muted);margin-bottom:14px}
+  .selftest b{color:var(--accent)}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
+  <header>
+    <h1>概念卡库 · 数据结构（40 张）</h1>
+    <div class="sub">提炼自 826 时代第 1–10 章精讲遗产，已按 408 / 王道口径校正（下标约定、术语差异均标注） · 每卡 = 定义 + 易混辨析 + 记忆法 + 408 考法</div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <section class="card">
+        <h2>卡片列表（点卡看详情）</h2>
+        <p class="selftest">自测法：看到卡名先<b>在心里说出定义和易混点</b>，再点开验证。红色「易混辨析」是 408 选择题的命脉，优先记。</p>
+        <div class="filters" id="filters"></div>
+        <div class="vgrid" id="vgrid"></div>
+      </section>
+    </main>
+    <aside>
+      <div id="panel"><div class="hint">👆 点击左侧任意卡片<br>详情会出现在这里</div></div>
+    </aside>
+  </div>
+
+  <footer>408 概念卡库 · 数据结构 · 由 Claude 生成并独立校核（826 遗产提炼 + 408 口径校正）</footer>
+</div>
+
+<script>
+const CH = {lin:"线性表",sq:"栈·队列·串",tree:"树",graph:"图",search:"查找",sort:"排序"};
+const K = [
+{ch:"lin",name:"O / Ω / Θ 渐进记号",def:"O 是渐进上界（≤），Ω 是渐进下界（≥），Θ 是紧界（=，同时满足上下界）。",
+ mix:"「快排时间复杂度是 O(n²)」这话也对——O 只是上界，可以放宽。别把 最好/平均/最坏（对输入分情况）和 O/Ω/Θ（对函数取界）两套概念搅在一起：快排最坏 Θ(n²)、平均 Θ(n log n)，两者都可以再套 O 说法。",
+ mem:"O 像 ≤，Ω 像 ≥，Θ 像 =。选择题遇到「以下说法正确的是」先把这两套概念拆开。",
+ exam:"选择题第 1 题常客：数循环算复杂度 + 记号辨析。",src:"826 第1章"},
+{ch:"lin",name:"顺序表 vs 链表",def:"顺序表连续存储、按位访问 O(1)；链表指针链接、定位后插删 O(1)。",
+ mix:"「链表插删 O(1)」的前提是已定位到位置——按值查找仍要 O(n)。顺序表插入平均移动 n/2 个、删除平均 (n−1)/2 个元素。存储密度：顺序表 =1，链表 <1（指针开销）。",
+ mem:"查得快/插得慢 ↔ 插得快/查得慢，鱼与熊掌。",
+ exam:"选择题高频；408 算法大题默认可用顺序表暴力拿部分分。",src:"826 第2/3章"},
+{ch:"lin",name:"头指针 vs 头结点",def:"头指针 = 指向链表第一个结点的指针（链表必有）；头结点 = 首元结点之前附加的哑结点（可有可无，为统一插删操作）。",
+ mix:"带头结点的空表判定 L->next==NULL；不带头结点是 L==NULL。带头结点后，在表头插删不用特判——这是设它的唯一目的。",
+ mem:"指针必有，结点可选。",
+ exam:"概念辨析选择题；写算法题时先声明是否带头结点。",src:""},
+{ch:"lin",name:"循环链表与双链表",def:"循环链表尾结点指回表头；双链表每结点有 prior/next 两个指针，插删需改 4 个指针。",
+ mix:"带头结点的循环双链表判空是 L->next==L（不是 ==NULL）。双链表在 p 前插入不需要从头找前驱（prior 直达）——「链表找前驱必须 O(n)」只对单链表成立。",
+ mem:"插入口诀「先接后断」：新结点先挂好两边再改旧指针，画图数指针不出错。",
+ exam:"指针操作排序题（给四条语句排合法顺序）选择题高频。",src:""},
+
+{ch:"sq",name:"栈 vs 队列",def:"栈 LIFO 后进先出，只在栈顶操作；队列 FIFO 先进先出，队尾进队头出。",
+ mix:"应用别配反：栈——递归、括号匹配、表达式求值、进制转换、DFS、中序遍历迭代；队列——层次遍历、BFS、缓冲区、页面置换 FIFO。「DFS 用队列」是经典错误选项。",
+ mem:"栈 = 叠盘子，队 = 食堂排队。",
+ exam:"选择题必考区；常与出栈序列合法性连考。",src:"826 第4章"},
+{ch:"sq",name:"共享栈",def:"两个栈共用一个数组，栈底设在两端、相向生长，top0=−1 与 top1=maxsize 起步。",
+ mix:"栈满条件是 top0+1==top1（两栈顶相邻），不是两 top 相等。共享的意义是省空间：两栈此消彼长，总和不超容量即可。",
+ mem:"两人相向走，碰面即满。",
+ exam:"选择题偶考栈满/栈空条件。",src:""},
+{ch:"sq",name:"循环队列判满",def:"数组 + 取模实现队列。常用「牺牲一格」：(rear+1)%M==front 为满，front==rear 为空。",
+ mix:"元素个数 = (rear−front+M)%M。注意约定差异：rear 指向队尾元素的下一格（王道默认）还是队尾元素本身，公式随之变——先看题目定义再套公式。不牺牲一格的替代方案：加 size 计数器或 tag 标志。",
+ mem:"想成表盘；空满都是 front==rear 时才被迫牺牲一格来区分。",
+ exam:"计算 front/rear/元素个数的选择题几乎年年见。",src:"826 第4章"},
+{ch:"sq",name:"出栈序列与 Catalan",def:"n 个元素依次入栈、任意时刻可出栈，合法出栈序列共 Catalan(n)=C(2n,n)/(n+1) 种。",
+ mix:"判断某序列是否合法：对入栈序 1..n，出栈序列中任一元素后面、比它小的那些数必须严格降序（它们还压在栈里）。Catalan 四兄弟——括号匹配、栈混洗、n 结点二叉树、n 结点 BST——全是同一个数。",
+ mem:"C₁=1, C₂=2, C₃=5, C₄=14, C₅=42。",
+ exam:"「以下哪个不可能是出栈序列」选择题高频。",src:"826 第4/5章"},
+{ch:"sq",name:"中缀 → 后缀（逆波兰）",def:"借助运算符栈把中缀表达式转后缀；后缀求值只需一个操作数栈，无括号无歧义。",
+ mix:"转换时：当前运算符优先级 ≤ 栈顶（左结合）就弹栈顶输出；'(' 入栈后优先级视为最低，遇 ')' 弹到 '(' 为止。表达式树的后序遍历 = 后缀表达式，中序遍历加括号 = 中缀。",
+ mem:"后缀 = 表达式树的后序，一句话打通两章。",
+ exam:"手算转换结果 / 求值过程中栈内容的选择题高频。",src:"826 第4/5章"},
+{ch:"sq",name:"KMP 与 next 数组",def:"失配时主串指针不回溯，模式串按 next 数组右滑；next[j] = 模式串前 j−1 位中最长相等前后缀长度（+1，按王道 1 起下标）。",
+ mix:"下标约定是最大坑：王道从 1 起、next[1]=0；不少教材从 0 起，整个数组差 1——先看题目给的样例对齐约定。nextval 是在 next 基础上消除「跳过去还是同一字符」的二次失配。KMP 时间 O(m+n)。",
+ mem:"next = 失配后模式串「自己和自己对齐」能保留的最长部分。",
+ exam:"手算 next / nextval 几乎必考一题。",src:""},
+
+{ch:"tree",name:"n₀ = n₂ + 1",def:"任何二叉树：叶子数 = 度2结点数 + 1。",
+ mix:"只对二叉树成立。推导：边数 = n−1（除根人人一条入边）= n₁+2n₂（按孩子数数边），联立即得。常见变形：完全二叉树给 n 求 n₀，或给 n₀ 求总结点范围。",
+ mem:"同一堆边两种数法：按「入边」数 = 按「出边」数。",
+ exam:"填空/选择常客，多与完全二叉树性质连考。",src:"826 第5章"},
+{ch:"tree",name:"满二叉树 vs 完全二叉树",def:"满二叉树每层全满（高 h 共 2^h−1 结点）；完全二叉树 = 满二叉树从编号末尾连续删去若干结点（只许最底层右侧缺）。",
+ mix:"完全二叉树度为 1 的结点数只能是 0 或 1 个；叶子只出现在最底两层；最后一个分支结点编号 ⌊n/2⌋。「满」是「完全」的特例，方向别反。",
+ mem:"完全 = 满树砍尾巴。",
+ exam:"给 n 求叶子数/高度/度1结点数的选择题高频。",src:"826 第5章"},
+{ch:"tree",name:"完全二叉树的顺序存储",def:"按层从 1 编号：lchild=2i，rchild=2i+1，parent=⌊i/2⌋；n 结点高度 ⌈log₂(n+1)⌉ 或 ⌊log₂n⌋+1。",
+ mix:"⚠️ 从 0 编号则是 2i+1 / 2i+2 / ⌊(i−1)/2⌋——408/王道习惯 1 起，826/邓书用 0 起，做题先看编号起点。这套秩对应是「堆能塞进数组」的根基。",
+ mem:"1 起编号：孩子翻倍；0 起编号：翻倍加一。",
+ exam:"堆、完全二叉树计算题的底层公式，必须秒写。",src:"826 第5章（0 起版，已转 408 口径）"},
+{ch:"tree",name:"二叉树四种遍历",def:"先/中/后序的「序」指根的访问位次（左永远先于右）；层次遍历 = 按层 BFS。",
+ mix:"辅助结构别配反：先/中/后序迭代用栈，层次用队列。非递归后序最繁（需记录右子树是否访问过，或「双栈/逆先序」技巧）。遍历时间 O(n)，迭代空间 O(树高)。",
+ mem:"「X 序」= 根什么时候被念出来。",
+ exam:"给树写序列、给算法问访问顺序，年年见。",src:"826 第5章"},
+{ch:"tree",name:"遍历序列重建二叉树",def:"（先序 | 后序 | 层次）任一 + 中序 → 唯一重建；先序 + 后序一般不唯一。",
+ mix:"先/后/层序只能「定根」，唯有中序能「分左右」——缺中序时单分支结点的孩子分不清左右。仅当是真二叉树（无单分支）时，先序+后序才唯一。「先序+后序可确定层序」是经典错误命题。",
+ mem:"定根靠先/后/层，分左右唯有中序。",
+ exam:"重建类选择题高频；826 曾连续三年围绕此点出题。",src:"826 第5章"},
+{ch:"tree",name:"线索二叉树",def:"利用 n+1 个空链域存遍历前驱/后继，ltag/rtag=1 表示线索、=0 表示孩子。",
+ mix:"n 结点有 2n 个链域、用掉 n−1 个指孩子，故空链域恰 n+1 个。中序线索树找后继：有右孩子 → 右子树最左下；无 → 顺 rtag 线索直达。先序线索树找前驱、后序找后继困难（常需父指针）。",
+ mem:"线索 = 把「拍扁后的邻居」写进空指针里。",
+ exam:"求某结点线索指向谁的选择题高频。",src:""},
+{ch:"tree",name:"Huffman 树与 WPL",def:"反复合并权值最小的两棵树，得 WPL=Σ(权×深度) 最小的二叉树；左0右1 即前缀编码。",
+ mix:"Huffman 树没有度 1 结点（是真二叉树）：n₀ 个叶共 2n₀−1 个结点、合并 n₀−1 次。快捷验算：WPL = 所有非叶结点权值之和。形态可能不唯一（等权时），但 WPL 唯一。",
+ mem:"常用字符住得离根近；「前缀无关」因为字符只在叶上。",
+ exam:"构造 Huffman 树求 WPL/编码长度，几乎年年一题。",src:"826 第5章"},
+{ch:"tree",name:"树·森林 ↔ 二叉树",def:"孩子兄弟表示法（左孩子、右兄弟）把任意树/森林一一对应到二叉树。",
+ mix:"⚠️ 最大陷阱：树的先根遍历 = 对应二叉树的先序；树的后根遍历 = 对应二叉树的中序（不是后序！）。森林同理。树转的二叉树根无右孩子；森林中第 2 棵树成为第 1 棵树根的右孩子。",
+ mem:"「后根对中序」四个字单独背。",
+ exam:"转换后形态/遍历对应关系选择题高频。",src:""},
+{ch:"tree",name:"并查集",def:"用双亲表示法存的森林，支持 Union（并根）与 Find（找根）；路径压缩 + 按秩/规模合并后近乎 O(α(n))。",
+ mix:"用途：Kruskal 判环、求连通分量、等价类划分。只擅长「合并与查询」，不支持快速分裂。仅按树高优化时，n 结点树高 ≤ ⌊log₂n⌋+1。",
+ mem:"两个优化都在干同一件事：把树压矮。",
+ exam:"2023 年起 408 加大考查；给操作序列画双亲数组。",src:"826 第6章配套"},
+{ch:"tree",name:"树的存储三法",def:"双亲表示（数组存爹）、孩子表示（每结点挂孩子链表）、孩子兄弟表示（化为二叉树）。",
+ mix:"双亲表示找爹 O(1) 但找孩子要扫全表；孩子表示反之；孩子兄弟表示两头兼顾但找爹难（除非加父指针）。「哪种表示适合求 XX 操作」是标准考法。",
+ mem:"每种各存一个方向的血缘。",
+ exam:"概念选择题中频。",src:""},
+
+{ch:"graph",name:"邻接矩阵 vs 邻接表",def:"矩阵 O(|V|²) 空间、查边 O(1)；邻接表 O(|V|+|E|) 空间、遍历邻居快。",
+ mix:"稠密图用矩阵、稀疏图用表。无向图邻接表每条边存两次（2|E| 个表结点）；邻接表判断 (i,j) 是否有边要遍历链表。进阶：邻接矩阵 A 的 k 次幂 (i,j) 元 = i 到 j 长为 k 的路径条数。",
+ mem:"矩阵是「花名册」，表是「朋友圈列表」。",
+ exam:"存储结构与遍历复杂度搭配考，选择题高频。",src:"826 第6章"},
+{ch:"graph",name:"BFS vs DFS",def:"BFS 用队列层层推进；DFS 用栈/递归一条道走到黑。邻接表 O(|V|+|E|)，矩阵 O(|V|²)。",
+ mix:"BFS 可求无权图单源最短路、生成树高度最小；DFS 用于拓扑排序、判环、强连通分量。空间都是最坏 O(|V|)（队列/递归栈）。同一张图遍历序列不唯一（邻接表存储顺序影响）。",
+ mem:"BFS 泛洪，DFS 钻洞。",
+ exam:"给图写遍历序列 / 判断可能序列，年年见。",src:"826 第6章"},
+{ch:"graph",name:"Prim vs Kruskal",def:"都是 MST 贪心：Prim 从一点开始「加点」，O(|V|²) 适合稠密图；Kruskal 全局「加边不成环」，O(|E|log|E|) 适合稀疏图。",
+ mix:"有等权边时 MST 可能不唯一，但 MST 的权值和唯一；各边权互异则 MST 唯一。过程形态：Prim 始终一棵树，Kruskal 中途是森林。Kruskal 判环用并查集。",
+ mem:"Prim 点长大，Kruskal 边挑小。",
+ exam:"选择题几乎年年考（唯一性 + 复杂度 + 适用场景）。",src:"826 第6章"},
+{ch:"graph",name:"Dijkstra vs Floyd",def:"Dijkstra 单源最短路，按路径长度递增逐个「收编」顶点，O(|V|²)；Floyd 多源，三重循环动态规划，O(|V|³)。",
+ mix:"⚠️ Dijkstra 不能处理负权边（贪心前提被破坏）；Floyd 允许负权边、但不允许负权回路。Dijkstra 收编后的顶点距离不再变——利用这点可做「执行到中途」类题目。",
+ mem:"D = 贪心逐点收编；F = 「让每个 k 当一次中转站」。",
+ exam:"给图手算 dist 数组变化过程，高频大题/选择。",src:"826 第6章"},
+{ch:"graph",name:"拓扑排序",def:"对 AOV 网反复摘除入度为 0 的顶点；能全部摘完 ⇔ 无环。邻接表实现 O(|V|+|E|)。",
+ mix:"拓扑序列一般不唯一（同刻多个入度 0 可任选）；序列唯一 ⇏ 图是链，但图是链 ⇒ 唯一。用 DFS 也能做：按「退出（完成）时间」逆序即拓扑序。",
+ mem:"修完先修课才能毕业。",
+ exam:"判合法拓扑序 / 数拓扑序个数，选择题高频。",src:"826 第6章"},
+{ch:"graph",name:"关键路径（AOE 网）",def:"AOE 网中源点到汇点的最长路径；顶点=事件、边=活动。求 ve/vl（事件最早/最迟）、e/l（活动最早/最迟），l−e=0 者为关键活动。",
+ mix:"关键路径可能不止一条——缩短某一关键活动未必缩短总工期（另一条关键路径还在），全部关键路径共有的活动才行；关键活动缩过头后关键路径还会转移。",
+ mem:"最「长」的路决定最「短」的工期。",
+ exam:"求关键路径/机动时间的计算题，大题选择都考。",src:""},
+{ch:"graph",name:"连通性与生成树",def:"n 顶点连通图的生成树恰 n−1 条边；有向图强连通 = 两两互达。",
+ mix:"无向图：连通至少 n−1 条边，边数 ≥ n 必有环；「连通 + n−1 条边 ⇔ 树」。有向图强连通至少 n 条边（成环）。判强连通：任取一点，正图反图各一次 DFS/BFS 都能遍历全图。",
+ mem:"树 = 边最少的连通图 = 无环的连通图。",
+ exam:"「至少/至多几条边」类选择题高频。",src:"826 第6章"},
+
+{ch:"search",name:"折半查找与判定树",def:"仅适用于有序顺序表；mid=⌊(low+high)/2⌋，O(log n)。查找过程对应一棵判定树（平衡的 BST 形态）。",
+ mix:"取整方向必须全程一致（全下取整或全上取整），判定树左右子树结点数差才 ≤1。链表不能折半（无随机访问）。成功 ASL ≈ log₂(n+1)−1；失败看判定树的外部结点层。",
+ mem:"判定树画出来，一切 ASL 都是数层。",
+ exam:"判定树形态判断 + ASL 计算，选择题高频。",src:""},
+{ch:"search",name:"二叉排序树 BST",def:"左 < 根 < 右，中序遍历必有序。查找/插入平均 O(log n)，最坏退化成链 O(n)。",
+ mix:"删除双孩子结点：用直接前驱（左子树最右）或直接后继（右子树最左）顶替，问题转化为删单孩子结点。「先删 x 再插回 x」形态可能变。查找效率完全取决于树形，与 n 无必然关系。",
+ mem:"中序有序是 BST 的身份证。",
+ exam:"给序列建 BST + 求 ASL，年年见。",src:"826 第7章"},
+{ch:"search",name:"AVL 平衡二叉树",def:"每结点平衡因子 |左高−右高| ≤ 1 的 BST；插入失衡沿最小失衡子树做 LL/RR/LR/RL 旋转。",
+ mix:"LL 型做右单旋、RR 型做左单旋——名字说的是失衡原因的位置，不是旋转方向。LR/RL 双旋「先转孩子再转自己」。高度 h 的 AVL 最少结点 N(h)=N(h−1)+N(h−2)+1。插入后最多一次（单/双）旋转即恢复。",
+ mem:"单旋提中间；双旋先转子。",
+ exam:"插入后判旋转类型/画结果，选择题几乎年年考。",src:"826 第7章"},
+{ch:"search",name:"红黑树",def:"结点红或黑：根黑、叶(NIL)黑、红结点无红孩、任一结点到叶路径黑结点数相同。最长路径 ≤ 2×最短。",
+ mix:"红黑树是「近似平衡」：高度 ≤ 2log₂(n+1)，查找略慢于 AVL，但插入至多 2 次、删除至多 3 次旋转，插删代价低——这是它取代 AVL 做工业默认的原因。新插入结点默认染红（少破坏黑高）。",
+ mem:"口诀「左根右，根叶黑，不红红，黑路同」。",
+ exam:"2022 年新增考点，此后选择题常驻。",src:"826 第8章"},
+{ch:"search",name:"B树 vs B+树",def:"m 阶 B 树：根 ≥2 棵子树、其余内部结点 ≥⌈m/2⌉ 棵，关键字数 = 子树数 −1，所有叶（失败结点）同层。B+树：n 棵子树配 n 个关键字，全部关键字在叶层并链成有序链表，非叶只是索引。",
+ mix:"B 树关键字全树不重复、每个都带记录指针；B+树非叶层的关键字会在叶层重复出现、只有叶带记录。B+ 支持顺序扫描（叶链表）与两种查找入口（根/最左叶）——数据库索引选 B+ 的原因。",
+ mem:"「+」= 多一条叶子链 + 非叶瘦身成纯索引。",
+ exam:"阶数/高度/关键字数计算 + 两者辨析，选择题高频。",src:"826 第8章"},
+{ch:"search",name:"散列冲突处理",def:"开放定址（线性探测/平方探测/再散列）把冲突元素挤进表内其他槽；链地址法在槽外挂链表。",
+ mix:"开放定址删除只能打「已删」标记、不能物理清空（否则截断后继的探测链）。线性探测会堆积（聚集）、平方探测缓解但未必探遍全表。装填因子 α=n/m 决定 ASL——ASL 与 α 有关、与 n 无直接关系，是判断题钉子。",
+ mem:"越挤越慢，α 说了算。",
+ exam:"构造散列表 + 求成功/失败 ASL，几乎年年一题。",src:"826 第9章"},
+{ch:"search",name:"ASL 怎么算",def:"成功 ASL = Σ(找到第 i 个元素的比较次数)/n；失败 ASL = 各失败入口的比较次数平均。",
+ mix:"⚠️ 散列失败 ASL 的分母 = 散列函数值域大小（如 mod p 就是 p），不是元素个数 n，也不一定是表长——最易错点。折半失败 ASL 数判定树外部结点；链地址失败 ASL 常按「查到空指针」数比较次数（各教材口径略异，看题目示例）。",
+ mem:"成功按「元素」平均，失败按「入口」平均。",
+ exam:"与散列/折半连考，计算题高频。",src:""},
+
+{ch:"sort",name:"排序稳定性口诀",def:"稳定：直接插入、冒泡、归并、基数；不稳定：简单选择、快排、希尔、堆排。",
+ mix:"稳定性只说「相等元素相对次序不变」，与算法好坏无关。简单选择不稳定的反例：{2, 2′, 1} 第一趟 1 与首个 2 交换 → 2 跑到 2′ 后面。「不稳定的算法一定能找到反例，稳定的算法必须逐步都不跨越相等元素」。",
+ mem:"谐音「快些选堆」——快排、希尔、选择、堆排不稳。",
+ exam:"判断/选择年年考；常反着问「哪组全稳定」。",src:"826 排序速查表"},
+{ch:"sort",name:"插入类：直接 / 折半 / 希尔",def:"直接插入最好 O(n)（基本有序）、平均最坏 O(n²)；折半插入用二分找位置；希尔按增量分组做插入，不稳定。",
+ mix:"折半插入只减少比较次数（O(n log n)），移动次数不变仍 O(n²)——总复杂度还是 O(n²)。希尔只能用顺序存储（要按增量跳着访问）。直接插入的比较次数 ≈ 逆序对数，故「基本有序」时它最香。",
+ mem:"折半省的是「眼睛」不是「手」。",
+ exam:"给一趟排序结果判断算法类型，选择题高频。",src:"826 第3章+速查表"},
+{ch:"sort",name:"交换类：冒泡 vs 快排",def:"冒泡每趟把一个最值泡到端点、可提前终止；快排每趟划分使枢轴到达最终位置，平均 O(n log n)。",
+ mix:"⚠️ 快排最坏 O(n²)：输入已有序 + 取首元素为枢轴时（递归深度 O(n)）。空间是递归栈：平均 O(log n)、最坏 O(n)。「每趟结束至少一个元素到最终位置」——冒泡、快排、简单选择、堆排都满足；插入、希尔、归并不满足。",
+ mem:"快排快在平均，栽在有序。",
+ exam:"「一趟后的序列是哪种算法」+ 枢轴划分手算，年年考。",src:"826 速查表"},
+{ch:"sort",name:"选择类:简单选择 vs 堆排",def:"简单选择恒 O(n²)、无最好情况；堆排 = Floyd 建堆 O(n) + n−1 次「堆顶换末尾 + 下滤 O(log n)」，总 O(n log n) 且最坏也是。",
+ mix:"⚠️「建堆 O(n log n)」是经典错误——自底向上建堆是 O(n)，从编号 ⌊n/2⌋ 倒着筛。大顶堆配升序。插入堆元素「上滤」、删堆顶「下滤」。堆排最坏 O(n log n) 比快排稳，但常数大、缓存不友好。",
+ mem:"建堆 O(n)、下滤 log、口诀「大顶出升序」。",
+ exam:"堆的插入/删除/建堆过程画图，年年考。",src:"826 第10章+速查表"},
+{ch:"sort",name:"归并 & 基数",def:"归并稳定 O(n log n)、需 O(n) 辅助空间，趟数 ⌈log₂n⌉；基数按位「分配—收集」，O(d(n+r))，需 r 个队列 O(r) 辅助。",
+ mix:"归并不是就地排序（O(n) 辅助是它上榜「空间最大」的原因）。基数不基于比较，稳定的前提是每趟分配收集本身稳定；d=位数、r=基数（如十进制 r=10）。",
+ mem:"非比较家族：计数/桶/基数，408 主考基数。",
+ exam:"复杂度表格题 + 基数排序过程模拟，选择题高频。",src:"826 速查表"},
+{ch:"sort",name:"排序选型决策",def:"要稳定 → 归并（或基数）；怕最坏退化 → 堆排；求平均最快 → 快排；基本有序或 n 小 → 直接插入/冒泡。",
+ mix:"「n 大且无序」快排是默认答案；「只取前 k 大」用堆（不必全排）；「内存受限要就地」排除归并、基数。选择题常给场景问选哪种——先抓题干里的限定词（稳定？就地？最坏？）。",
+ mem:"稳定找归并，保底找堆排，平均找快排。",
+ exam:"场景选型选择题高频。",src:"826 速查表"},
+{ch:"sort",name:"外部排序",def:"数据在磁盘：先生成初始归并段，再 k 路归并；归并趟数 = ⌈log_k(初始段数)⌉，总开销大头是磁盘 I/O。",
+ mix:"减少 I/O 三板斧：① 增大 k（败者树使 k 路选最小仅 O(log₂k) 次比较，与 k 基本无关）；② 置换-选择排序把平均初始段长翻倍到 2ℓ、段数减半；③ 段长不等时按 Huffman 思想构造最佳归并树。k 增大代价：内存固定时每个输入缓冲区变小。",
+ mem:"外排的一切优化都在省 I/O。",
+ exam:"算归并趟数/读写次数的选择题高频。",src:"826 速查表"}
+];
+
+/* ===== 渲染 ===== */
+const panel=document.getElementById('panel');
+const vg=document.getElementById('vgrid');
+const isMobile=()=>window.innerWidth<=900;
+let curFilter='all', curIdx=-1;
+
+function showCard(i){
+  const d=K[i]; curIdx=i;
+  document.querySelectorAll('.vitem').forEach(e=>e.classList.toggle('active', +e.dataset.i===i));
+  panel.innerHTML=`<button class="close" onclick="panel.classList.remove('open')">✕</button>
+  <div class="wcard">
+    <div class="head"><span class="w">${d.name}</span><span class="pos">${CH[d.ch]}</span></div>
+    <div class="row r-def"><b>一句话定义</b>${d.def}</div>
+    <div class="row r-conf"><b>易混辨析（408 命脉）</b>${d.mix}</div>
+    <div class="row r-mem"><b>怎么记</b>${d.mem}</div>
+    <div class="row r-exam"><b>408 考法</b>${d.exam}</div>
+    ${d.src?`<div class="r-src">📦 提炼自：${d.src}</div>`:''}
+    <div class="r-link">🔗 真题出处：待错题页生成后回链点亮</div>
+  </div>`;
+  if(isMobile())panel.classList.add('open');
+}
+
+function renderGrid(f){
+  curFilter=f; vg.innerHTML='';
+  K.forEach((d,i)=>{
+    if(f!=='all'&&d.ch!==f)return;
+    const div=document.createElement('div');div.className='vitem';div.dataset.i=i;
+    if(i===curIdx)div.classList.add('active');
+    div.innerHTML=`<span class="chip">${CH[d.ch]}</span><div class="w">${d.name}</div><div class="cn">${d.def.length>38?d.def.slice(0,38)+'…':d.def}</div>`;
+    div.addEventListener('click',()=>{showCard(i);if(!isMobile())window.scrollTo({top:0,behavior:'smooth'})});
+    vg.appendChild(div);
+  });
+}
+
+const fdiv=document.getElementById('filters');
+const counts={};K.forEach(d=>counts[d.ch]=(counts[d.ch]||0)+1);
+const fs=[['all','全部 '+K.length]].concat(Object.keys(CH).map(k=>[k,CH[k]+' '+counts[k]]));
+fs.forEach(([k,label],j)=>{
+  const b=document.createElement('button');b.className='fbtn'+(j===0?' on':'');
+  b.innerHTML=label.replace(/ (\d+)$/,' <span class="cnt">$1</span>');
+  b.addEventListener('click',()=>{document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderGrid(k)});
+  fdiv.appendChild(b);
+});
+renderGrid('all');
+</script>
+</body>
+</html>

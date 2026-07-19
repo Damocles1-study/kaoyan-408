@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>页面置换模拟器 · FIFO / LRU / CLOCK</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:60px}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:14px}
+
+  .ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .ctrl label{font-size:.85rem;color:var(--muted)}
+  select,input[type=text]{font-family:var(--sans);font-size:.9rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:5px 10px}
+  input[type=text]{width:340px;max-width:100%}
+  .btn{font-size:.85rem;border:1px solid var(--accent);background:none;color:var(--accent);border-radius:8px;padding:5px 14px;cursor:pointer}
+  .btn:hover{background:var(--accent-soft)}
+  .btn.primary{background:var(--accent);color:var(--card)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .preset{font-size:.78rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:3px 12px;cursor:pointer}
+  .preset:hover{color:var(--accent);border-color:var(--accent)}
+
+  .refbar{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}
+  .ref{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;font-family:var(--serif);font-weight:700;font-size:.9rem;color:var(--muted)}
+  .ref.done{color:var(--ink)}
+  .ref.cur{background:var(--accent);color:var(--card);border-color:var(--accent)}
+  .ref.hit{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+  .ref.miss{background:var(--red-soft);color:var(--red);border-color:var(--red)}
+
+  .stage{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start}
+  @media (max-width:700px){.stage{grid-template-columns:1fr}}
+  .frames{display:grid;gap:8px}
+  .frame{display:flex;align-items:center;gap:10px}
+  .frame .fl{font-size:.72rem;color:var(--muted);width:38px;text-align:right}
+  .slot{width:64px;height:52px;border:2px solid var(--line);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:1.2rem;position:relative;background:var(--bg)}
+  .slot.empty{color:var(--muted);font-size:.85rem;font-weight:400}
+  .slot.newin{border-color:var(--green);background:var(--green-soft)}
+  .slot.hitf{border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+  .slot.evict{border-color:var(--red);background:var(--red-soft);opacity:.85}
+  .slot .ub{font-size:.62rem;font-weight:400;color:var(--purple);line-height:1.1}
+  .slot .ptr{position:absolute;left:-22px;color:var(--accent);font-size:1rem}
+  .expl{background:var(--accent-soft);border-radius:10px;padding:14px 16px;font-size:.92rem;min-height:110px}
+  .expl b{color:var(--accent)}
+  .expl .verdict{font-weight:700}
+  .expl .verdict.hit{color:var(--green)}
+  .expl .verdict.miss{color:var(--red)}
+  .counters{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .cnt{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 14px;font-size:.85rem}
+  .cnt b{font-family:var(--serif);font-size:1.1rem}
+  .cnt.hitc b{color:var(--green)} .cnt.missc b{color:var(--red)}
+
+  .histwrap{overflow-x:auto;margin-top:10px}
+  table{border-collapse:collapse;font-size:.82rem}
+  th,td{border:1px solid var(--line);text-align:center;padding:4px 8px;min-width:34px}
+  th{background:var(--accent-soft);color:var(--accent);font-weight:600}
+  td.hitcell{background:var(--green-soft);color:var(--green);font-weight:700}
+  td.misscell{background:var(--red-soft);color:var(--red);font-weight:700}
+  td.fv{font-family:var(--serif)}
+  td.fv.changed{background:var(--hl);font-weight:700}
+
+  .notes{font-size:.88rem}
+  .notes li{margin:6px 0 6px 18px}
+  .notes b{color:var(--accent)}
+  .warn{color:var(--red)}
+  footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
+  <header>
+    <h1>页面置换模拟器</h1>
+    <div class="sub">FIFO / LRU / CLOCK（改进前） · 逐步点击看每次访问的命中与淘汰 · 408 操作系统年年考</div>
+  </header>
+
+  <section class="card">
+    <h2>设置</h2>
+    <div class="ctrl">
+      <label>算法</label>
+      <select id="algo">
+        <option value="FIFO">FIFO 先进先出</option>
+        <option value="LRU">LRU 最近最久未使用</option>
+        <option value="CLOCK">CLOCK 时钟（二次机会）</option>
+      </select>
+      <label>物理块数</label>
+      <select id="nframes"><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
+      <label>访问串</label>
+      <input type="text" id="refstr" value="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1">
+      <button class="btn" id="apply">应用</button>
+    </div>
+    <div class="ctrl">
+      <span style="font-size:.78rem;color:var(--muted)">预设：</span>
+      <button class="preset" data-s="7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1">经典教材串</button>
+      <button class="preset" data-s="1,2,3,4,1,2,5,1,2,3,4,5">Belady 异常串（FIFO 下试 3 块 vs 4 块）</button>
+      <button class="preset" data-s="random">随机串</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>逐步演示</h2>
+    <div class="refbar" id="refbar"></div>
+    <div class="ctrl">
+      <button class="btn primary" id="next">下一步 ▶</button>
+      <button class="btn" id="prev">◀ 上一步</button>
+      <button class="btn" id="runall">一键到底 ⏩</button>
+      <button class="btn" id="reset">重置 ↺</button>
+    </div>
+    <div class="stage">
+      <div class="frames" id="frames"></div>
+      <div>
+        <div class="expl" id="expl">点「下一步」开始。访问串上方会实时标记 <span style="color:var(--green)">命中</span> / <span style="color:var(--red)">缺页</span>。</div>
+        <div class="counters" id="counters"></div>
+      </div>
+    </div>
+    <div class="histwrap"><table id="hist"></table></div>
+  </section>
+
+  <section class="card">
+    <h2>考点速记</h2>
+    <ul class="notes">
+      <li><b>FIFO</b>：淘汰驻留最久的页（进入时间最早）。唯一会出 <b class="warn">Belady 异常</b> 的常考算法——物理块增多，缺页反而可能变多（用上面预设串亲手验证：3 块 9 次缺页，4 块 10 次）。</li>
+      <li><b>LRU</b>：淘汰最久未被访问的页。性能好但需硬件支持（寄存器/栈），开销大。手算技巧：从当前访问位置<b>向左回看</b>，最晚出现的在内存页就是牺牲页。LRU 属于栈式算法，<b>不会</b>出 Belady 异常。</li>
+      <li><b>CLOCK（NRU）</b>：页排成环，指针扫描：使用位=1 → 清 0 放行（给第二次机会）；使用位=0 → 淘汰。命中时只置使用位=1，<b>指针不动</b>；缺页装入新页后指针移到其下一位置。是 LRU 的低开销近似。</li>
+      <li><b>OPT</b>：淘汰将来最久不用的页，理论最优、无法实现，只作比较基准（手算题常拿它对照，本模拟器暂未含，可比照答案手推）。</li>
+      <li>缺页率 = 缺页次数 / 访问总次数。注意题目问的是「缺页次数」还是「置换次数」：<b>装满前的缺页不发生置换</b>，置换次数 = 缺页次数 − 物理块数（若最终装满）。</li>
+    </ul>
+  </section>
+
+  <footer>页面置换模拟器 · 由 Claude 独立实现 · 算法行为与王道教材口径一致（CLOCK 为简单时钟，未含修改位）</footer>
+</div>
+
+<script>
+let refs=[], nf=3, algo='FIFO';
+let step=0;           // 已执行的访问数
+let states=[];        // states[t] = 执行完第 t 次访问后的完整状态
+
+function parseRefs(s){
+  return s.split(/[,，\s]+/).map(x=>x.trim()).filter(x=>x!=='').map(Number).filter(x=>!isNaN(x));
+}
+
+/* 从头模拟，生成每一步状态快照 */
+function simulate(){
+  states=[];
+  let frames=Array(nf).fill(null);      // 页号
+  let meta=Array(nf).fill(0);           // FIFO:进入序号 / LRU:最近使用序号 / CLOCK:使用位
+  let ptr=0;                            // CLOCK 指针
+  let hits=0,misses=0;
+  refs.forEach((p,t)=>{
+    let log='', hit=frames.indexOf(p)>=0, evicted=null, evictIdx=-1, newIdx=-1, sweep=[];
+    if(hit){
+      hits++;
+      const i=frames.indexOf(p);
+      if(algo==='LRU')meta[i]=t;
+      if(algo==='CLOCK')meta[i]=1;
+      log=`页 <b>${p}</b> 已在物理块 ${i} 中 → <span class="verdict hit">命中</span>。`+
+          (algo==='LRU'?'更新它的「最近使用时间」为当前时刻。':algo==='CLOCK'?'将其使用位置 1（指针不动）。':'FIFO 命中不做任何调整（进入顺序不变）。');
+      newIdx=i;
+    }else{
+      misses++;
+      const empty=frames.indexOf(null);
+      if(empty>=0){
+        frames[empty]=p; newIdx=empty;
+        meta[empty]=(algo==='CLOCK')?1:t;
+        if(algo==='CLOCK')ptr=(empty+1)%nf;
+        log=`页 <b>${p}</b> 不在内存 → <span class="verdict miss">缺页</span>。有空闲物理块 ${empty}，直接装入（不发生置换）。`;
+      }else{
+        if(algo==='FIFO'){
+          evictIdx=0;let oldest=meta[0];
+          for(let i=1;i<nf;i++)if(meta[i]<oldest){oldest=meta[i];evictIdx=i}
+          log=`页 <b>${p}</b> 不在内存 → <span class="verdict miss">缺页</span>。FIFO 淘汰<b>最早进入</b>的页 <b>${frames[evictIdx]}</b>（第 ${meta[evictIdx]+1} 次访问时装入）。`;
+        }else if(algo==='LRU'){
+          evictIdx=0;let oldest=meta[0];
+          for(let i=1;i<nf;i++)if(meta[i]<oldest){oldest=meta[i];evictIdx=i}
+          log=`页 <b>${p}</b> 不在内存 → <span class="verdict miss">缺页</span>。LRU 淘汰<b>最久未使用</b>的页 <b>${frames[evictIdx]}</b>（上次使用在第 ${meta[evictIdx]+1} 次访问）。`;
+        }else{ // CLOCK
+          let s=[];
+          while(true){
+            if(meta[ptr]===1){s.push(`扫过页 ${frames[ptr]}（使用位 1→0，给第二次机会）`);meta[ptr]=0;ptr=(ptr+1)%nf}
+            else{s.push(`停在页 ${frames[ptr]}（使用位 0）→ 淘汰`);evictIdx=ptr;break}
+          }
+          sweep=s;
+          log=`页 <b>${p}</b> 不在内存 → <span class="verdict miss">缺页</span>。CLOCK 指针扫描：${s.join('；')}。`;
+        }
+        evicted=frames[evictIdx];
+        frames[evictIdx]=p; newIdx=evictIdx;
+        meta[evictIdx]=(algo==='CLOCK')?1:t;
+        if(algo==='CLOCK')ptr=(evictIdx+1)%nf;
+      }
+    }
+    states.push({frames:frames.slice(),meta:meta.slice(),ptr,hit,hits,misses,log,evicted,evictIdx,newIdx});
+  });
+}
+
+function render(){
+  // 访问串
+  const rb=document.getElementById('refbar');
+  rb.innerHTML=refs.map((p,t)=>{
+    let cls='ref';
+    if(t<step)cls+=states[t].hit?' done hit':' done miss';
+    if(t===step)cls+=' cur';
+    return `<div class="${cls}" title="第 ${t+1} 次访问">${p}</div>`;
+  }).join('');
+
+  // 物理块
+  const fr=document.getElementById('frames');
+  const st=step>0?states[step-1]:null;
+  const prev=step>1?states[step-2]:null;
+  let fh='';
+  for(let i=0;i<nf;i++){
+    const v=st?st.frames[i]:null;
+    let cls='slot'+(v===null?' empty':'');
+    if(st&&!st.hit&&st.newIdx===i)cls+=st.evicted!==null&&false?'':' newin';
+    if(st&&st.hit&&st.newIdx===i)cls+=' hitf';
+    const ub=(algo==='CLOCK'&&st&&v!==null)?`<span class="ub">use=${st.meta[i]}</span>`:'';
+    const ptr=(algo==='CLOCK'&&st&&st.ptr===i)?'<span class="ptr">➤</span>':'';
+    fh+=`<div class="frame"><span class="fl">块 ${i}</span><div class="${cls}">${ptr}${v===null?'空':v}${ub}</div></div>`;
+  }
+  document.getElementById('frames').innerHTML=fh;
+
+  // 解释
+  const ex=document.getElementById('expl');
+  if(!st){ex.innerHTML='点「下一步」开始。当前算法：<b>'+algo+'</b>，物理块数 '+nf+'。'}
+  else{ex.innerHTML=`<b>第 ${step}/${refs.length} 步</b> · ${st.log}`}
+
+  // 计数（置换次数 = 缺页数 − 已占用块数：装满前的缺页只装入不置换）
+  const h=st?st.hits:0,m=st?st.misses:0,tot=h+m;
+  const used=st?st.frames.filter(x=>x!==null).length:0;
+  const swaps=st?Math.max(0,m-used):0;
+  document.getElementById('counters').innerHTML=
+    `<div class="cnt hitc"><b>${h}</b> 命中</div>`+
+    `<div class="cnt missc"><b>${m}</b> 缺页</div>`+
+    `<div class="cnt"><b>${tot?((m/tot*100).toFixed(1)+'%'):'–'}</b> 缺页率</div>`+
+    `<div class="cnt"><b>${swaps}</b> 置换次数</div>`;
+
+  // 历史表
+  const ht=document.getElementById('hist');
+  let rows='<tr><th>访问</th>'+refs.map((p,t)=>`<th>${p}</th>`).join('')+'</tr>';
+  for(let i=0;i<nf;i++){
+    rows+=`<tr><th>块 ${i}</th>`;
+    for(let t=0;t<refs.length;t++){
+      if(t>=step){rows+='<td></td>';continue}
+      const s=states[t],v=s.frames[i];
+      const changed=(!s.hit&&s.newIdx===i);
+      rows+=`<td class="fv${changed?' changed':''}">${v===null?'':v}</td>`;
+    }
+    rows+='</tr>';
+  }
+  rows+='<tr><th>结果</th>'+refs.map((p,t)=>{
+    if(t>=step)return'<td></td>';
+    return states[t].hit?'<td class="hitcell">✓</td>':'<td class="misscell">✗</td>';
+  }).join('')+'</tr>';
+  ht.innerHTML=rows;
+
+  document.getElementById('next').disabled=step>=refs.length;
+  document.getElementById('prev').disabled=step<=0;
+}
+
+function applySettings(){
+  algo=document.getElementById('algo').value;
+  nf=+document.getElementById('nframes').value;
+  const r=parseRefs(document.getElementById('refstr').value);
+  if(r.length===0){alert('访问串为空或格式不对，用逗号分隔数字');return}
+  refs=r; step=0; simulate(); render();
+}
+
+document.getElementById('apply').addEventListener('click',applySettings);
+document.getElementById('algo').addEventListener('change',applySettings);
+document.getElementById('nframes').addEventListener('change',applySettings);
+document.getElementById('next').addEventListener('click',()=>{if(step<refs.length){step++;render()}});
+document.getElementById('prev').addEventListener('click',()=>{if(step>0){step--;render()}});
+document.getElementById('reset').addEventListener('click',()=>{step=0;render()});
+document.getElementById('runall').addEventListener('click',()=>{step=refs.length;render()});
+document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>{
+  let s=b.dataset.s;
+  if(s==='random'){const n=15;s=Array.from({length:n},()=>Math.floor(Math.random()*8)).join(',')}
+  document.getElementById('refstr').value=s;
+  applySettings();
+}));
+applySettings();
+</script>
+</body>
+</html>
