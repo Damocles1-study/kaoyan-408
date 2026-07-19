@@ -241,8 +241,8 @@ function render(){
     if(st&&!st.hit&&st.newIdx===i)cls+=st.evicted!==null&&false?'':' newin';
     if(st&&st.hit&&st.newIdx===i)cls+=' hitf';
     const ub=(algo==='CLOCK'&&st&&v!==null)?`<span class="ub">use=${st.meta[i]}</span>`:'';
-    const ptr=(algo==='CLOCK'&&st&&st.ptr===i)?'<span class="ptr">➤</span>':'';
-    fh+=`<div class="frame"><span class="fl">块 ${i}</span><div class="${cls}">${ptr}${v===null?'空':v}${ub}</div></div>`;
+    const isPtr=(algo==='CLOCK'&&st&&st.ptr===i);
+    fh+=`<div class="frame"><span class="fl">${isPtr?'<span style="color:var(--accent)">➤</span> ':''}块 ${i}</span><div class="${cls}">${v===null?'空':v}${ub}</div></div>`;
   }
   document.getElementById('frames').innerHTML=fh;
 
