@@ -75,7 +75,15 @@
   pre.code{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:.82rem;line-height:1.6;padding:12px 0;overflow-x:auto;margin:0}
   .cl{display:block;padding:0 14px;white-space:pre;cursor:default}
   .cl .no{display:inline-block;width:26px;color:var(--code-cmt);user-select:none;font-size:.72rem}
-  .cl .cmt{color:var(--code-cmt)}
+  .cl .cmt{color:var(--code-cmt);font-style:italic}
+  /* 语法着色（暗色终端配色，冷暖搭配助记：关键字暖金·类型冷蓝·数字绿·串红·函数浅金） */
+  pre.code .tk-kw{color:#e0a552;font-weight:600}
+  pre.code .tk-ty{color:#79b3c7}
+  pre.code .tk-num{color:#adc987}
+  pre.code .tk-str{color:#df9a86}
+  pre.code .tk-fn{color:#ecd8a0}
+  pre.code .tk-op{color:#a89e8c}
+  pre.code .tk-pp{color:#c78ea8}
   .cl.masked{cursor:pointer}
   .cl.masked .src{visibility:hidden}
   .cl.masked{background:repeating-linear-gradient(90deg,transparent 0 40px,rgba(255,255,255,.04) 40px 41px)}
@@ -90,8 +98,8 @@
 <div class="wrap">
   <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
   <header>
-    <h1>算法题训练场（14 个模板）</h1>
-    <div class="sub">408 算法设计题（通常为第 41 题）的 C 语言弹药库 · 提炼自 826 代码默写手册，已转 408/王道 C 口径 · 每个模板可开「默写模式」逐行自测</div>
+    <h1>算法题训练场（16 个模板）</h1>
+    <div class="sub">408 算法设计题（通常为第 41 题）的 C 语言弹药库 · 提炼自 826 代码默写手册，已转 408/王道 C 口径 · 结合王道教材逐章校订、补入真题实战套路 · 每个模板可开「默写模式」逐行自测</div>
   </header>
 
   <section class="card">
@@ -100,7 +108,7 @@
       <li><b>三段式作答，三段都给分</b>：① 算法思想（文字说清套路）② 代码（C / C++，规范伪代码通常也可）③ 时空复杂度。<span class="em">复杂度是白给的分，永远别忘写。</span></li>
       <li><b>暴力保底</b>：想不出最优解就写 O(n²) 暴力——408 评分通常仍给大部分分数；<span class="em">空着才是 0 分</span>。先写个暴力占住分，有时间再优化。</li>
       <li><b>先声明再动手</b>：结点/结构体定义、变量含义、边界假设先写清，阅卷人看得懂才有分。</li>
-      <li><b>套路优先</b>：408 算法题 80% 落在下面 14 个模板的变形上——反转、双指针、归并、划分、树递归、层次队列。先认出套路，再改模板。</li>
+      <li><b>套路优先</b>：408 算法题 80% 落在下面 16 个模板的变形上——反转、双指针（含间隔k/尾对齐）、归并、划分、树递归、层次队列、标记数组空间换时间。先认出套路，再改模板。</li>
       <li><b>默写训练法</b>：点开模板 → 读懂思路 → 开「默写模式」→ 在纸上写 → 逐行点击核对。合上书能写出【默】级模板，才算过关。</li>
     </ul>
   </section>
@@ -365,17 +373,89 @@ void DFS(Graph G, int v, int visited[]){
     return (cnt > n/2) ? cand : -1;       // -1=无主元素
 }`,
  trap:"摩尔投票最后不复核是错的（候选未必真过半）。这两道真题的共同启示：排序 O(n log n) / 计数 O(n) 空间的次优解都有分——先保底再冲最优。",
- src:"408-2011 / 408-2013 真题复盘"}
+ src:"408-2011 / 408-2013 真题复盘"},
+{tag:"list",must:1,name:"双指针·间隔 k / 尾对齐",
+ q:"一趟找单链表倒数第 k 个结点（408-2009）；找两链表公共后缀起点（408-2012）。",
+ idea:"让两个指针始终保持固定间隔：前指针先走 k 步，再两指针同步前进，前指针到尾时后指针恰在倒数第 k 个——一趟 O(n) 完成，胜过「先求长再走 n−k」的两趟。尾对齐（2012）同理：先让较长的链走完长度差，两链就「右端齐平」，再同步走到第一个相同（地址）结点即公共后缀起点。",
+ code:`int Search_k(LNode *L, int k){            // 带头结点,找倒数第k个 (408-2009)
+    LNode *p=L->next, *q=L->next;
+    int cnt=0;
+    while(p){
+        if(cnt<k) cnt++;                  // ① p 先独走 k 步
+        else q=q->next;                   // ② 之后 p、q 同步走
+        p=p->next;
+    }
+    if(cnt<k) return 0;                   // 长度不足 k，失败
+    printf("%d", q->data);  return 1;     // q = 倒数第 k 个
+}
+// 尾对齐找公共后缀起点(408-2012): 先算两链长la、lb,
+// 长的先走|la-lb|步 → 再同步走, 第一个 p==q(地址相同)即答案`,
+ trap:"比较公共结点用「地址相同」p==q，不是 data 值相等。间隔 k 双指针=链表题一趟解的通用套路，比两趟法更「高效」（真题题眼）。",
+ src:"408-2009 / 408-2012 真题复盘"},
+{tag:"arr",must:1,name:"标记数组·空间换时间",
+ q:"找未出现的最小正整数（408-2018）；删链表中绝对值重复的结点（408-2015）。",
+ idea:"当取值范围有界（如 0<data≤n 或 |data|≤n），就开一个大小 O(n) 的标记数组：一趟扫描按值打标记、一趟按需查询，把「两两比较 O(n²)」直接压到 O(n)。这是「以空间换时间」在数组/链表题里最常见的落地方式，题目里的值域约束就是暗示。",
+ code:`int MinMissing(int A[], int n){           // 未出现的最小正整数 (408-2018)
+    int *B = (int*)calloc(n+1, sizeof(int)); // B[1..n] 标记
+    for(int i=0;i<n;i++)
+        if(A[i]>0 && A[i]<=n) B[A[i]]=1;  // 只关心落在 [1,n] 的值
+    int i;
+    for(i=1;i<=n;i++) if(!B[i]) break;    // 第一个没被标记的
+    free(B);
+    return i;                             // 1~n 全出现则答案 n+1
+}
+// 408-2015 删绝对值重复: flag[|data|] 标记,首次出现留、再现即删`,
+ trap:"关键是先想清「答案/取值的上界」才能定标记数组大小：缺失最小正整数必在 [1,n+1]；|data|≤n 决定 flag 开 n+1。空间 O(n) 是「时间最优」的代价，题目只要求时间高效时就该用。",
+ src:"408-2018 / 408-2015 真题复盘"}
 ];
 
 /* ===== 渲染 ===== */
 const list=document.getElementById('list');
 let curF='all';
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+/* ---- C 语法着色 ---- */
+const KW=new Set('if else while for return switch case break continue do goto default sizeof'.split(' '));
+const TY=new Set('int char void float double long short unsigned signed struct typedef union enum const bool LNode LinkList LinkNode ElemType SqStack LiStack Stack Queue SqQueue LinkQueue BiTree BiTNode NODE stk elemtp size_t'.split(' '));
+function hlCode(seg){
+  const re=/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\d+(?:\.\d+)?)|([A-Za-z_]\w*)|(\s+)|([^\s\w])/g;
+  const toks=[]; let m;
+  while((m=re.exec(seg))) toks.push(m);
+  let out='';
+  toks.forEach((t,i)=>{
+    if(t[1]){ out+=`<span class="tk-str">${esc(t[1])}</span>`; }
+    else if(t[2]){ out+=`<span class="tk-num">${esc(t[2])}</span>`; }
+    else if(t[3]){
+      const w=t[3];
+      let nxt=''; for(let j=i+1;j<toks.length;j++){ if(toks[j][4]) continue; nxt=toks[j][0]; break; }
+      if(KW.has(w)) out+=`<span class="tk-kw">${esc(w)}</span>`;
+      else if(TY.has(w)) out+=`<span class="tk-ty">${esc(w)}</span>`;
+      else if(nxt==='(') out+=`<span class="tk-fn">${esc(w)}</span>`;
+      else out+=esc(w);
+    }
+    else if(t[4]){ out+=t[4]; }               // 空白原样保留
+    else if(t[5]){ out+=`<span class="tk-op">${esc(t[5])}</span>`; }
+  });
+  return out;
+}
+/* 找到不在字符串/字符字面量内的 // ，其后为行注释 */
+function splitComment(ln){
+  let inS=false,inC=false;
+  for(let i=0;i<ln.length-1;i++){
+    const ch=ln[i];
+    if(ch==='\\'){ i++; continue; }
+    if(!inC&&ch==='"') inS=!inS;
+    else if(!inS&&ch==="'") inC=!inC;
+    else if(!inS&&!inC&&ch==='/'&&ln[i+1]==='/') return [ln.slice(0,i), ln.slice(i)];
+  }
+  return [ln,''];
+}
 function codeHTML(code){
   return code.split('\n').map((ln,i)=>{
-    const m=ln.match(/^(.*?)(\/\/.*)?$/);
-    const body=esc(m[1]||'')+(m[2]?`<span class="cmt">${esc(m[2])}</span>`:'');
+    const [codePart,cmt]=splitComment(ln);
+    let body=/^\s*#/.test(codePart)                       // 预处理指令 #define/#include 整行浅粉
+      ? `<span class="tk-pp">${esc(codePart)}</span>`
+      : hlCode(codePart);
+    body+=cmt?`<span class="cmt">${esc(cmt)}</span>`:'';
     return `<span class="cl" data-l="${i}"><span class="no">${i+1}</span><span class="src">${body||' '}</span></span>`;
   }).join('');
 }

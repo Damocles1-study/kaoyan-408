@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>真题场 · 数据结构统考真题</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 练习系统首页</a>
+  <header>
+    <h1>真题场 · 数据结构统考真题</h1>
+    <div class="sub">自动汇集各章带「统考真题」标签的题目 · 默认<b>考试模式</b>（闭卷做完再交卷）· 可随机抽题模拟</div>
+  </header>
+  <div class="stats">
+    <div class="stat"><div class="v" id="cnt">–</div><div class="k">已收录真题</div></div>
+    <div class="stat"><div class="v" id="yrs">–</div><div class="k">覆盖年份</div></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h2>抽题设置</h2>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.88rem">
+      <label>随机抽 <input type="number" id="num" value="8" min="1" style="width:56px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)"> 题</label>
+      <button class="tbtn primary" id="go">🎲 抽一组</button>
+      <button class="tbtn" id="all">📚 全部真题（按年份顺序）</button>
+    </div>
+  </div>
+  <div id="root"></div>
+  <footer>真题标签来自各章章末标注（统考年份）· 更多年份随第2–8章铺开自动加入</footer>
+</div>
+<script src="data_ds.js"></script>
+<script src="engine.js"></script>
+<script>
+const exams=DSApp.pool({type:'exam'});
+document.getElementById('cnt').textContent=exams.length;
+const years=[...new Set(exams.map(q=>q.exam))].sort();
+document.getElementById('yrs').textContent=years.length?years.join(' / '):'—';
+
+let app=null;
+function mountRandom(){
+  const n=Math.max(1,parseInt(document.getElementById('num').value)||8);
+  app=DSApp.mount({root:'#root', scope:{type:'exam'}, scopeLabel:'真题场·随机',
+    mode:'exam', allowModeToggle:true, random:true, randomN:n, groupBySec:false, number:true});
+}
+function mountAll(){
+  app=DSApp.mount({root:'#root', scope:{type:'exam'}, scopeLabel:'真题场·全部',
+    mode:'exam', allowModeToggle:true, groupBySec:false, number:true});
+}
+document.getElementById('go').onclick=mountRandom;
+document.getElementById('all').onclick=mountAll;
+mountRandom();
+</script>
+</body>
+</html>
