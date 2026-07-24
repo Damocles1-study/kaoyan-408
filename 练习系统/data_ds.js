@@ -244,7 +244,7 @@ window.DS_DATA = [
  claude:'外 √n 层、内层累加 = n/2 级，选 B。又一个「看着像 n^1.5 其实是 n」的等差求和坑。',
  run:'实测：n 倍增次数倍率≈2.00 → O(n) ✅', verdict:'ok'},
 
-{id:'1.2-综1', ch:1, sec:'1.2 算法和算法评价', type:'subjective', tag:'', exam:null,
+{id:'1.2-综1', ch:1, sec:'1.2 算法和算法评价', type:'subjective', hints:['复杂度题不看循环体，只看循环变量怎么变、到什么条件停，凑成方程解出循环次数。','i 加常数→O(n)；i 乘/除 2→O(log n)；判 x*x&lt;n→O(√n)；嵌套循环看内层是否随外层变化，独立则相乘。'], tag:'', exam:null,
  kp:['复杂度·嵌套与求和'], codeStem:true,
  stem:'分析下列各程序段，求出算法的时间复杂度。',
  code:'①  i=1; k=0;\n    while(i<n-1){ k=k+10*i; i++; }\n\n②  y=0;\n    while((y+1)*(y+1)<=n) y=y+1;\n\n③  for(i=0;i<n;i++)\n        for(j=0;j<m;j++)\n            a[i][j]=0;',
@@ -625,42 +625,42 @@ window.DS_DATA = [
  claude:'“最小者前移”保证不漏配。这是 K 路有序序列求交集的通法，比两两求交更省。',
  run:'实测 A{1,2,3} B{2,3,4} C{-1,0,2} → 输出 2 ✅', verdict:'ok'},
 
-{id:'2.2-综10', ch:2, sec:'2.2 综合应用题', type:'subjective', tag:'2010 统考', exam:2010, kp:['算法·数组·逆置法'],
+{id:'2.2-综10', ch:2, sec:'2.2 综合应用题', type:'subjective', hints:['循环左移 p 位＝把「前 p 个」和「后 n−p 个」整体交换，用「三次逆置」最省空间。','先逆置前 p 个，再逆置后 n−p 个，最后整体逆置整个数组；时间 O(n)、空间 O(1)。'], tag:'2010 统考', exam:2010, kp:['算法·数组·逆置法'],
  stem:'【2010】设将 n(n&gt;1) 个整数存放到一维数组 R 中。设计一个在时间和空间两方面都尽可能高效的算法，将 R 中保存的序列循环左移 p(0&lt;p&lt;n) 个位置，即将 R 中的数据由 (X₀,X₁,…,X_{n-1}) 变换为 (X_p,X_{p+1},…,X_{n-1},X₀,X₁,…,X_{p-1})。',
  code:'void Rev(int R[],int l,int r){\n    while(l<r){int t=R[l];R[l]=R[r];R[r]=t;l++;r--;}\n}\nvoid LeftRotate(int R[],int n,int p){     // 循环左移 p 位\n    Rev(R,0,p-1);                         // ① 逆置前 p 个\n    Rev(R,p,n-1);                         // ② 逆置后 n-p 个\n    Rev(R,0,n-1);                         // ③ 整体逆置\n}',
  book:'经典三次逆置法：先逆前 p 个、再逆后 n−p 个、最后整体逆置。时间 O(n)、空间 O(1)——两方面都最优。（另有“借辅助数组”O(n)/O(p) 但空间更差）',
  claude:'与书答完全一致。口诀“分段逆，整体逆”。408 最高频算法真题之一，必须能默写。',
  run:'实测 [1..10] 左移 3 → [4,5,6,7,8,9,10,1,2,3] ✅', verdict:'ok'},
 
-{id:'2.2-综11', ch:2, sec:'2.2 综合应用题', type:'subjective', tag:'2011 统考', exam:2011, kp:['算法·折半·中位数'],
+{id:'2.2-综11', ch:2, sec:'2.2 综合应用题', type:'subjective', hints:['两个等长升序序列求总中位数：不合并，用二分「各砍一半」。','比两序列中位数 a、b：相等即答案；a&lt;b 则丢 A 前半、B 后半（对称保留使个数仍相等）；反之亦然，直到各剩一个取较小者。O(log n)。'], tag:'2011 统考', exam:2011, kp:['算法·折半·中位数'],
  stem:'【2011】一个长度为 L(L≥1) 的升序序列 S，处在第 ⌈L/2⌉ 个位置的数称为 S 的中位数。现有两个等长升序序列 A 和 B，设计一个在时间和空间两方面都尽可能高效的算法，找出两个序列 A 和 B 的中位数（即 A、B 全部元素合并后的中位数）。',
  code:'int M_Search(int A[], int B[], int n){\n    int s1=0,d1=n-1,s2=0,d2=n-1,m1,m2;\n    while(s1!=d1 || s2!=d2){\n        m1=(s1+d1)/2; m2=(s2+d2)/2;\n        if(A[m1]==B[m2]) return A[m1];    // 相等即中位数\n        if(A[m1]<B[m2]){                  // 舍 A 左半、B 右半(个数对称)\n            if((s1+d1)%2==0){s1=m1;   d2=m2;}   // 奇数个：保留中点\n            else            {s1=m1+1; d2=m2;}   // 偶数个\n        }else{                            // 舍 A 右半、B 左半\n            if((s1+d1)%2==0){d1=m1; s2=m2;}\n            else            {d1=m1; s2=m2+1;}\n        }\n    }\n    return A[s1]<B[s2]? A[s1] : B[s2];\n}',
  book:'算法思想：分别求 A、B 的中位数 a、b。若 a==b 即答案；若 a＜b 则中位数落在“A 的后半 + B 的前半”，两边各舍去一半（保持两段等长）；反之亦然。每轮规模减半，时间 O(log₂n)、空间 O(1)。',
  claude:'核心是“每次同时砍掉 A、B 各一半且保持对称”，把 O(n) 归并降到 O(log n)。边界的奇偶处理最易错，已对拍验证。',
  run:'实测 2000 组随机等长升序序列，与“合并后取上中位数”逐一比对，全部一致 ✅', verdict:'ok'},
 
-{id:'2.2-综12', ch:2, sec:'2.2 综合应用题', type:'subjective', tag:'2013 统考', exam:2013, kp:['算法·摩尔投票·主元素'],
+{id:'2.2-综12', ch:2, sec:'2.2 综合应用题', type:'subjective', hints:['主元素（出现次数&gt;n/2）用「摩尔投票」：候选 + 计数，不同抵消、相同累加。','一趟选候选（count 归 0 就换人）；再一趟数候选真实次数，&gt;n/2 才是主元素，否则不存在。O(n)/O(1)。'], tag:'2013 统考', exam:2013, kp:['算法·摩尔投票·主元素'],
  stem:'【2013】已知一个整数序列 A=(a₀,a₁,…,a_{n-1})，其中 0≤aᵢ&lt;n。若存在 a_{p1}=a_{p2}=…=a_{pm}=x 且 m&gt;n/2，则称 x 为 A 的主元素。请设计一个尽可能高效的算法，找出 A 的主元素；若存在则输出该元素，否则输出 −1。',
  code:'int Majority(int A[], int n){\n    int cand=A[0], cnt=1;                 // 摩尔投票选候选\n    for(int i=1;i<n;i++){\n        if(A[i]==cand) cnt++;\n        else if(--cnt==0){cand=A[i]; cnt=1;}\n    }\n    cnt=0;                                // 二次扫描确认票数\n    for(int i=0;i<n;i++) if(A[i]==cand) cnt++;\n    return cnt>n/2 ? cand : -1;\n}',
  book:'王道解法：一趟“计数抵消”选出候选（相同则加、不同则减，减到 0 换候选），再扫描一遍统计候选出现次数，＞n/2 才是主元素。时间 O(n)、空间 O(1)。',
  claude:'摩尔投票：主元素数量过半，一一抵消后必然幸存。务必要有第二趟确认——否则无主元素时会误报。与书同思路。',
  run:'实测 有主元素 {0,5,5,3,5,7,5,5} → 5；无主元素 {0,5,5,3,5,1,5,7} → −1 ✅', verdict:'ok'},
 
-{id:'2.2-综13', ch:2, sec:'2.2 综合应用题', type:'subjective', tag:'2018 统考', exam:2018, kp:['算法·标记数组·缺失正整数'],
+{id:'2.2-综13', ch:2, sec:'2.2 综合应用题', type:'subjective', hints:['缺失的最小正整数一定在 1..n+1 内，用「标记数组」把值当下标记录。','开 n+1 大小标记数组，遍历把 1≤A[i]≤n 的位置置真；再从 1 扫第一个没被标记的即答案。O(n) 时间 + O(n) 空间。'], tag:'2018 统考', exam:2018, kp:['算法·标记数组·缺失正整数'],
  stem:'【2018】给定一个含 n(n≥1) 个整数的数组，设计一个在时间上尽可能高效的算法，找出数组中未出现的最小正整数。例如 {−5,3,2,3} 中未出现的最小正整数是 1；{1,2,3} 中是 4。',
  code:'int MinMissing(int A[], int n){\n    int *B=(int*)malloc((n+1)*sizeof(int));\n    for(int i=0;i<=n;i++) B[i]=0;         // B[1..n] 标记 1~n 是否出现\n    for(int i=0;i<n;i++)\n        if(A[i]>0 && A[i]<=n) B[A[i]]=1;\n    int i;\n    for(i=1;i<=n;i++) if(B[i]==0) break;  // 第一个没出现的正整数\n    free(B);\n    return i;                             // 1~n 全出现则答案为 n+1\n}',
  book:'算法思想：n 个数中缺失的最小正整数必在 [1,n+1] 内，故只需关心 1~n 是否出现。用大小 n 的标记数组一趟标记、一趟从小到大找第一个未标记者。时间 O(n)、空间 O(n)——以空间换时间。',
  claude:'关键上界：答案不超过 n+1，所以＞n 或 ≤0 的数直接忽略。空间 O(n) 是“时间最优”的代价（题目只要求时间高效）。',
  run:'实测 {−5,3,2,3} → 1；{1,2,3} → 4 ✅', verdict:'ok'},
 
-{id:'2.2-综14', ch:2, sec:'2.2 综合应用题', type:'subjective', tag:'2020 统考', exam:2020, kp:['算法·多路指针·最小距离'],
+{id:'2.2-综14', ch:2, sec:'2.2 综合应用题', type:'subjective', hints:['三个升序数组各一指针求最小距离：谁最小谁前进的贪心。','算当前三元素距离（max−min）更新最小值；把三者里「最小的那个」指针右移；任一到头即停。O(n)。'], tag:'2020 统考', exam:2020, kp:['算法·多路指针·最小距离'],
  stem:'【2020】定义三元组 (a,b,c)(a,b,c 均为整数) 的距离 D=|a−b|+|b−c|+|c−a|。给定 3 个非空整数集合 S₁、S₂、S₃，按升序分别存储在 3 个数组中。设计一个尽可能高效的算法，计算并输出所有可能的三元组 (a,b,c)(a∈S₁,b∈S₂,c∈S₃) 中的最小距离。例 S₁={−1,0,9}, S₂={−25,−10,10,11}, S₃={2,9,17,30,41}，最小距离为 2。',
  code:'int abs_(int x){return x<0?-x:x;}\nint MinDistance(int S1[],int n1,int S2[],int n2,int S3[],int n3){\n    int i=0,j=0,k=0,best=0x7fffffff;\n    while(i<n1 && j<n2 && k<n3){\n        int a=S1[i],b=S2[j],c=S3[k];\n        int D=abs_(a-b)+abs_(b-c)+abs_(c-a);\n        if(D<best) best=D;\n        int m=a;                          // 三者最小\n        if(b<m)m=b; if(c<m)m=c;\n        if(m==a)i++; else if(m==b)j++; else k++; // 只前移最小者\n    }\n    return best;\n}',
  book:'算法思想：D 由“最大−最小”主导，要缩小距离只能增大当前最小值。三指针各指一集合，每轮算一次 D 更新答案，然后把“当前最小的那个元素”的指针后移。总步数 ≤ |S₁|+|S₂|+|S₃|，O(n) 时间、O(1) 空间。',
  claude:'贪心正确性：移动非最小者只会让距离不减，故只移最小者不漏最优。已用暴力三重循环对拍。',
  run:'实测 例子 → 2；另 1000 组随机升序集合与暴力三重循环逐一对拍，全部一致 ✅', verdict:'ok'},
 
-{id:'2.2-综15', ch:2, sec:'2.2 综合应用题', type:'subjective', tag:'2025 统考', exam:2025, kp:['算法·全局极值'],
+{id:'2.2-综15', ch:2, sec:'2.2 综合应用题', type:'subjective', hints:['两数组各取一个求最大乘积：只可能是「最大×最大」或「最小×最小」（负负得正）。','一趟求 A、B 各自的 max/min，比较 maxA×maxB 与 minA×minB 取大者。⚠️注意负数、且题目允许 j 含 i 的坑。O(n)。'], tag:'2025 统考', exam:2025, kp:['算法·全局极值'],
  stem:'【2025】有两个长度均为 n 的一维整型数组 A 和 res。对数组 A 中的每个元素 A[i]，计算 A[i] 与 A[j](0≤j≤n−1) 乘积的最大值，并保存到 res[i] 中。例 A[]={1,4,−9,6} 时 res[]={6,24,81,36}。函数原型 void calMulMax(int A[], int res[], int n)。',
  code:'void calMulMax(int A[], int res[], int n){\n    int mx=A[0], mn=A[0];\n    for(int i=1;i<n;i++){                  // 一趟求全局最大、最小\n        if(A[i]>mx) mx=A[i];\n        if(A[i]<mn) mn=A[i];\n    }\n    for(int i=0;i<n;i++){                  // A[i] 乘“最大”或“最小”取较大\n        int p1=A[i]*mx, p2=A[i]*mn;\n        res[i]= p1>p2 ? p1 : p2;\n    }\n}',
  book:'（2025 新真题）与 A[i] 相乘得最大值的对方，必是全局最大元素（当 A[i]≥0）或全局最小元素（当 A[i]＜0）。先 O(n) 求全局 max/min，再 O(n) 算每个 res[i]。总 O(n) 时间、O(1) 空间。',
@@ -781,14 +781,14 @@ window.DS_DATA = [
  claude:'“找中点 + 逆置后半 + 双指针配对”三连招，是 2019 重排(综20)、回文判断的同款套路。',
  run:'实测 [5,4,2,7] → 孪生和 max(5+7, 4+2)=12 ✅', verdict:'ok'},
 
-{id:'2.3-综17', ch:2, sec:'2.3 综合应用题', type:'subjective', tag:'2009 统考', exam:2009, kp:['算法·链表·倒数第k'],
+{id:'2.3-综17', ch:2, sec:'2.3 综合应用题', type:'subjective', hints:['单链表求倒数第 k 个，一趟搞定用「间隔 k 的双指针」。','快指针先走 k 步，然后快慢同步走；快指针到表尾时，慢指针正好指向倒数第 k 个。一趟 O(n)。'], tag:'2009 统考', exam:2009, kp:['算法·链表·倒数第k'],
  stem:'【2009】已知一个带表头结点的单链表，结点结构为 [data | link]，只给出头指针 list。在不改变链表的前提下，请设计一个尽可能高效的算法，查找链表中倒数第 k 个位置上的结点（k 为正整数）。若查找成功，输出该结点 data 域的值并返回 1；否则只返回 0。',
  code:'int Search_k(LinkList list, int k){\n    LNode *p=list->next, *q=list->next;  // 两指针都从首元结点出发\n    int cnt=0;\n    while(p){\n        if(cnt<k) cnt++;                 // 先让 p 单独走 k 步\n        else q=q->next;                  // 之后 p、q 同步走\n        p=p->next;\n    }\n    if(cnt<k) return 0;                   // 长度不足 k，失败\n    printf("%d", q->data);               // q 恰为倒数第 k 个\n    return 1;\n}',
  book:'算法思想：<b>双指针间隔 k</b>。p 先走 k 步，然后 p、q 同步前进；当 p 到达表尾（NULL）时，q 恰好指向倒数第 k 个结点。只遍历一趟，O(n)、空间 O(1)。',
  claude:'一趟解法，比“先求长再走 n−k 步”的两趟更优（题眼“尽可能高效”）。间隔 k 双指针是链表必杀技。',
  run:'实测 [1,2,3,4,5] 倒数第 2 → 输出 4、返回 1；k=6(超长)→ 返回 0 ✅', verdict:'ok'},
 
-{id:'2.3-综18', ch:2, sec:'2.3 综合应用题', type:'subjective', tag:'2012 统考', exam:2012, kp:['算法·链表·公共后缀'],
+{id:'2.3-综18', ch:2, sec:'2.3 综合应用题', type:'subjective', hints:['两单词链表的公共后缀＝从某结点起完全重合，先对齐长度再齐步走。','求两链表长度差 d，长的先走 d 步；两指针同步前进，第一个「结点地址相同」（比指针不比值）处即公共后缀起点。O(m+n)。'], tag:'2012 统考', exam:2012, kp:['算法·链表·公共后缀'],
  stem:'【2012】假定采用带头结点的单链表保存单词，当两个单词有相同的后缀时可共享相同的后缀存储空间（例 “loading” 和 “being” 共享后缀 “ing”）。设 str1 和 str2 分别指向两个单词所在链表的头结点，结点结构为 [data | next]，设计一个尽可能高效的算法，找出由 str1 和 str2 所指两链表共同后缀的起始位置（如图中字符 i 所在结点 p）。',
  fig:'图/ch2/2.3-综18_共享后缀存储映像.png', figcap:'原书图：loading 与 being 共享后缀 ing，p 即共同后缀起始结点（裁自王道 p.45）',
  code:'LNode *findCommon(LinkList str1, LinkList str2){\n    int la=0, lb=0; LNode *p=str1->next, *q=str2->next;\n    while(p){ la++; p=p->next; }           // 求两表长\n    while(q){ lb++; q=q->next; }\n    p=str1->next; q=str2->next;\n    for(; la>lb; la--) p=p->next;           // 长表先走 |la-lb| 步，尾对齐\n    for(; lb>la; lb--) q=q->next;\n    while(p && p!=q){ p=p->next; q=q->next; }// 同步走，第一个“同地址”结点即公共后缀起点\n    return p;\n}',
@@ -796,7 +796,7 @@ window.DS_DATA = [
  claude:'和综5（找公共结点）是<b>同一道题</b>！尾对齐后同步走。切记比较结点<b>地址</b>（p==q）而非 data 值。',
  run:'实测 loading / being → 公共后缀起点结点值 = ‘i’ ✅（算法比地址，此处以值验证逻辑）', verdict:'ok'},
 
-{id:'2.3-综19', ch:2, sec:'2.3 综合应用题', type:'subjective', tag:'2015 统考', exam:2015, kp:['算法·链表·标记数组去重'],
+{id:'2.3-综19', ch:2, sec:'2.3 综合应用题', type:'subjective', hints:['删绝对值重复：|data|≤n，用「标记数组」记某绝对值是否已出现。','开 n+1 标记数组，遍历链表：该 |data| 首次出现则保留并标记，再次出现则删除该结点。一趟 O(n) 时间换 O(n) 空间。'], tag:'2015 统考', exam:2015, kp:['算法·链表·标记数组去重'],
  stem:'【2015】用单链表保存 m 个整数，结点结构为 [data | link]，且 |data|≤n（n 为正整数）。设计一个时间上尽可能高效的算法，对链表中 data 的绝对值相等的结点，仅保留第一次出现的结点而删除其余绝对值相等的结点。例如给定 21→−15→−15→−7→15，删除后为 21→−15→−7。',
  fig:'图/ch2/2.3-综19_绝对值去重前后.png', figcap:'原书图：删除前后的 head 链表对照（裁自王道 p.45）',
  code:'void del_abs_dup(LinkList L, int n){\n    int *flag=(int*)malloc((n+1)*sizeof(int));\n    for(int i=0;i<=n;i++) flag[i]=0;      // 标记 |data| 是否出现过\n    LNode *pre=L, *p=L->next;\n    while(p){\n        int a = p->data>=0? p->data : -p->data;   // |data|\n        if(flag[a]==0){ flag[a]=1; pre=p; p=p->next; }        // 首次出现，保留\n        else { pre->next=p->next; free(p); p=pre->next; }      // 重复，删除\n    }\n    free(flag);\n}',
@@ -804,7 +804,7 @@ window.DS_DATA = [
  claude:'典型“空间换时间”：|data|≤n 这个约束就是暗示用标记数组把 O(m²) 降到 O(m)。与 2018 缺失最小正整数(综13)同套路。',
  run:'实测 [21,−15,−15,−7,15] (n=21) → [21,−15,−7] ✅', verdict:'ok'},
 
-{id:'2.3-综20', ch:2, sec:'2.3 综合应用题', type:'subjective', tag:'2019 统考', exam:2019, kp:['算法·链表·重排'],
+{id:'2.3-综20', ch:2, sec:'2.3 综合应用题', type:'subjective', hints:['把 (a1,a2,…,an) 重排成 (a1,an,a2,a(n−1),…)：三步——找中点、逆置后半、交替合并。','快慢指针找中点并断开；头插法逆置后半段；再从两段表头交替摘结点串起来。O(n)/O(1)。'], tag:'2019 统考', exam:2019, kp:['算法·链表·重排'],
  stem:'【2019】设线性表 L=(a₁,a₂,…,a_{n-1},aₙ) 采用带头结点的单链表保存。设计一个空间复杂度为 O(1) 且时间上尽可能高效的算法，重新排列 L 中各结点，得到 L′=(a₁,aₙ,a₂,a_{n-1},a₃,a_{n-2},…)。',
  code:'void rearrange(LinkList L){\n    // ① 快慢指针找中点（slow 停在前半末尾）\n    LNode *slow=L, *fast=L;\n    while(fast->next && fast->next->next){ slow=slow->next; fast=fast->next->next; }\n    // ② 逆置后半（slow->next 起）\n    LNode *p=slow->next, *pre=NULL, *r;\n    slow->next=NULL;\n    while(p){ r=p->next; p->next=pre; pre=p; p=r; }\n    // ③ 前半与逆置后半交替归并\n    LNode *a=L->next, *b=pre, *t;\n    while(b){ t=a->next; a->next=b; a=t;   // 插一个后半结点\n              t=b->next; b->next=a; b=t; }\n}',
  book:'算法思想：三步——① 快慢指针找中间结点；② 就地逆置后半段链表；③ 将前半段与逆置后的后半段<b>交替归并</b>。时间 O(n)、空间 O(1)。',
@@ -1186,7 +1186,7 @@ window.DS_DATA = [
  claude:'tag 法记忆点：谁最后动的手（入/出）决定 front==rear 是满还是空。相比“牺牲一单元”多存 1 个元素。',
  run:'实测 tag 法：连入 MaxSize 个后 front==rear&&tag==1 判满；全出后 front==rear&&tag==0 判空，全容量可用 ✅', verdict:'ok'},
 
-{id:'3.2-综2', ch:3, sec:'3.2 队列 · 综合应用题', type:'subjective', tag:'', exam:null, kp:['算法·栈逆置队列'],
+{id:'3.2-综2', ch:3, sec:'3.2 队列 · 综合应用题', type:'subjective', hints:['用一个空栈把队列元素逆置：栈「后进先出」，倒进去再倒回来顺序正好反。','队列逐个出队 push 入栈；栈非空则逐个 pop 出栈重新入队；一进一出即完成逆置。'], tag:'', exam:null, kp:['算法·栈逆置队列'],
  stem:'Q 是一个队列，S 是一个空栈，实现将队列中的元素逆置的算法。',
  code:'void Inverser(Stack &S, Queue &Q){\n    ElemType x;\n    while(!QueueEmpty(Q)){    // 队列元素全部出队并入栈\n        x=DeQueue(Q);\n        Push(S, x);\n    }\n    while(!StackEmpty(S)){    // 栈元素全部出栈并重新入队\n        Pop(S, x);\n        EnQueue(Q, x);\n    }\n}',
  book:'队列本身不能逆置元素，而<b>栈能把序列反过来</b>。做法：队列元素逐个出队入栈（此时顺序被倒），再逐个出栈回队，队列即被逆置。',
@@ -1463,9 +1463,9 @@ window.DS_DATA = [
 
 {id:'4.2-12', ch:4, sec:'4.2 串的模式匹配', type:'choice', tag:'2024 统考真题', exam:2024, kp:['KMP·nextval'], stem:'【2024 统考真题】KMP 算法使用修正后的 next 数组（即 nextval）进行模式匹配，模式串为 S=<code>aabaab</code>，当主串的某个字符与 S 的某个字符失配时，S 向右滑动的最长距离是（　）。', opts:['5','4','3','2'], ans:'A', book:'位序从 0 开始，先求 next 再修正为 nextval，逐位算滑动距离 j − nextval[j]：<table class="qtab"><tr><th>编号 j(从0)</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr><tr><td class="rowh">串</td><td>a</td><td>a</td><td>b</td><td>a</td><td>a</td><td>b</td></tr><tr><td class="rowh">next</td><td>-1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>2</td></tr><tr><td class="rowh">nextval</td><td>-1</td><td>-1</td><td>1</td><td>-1</td><td>-1</td><td>1</td></tr><tr><td class="rowh">j−nextval</td><td>1</td><td>2</td><td>1</td><td>4</td><td>5</td><td>4</td></tr></table>最长滑动距离出现在 j=4：5 − 0 = <b>5</b>（表中 j−nextval 一行的最大值）。选 A。', claude:'一致。<b>本题是"遍历取最大"，不是问某一位</b>——必须把每一位的 j−nextval[j] 都算出来再取 max，只算最后一位会得 4（选 B），这正是命题人埋的坑。<br>修正过程复核：next(0起)=[−1,0,1,0,1,2]；<br>j=1：S[1]=a 与 S[next[1]=0]=a 相同 → nextval[1]=nextval[0]=−1；<br>j=3：S[3]=a 与 S[0]=a 相同 → −1；j=4：S[4]=a 与 S[1]=a 相同 → nextval[4]=nextval[1]=−1，故 4−(−1)=5 最大。', run:'程序核验：nextval(0起)=[−1,−1,1,−1,−1,1]，j−nextval=[1,2,1,4,5,4] → max=5 ✅ 与书答 A 一致', verdict:'ok'},
 
-{id:'4.2-综1', ch:4, sec:'4.2 综合应用题', type:'subjective', tag:'', exam:null, kp:['KMP·next定义'], stem:'在字符串模式匹配的 KMP 算法中，求模式的 next 数组值的定义如下：<br>next[j] = 0（当 j=1 时）；= max{ k | 1＜k＜j 且 <code>p₁…p_{k−1}</code> = <code>p_{j−k+1}…p_{j−1}</code> }（当此集合不为空时）；= 1（其他情况）。<br>请回答：1）当 j=1 时，为什么要取 next[1]=0？　2）为什么要取 max{k}，k 最大是多少？　3）"其他情况"是什么情况，为什么取 next[j]=1？', book:'1）当模式串的第 1 个字符就与主串当前字符比较不相等时，next[1]=0 表示模式串应<b>右滑一位</b>，主串当前指针后移一位，再和模式串的第 1 个字符进行比较。（即 j=0 分支：i、j 同时加 1。）<br>2）当主串第 i 个字符与模式串第 j 个字符失配时，主串 i 不回溯，假定模式串第 k 个字符与主串第 i 个字符比较，k 应满足 1＜k＜j 且 <code>p₁…p_{k−1}</code> = <code>p_{j−k+1}…p_{j−1}</code>，即 k 为下次比较位置。满足条件的 k 可能有多个，<b>为了不使向右滑动丢失可能的匹配，右滑距离应该取最小</b>，因为 j−k 表示右滑的距离，所以取 max{k}。<b>k 的最大值为 j−1</b>。<br>3）除上面两种情况外（即已匹配部分不存在任何相等的真前后缀），发生失配时主串指针 i 不回溯，在最坏情况下，模式串从第 1 个字符开始与主串的第 i 个字符比较，故 next[j]=1。', claude:'三问其实是同一件事的三个角落，用一句话串起来：<b>next[j] 就是"失配后模式串还能保住多少已匹配的前缀"，滑得越少越安全</b>。<br>① j=1 时前面一个字符都没匹配上，无前缀可保，只能整体右滑一位——用 0 作为"没有可比位置"的哨兵，配合代码里 <code>if(j==0)</code> 分支让 i、j 同时加 1。<br>② k 越大 → 保留的前缀越长 → 右滑距离 j−k 越小 → 越不会跳过潜在匹配。取 max 是<b>为了不漏解</b>，不是为了快；k 最大 j−1（此时只滑 1 位）。<br>③ 没有任何相等前后缀 = k 只能取 1，模式串整体滑到当前失配位置重新比，next[j]=1。<br>⚠️ 这套定义是<b>位序从 1</b> 的版本；若位序从 0，三条分别变成 −1 / max{k} / 0，整体减 1。答题时先声明用哪种约定，阅卷才不会判错。', run:null, verdict:'ok'},
+{id:'4.2-综1', ch:4, sec:'4.2 综合应用题', type:'subjective', hints:['求 next 两法互验——PM 右移法（快）、递推法（稳）。','PM 法：逐位写「最长相等真前后缀」长度 → 整表右移一位、首位补 0。递推法：k=next[j−1]，比 p(j−1) 与 p(k)：相等 next[j]=k+1，否则 k←next[k] 退到 0 填 1。'], tag:'', exam:null, kp:['KMP·next定义'], stem:'在字符串模式匹配的 KMP 算法中，求模式的 next 数组值的定义如下：<br>next[j] = 0（当 j=1 时）；= max{ k | 1＜k＜j 且 <code>p₁…p_{k−1}</code> = <code>p_{j−k+1}…p_{j−1}</code> }（当此集合不为空时）；= 1（其他情况）。<br>请回答：1）当 j=1 时，为什么要取 next[1]=0？　2）为什么要取 max{k}，k 最大是多少？　3）"其他情况"是什么情况，为什么取 next[j]=1？', book:'1）当模式串的第 1 个字符就与主串当前字符比较不相等时，next[1]=0 表示模式串应<b>右滑一位</b>，主串当前指针后移一位，再和模式串的第 1 个字符进行比较。（即 j=0 分支：i、j 同时加 1。）<br>2）当主串第 i 个字符与模式串第 j 个字符失配时，主串 i 不回溯，假定模式串第 k 个字符与主串第 i 个字符比较，k 应满足 1＜k＜j 且 <code>p₁…p_{k−1}</code> = <code>p_{j−k+1}…p_{j−1}</code>，即 k 为下次比较位置。满足条件的 k 可能有多个，<b>为了不使向右滑动丢失可能的匹配，右滑距离应该取最小</b>，因为 j−k 表示右滑的距离，所以取 max{k}。<b>k 的最大值为 j−1</b>。<br>3）除上面两种情况外（即已匹配部分不存在任何相等的真前后缀），发生失配时主串指针 i 不回溯，在最坏情况下，模式串从第 1 个字符开始与主串的第 i 个字符比较，故 next[j]=1。', claude:'三问其实是同一件事的三个角落，用一句话串起来：<b>next[j] 就是"失配后模式串还能保住多少已匹配的前缀"，滑得越少越安全</b>。<br>① j=1 时前面一个字符都没匹配上，无前缀可保，只能整体右滑一位——用 0 作为"没有可比位置"的哨兵，配合代码里 <code>if(j==0)</code> 分支让 i、j 同时加 1。<br>② k 越大 → 保留的前缀越长 → 右滑距离 j−k 越小 → 越不会跳过潜在匹配。取 max 是<b>为了不漏解</b>，不是为了快；k 最大 j−1（此时只滑 1 位）。<br>③ 没有任何相等前后缀 = k 只能取 1，模式串整体滑到当前失配位置重新比，next[j]=1。<br>⚠️ 这套定义是<b>位序从 1</b> 的版本；若位序从 0，三条分别变成 −1 / max{k} / 0，整体减 1。答题时先声明用哪种约定，阅卷才不会判错。', run:null, verdict:'ok'},
 
-{id:'4.2-综2', ch:4, sec:'4.2 综合应用题', type:'subjective', tag:'', exam:null, kp:['KMP·next手算'], stem:'设有字符串 S=<code>aabaabaabaac</code>，P=<code>aabaac</code>。<br>1）求出 P 的 next 数组；<br>2）若 S 作为主串，P 作为模式串，试给出 KMP 算法的匹配过程。', book:'<b>1）</b>按 next 生成算法（位序从 1）：设 next[1]=0、next[2]=1；<br>j=3 时 k=next[2]=1，S[2]=a 与 S[1]=a 相等 → next[3]=k+1=2；<br>j=4 时 k=next[3]=2，S[3]=b 与 S[2]=a 不等 → 令 k=next[2]=1，S[3]=b 与 S[1]=a 仍不等 → k=next[1]=0 → next[4]=1；<br>j=5 时 k=next[4]=1，S[4]=a 与 S[1]=a 相等 → next[5]=2；<br>j=6 时 k=next[5]=2，S[5]=a 与 S[2]=a 相等 → next[6]=3。最后结果：<table class="qtab"><tr><th>编号 j</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr><tr><td class="rowh">串</td><td>a</td><td>a</td><td>b</td><td>a</td><td>a</td><td>c</td></tr><tr><td class="rowh">PM</td><td>0</td><td>1</td><td>0</td><td>1</td><td>2</td><td>0</td></tr><tr><td class="rowh">next</td><td>0</td><td>1</td><td>2</td><td>1</td><td>2</td><td>3</td></tr><tr><td class="rowh">nextval</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>3</td></tr></table>（也可以先求部分匹配值表 PM=0,1,0,1,2,0，右移一位加 1 得同样结果。）<br><b>2）</b>第一趟：从主串和模式串的第 1 个字符开始比较，失配时 i=6、j=6；<br>第二趟：next[6]=3，主串当前位置（i=6）和模式串的第 3 个字符继续比较，失配时 i=9、j=6；<br>第三趟：next[6]=3，主串当前位置（i=9）和模式串的第 3 个字符继续比较，匹配成功（主串第 7 位起）。', claude:'书答两问全部核对无误。补三条考场经验：<br>① <b>两种手算法互为验算</b>：递推法（k=next[j−1]，比 S[j−1] 与 S[k]，相等则 next[j]=k+1，否则 k←next[k] 继续退）和 PM 右移法结果必须一致，考场上求完用另一种扫一遍，30 秒查错。<br>② 本题 next 里出现 next[4]=1，正是"退到底也没有相等前后缀"的情形——手算时 k 一路退到 0 就填 1，别忘了这一步。<br>③ "给出匹配过程"这类题，答题纸上<b>每趟画一行对齐图</b>并标注 i、j 与 next 值，比只写结论得分高；主串一行始终不动（体现 i 不回溯），模式串一行往右挪。<br>我逐次模拟了整个过程：共 <b>14 次</b>字符比较，分 3 趟（6 次失配 → 4 次失配 → 4 次成功），匹配起点为主串第 7 位。', run:'程序模拟：next=[0,1,2,1,2,3]；KMP 共 14 次比较、3 趟，成功于第 7 位；同串暴力法要 24 次 ✅ 与书答一致', verdict:'ok'},
+{id:'4.2-综2', ch:4, sec:'4.2 综合应用题', type:'subjective', hints:['先手算 next，再塌陷成 nextval（出现 p(j)=p(next[j]) 就继续往回退）。','nextval[j]：若 p(j)=p(next[j]) 则 nextval[j]=nextval[next[j]]，否则 =next[j]。数比较次数：失配那次要算、j 退到 0 那步不算。'], tag:'', exam:null, kp:['KMP·next手算'], stem:'设有字符串 S=<code>aabaabaabaac</code>，P=<code>aabaac</code>。<br>1）求出 P 的 next 数组；<br>2）若 S 作为主串，P 作为模式串，试给出 KMP 算法的匹配过程。', book:'<b>1）</b>按 next 生成算法（位序从 1）：设 next[1]=0、next[2]=1；<br>j=3 时 k=next[2]=1，S[2]=a 与 S[1]=a 相等 → next[3]=k+1=2；<br>j=4 时 k=next[3]=2，S[3]=b 与 S[2]=a 不等 → 令 k=next[2]=1，S[3]=b 与 S[1]=a 仍不等 → k=next[1]=0 → next[4]=1；<br>j=5 时 k=next[4]=1，S[4]=a 与 S[1]=a 相等 → next[5]=2；<br>j=6 时 k=next[5]=2，S[5]=a 与 S[2]=a 相等 → next[6]=3。最后结果：<table class="qtab"><tr><th>编号 j</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr><tr><td class="rowh">串</td><td>a</td><td>a</td><td>b</td><td>a</td><td>a</td><td>c</td></tr><tr><td class="rowh">PM</td><td>0</td><td>1</td><td>0</td><td>1</td><td>2</td><td>0</td></tr><tr><td class="rowh">next</td><td>0</td><td>1</td><td>2</td><td>1</td><td>2</td><td>3</td></tr><tr><td class="rowh">nextval</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>3</td></tr></table>（也可以先求部分匹配值表 PM=0,1,0,1,2,0，右移一位加 1 得同样结果。）<br><b>2）</b>第一趟：从主串和模式串的第 1 个字符开始比较，失配时 i=6、j=6；<br>第二趟：next[6]=3，主串当前位置（i=6）和模式串的第 3 个字符继续比较，失配时 i=9、j=6；<br>第三趟：next[6]=3，主串当前位置（i=9）和模式串的第 3 个字符继续比较，匹配成功（主串第 7 位起）。', claude:'书答两问全部核对无误。补三条考场经验：<br>① <b>两种手算法互为验算</b>：递推法（k=next[j−1]，比 S[j−1] 与 S[k]，相等则 next[j]=k+1，否则 k←next[k] 继续退）和 PM 右移法结果必须一致，考场上求完用另一种扫一遍，30 秒查错。<br>② 本题 next 里出现 next[4]=1，正是"退到底也没有相等前后缀"的情形——手算时 k 一路退到 0 就填 1，别忘了这一步。<br>③ "给出匹配过程"这类题，答题纸上<b>每趟画一行对齐图</b>并标注 i、j 与 next 值，比只写结论得分高；主串一行始终不动（体现 i 不回溯），模式串一行往右挪。<br>我逐次模拟了整个过程：共 <b>14 次</b>字符比较，分 3 趟（6 次失配 → 4 次失配 → 4 次成功），匹配起点为主串第 7 位。', run:'程序模拟：next=[0,1,2,1,2,3]；KMP 共 14 次比较、3 趟，成功于第 7 位；同串暴力法要 24 次 ✅ 与书答一致', verdict:'ok'},
 
 {id:'4-思维拓展', ch:4, sec:'思维拓展', type:'subjective', tag:'', exam:null, kp:['算法·KMP实现'], stem:'编程实现：模式串在主串中有多少个完全匹配的子串？（注意：统考应不会考 KMP 算法题，本题用于把 next 的理解落到代码上。）', code:'/* 统计模式串 T 在主串 S 中出现的次数（允许重叠），KMP 版，位序从 1 */\nvoid get_next(SString T, int next[]){\n    int i=1, j=0;\n    next[1]=0;\n    while(i<T.length){\n        if(j==0 || T.ch[i]==T.ch[j]){ ++i; ++j; next[i]=j; }\n        else j=next[j];\n    }\n    /* 关键：多求一位 next[m+1]，供"匹配成功后继续找下一个"使用 */\n    i=T.length; j=next[i];\n    while(j>0 && T.ch[i]!=T.ch[j]) j=next[j];\n    next[T.length+1] = (T.ch[i]==T.ch[j]) ? j+1 : 1;\n}\n\nint CountKMP(SString S, SString T){\n    int next[MAXLEN], i=1, j=1, cnt=0;\n    get_next(T, next);\n    while(i<=S.length){\n        if(j==0 || S.ch[i]==T.ch[j]){\n            ++i; ++j;\n            if(j>T.length){             // 完成一次完整匹配\n                cnt++;\n                j = next[T.length+1];   // 不回退 i，直接借 next 找可重叠的下一次\n            }\n        }\n        else j=next[j];\n    }\n    return cnt;                          // 时间 O(m+n)，空间 O(m)\n}', book:'思路：在标准 KMP 匹配循环中，把"匹配成功即 return"改为"计数 +1 后继续"。继续时不能把 j 简单地置 1（那会漏掉重叠出现，如主串 <code>aaaa</code> 中的 <code>aa</code> 应算 3 次），而应令 j = next[m+1]，即把整个模式串当作"已匹配的前缀"再求一次 next，从其最长相等前后缀处接着比。时间复杂度 O(m+n)。<br>若题目只要求<b>不重叠</b>计数，则匹配成功后置 j=1 并让 i 从当前位置继续即可。', claude:'两点最容易写错：<br>① <b>next 只求到 m 是不够的</b>——匹配成功发生在 j=m+1，必须多推一位 next[m+1]（等于 PM[m]+1）才知道往回退到哪。<br>② 成功后<b>绝不能回退 i</b>，否则复杂度退化。<br>验证方式：拿朴素的"逐位截取比较"当对照组随机对拍，比自己盯代码可靠得多。', run:'已用 Python 等价实现与朴素法随机对拍 3000 组（字母表 {a,b}，主串长 1–20、模式长 1–5）：全部一致 ✅。定点核验：aaaa/aa=3，abababa/aba=3，mississippi/issi=2，aabaabaabaac/aabaac=1', verdict:'ok'},
 
