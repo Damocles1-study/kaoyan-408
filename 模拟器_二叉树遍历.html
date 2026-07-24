@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二叉树遍历步进器 · 先/中/后/层序动画 · 由两序列建树</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    --mono:"SF Mono","JetBrains Mono","Menlo",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding:0 0 60px}
+  .wrap{max-width:960px;margin:0 auto;padding:22px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:12px 0 18px}
+  h1{font-family:var(--serif);font-size:1.55rem;line-height:1.3}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:20px}
+  h2{font-size:1.02rem;color:var(--accent);margin-bottom:14px;font-family:var(--serif)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  select,input[type=text]{font-family:var(--mono);font-size:.9rem;color:var(--ink);background:var(--bg);
+    border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+  input[type=text]{flex:1;min-width:160px}
+  .btn{font-size:.85rem;border:1px solid var(--accent);background:none;color:var(--accent);
+    border-radius:8px;padding:6px 14px;cursor:pointer;font-family:var(--sans)}
+  .btn:hover{background:var(--accent-soft)}
+  .btn.primary{background:var(--accent);color:var(--card)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .preset{font-size:.78rem;border:1px solid var(--line);background:none;color:var(--muted);
+    border-radius:999px;padding:4px 12px;cursor:pointer}
+  .preset:hover{border-color:var(--accent);color:var(--accent)}
+  .seg{display:inline-flex;border:1px solid var(--accent);border-radius:9px;overflow:hidden}
+  .seg button{font-size:.82rem;border:none;background:var(--card);color:var(--accent);padding:6px 14px;cursor:pointer;font-family:var(--sans)}
+  .seg button.on{background:var(--accent);color:var(--card)}
+  svg{width:100%;height:auto;background:transparent;border-radius:10px}
+  .hint{font-size:.8rem;color:var(--muted)}
+  .seq{font-family:var(--mono);font-size:1.05rem;letter-spacing:.06em;margin-top:6px;min-height:1.6em;word-break:break-all}
+  .seq .cur{background:var(--hl);border:1px solid var(--hl-border);border-radius:5px;padding:0 5px;color:var(--ink)}
+  .desc{font-size:.86rem;color:var(--ink);background:var(--accent-soft);border-radius:8px;padding:8px 12px;margin-top:10px;min-height:2.4em}
+  .kbd{font-family:var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.82rem}
+  .ok{color:var(--green)} .bad{color:var(--red)}
+  table{border-collapse:collapse;font-size:.86rem;margin-top:8px}
+  td,th{border:1px solid var(--line);padding:5px 12px;text-align:center;font-family:var(--mono)}
+  th{background:var(--accent-soft);color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="练习系统/index.html">← 数据结构练习系统</a>
+  <header>
+    <h1>二叉树遍历步进器</h1>
+    <div class="sub">先序 / 中序 / 后序 / 层序逐结点动画 · 序列同步高亮 · 附「由两序列建树」自测。第 5 章配套。</div>
+  </header>
+
+  <section class="card">
+    <h2>① 造一棵树</h2>
+    <div class="row">
+      <span class="hint">预设：</span>
+      <button class="preset" data-t="A,B,C,D,E,#,F,#,#,G">王道经典(7结点)</button>
+      <button class="preset" data-t="1,2,3,4,5,6,7">满二叉树</button>
+      <button class="preset" data-t="A,B,#,C,#,D,#,E">左斜单支</button>
+      <button class="preset" data-t="A,B,C,#,D,#,#,#,#,E,F">不完全</button>
+    </div>
+    <div class="row">
+      <span class="hint">层序输入（<span class="kbd">#</span>=空，逗号分隔）：</span>
+      <input type="text" id="inp" value="A,B,C,D,E,#,F,#,#,G">
+      <button class="btn primary" id="build">画树</button>
+    </div>
+    <div class="hint">规则：按层从上到下、左到右填；某结点为空用 <span class="kbd">#</span> 占位（其子树整棵略去时后面的 # 可省）。</div>
+  </section>
+
+  <section class="card">
+    <h2>② 选遍历方式，单步观察</h2>
+    <div class="row">
+      <span class="seg" id="modeseg">
+        <button data-m="pre" class="on">先序 NLR</button>
+        <button data-m="in">中序 LNR</button>
+        <button data-m="post">后序 LRN</button>
+        <button data-m="level">层序 BFS</button>
+      </span>
+    </div>
+    <div class="row">
+      <button class="btn" id="prev">◀ 上一步</button>
+      <button class="btn" id="next">下一步 ▶</button>
+      <button class="btn" id="play">▷ 播放</button>
+      <button class="btn" id="reset">↺ 重置</button>
+      <span class="hint" id="stepinfo"></span>
+    </div>
+    <svg id="tree" viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="hint">已访问序列：</div>
+    <div class="seq" id="seq"></div>
+    <div class="desc" id="desc">选一种遍历，点「下一步」开始。绿色=已访问，金色=当前正在访问。</div>
+  </section>
+
+  <section class="card">
+    <h2>③ 三序列一览（结果对照）</h2>
+    <table id="alltab"><tbody></tbody></table>
+  </section>
+
+  <section class="card">
+    <h2>④ 由「先序 + 中序」建树自测</h2>
+    <div class="row">
+      <span class="hint">先序：</span><input type="text" id="pre2" value="ABDECF" style="max-width:180px">
+      <span class="hint">中序：</span><input type="text" id="in2" value="DBEAFC" style="max-width:180px">
+      <button class="btn" id="rebuild">建树并画</button>
+    </div>
+    <div class="desc" id="rbdesc">输入不含分隔符的两条序列（每个字符一个结点，字符互不相同），点「建树并画」——用「先序首=根，中序里切左右」递归重建，并核对能否唯一确定。</div>
+    <svg id="tree2" viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg"></svg>
+  </section>
+</div>
+
+<script>
+// ---------- 建树：层序数组(带#) → 结点树。队列消费法：每个非空结点依次取走两个孩子槽 ----------
+function buildLevel(arr){
+  if(!arr.length || arr[0]==='#') return null;
+  const root = {v:arr[0], l:null, r:null};
+  const q=[root]; let i=1;
+  while(q.length && i<arr.length){
+    const p=q.shift();
+    if(i<arr.length){ const lv=arr[i++]; if(lv!=='#'){ p.l={v:lv,l:null,r:null}; q.push(p.l);} }
+    if(i<arr.length){ const rv=arr[i++]; if(rv!=='#'){ p.r={v:rv,l:null,r:null}; q.push(p.r);} }
+  }
+  return root;
+}
+
+// ---------- 遍历，产出访问序列 + 每步描述 ----------
+function traverse(root, mode){
+  const steps=[]; // {node, seqSoFar:[...], desc}
+  const seq=[];
+  function rec(t, path){
+    if(!t) return;
+    if(mode==='pre'){ visit(t,'到达 '+t.v+'：先访问根，再去左、右子树'); rec(t.l); rec(t.r); }
+    else if(mode==='in'){ rec(t.l); visit(t,'左子树完 → 访问根 '+t.v+' → 去右子树'); rec(t.r); }
+    else if(mode==='post'){ rec(t.l); rec(t.r); visit(t,'左右子树都完 → 最后访问根 '+t.v); }
+  }
+  function visit(t,d){ seq.push(t.v); steps.push({node:t, seq:seq.slice(), desc:d}); }
+  if(mode==='level'){
+    const q=[root];
+    while(q.length){
+      const p=q.shift(); if(!p) continue;
+      seq.push(p.v);
+      let d='访问 '+p.v;
+      if(p.l||p.r){ d+='，其孩子 '+[p.l&&p.l.v,p.r&&p.r.v].filter(Boolean).join('、')+' 入队'; }
+      steps.push({node:p, seq:seq.slice(), desc:d});
+      if(p.l) q.push(p.l); if(p.r) q.push(p.r);
+    }
+  } else { rec(root); }
+  return steps;
+}
+
+// ---------- 布局：中序定 x、深度定 y ----------
+function layout(root){
+  const pos=new Map(); let x=0; const dx=56, dy=64, ox=40, oy=34;
+  (function ino(t,d){ if(!t) return; ino(t.l,d+1); pos.set(t,{x:ox+x*dx, y:oy+d*dy}); x++; ino(t.r,d+1); })(root,0);
+  return pos;
+}
+function nodesOf(root){ const a=[]; (function go(t){ if(!t) return; a.push(t); go(t.l); go(t.r);})(root); return a; }
+
+// ---------- 画树 ----------
+function draw(svgId, root, visited, current){
+  const svg=document.getElementById(svgId);
+  if(!root){ svg.innerHTML='<text x="40" y="40" fill="#b04a3a" font-size="14">空树</text>'; return; }
+  const pos=layout(root), all=nodesOf(root);
+  let maxx=0,maxy=0; pos.forEach(p=>{maxx=Math.max(maxx,p.x);maxy=Math.max(maxy,p.y);});
+  svg.setAttribute('viewBox',`0 0 ${maxx+40} ${maxy+40}`);
+  const cs=getComputedStyle(document.body);
+  const ink=cs.getPropertyValue('--ink').trim()||'#2b2b2b';
+  const line=cs.getPropertyValue('--line').trim()||'#ccc';
+  const green=cs.getPropertyValue('--green').trim(), gs=cs.getPropertyValue('--green-soft').trim();
+  const hl=cs.getPropertyValue('--hl').trim(), hlb=cs.getPropertyValue('--hl-border').trim();
+  let s='';
+  all.forEach(t=>{ const p=pos.get(t);
+    if(t.l){const c=pos.get(t.l); s+=`<line x1="${p.x}" y1="${p.y}" x2="${c.x}" y2="${c.y}" stroke="${line}" stroke-width="1.6"/>`;}
+    if(t.r){const c=pos.get(t.r); s+=`<line x1="${p.x}" y1="${p.y}" x2="${c.x}" y2="${c.y}" stroke="${line}" stroke-width="1.6"/>`;}
+  });
+  all.forEach(t=>{ const p=pos.get(t);
+    let fill='var(--card)', stroke=ink, tw='normal';
+    if(current===t){ fill=hl; stroke=hlb; tw='bold'; }
+    else if(visited&&visited.has(t)){ fill=gs; stroke=green; }
+    s+=`<circle cx="${p.x}" cy="${p.y}" r="16" fill="${fill}" stroke="${stroke}" stroke-width="1.8"/>`;
+    s+=`<text x="${p.x}" y="${p.y+5}" text-anchor="middle" font-size="14" fill="${ink}" font-weight="${tw}">${t.v}</text>`;
+  });
+  svg.innerHTML=s;
+}
+
+// ---------- 状态机 ----------
+let root=null, mode='pre', steps=[], si=-1, timer=null;
+function rebuild(){
+  const arr=document.getElementById('inp').value.split(',').map(s=>s.trim()).filter(s=>s!=='');
+  root=buildLevel(arr);
+  computeSteps(); renderAllTable();
+}
+function computeSteps(){ steps=root?traverse(root,mode):[]; si=-1; render(); }
+function render(){
+  const visited=new Set(), cur = si>=0 ? steps[si].node : null;
+  for(let k=0;k<si;k++) visited.add(steps[k].node);
+  draw('tree', root, visited, cur);
+  const seqArr = si>=0 ? steps[si].seq : [];
+  const seqEl=document.getElementById('seq');
+  seqEl.innerHTML = seqArr.map((v,idx)=> idx===seqArr.length-1 && si>=0 ? `<span class="cur">${v}</span>` : v).join(' ');
+  document.getElementById('desc').textContent = si>=0 ? steps[si].desc : '绿色=已访问，金色=当前正在访问。点「下一步」开始。';
+  document.getElementById('stepinfo').textContent = steps.length ? `第 ${si+1} / ${steps.length} 步` : '';
+  document.getElementById('prev').disabled = si<0;
+  document.getElementById('next').disabled = si>=steps.length-1;
+}
+function step(d){ si=Math.max(-1,Math.min(steps.length-1,si+d)); render(); }
+function play(){
+  if(timer){ clearInterval(timer); timer=null; document.getElementById('play').textContent='▷ 播放'; return; }
+  if(si>=steps.length-1) si=-1;
+  document.getElementById('play').textContent='⏸ 暂停';
+  timer=setInterval(()=>{ if(si>=steps.length-1){ clearInterval(timer); timer=null; document.getElementById('play').textContent='▷ 播放'; return;} step(1); }, 750);
+}
+function renderAllTable(){
+  const tb=document.querySelector('#alltab tbody');
+  if(!root){ tb.innerHTML='<tr><td>空树</td></tr>'; return; }
+  const g=m=>traverse(root,m).map(s=>s.node.v).join(' ');
+  tb.innerHTML=
+    `<tr><th>先序 NLR</th><td>${g('pre')}</td></tr>`+
+    `<tr><th>中序 LNR</th><td>${g('in')}</td></tr>`+
+    `<tr><th>后序 LRN</th><td>${g('post')}</td></tr>`+
+    `<tr><th>层序 BFS</th><td>${g('level')}</td></tr>`;
+}
+
+// ---------- ④ 先序+中序建树 ----------
+function buildPreIn(pre,ino){
+  if(!pre.length) return null;
+  const r=pre[0], k=ino.indexOf(r);
+  if(k<0) return {v:r,l:null,r:null,_bad:true};
+  const node={v:r,l:null,r:null};
+  node.l=buildPreIn(pre.slice(1,1+k), ino.slice(0,k));
+  node.r=buildPreIn(pre.slice(1+k), ino.slice(k+1));
+  return node;
+}
+function rebuildFromSeq(){
+  const pre=document.getElementById('pre2').value.trim().split('');
+  const ino=document.getElementById('in2').value.trim().split('');
+  const d=document.getElementById('rbdesc');
+  const setp=new Set(pre), seti=new Set(ino);
+  if(pre.length!==ino.length || pre.length===0){ d.innerHTML='<span class="bad">两序列长度必须相等且非空。</span>'; draw('tree2',null); return; }
+  if(setp.size!==pre.length){ d.innerHTML='<span class="bad">先序中有重复字符，无法唯一建树。</span>'; draw('tree2',null); return; }
+  if([...setp].some(c=>!seti.has(c))||setp.size!==seti.size){ d.innerHTML='<span class="bad">先序与中序的字符集合不一致。</span>'; draw('tree2',null); return; }
+  const t=buildPreIn(pre,ino);
+  draw('tree2',t,null,null);
+  d.innerHTML='<span class="ok">✅ 建树成功（先序+中序可唯一确定）。</span> 核对：先序='+nodesOf(t).map(n=>n.v).join('')+'（NLR）。可对照上方步进器逐序验证。';
+}
+
+// ---------- 绑定 ----------
+document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>{ document.getElementById('inp').value=b.dataset.t; rebuild(); });
+document.getElementById('build').onclick=rebuild;
+document.getElementById('inp').addEventListener('keydown',e=>{ if(e.key==='Enter') rebuild(); });
+document.querySelectorAll('#modeseg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#modeseg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); mode=b.dataset.m; if(timer){clearInterval(timer);timer=null;document.getElementById('play').textContent='▷ 播放';} computeSteps();
+});
+document.getElementById('prev').onclick=()=>step(-1);
+document.getElementById('next').onclick=()=>step(1);
+document.getElementById('play').onclick=play;
+document.getElementById('reset').onclick=()=>{ si=-1; if(timer){clearInterval(timer);timer=null;document.getElementById('play').textContent='▷ 播放';} render(); };
+document.getElementById('rebuild').onclick=rebuildFromSeq;
+document.addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT') return; if(e.key==='ArrowRight'){step(1);e.preventDefault();} if(e.key==='ArrowLeft'){step(-1);e.preventDefault();} });
+
+rebuild(); rebuildFromSeq();
+</script>
+</body>
+</html>

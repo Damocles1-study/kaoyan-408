@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 280" font-family="Georgia,serif">
+<line x1="150" y1="83" x2="63.0" y2="138" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="150" y1="83" x2="237.0" y2="138" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="300" y1="28" x2="150" y2="83" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="363.0" y1="138" x2="312.54" y2="193" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="363.0" y1="138" x2="413.46" y2="193" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="450" y1="83" x2="363.0" y2="138" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="450" y1="83" x2="537.0" y2="138" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="300" y1="28" x2="450" y2="83" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="300" cy="28" r="15" fill="#fff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="300" y="33" text-anchor="middle" font-size="13" fill="#2b2b2b">89</text>
+<circle cx="150" cy="83" r="15" fill="#fff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="150" y="88" text-anchor="middle" font-size="13" fill="#2b2b2b">37</text>
+<circle cx="63.0" cy="138" r="15" fill="#fff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="63.0" y="143" text-anchor="middle" font-size="13" fill="#2b2b2b">16</text>
+<circle cx="237.0" cy="138" r="15" fill="#fff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="237.0" y="143" text-anchor="middle" font-size="13" fill="#2b2b2b">21</text>
+<circle cx="450" cy="83" r="15" fill="#fff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="450" y="88" text-anchor="middle" font-size="13" fill="#2b2b2b">52</text>
+<circle cx="363.0" cy="138" r="15" fill="#fff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="363.0" y="143" text-anchor="middle" font-size="13" fill="#2b2b2b">22</text>
+<circle cx="312.54" cy="193" r="15" fill="#fff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="312.54" y="198" text-anchor="middle" font-size="13" fill="#2b2b2b">10</text>
+<circle cx="413.46" cy="193" r="15" fill="#fff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="413.46" y="198" text-anchor="middle" font-size="13" fill="#2b2b2b">12</text>
+<circle cx="537.0" cy="138" r="15" fill="#fff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="537.0" y="143" text-anchor="middle" font-size="13" fill="#2b2b2b">30</text>
+</svg>

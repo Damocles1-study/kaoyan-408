@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>练习 · 数据结构 第5章 树与二叉树</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 练习系统首页</a>
+  <header>
+    <h1>数据结构 · 第5章　树与二叉树</h1>
+    <div class="sub">题源：27 王道《数据结构》第 5 章本节试题精选 · 每题「📕书答案 × 🤖运行核对」交叉验证 ·
+      <a href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf" style="color:var(--accent)">📄 打开本章电子书</a></div>
+  </header>
+  <div class="verdict ok" style="margin-top:16px;background:var(--green-soft);color:var(--green)">✅ <b>整章完成（全书最大章，70 页）＝ 161 题</b>：5.1 树的基本概念（13）+ 5.2 二叉树的概念（36）+ 5.3 遍历与线索二叉树（60）+ 5.4 树、森林（26）+ 5.5 哈夫曼树与并查集（26）。</div>
+  <div class="verdict ok" style="background:var(--green-soft);color:var(--green)">✅ 含 <b>27 道统考真题</b>（2009×3、2010×3、2011×4、2012、2013、2014×4、2015×2、2016×2、2017×3、2018×2、2019×2、2020×3、2021×2、2022×4、2023×2、2024、2025×3）。<b>选择题答案全部由程序独立复算</b>（枚举完全二叉树 / 暴力枚举全部二叉树形态 / 随机多叉树·正则 k 叉树 / 森林↔二叉树真实转换 / 真实构造哈夫曼树算 WPL·编码·深度 / LCA 52 万对对拍），127 道选择题与书答逐题一致；25 道算法/综合题全部用可运行 Python 与暴力法对拍。</div>
+  <div class="verdict" style="background:var(--amber-soft);color:var(--amber)">📌 <b>本章铁律，先背再做题</b>：① 树 —— Σ度数 = n−1；② 二叉树 —— <b>n<sub>0</sub> = n<sub>2</sub>+1</b>；③ 遍历唯一确定二叉树<b>必须含中序</b>；④ 树森林↔二叉树用<b>"左孩子右兄弟"</b>：树先根=BT先序、树后根=BT<b>中序</b>；森林树数 = BT根的<b>右链</b>长；森林叶数 = BT<b>左指针为空</b>的结点数（≠BT叶数！）；⑤ 哈夫曼树 = 严格二叉树（无度1）、2n−1 个结点、<b>WPL = 内部结点权值之和</b>；⑥ 前缀码 ⟺ 每个码字都在编码树的叶结点。</div>
+  <div id="root"></div>
+  <footer>161 题 · 书答×运行核对逐题一致 · 全章完成 ✅</footer>
+</div>
+<script src="data_ds.js"></script>
+<script src="engine.js"></script>
+<script>
+DSApp.mount({root:'#root', scope:{type:'chapter',ch:5}, scopeLabel:'第5章',
+  mode:'practice', allowModeToggle:true, groupBySec:true});
+</script>
+</body>
+</html>
