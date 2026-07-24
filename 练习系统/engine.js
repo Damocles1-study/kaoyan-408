@@ -5,7 +5,7 @@
      ds_wrong_v1     错题本 {qid:{n:错次, res:是否已消化, ts:最近}}
 */
 (function(){
-const LS_A='ds_attempts_v1', LS_W='ds_wrong_v1';
+const LS_A='ds_attempts_v1', LS_W='ds_wrong_v1', LS_CV='ds_codeveil_v1';
 const $=(s,r)=>(r||document).querySelector(s);
 const byId=id=>DS_DATA.find(q=>q.id===id);
 
@@ -19,6 +19,15 @@ function resolveWrong(qid){const w=wrongBook();if(w[qid]){w[qid].res=true;w[qid]
 function stripHtml(h){const d=document.createElement('div');d.innerHTML=h;return d.textContent.replace(/\s+/g,' ').trim();}
 /* 代码块是纯源码，含 < > & 必须转义，否则 <n/2) 之类会被当成 HTML 标签吞掉 */
 function escCode(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ---------- 参考代码遮罩 ----------
+   综合应用题的 code 字段放的是「参考实现」＝答案的一部分，直接摊在题干下面等于送答案。
+   规则：subjective 且未标 codeStem 的 code 一律当答案代码 → 收进核对面板并默认打码；
+        codeStem:true 表示这段代码是题目给的（如「分析下列程序段的复杂度」），照常显示在题干里。
+   全局开关存 localStorage：true=默认遮住（默认值），false=默认直接展开。 */
+function isAnsCode(q){return q.type==='subjective' && q.code && !q.codeStem;}
+function veilOn(){const v=load(LS_CV,true);return v!==false;}
+function setVeil(v){save(LS_CV,!!v);}
 
 /* ---------- 题池 ---------- */
 function pool(scope){
@@ -38,7 +47,10 @@ function qHtml(q,idx){
     +(q.tag?'<span class="tag">'+q.tag+'</span>':'')
     +(q.kp&&q.kp[0]?'<span class="kp">'+q.kp[0]+'</span>':'')
     +' '+q.stem+'</div>';
-  if(q.code)h+='<pre class="code">'+escCode(q.code)+'</pre>';
+  if(q.code&&!isAnsCode(q))h+='<pre class="code">'+escCode(q.code)+'</pre>';
+  /* fig：题干配图（裁自王道原书扫描件）。只在「不看图做不了题」时才配。 */
+  if(q.fig)h+='<figure class="qfig"><img src="'+q.fig+'" alt="题图" loading="lazy">'
+    +(q.figcap?'<figcaption>'+q.figcap+'</figcaption>':'')+'</figure>';
   if(q.type==='choice'){
     h+='<div class="opts">';
     ['A','B','C','D','E'].forEach((k,i)=>{if(q.opts[i]!==undefined)
@@ -47,9 +59,16 @@ function qHtml(q,idx){
   }
   h+='<button class="reveal">看核对 ▾</button>';
   h+='<div class="ans"><div class="tracks">';
-  h+='<div class="track book"><h4>📕 王道书答案</h4>'+(q.type==='choice'?'<div class="final">'+q.ans+'</div>':'')+'<div>'+q.book+'</div></div>';
+  h+='<div class="track book"><h4>📕 王道书答案</h4>'+(q.type==='choice'?'<div class="final">'+q.ans+'</div>':'')+'<div>'+q.book+'</div>'
+    +(q.figA?'<figure class="qfig"><img src="'+q.figA+'" alt="答案图" loading="lazy">'
+      +(q.figAcap?'<figcaption>'+q.figAcap+'</figcaption>':'')+'</figure>':'')+'</div>';
   h+='<div class="track claude"><h4>🤖 Claude 运行核对</h4><div>'+q.claude+'</div>'+(q.run?'<div class="run">▸ '+q.run+'</div>':'')+'</div>';
   h+='</div>';
+  /* 参考实现：默认打码，点一下才看——先在纸上写完再对，才有练算法大题的意义 */
+  if(isAnsCode(q))
+    h+='<div class="codeans"><h4>💻 参考实现（C · Claude 写并实测）</h4>'
+      +'<div class="codewrap'+(veilOn()?' veiled':'')+'"><pre class="code">'+escCode(q.code)+'</pre>'
+      +'<button class="codepeek">✍️ 建议先自己默写 —— 点这里显示参考代码</button></div></div>';
   const vc=q.verdict==='warn'?'warn':'ok';
   const vt=q.verdict==='warn'?'⚠️ 存疑 · 见右栏，最终由你裁决':'✅ 两方一致'+(q.type==='choice'?'（书答 '+q.ans+'）':'');
   h+='<div class="verdict '+vc+'">'+vt+'</div>';
@@ -79,6 +98,8 @@ function mount(cfg){
         +'<button data-mode="exam" class="'+(state.mode==='exam'?'on':'')+'">📝 考试模式</button></div>';
     }
     if(cfg.random)h+='<button class="tbtn" id="btnReshuffle">🎲 换一组</button>';
+    if(state.items.some(isAnsCode))
+      h+='<button class="tbtn" id="btnCodeVeil">'+(veilOn()?'💻 参考代码：遮住':'💻 参考代码：直接显示')+'</button>';
     h+='<span class="spacer"></span>';
     h+='<span class="hint" id="modeHint"></span>';
     h+='<button class="tbtn primary" id="btnSettle">'+(state.mode==='exam'?'✅ 交卷判分':'📊 结算这组')+'</button>';
@@ -122,6 +143,12 @@ function mount(cfg){
       state.mode=b.dataset.mode; state.answers={}; state.submitted=false; render();
     });
     const rs=$('#btnReshuffle'); if(rs)rs.onclick=()=>{buildItems();render();};
+    const cv=$('#btnCodeVeil'); if(cv)cv.onclick=()=>{
+      const on=!veilOn(); setVeil(on);
+      cv.textContent=on?'💻 参考代码：遮住':'💻 参考代码：直接显示';
+      root.querySelectorAll('.codewrap').forEach(w=>w.classList.toggle('veiled',on));
+      toast(on?'参考代码已重新打码——先自己写':'参考代码默认展开（当作范例通读时用）');
+    };
     if($('#btnSettle'))$('#btnSettle').onclick=settle;
     if($('#btnSettle2'))$('#btnSettle2').onclick=settle;
 
@@ -144,6 +171,9 @@ function mount(cfg){
           markCard(qd,ok);
         }
       });
+      // 参考代码打码 → 点一下揭开（只影响这一题）
+      const pk=$('.codepeek',qd);
+      if(pk)pk.onclick=()=>$('.codewrap',qd).classList.remove('veiled');
       // 展开
       const rv=$('.reveal',qd);
       rv.onclick=()=>{const a=$('.ans',qd);const op=a.classList.toggle('open');rv.textContent=op?'收起核对 ▴':'看核对 ▾';};
@@ -234,6 +264,18 @@ function mount(cfg){
   }
 
   render();
+
+  /* 支持从套路库/错题本直接跳到某题：第3章.html#Q_3.1-14
+     题目是 JS 渲染的，浏览器原生锚点跳转会落空，这里渲染完再手动定位并高亮。 */
+  if(location.hash.startsWith('#Q_')){
+    const el=document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if(el)setTimeout(()=>{
+      el.scrollIntoView({behavior:'smooth',block:'center'});
+      el.style.transition='box-shadow .4s';
+      el.style.boxShadow='0 0 0 3px var(--accent)';
+      setTimeout(()=>el.style.boxShadow='',1600);
+    },60);
+  }
   return {render, state};
 }
 
@@ -252,7 +294,7 @@ function renderStats(sel){
     +'<div class="stat"><div class="v">'+closed.length+'</div><div class="k">其中闭卷</div></div>'
     +'<div class="stat"><div class="v">'+avg+'%</div><div class="k">闭卷平均正确率</div></div>'
     +'<div class="stat"><div class="v">'+wrongUnres.length+'</div><div class="k">未消化错题</div></div>'
-    +'<div class="stat"><div class="v">'+DS_DATA.length+'</div><div class="k">题库题数（第1章）</div></div>'
+    +'<div class="stat"><div class="v">'+DS_DATA.length+'</div><div class="k">题库题数（第'+DS_META.chapters.filter(c=>c.ready).map(c=>c.id).join('/')+'章）</div></div>'
     +'</div>';
 
   // 正确率趋势

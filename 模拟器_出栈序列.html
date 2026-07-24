@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出栈序列判定器 · 合法性 / 计数 / 栈深峰值</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    --mono:"SF Mono","JetBrains Mono","Menlo",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:60px}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:14px}
+
+  .ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .ctrl label{font-size:.85rem;color:var(--muted)}
+  select,input[type=text]{font-family:var(--mono);font-size:.9rem;color:var(--ink);background:var(--bg);
+    border:1px solid var(--line);border-radius:8px;padding:5px 10px}
+  input[type=text]{width:200px}
+  .btn{font-size:.85rem;border:1px solid var(--accent);background:none;color:var(--accent);
+    border-radius:8px;padding:5px 14px;cursor:pointer;font-family:var(--sans)}
+  .btn:hover{background:var(--accent-soft)}
+  .btn.primary{background:var(--accent);color:var(--card)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .preset{font-size:.78rem;border:1px solid var(--line);background:none;color:var(--muted);
+    border-radius:999px;padding:3px 12px;cursor:pointer}
+  .preset:hover{color:var(--accent);border-color:var(--accent)}
+
+  .stage{display:grid;grid-template-columns:180px 1fr;gap:24px;align-items:start;margin-top:8px}
+  @media (max-width:700px){.stage{grid-template-columns:1fr}}
+
+  /* 栈：从下往上长 */
+  .stackbox{border:2px solid var(--line);border-top:none;border-radius:0 0 10px 10px;
+    min-height:200px;display:flex;flex-direction:column-reverse;padding:6px;gap:5px;background:var(--bg)}
+  .cellbox{width:100%;height:34px;border:1px solid var(--accent);background:var(--accent-soft);
+    color:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-weight:700;font-size:1rem}
+  .cellbox.top{background:var(--accent);color:var(--card)}
+  .stacklab{font-size:.75rem;color:var(--muted);text-align:center;margin-top:6px}
+  .peak{font-size:.8rem;color:var(--purple);text-align:center;margin-top:4px}
+
+  .seqrow{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0 14px}
+  .tok{min-width:34px;height:34px;padding:0 8px;display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--line);border-radius:8px;font-family:var(--serif);font-weight:700;color:var(--muted);background:var(--bg)}
+  .tok.done{color:var(--ink);border-color:var(--accent);background:var(--accent-soft)}
+  .tok.cur{background:var(--accent);color:var(--card);border-color:var(--accent)}
+  .tok.bad{background:var(--red-soft);color:var(--red);border-color:var(--red)}
+  .lab{font-size:.78rem;color:var(--muted);margin-bottom:2px}
+
+  .expl{background:var(--accent-soft);border-radius:10px;padding:14px 16px;font-size:.92rem;min-height:96px}
+  .expl b{color:var(--accent)}
+  .expl .ok{color:var(--green);font-weight:700}
+  .expl .no{color:var(--red);font-weight:700}
+  .ops{font-family:var(--mono);font-size:.85rem;color:var(--blue);margin-top:8px;word-break:break-all}
+
+  .result{border-radius:10px;padding:12px 16px;font-size:.95rem;margin-top:14px;display:none}
+  .result.show{display:block}
+  .result.good{background:var(--green-soft);color:var(--green)}
+  .result.bad{background:var(--red-soft);color:var(--red)}
+
+  .enumbox{margin-top:12px;max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:12px}
+  .enumbox .item{display:inline-block;font-family:var(--mono);font-size:.82rem;border:1px solid var(--line);
+    border-radius:6px;padding:2px 8px;margin:3px}
+  .enumbox .item.match{background:var(--green-soft);color:var(--green);border-color:var(--green);font-weight:700}
+  .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+  .cnt{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 14px;font-size:.85rem}
+  .cnt b{font-family:var(--serif);font-size:1.1rem;color:var(--accent)}
+  .note{font-size:.85rem;color:var(--muted);margin-top:10px;line-height:1.8}
+  .note code{font-family:var(--mono);background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:1px 5px}
+  table.kv{border-collapse:collapse;font-size:.85rem;margin-top:8px;width:100%}
+  table.kv th,table.kv td{border:1px solid var(--line);padding:5px 9px;text-align:left}
+  table.kv th{background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>出栈序列判定器</h1>
+    <div class="sub">合法性单步模拟 · 全部合法序列枚举（对照卡特兰数）· 栈深峰值 · 支持「不许连续 k 次出栈」约束（2010 真题）</div>
+  </header>
+
+  <section class="card">
+    <h2>① 单步模拟：这个出栈序列合法吗</h2>
+    <div class="ctrl">
+      <label>入栈序列</label><input type="text" id="inSeq" value="a,b,c,d">
+      <label>目标出栈序列</label><input type="text" id="outSeq" value="d,c,a,b">
+      <label>不许连续出栈次数 ≥</label>
+      <select id="limK">
+        <option value="0">无约束</option>
+        <option value="3">3（2010 真题）</option>
+        <option value="2">2</option>
+        <option value="4">4</option>
+      </select>
+      <button class="btn primary" id="btnRun">重新开始</button>
+      <button class="btn" id="btnStep">下一步 ▸</button>
+      <button class="btn" id="btnAuto">▶ 自动播放</button>
+    </div>
+    <div class="ctrl">
+      <span style="font-size:.78rem;color:var(--muted)">真题预设：</span>
+      <button class="preset" data-in="a,b,c,d,e,f" data-out="c,a,b,d,e,f" data-k="0">课后题 · cabdef</button>
+      <button class="preset" data-in="a,b,c,d,e,f" data-out="a,f,e,d,c,b" data-k="3">2010 · 不许连出3次</button>
+      <button class="preset" data-in="a,b,c,d,e,f,g" data-out="b,d,c,f,e,a,g" data-k="0">2009 · 求栈容量</button>
+      <button class="preset" data-in="1,2,3,4" data-out="1,3,4,2" data-k="0">3.1-16 · 转 S/X 序列</button>
+      <button class="preset" data-in="a,b,c,d" data-out="d,c,a,b" data-k="0">3.1-19 · dcab</button>
+    </div>
+
+    <div class="stage">
+      <div>
+        <div class="lab">栈（栈顶在上）</div>
+        <div class="stackbox" id="stack"></div>
+        <div class="stacklab">栈底</div>
+        <div class="peak" id="peak">栈深峰值：0</div>
+      </div>
+      <div>
+        <div class="lab">待入栈</div>
+        <div class="seqrow" id="rowIn"></div>
+        <div class="lab">目标出栈序列（灰=未完成，棕=已弹出）</div>
+        <div class="seqrow" id="rowOut"></div>
+        <div class="expl" id="expl">点「下一步」开始，或直接「自动播放」。</div>
+        <div class="result" id="result"></div>
+      </div>
+    </div>
+    <div class="note">
+      <b>模拟法就是这样跑的</b>：对着目标序列逐个「点名」——要出谁，就把它之前还没进栈的元素依次压入，然后看栈顶是不是它。
+      <b>不是</b>就非法。手上跑一遍大约 30 秒，比任何口诀都可靠。<br>
+      <b>秒杀口诀</b>：先入栈的元素若晚出，必须<b>逆序</b>出现。看到「某元素之后，比它先入栈的那些元素升序出现」即非法。
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>② 枚举全部合法出栈序列（验证卡特兰数）</h2>
+    <div class="ctrl">
+      <label>入栈序列</label><input type="text" id="enumSeq" value="a,b,c,d">
+      <label>约束</label>
+      <select id="enumK">
+        <option value="0">无约束</option>
+        <option value="3">不许连续出栈 ≥3 次</option>
+        <option value="2">不许连续出栈 ≥2 次</option>
+      </select>
+      <label>只看以…开头</label><input type="text" id="prefix" placeholder="如 d 或 c,d" style="width:120px">
+      <button class="btn primary" id="btnEnum">枚举</button>
+    </div>
+    <div class="stats" id="enumStats"></div>
+    <div class="enumbox" id="enumBox"><span style="color:var(--muted);font-size:.85rem">点「枚举」列出全部合法序列。</span></div>
+    <div class="note">
+      <b>卡特兰数</b> Cₙ = C(2n,n)/(n+1)：<code>n=1→1　2→2　3→5　4→14　5→42　6→132</code>（背前五个够用）。<br>
+      带约束时卡特兰失效——用「<b>固定骨架再数落点</b>」：如 5 个元素以 d 开头，则 d 之前入栈的 c,b,a 必按 c…b…a 逆序出，骨架定死，剩下的 e 有 4 个落点 → 4 种（2011 真题）。上面的「只看以…开头」就是干这个的。
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>③ 这台机器对应的题型</h2>
+    <table class="kv">
+      <tr><th>题型</th><th>怎么用本页</th></tr>
+      <tr><td>判「不可能的出栈序列」</td><td>①里逐步跑，卡住的那一步就是理由（2009/2010/2013/2020/2022）</td></tr>
+      <tr><td>问「栈容量至少多大」</td><td>①里看<b>栈深峰值</b>（2009 真题：bdcfeag → 峰值 3）</td></tr>
+      <tr><td>数「有多少种出栈序列」</td><td>②枚举，和卡特兰数对照（2011/2013）</td></tr>
+      <tr><td>「以 d 开头的序列个数」</td><td>②里填「只看以…开头」= d（2011 真题答案 4）</td></tr>
+      <tr><td>转成 S/X（入栈/出栈）操作序列</td><td>①跑完后看解释区的<b>操作序列</b>（3.1-16）</td></tr>
+      <tr><td>「不允许连续 3 次出栈」</td><td>①②都能加这个约束（2010 真题）</td></tr>
+    </table>
+    <div class="note">配套复习：<a href="练习系统/套路库.html#C_T3-2" style="color:var(--accent)">套路卡 T3-2 合法性</a> ·
+      <a href="练习系统/套路库.html#C_T3-3" style="color:var(--accent)">T3-3 计数</a> ·
+      <a href="练习系统/套路库.html#C_T3-4" style="color:var(--accent)">T3-4 栈深峰值</a> ·
+      <a href="练习系统/第3章.html" style="color:var(--accent)">第 3 章练习（101 题）</a></div>
+  </section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+function parseSeq(s){return s.split(/[,，\s]+/).filter(x=>x.length);}
+
+/* ============ ① 单步模拟 ============ */
+let S={in:[],out:[],i:0,j:0,stack:[],ops:[],peak:0,done:false,bad:null,run:0,k:0,timer:null};
+
+function reset(){
+  clearInterval(S.timer);S.timer=null;
+  S.in=parseSeq($('#inSeq').value); S.out=parseSeq($('#outSeq').value);
+  S.i=0;S.j=0;S.stack=[];S.ops=[];S.peak=0;S.done=false;S.bad=null;S.run=0;
+  S.k=parseInt($('#limK').value,10)||0;
+  $('#result').className='result';
+  draw('点「下一步」开始。要出的第一个元素是 <b>'+(S.out[0]||'—')+'</b>。');
+}
+
+function step(){
+  if(S.done)return;
+  const want=S.out[S.j];
+  if(want===undefined){finish(true,'目标序列已全部弹出。');return;}
+  // 栈顶就是想要的 → 弹
+  if(S.stack.length && S.stack[S.stack.length-1]===want){
+    S.stack.pop();S.ops.push('X');S.j++;S.run++;
+    if(S.k && S.run>=S.k){
+      finish(false,'连续出栈达到 <b>'+S.run+'</b> 次，超过约束（不许 ≥'+S.k+'）。');
+      return;
+    }
+    draw('栈顶正是要出的 <b>'+want+'</b> → <span class="ok">弹出</span>。'
+        +(S.k?'（当前已连续出栈 '+S.run+' 次）':''));
+    if(S.j>=S.out.length)finish(true,'目标序列已全部弹出。');
+    return;
+  }
+  // 还有没进栈的 → 压
+  if(S.i<S.in.length){
+    const x=S.in[S.i++];S.stack.push(x);S.ops.push('S');S.run=0;
+    S.peak=Math.max(S.peak,S.stack.length);
+    draw('要出 <b>'+want+'</b>，但栈顶是 '+(S.stack.length>1?'<b>'+S.stack[S.stack.length-2]+'</b>':'（空）')
+        +'，所以先把 <b>'+x+'</b> 压入。');
+    return;
+  }
+  // 压无可压、弹又不对 → 非法
+  S.bad=S.j;
+  finish(false,'要出 <b>'+want+'</b>，但栈顶是 <b>'+(S.stack[S.stack.length-1]||'空')
+      +'</b>，且已经没有元素可以再压入 —— <span class="no">卡死，序列非法</span>。');
+}
+
+function finish(ok,msg){
+  S.done=true;clearInterval(S.timer);S.timer=null;
+  draw(msg);
+  const r=$('#result');
+  r.className='result show '+(ok?'good':'bad');
+  if(ok){
+    r.innerHTML='✅ <b>合法</b>　·　栈深峰值 <b>'+S.peak+'</b>（即「栈容量至少为 '+S.peak+'」）'
+      +'　·　操作序列 <code style="font-family:var(--mono)">'+S.ops.join('')+'</code>（S=入栈, X=出栈）';
+  }else{
+    r.innerHTML='❌ <b>不可能出现的出栈序列</b>　·　'+msg.replace(/<[^>]+>/g,'');
+  }
+}
+
+function draw(msg){
+  // 栈
+  let h='';
+  S.stack.forEach((x,i)=>h+='<div class="cellbox'+(i===S.stack.length-1?' top':'')+'">'+x+'</div>');
+  $('#stack').innerHTML=h||'<div style="color:var(--muted);font-size:.8rem;text-align:center;padding-top:80px">（空栈）</div>';
+  $('#peak').textContent='栈深峰值：'+S.peak;
+  // 待入栈
+  $('#rowIn').innerHTML=S.in.map((x,i)=>
+    '<div class="tok'+(i<S.i?' done':'')+'">'+x+'</div>').join('');
+  // 目标序列
+  $('#rowOut').innerHTML=S.out.map((x,i)=>
+    '<div class="tok'+(i<S.j?' done':(i===S.j?(S.bad===i?' bad':' cur'):''))+'">'+x+'</div>').join('');
+  $('#expl').innerHTML=msg+(S.ops.length?'<div class="ops">操作序列：'+S.ops.join('')+'　(S=入栈, X=出栈)</div>':'');
+}
+
+$('#btnRun').onclick=reset;
+$('#btnStep').onclick=step;
+$('#btnAuto').onclick=()=>{
+  if(S.timer){clearInterval(S.timer);S.timer=null;$('#btnAuto').textContent='▶ 自动播放';return;}
+  $('#btnAuto').textContent='⏸ 暂停';
+  S.timer=setInterval(()=>{step();if(S.done){clearInterval(S.timer);S.timer=null;$('#btnAuto').textContent='▶ 自动播放';}},650);
+};
+document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>{
+  $('#inSeq').value=b.dataset.in;$('#outSeq').value=b.dataset.out;$('#limK').value=b.dataset.k;reset();
+});
+
+/* ============ ② 枚举 ============ */
+function enumerate(seq,k){
+  const res=[],n=seq.length;
+  (function go(i,stack,out,run){
+    if(out.length===n){res.push(out.slice());return;}
+    // 出栈
+    if(stack.length && !(k && run+1>=k)){
+      const x=stack.pop();out.push(x);
+      go(i,stack,out,run+1);
+      out.pop();stack.push(x);
+    }
+    // 入栈
+    if(i<n){
+      stack.push(seq[i]);
+      go(i+1,stack,out,0);
+      stack.pop();
+    }
+  })(0,[],[],0);
+  return res;
+}
+function catalan(n){let c=1;for(let i=0;i<n;i++)c=c*2*(2*i+1)/(i+2);return Math.round(c);}
+
+$('#btnEnum').onclick=()=>{
+  const seq=parseSeq($('#enumSeq').value);
+  if(seq.length>8){$('#enumBox').innerHTML='<span style="color:var(--red)">元素太多（>8），枚举会爆炸。考试不会考这么大。</span>';return;}
+  const k=parseInt($('#enumK').value,10)||0;
+  const pre=parseSeq($('#prefix').value);
+  const all=enumerate(seq,k);
+  const hit=pre.length?all.filter(s=>pre.every((p,i)=>s[i]===p)):all;
+  const cat=catalan(seq.length);
+  let st='<div class="cnt">合法序列共 <b>'+all.length+'</b> 种</div>';
+  st+='<div class="cnt">卡特兰数 C<sub>'+seq.length+'</sub> = <b>'+cat+'</b>'+(k?'（有约束，不适用）':(all.length===cat?' ✅ 吻合':' ⚠️ 不符')) +'</div>';
+  if(pre.length)st+='<div class="cnt">以 '+pre.join(',')+' 开头的有 <b>'+hit.length+'</b> 种</div>';
+  $('#enumStats').innerHTML=st;
+  $('#enumBox').innerHTML=all.map(s=>{
+    const m=pre.length&&pre.every((p,i)=>s[i]===p);
+    return '<span class="item'+(m?' match':'')+'">'+s.join('')+'</span>';
+  }).join('');
+};
+
+reset();
+$('#btnEnum').click();
+</script>
+</body>
+</html>

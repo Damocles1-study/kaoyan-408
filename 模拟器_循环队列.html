@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>循环队列环形图 · 三种指针约定 × 三种判满法</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    --mono:"SF Mono","JetBrains Mono","Menlo",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:60px}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:14px}
+
+  .ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .ctrl label{font-size:.85rem;color:var(--muted)}
+  select,input[type=number]{font-family:var(--sans);font-size:.88rem;color:var(--ink);background:var(--bg);
+    border:1px solid var(--line);border-radius:8px;padding:5px 10px}
+  .btn{font-size:.85rem;border:1px solid var(--accent);background:none;color:var(--accent);
+    border-radius:8px;padding:5px 14px;cursor:pointer;font-family:var(--sans)}
+  .btn:hover{background:var(--accent-soft)}
+  .btn.primary{background:var(--accent);color:var(--card)}
+  .btn.gr{border-color:var(--green);color:var(--green)}
+  .btn.gr:hover{background:var(--green-soft)}
+  .btn.rd{border-color:var(--red);color:var(--red)}
+  .btn.rd:hover{background:var(--red-soft)}
+
+  .stage{display:grid;grid-template-columns:340px 1fr;gap:26px;align-items:start}
+  @media (max-width:760px){.stage{grid-template-columns:1fr}}
+  svg{width:100%;height:auto;overflow:visible}
+  .slotc{fill:var(--bg);stroke:var(--line);stroke-width:2}
+  .slotc.filled{fill:var(--accent-soft);stroke:var(--accent)}
+  .slotc.head{fill:var(--green-soft);stroke:var(--green);stroke-width:3}
+  .slotv{font-family:var(--serif);font-weight:700;font-size:15px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+  .sloti{font-family:var(--mono);font-size:10px;fill:var(--muted);text-anchor:middle;dominant-baseline:central}
+  .ptrf{font-family:var(--mono);font-size:12px;font-weight:700;fill:var(--green);text-anchor:middle}
+  .ptrr{font-family:var(--mono);font-size:12px;font-weight:700;fill:var(--blue);text-anchor:middle}
+
+  .panel{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+  .panel h3{font-size:.8rem;color:var(--muted);letter-spacing:.06em;margin-bottom:8px;font-weight:600}
+  .calc{font-family:var(--mono);font-size:.88rem;line-height:2}
+  .calc b{color:var(--accent)}
+  .chip{display:inline-block;border-radius:6px;padding:2px 9px;font-size:.82rem;margin-right:6px}
+  .chip.on{background:var(--green-soft);color:var(--green);font-weight:700}
+  .chip.off{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+  .chip.full{background:var(--red-soft);color:var(--red);font-weight:700}
+  .msg{background:var(--accent-soft);border-radius:10px;padding:12px 15px;font-size:.9rem;min-height:64px}
+  .msg b{color:var(--accent)}
+  .msg .warn{color:var(--red);font-weight:700}
+  pre.code{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+    font-family:var(--mono);font-size:.8rem;line-height:1.7;overflow-x:auto;white-space:pre}
+  .note{font-size:.85rem;color:var(--muted);margin-top:12px;line-height:1.85}
+  .note code{font-family:var(--mono);background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:1px 5px}
+  table.kv{border-collapse:collapse;font-size:.85rem;margin-top:8px;width:100%}
+  table.kv th,table.kv td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+  table.kv th{background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+  .hist{font-family:var(--mono);font-size:.8rem;color:var(--muted);margin-top:8px;word-break:break-all}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>循环队列环形图</h1>
+    <div class="sub">三种 front/rear 约定 × 三种判满法自由组合 · 长度公式逐步代入 · 亲眼看「牺牲一个单元」是怎么回事</div>
+  </header>
+
+  <section class="card">
+    <h2>① 先定约定，再动手</h2>
+    <div class="ctrl">
+      <label>数组格数 M</label>
+      <select id="M"><option>5</option><option selected>6</option><option>7</option><option>8</option><option>10</option></select>
+      <label>指针约定</label>
+      <select id="conv">
+        <option value="1">front→队首元素，rear→队尾<b>后一位</b>（王道默认，最常考）</option>
+        <option value="2">front→队首<b>前一位</b>，rear→队尾元素</option>
+        <option value="3">front→队首元素，rear→队尾元素（差一格陷阱）</option>
+      </select>
+      <label>判满法</label>
+      <select id="strat">
+        <option value="sac">牺牲一个单元</option>
+        <option value="size">加 size 计数器</option>
+        <option value="tag">加 tag 标记</option>
+      </select>
+      <button class="btn" id="reset">重置</button>
+    </div>
+    <div class="ctrl">
+      <button class="btn primary" id="enq">➕ 入队</button>
+      <button class="btn rd" id="deq">➖ 出队</button>
+      <button class="btn" id="fill">一键填满</button>
+      <button class="btn" id="wrap">走一圈（入5出5）</button>
+    </div>
+
+    <div class="stage">
+      <div>
+        <svg id="ring" viewBox="0 0 340 340"></svg>
+        <div class="hist" id="hist"></div>
+      </div>
+      <div>
+        <div class="panel">
+          <h3>当前状态</h3>
+          <div class="calc" id="state"></div>
+        </div>
+        <div class="panel">
+          <h3>判空 / 判满（按当前约定与策略）</h3>
+          <div class="calc" id="cond"></div>
+        </div>
+        <div class="msg" id="msg">选好约定后点「入队」开始。</div>
+        <div class="panel" style="margin-top:12px">
+          <h3>本约定下的入队 / 出队写法</h3>
+          <pre class="code" id="code"></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>② 三种判满法对照</h2>
+    <table class="kv">
+      <tr><th>方法</th><th>判空</th><th>判满</th><th>最多存</th><th>代价</th></tr>
+      <tr><td><b>牺牲一个单元</b><br>（最常考）</td><td><code>front==rear</code></td><td><code>(rear+1)%M==front</code></td><td><b>M−1</b></td><td>浪费一格</td></tr>
+      <tr><td><b>size 计数器</b></td><td><code>size==0</code></td><td><code>size==M</code></td><td><b>M</b></td><td>多一个变量</td></tr>
+      <tr><td><b>tag 标记</b></td><td><code>front==rear &amp;&amp; tag==0</code></td><td><code>front==rear &amp;&amp; tag==1</code></td><td><b>M</b></td><td>每次操作要维护 tag</td></tr>
+    </table>
+    <div class="note">
+      <b>tag 法的记忆点</b>：<code>front==rear</code> 时看<b>最后一次操作是谁</b>——<b>入队</b>造成的相等则<b>满</b>（tag=1），<b>出队</b>造成的相等则<b>空</b>（tag=0）。<br>
+      <b>为什么要牺牲一格</b>：不加任何辅助信息时，「空」和「满」都长成 <code>front==rear</code>，无法区分。切到「牺牲一个单元」再点「一键填满」，能看到留出的那一格。
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>③ 考场三步 + 真题落点</h2>
+    <table class="kv">
+      <tr><th>步骤</th><th>动作</th></tr>
+      <tr><td>① 定语义</td><td>读题：front/rear 各指哪？<b>三种约定的长度公式不一样</b>（约定 3 要 +1）</td></tr>
+      <tr><td>② 数格数</td><td><code>A[0..n]</code> 是 <b>n+1</b> 格，<code>A[MaxSize]</code> 是 MaxSize 格 —— 模数 M 就是格数</td></tr>
+      <tr><td>③ 套公式</td><td>长度 <code>(rear−front+M)%M</code>（约定 3 为 <code>(rear−front+1+M)%M</code>）</td></tr>
+    </table>
+    <div class="note">
+      <b>2011</b>：要求第一个元素落在 A[0] → 问初值。<b>凡问初值就倒推</b>：入队后 rear 要指 0，故初值 n−1。<br>
+      <b>2014</b>：两端都能入队出队，判空判满公式不变（相等即空 + 留一格即满）。<br>
+      <b>3.2-6</b>：A[21]、front=8、rear=3 → (3−8+21)%21 = <b>16</b>。可在上面把 M 调到对应格数手动验证。<br>
+      配套复习：<a href="练习系统/套路库.html#C_T3-5" style="color:var(--accent)">套路卡 T3-5 循环队列三式</a> ·
+      <a href="练习系统/第3章.html" style="color:var(--accent)">第 3 章练习（101 题）</a>
+    </div>
+  </section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+let M=6, conv='1', strat='sac', head=0, size=0, tag=0, seq=0, hist=[];
+
+function cap(){return strat==='sac'?M-1:M;}
+function frontIdx(){
+  if(conv==='2')return (head-1+M)%M;
+  return head;                       // 约定 1、3：front 指队首元素
+}
+function rearIdx(){
+  if(conv==='1')return (head+size)%M;          // 队尾后一位
+  return (head+size-1+M)%M;                    // 约定 2、3：队尾元素（空时退到 head-1）
+}
+function lenFormula(){
+  const f=frontIdx(), r=rearIdx();
+  if(conv==='3')return {expr:'(rear − front + 1 + M) % M', val:(r-f+1+M)%M};
+  return {expr:'(rear − front + M) % M', val:(r-f+M)%M};
+}
+function reset(){head=0;size=0;tag=0;seq=0;hist=[];draw('已重置。M='+M+'，容量 '+cap()+' 个。');}
+
+function enq(){
+  if(size>=cap()){draw('<span class="warn">队满，入队失败。</span>'+(strat==='sac'?'注意：「牺牲一个单元」下最多只能存 <b>M−1='+(M-1)+'</b> 个，还剩一格是<b>故意空着</b>的。':''));return;}
+  const v=++seq; window.QDATA=window.QDATA||{};
+  QDATA[(head+size)%M]=v; size++; tag=1; hist.push('入'+v);
+  const r=rearIdx();
+  draw('入队 <b>'+v+'</b>：'+(conv==='1'
+      ?'先放到 A[rear] 再 <code>rear=(rear+1)%M</code> → rear 现在是 <b>'+r+'</b>。'
+      :'先 <code>rear=(rear+1)%M</code> 再放 → rear 现在是 <b>'+r+'</b>。')
+      +(strat==='tag'?' <b>tag 置 1</b>（最后一次是入队）。':''));
+}
+function deq(){
+  if(size<=0){draw('<span class="warn">队空，出队失败。</span>');return;}
+  const v=QDATA[head]; delete QDATA[head];
+  head=(head+1)%M; size--; tag=0; hist.push('出'+v);
+  draw('出队 <b>'+v+'</b>：<code>front=(front+1)%M</code> → front 现在是 <b>'+frontIdx()+'</b>。元素并没被抹掉，只是<b>指针越过它</b>了。'
+      +(strat==='tag'?' <b>tag 置 0</b>（最后一次是出队）。':''));
+}
+
+function draw(msg){
+  window.QDATA=window.QDATA||{};
+  const f=frontIdx(), r=rearIdx(), L=lenFormula();
+  // 环形图
+  const cx=170, cy=170, R=112, sr=27;
+  let s='';
+  for(let i=0;i<M;i++){
+    const a=-Math.PI/2 + i*2*Math.PI/M;
+    const x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
+    const filled = size>0 && ((i-head+M)%M) < size;
+    const isHead = size>0 && i===head;
+    s+='<circle class="slotc'+(filled?' filled':'')+(isHead?' head':'')+'" cx="'+x+'" cy="'+y+'" r="'+sr+'"/>';
+    s+='<text class="slotv" x="'+x+'" y="'+(y-4)+'">'+(filled?QDATA[i]:'')+'</text>';
+    s+='<text class="sloti" x="'+x+'" y="'+(y+13)+'">'+i+'</text>';
+    // 指针标注（放在圆外侧）
+    const ox=cx+(R+sr+16)*Math.cos(a), oy=cy+(R+sr+16)*Math.sin(a);
+    let tags=[];
+    if(i===f)tags.push('<tspan class="ptrf">front</tspan>');
+    if(i===r)tags.push('<tspan class="ptrr">rear</tspan>');
+    if(tags.length)s+='<text x="'+ox+'" y="'+oy+'" text-anchor="middle" font-size="12">'+tags.join('<tspan> </tspan>')+'</text>';
+  }
+  s+='<text x="'+cx+'" y="'+(cy-8)+'" text-anchor="middle" font-family="Georgia,serif" font-size="26" fill="'+(size?'var(--accent)':'var(--muted)')+'">'+size+'</text>';
+  s+='<text x="'+cx+'" y="'+(cy+14)+'" text-anchor="middle" font-size="11" fill="var(--muted)">个元素 / 容量 '+cap()+'</text>';
+  $('#ring').innerHTML=s;
+
+  // 状态面板
+  $('#state').innerHTML=
+     'M（格数）= <b>'+M+'</b>　front = <b>'+f+'</b>　rear = <b>'+r+'</b>'+(strat==='size'?'　size = <b>'+size+'</b>':'')+(strat==='tag'?'　tag = <b>'+tag+'</b>':'')+'<br>'
+    +'长度公式：'+L.expr+'<br>'
+    +'　= ('+r+' − '+f+(conv==='3'?' + 1':'')+' + '+M+') % '+M+' = <b>'+L.val+'</b>'
+    +(L.val===size?' <span class="chip on">✔ 与实际元素数一致</span>'
+                  :' <span class="chip full">✘ 公式算出 '+L.val+'，实际有 '+size+' 个！</span>');
+
+  // 判空判满
+  let c='';
+  if(strat==='sac'){
+    const empty=(f===r&&conv!=='3'), full=((r+1)%M===f&&conv!=='3');
+    c+='空：<code>front==rear</code> → '+f+'=='+r+' <span class="chip '+(empty?'on':'off')+'">'+(empty?'队空':'非空')+'</span><br>';
+    c+='满：<code>(rear+1)%M==front</code> → '+((r+1)%M)+'=='+f+' <span class="chip '+(full?'full':'off')+'">'+(full?'队满':'未满')+'</span>';
+    if(conv==='3')c+='<br><span style="color:var(--red)">⚠️ 约定 3（rear 指队尾元素）下，<b>front==rear 表示只有 1 个元素</b>，不是空 —— 这套判据失效，必须改用 size 或 tag。</span>';
+  }else if(strat==='size'){
+    c+='空：<code>size==0</code> → '+size+'==0 <span class="chip '+(size===0?'on':'off')+'">'+(size===0?'队空':'非空')+'</span><br>';
+    c+='满：<code>size==M</code> → '+size+'=='+M+' <span class="chip '+(size===M?'full':'off')+'">'+(size===M?'队满':'未满')+'</span>';
+  }else{
+    const eq=(f===r);
+    c+='<code>front==rear</code> → '+f+'=='+r+' 　'+(eq?'<b>成立</b>，看 tag：':'不成立 → 既不空也不满');
+    if(eq)c+='tag='+tag+' → <span class="chip '+(tag?'full':'on')+'">'+(tag?'队满（最后一次是入队）':'队空（最后一次是出队）')+'</span>';
+  }
+  $('#cond').innerHTML=c;
+
+  $('#msg').innerHTML=msg;
+  $('#hist').textContent=hist.length?'操作历史：'+hist.join(' → '):'';
+
+  // 代码
+  const codes={
+    '1':'// front 指队首元素，rear 指队尾后一位\n入队: Q.data[Q.rear] = x;  Q.rear = (Q.rear+1)%M;\n出队: x = Q.data[Q.front]; Q.front = (Q.front+1)%M;\n长度: (Q.rear - Q.front + M) % M',
+    '2':'// front 指队首前一位，rear 指队尾元素\n入队: Q.rear = (Q.rear+1)%M;  Q.data[Q.rear] = x;\n出队: Q.front = (Q.front+1)%M; x = Q.data[Q.front];\n长度: (Q.rear - Q.front + M) % M',
+    '3':'// front、rear 都指元素本身（差一格陷阱）\n入队: Q.rear = (Q.rear+1)%M;  Q.data[Q.rear] = x;\n出队: x = Q.data[Q.front]; Q.front = (Q.front+1)%M;\n长度: (Q.rear - Q.front + 1 + M) % M   // 注意 +1\n// 判空判满必须靠 size 或 tag'
+  };
+  $('#code').textContent=codes[conv];
+}
+
+$('#M').onchange=e=>{M=+e.target.value;window.QDATA={};reset();};
+$('#conv').onchange=e=>{conv=e.target.value;window.QDATA={};reset();};
+$('#strat').onchange=e=>{strat=e.target.value;window.QDATA={};reset();};
+$('#reset').onclick=()=>{window.QDATA={};reset();};
+$('#enq').onclick=enq;
+$('#deq').onclick=deq;
+$('#fill').onclick=()=>{let n=0;while(size<cap()){enq();n++;}
+  draw('已连续入队至队满（共 '+n+' 个）。'+(strat==='sac'
+    ?'看环上：<b>还留着一个空格</b>——这就是「牺牲一个单元」，代价是最多只能存 M−1='+(M-1)+' 个。'
+    :'本策略能把 M='+M+' 格<b>全部用满</b>。'));};
+$('#wrap').onclick=()=>{for(let i=0;i<5;i++)enq();for(let i=0;i<5;i++)deq();
+  draw('入 5 次、出 5 次后：<b>元素个数回到 0，但 front 和 rear 已经绕着环走了 5 格</b>（现在都在 '+frontIdx()+'）。这就是「循环」的含义——指针只往前走、遇界回绕，从不搬移元素。');};
+
+window.QDATA={};
+reset();
+</script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>精读版 · 数据结构 第2章 线性表</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>精读版 · 第 2 章　线　性　表</h1>
+    <div class="sub">王道《数据结构》第 2 章（书内 p.13–62）正文重排 · 只留考点骨架 · 原书插图直接裁切嵌入 · 每节一键跳回原书页</div>
+  </header>
+
+  <div class="legend">
+    <b>怎么读这一页：</b>正文是书上的内容，我只做了<b>结构重排和取舍</b>。三种色块：
+    <span class="swatch" style="background:var(--blue)"></span><b style="color:var(--blue)">我的补讲</b>、
+    <span class="swatch" style="background:var(--amber)"></span><b style="color:var(--amber)">必记结论</b>、
+    <span class="swatch" style="background:var(--red)"></span><b style="color:var(--red)">陷阱</b>。
+    右侧 <span class="pg" style="float:none;margin:0">📄 p.N</span> 点开跳到原书对应页。
+  </div>
+
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=1">📄 p.13</a>
+  <h2>本章定位</h2>
+  <p><b>考纲内容</b>：（一）线性表的基本概念　（二）线性表的实现：顺序存储、链式存储　（三）线性表的应用。</p>
+  <p><b>王道的复习提示</b>：线性表是<b>算法题命题的重点</b>。应牢固掌握其在两种存储结构下的各种基本操作，并注重动手能力的培养。考场时间紧张，<b>试卷上不要求代码具备实际可执行性</b>，应着重清晰地表达算法的核心思想与关键步骤，而不必过于拘泥于语法、边界等细节。即使采用暴力算法，通常也能获得大部分分数。<b>注意：算法题只能使用 C/C++ 语言实现。</b></p>
+
+  <div class="mine"><span class="tag">我的补讲 · 这一章是全书性价比最高的一章</span>
+    实测本章 88 道课后题里<b>综合题占 36 道</b>——全书任何一章都没这么多，其中 <b>10 道是统考真题</b>（2009 倒数第 k、2010 循环左移、2011 双序列中位数、2012 公共后缀、2013 主元素、2015 绝对值去重、2018 缺失最小正整数、2019 重排、2020 三元组最小距离、2025 乘积最大）。
+    <b>408 的链表 / 数组大题几乎就在这 10 道的射程内。</b><br>
+    另外注意王道那句「不要求代码可执行」——这是<b>阅卷口径</b>，不是让你写伪码。正确姿势是：平时背能跑的严谨版（<a href="../../../../11408备考体系/408笔记MD/数据结构/09_代码默写手册_C语言.md">代码默写手册</a>），考场写精简版。手上有严谨版才敢精简，反过来不行。
+  </div>
+
+  <h2>2.1　线性表的定义和基本操作</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=1">📄 p.13–14</a>
+
+  <p><b>线性表</b>是由 n（n ≥ 0）个<b>相同数据类型</b>的元素组成的<b>有限序列</b>。n 为表长，n = 0 时为空表。一般形式：</p>
+  <div class="fml">L = (a₁, a₂, …, a<sub>i</sub>, a<sub>i+1</sub>, …, a<sub>n</sub>)</div>
+  <p>a₁ 是唯一的「第一个」元素（表头元素），a<sub>n</sub> 是唯一的「最后一个」元素（表尾元素）。<b>除第一个元素外，每个元素有且仅有一个直接前驱；除最后一个元素外，每个元素有且仅有一个直接后继</b>——这种<b>一对一</b>的线性逻辑关系正是「线性表」名称的由来。</p>
+
+  <p>线性表的特点：</p>
+  <ul>
+    <li>表中元素的<b>个数有限</b>；</li>
+    <li>表中元素具有逻辑上的<b>顺序性</b>，存在明确的先后次序；</li>
+    <li>表中元素都是<b>数据元素</b>，每个元素都是不可分割的单位；</li>
+    <li>表中元素的<b>数据类型都相同</b>，意味着每个元素占有相同大小的存储空间；</li>
+    <li>表中元素具有<b>抽象性</b>，仅讨论元素之间的逻辑关系，不考虑其究竟表示什么内容。</li>
+  </ul>
+
+  <div class="key"><span class="tag">必记结论 · 逻辑结构 vs 存储结构，别混</span>
+    <b>线性表是一种逻辑结构</b>，表示元素之间一对一的相邻关系；<b>顺序表和链表是两种存储结构</b>，属于不同层面的概念。<br>
+    选择题常见考法：「线性表是具有 n 个（　）的有限序列」→ 答<b>数据元素</b>（不是「数据项」，数据项是元素之下的层次）。
+  </div>
+
+  <h4>线性表的基本操作</h4>
+  <table>
+    <tr><th>操作</th><th>含义</th></tr>
+    <tr><td><code>InitList(&amp;L)</code></td><td>初始化表，构造一个空的线性表</td></tr>
+    <tr><td><code>Length(L)</code></td><td>求表长，返回元素个数</td></tr>
+    <tr><td><code>LocateElem(L,e)</code></td><td><b>按值查找</b>：查找值为 e 的元素，返回其位置</td></tr>
+    <tr><td><code>GetElem(L,i)</code></td><td><b>按位查找</b>：获取第 i 个位置的元素值</td></tr>
+    <tr><td><code>ListInsert(&amp;L,i,e)</code></td><td>在第 i 个位置插入指定元素 e</td></tr>
+    <tr><td><code>ListDelete(&amp;L,i,&amp;e)</code></td><td>删除第 i 个位置的元素，用 e 返回被删元素的值</td></tr>
+    <tr><td><code>PrintList(L)</code> / <code>Empty(L)</code> / <code>DestroyList(&amp;L)</code></td><td>输出 / 判空 / 销毁</td></tr>
+  </table>
+  <p style="font-size:.85rem;color:var(--muted)">① 基本操作的具体实现<b>取决于所用的存储结构</b>，存储结构不同，算法的实现方式也不同。② 符号 <code>&amp;</code> 表示 C++ 中的引用调用；在 C 语言中可通过指针实现相同效果。</p>
+
+  <h2>2.2　线性表的顺序表示（顺序表）</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=3">📄 p.15–16</a>
+  <span class="exam">考点追踪：顺序表的应用（算法题）2010、2011、2018、2020、2025 · 顺序表上操作的时间复杂度分析 2023</span>
+
+  <p>线性表的顺序存储又称<b>顺序表</b>：用一组<b>地址连续</b>的存储单元依次存储线性表中的数据元素，使得<b>逻辑上相邻的元素在物理位置上也相邻</b>。第 1 个元素存储在起始位置，第 i 个元素的存储位置之后紧接着存第 i+1 个元素。</p>
+  <p>设起始地址为 LOC(A)，每个元素占 <code>sizeof(ElemType)</code>，则第 i 个元素的地址为</p>
+  <div class="fml">LOC(A) + (i − 1) × sizeof(ElemType)</div>
+  <p>由于任意元素的地址与起始地址之间的偏移量<b>与其位序呈线性关系</b>，因此可在 <b>O(1)</b> 时间内直接访问表中任意位置的元素——这就是顺序存储属于<b>随机存取</b>的原因。</p>
+
+  <div class="trap"><span class="tag">陷阱 · 位序从 1 开始，数组下标从 0 开始</span>
+    线性表元素的<b>位序从 1 起</b>，而数组下标<b>从 0 起</b>。所有插入/删除代码里的 <code>L.data[i-1]</code> 都是在做这个转换，考场上写代码前先在草稿纸角上写一句「i 是位序」。
+  </div>
+
+  <h4>静态分配 vs 动态分配</h4>
+  <table>
+    <tr><th>静态分配</th><th>动态分配</th></tr>
+    <tr><td><pre class="code" style="margin:0">#define MaxSize 50
+typedef struct{
+    ElemType data[MaxSize];
+    int length;
+}SqList;</pre></td>
+    <td><pre class="code" style="margin:0">#define InitSize 100
+typedef struct{
+    ElemType *data;      // 动态数组指针
+    int MaxSize, length;
+}SeqList;
+// C:   L.data=(ElemType*)malloc(sizeof(ElemType)*InitSize);
+// C++: L.data=new ElemType[InitSize];</pre></td></tr>
+    <tr><td>数组大小和空间在<b>编译时</b>已固定，空间占满后再插入会溢出</td><td>存储空间在<b>程序运行中</b>动态申请；占满时<b>另开一块更大的空间</b>，把原有元素全部复制过去，实现扩容</td></tr>
+  </table>
+
+  <div class="key"><span class="tag">必记结论 · 动态分配≠链式存储</span>
+    <b>动态分配仍然属于顺序存储结构</b>，物理结构没有变化，依然支持随机存取，只是空间大小可以在运行时调整。<br>
+    <b>扩容的真相</b>：不是「在原地再加 m 个格子」，而是<b>开一块 n+m 的新连续区再整体搬迁</b>——所以扩容失败意味着系统没有足够大的<b>连续</b>空间。
+  </div>
+
+  <p><b>顺序表的优点</b>：① 可随机访问，O(1) 时间按位序找到元素；② <b>存储密度高</b>，每个结点只存数据元素，无额外指针开销。<br>
+     <b>顺序表的缺点</b>：① 插入和删除要<b>移动大量元素</b>；② 要求连续存储空间，不够灵活。</p>
+
+  <h3>2.2.2　顺序表上的基本操作</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=5">📄 p.17–18</a>
+
+  <h4>插入操作</h4>
+  <pre class="code">bool ListInsert(SqList &amp;L, int i, ElemType e){
+    if(i&lt;1 || i&gt;L.length+1) return false;   // 判断 i 的范围是否有效
+    if(L.length &gt;= MaxSize) return false;    // 当前存储空间已满
+    for(int j=L.length; j&gt;=i; j--)           // 将第 i 个元素及之后的元素后移
+        L.data[j] = L.data[j-1];
+    L.data[i-1] = e;                         // 在位置 i 插入 e（注意下标转换）
+    L.length++;
+    return true;
+}</pre>
+  <p style="font-size:.85rem;color:var(--muted)">为什么判断插入位置用 <code>length+1</code>，而移动元素的 for 循环用 <code>length</code>？因为<b>合法插入位置包括第 n+1 位</b>，但移动元素时最多从第 n 位开始后移。</p>
+  <table>
+    <tr><th></th><th>最好</th><th>最坏</th><th>平均</th></tr>
+    <tr><td><b>插入</b></td><td>表尾插入（i = n+1），不移动，<b>O(1)</b></td><td>表头插入（i = 1），移动 n 个，<b>O(n)</b></td><td>移动 <b>n/2</b> 个，<b>O(n)</b></td></tr>
+    <tr><td><b>删除</b></td><td>删表尾（i = n），不移动，<b>O(1)</b></td><td>删表头（i = 1），移动 n−1 个，<b>O(n)</b></td><td>移动 <b>(n−1)/2</b> 个，<b>O(n)</b></td></tr>
+    <tr><td><b>按值查找</b></td><td>目标在表头，比较 1 次，<b>O(1)</b></td><td>在表尾或不存在，比较 n 次，<b>O(n)</b></td><td>比较 <b>(n+1)/2</b> 次，<b>O(n)</b></td></tr>
+  </table>
+  <p><b>按序号查找</b>直接通过数组下标访问即可，时间复杂度 <b>O(1)</b>。</p>
+
+  <figure>
+    <img src="图/图2-2_顺序表插删.png" alt="图2.2 顺序表的插入和删除">
+    <figcaption>图 2.2　顺序表的插入和删除（裁自原书 p.18）——插入时后段<b>从后往前</b>依次后移，删除时后段<b>从前往后</b>依次前移</figcaption>
+  </figure>
+
+  <div class="key"><span class="tag">必记结论 · 移动元素个数别记反</span>
+    <b>删除</b>第 i 个元素：其后的 a<sub>i+1</sub>…a<sub>n</sub> 各前移一格，共移动 <b>n − i</b> 个。<br>
+    <b>插入</b>到第 i 个位置：第 i 个及其后的元素后移，共移动 <b>n − i + 1</b> 个。<br>
+    记法：<b>插入比删除多搬一个</b>（因为插入要给新元素腾位）。
+  </div>
+
+  <h2>2.3　线性表的链式表示</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=18">📄 p.30–31</a>
+  <span class="exam">考点追踪：单链表的应用 2009、2012、2013、2015、2016、2019</span>
+
+  <p>链式存储的线性表<b>不要求地址连续</b>：逻辑上相邻的元素物理位置上可以不相邻，通过<b>指针</b>建立元素之间的逻辑关系，因此插入或删除操作<b>无须移动元素</b>，只需修改相关指针。代价是<b>失去了顺序表的随机存取能力</b>，只能从头开始顺序访问。</p>
+
+  <pre class="code">typedef struct LNode{      // 定义单链表结点类型
+    ElemType data;         // 数据域
+    struct LNode *next;    // 指针域
+}LNode, *LinkList;</pre>
+
+  <figure>
+    <img src="图/图2-4_带头与不带头单链表.png" alt="图2.4 带头结点和不带头结点的单链表">
+    <figcaption>图 2.4　带头结点（a）和不带头结点（b）的单链表（裁自原书 p.31）</figcaption>
+  </figure>
+
+  <div class="key"><span class="tag">必记结论 · 头指针 vs 头结点 + 判空四连表</span>
+    <b>头指针</b>始终指向链表的第一个结点（无论带不带头结点）；<b>头结点</b>只存在于带头结点的链表中，它是链表的第一个结点，<b>数据域通常不存实际数据</b>。<br>
+    引入头结点的两个好处：① <b>操作统一性</b>——在表头插入/删除时与其他位置逻辑一致，无须特殊处理；② <b>空表与非空表处理统一</b>——头指针始终是非空指针。
+    <table style="margin-top:8px">
+      <tr><th>结构</th><th>空表条件</th></tr>
+      <tr><td>不带头结点单链表</td><td><code>L == NULL</code></td></tr>
+      <tr><td>带头结点单链表</td><td><code>L-&gt;next == NULL</code></td></tr>
+      <tr><td>带头结点循环单链表</td><td><code>L-&gt;next == L</code>（指回自己，<b>不是 NULL</b>）</td></tr>
+      <tr><td>带头结点循环双链表</td><td><code>L-&gt;next == L &amp;&amp; L-&gt;prior == L</code></td></tr>
+    </table>
+    记法：<b>带头结点看 next，不带头结点看自己；循环链表判「指回自己」，非循环判 NULL。</b>
+  </div>
+
+  <h3>单链表的插入与删除</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=21">📄 p.33–34</a>
+  <span class="exam">考点追踪：单链表插入操作的过程 2016、2024</span>
+
+  <figure>
+    <img src="图/图2-5_单链表插入.png" alt="图2.5 单链表的插入操作">
+    <figcaption>图 2.5　单链表的插入操作（裁自原书 p.33）</figcaption>
+  </figure>
+  <pre class="code">// 在第 i 个位置插入 e：先找到第 i−1 个结点（前驱）*p
+s = (LNode*)malloc(sizeof(LNode));
+s-&gt;data = e;
+s-&gt;next = p-&gt;next;    // 步骤①
+p-&gt;next = s;          // 步骤②</pre>
+
+  <div class="trap"><span class="tag">陷阱 · 这两步的顺序不可颠倒（选择题连考四年）</span>
+    若先执行 <code>p-&gt;next = s</code>，则 p 的原后继地址就丢失了，<code>s-&gt;next = p-&gt;next</code> 实际变成 <code>s-&gt;next = s</code>，<b>形成自环</b>。<br>
+    <b>铁律：改 <code>p-&gt;next</code> 之前，必须先用完它的旧值。</b>2016 / 2021 / 2023 / 2024 连续四年考这一条的各种变体。<br>
+    · <b>2023 的坑</b>：题干已先执行 <code>s-&gt;next=p-&gt;next; p-&gt;next=s;</code>，此时 <code>p-&gt;next</code> 已变成 s，要够到原后继只能走 <code>s-&gt;next</code>。<br>
+    · <b>2021 的坑</b>：循环单链表删首元时，若首元恰好是尾结点，尾指针会悬空，必须补 <code>p = h</code>。
+  </div>
+
+  <p>插入操作的时间复杂度是 <b>O(n)</b>，主要开销在<b>查找前驱结点</b>上；若已知某结点指针，则在其后插入新结点的时间复杂度是 <b>O(1)</b>。</p>
+
+  <div class="mine"><span class="tag">我的补讲 · 两个 O(1) 小技巧（书上藏在「扩展」里，很好用）</span>
+    <b>① O(1) 前插</b>：要在 *p 之前插入 *s，正常要从头找 p 的前驱（O(n)）。技巧是——<b>先把 *s 插到 *p 之后，再交换两者的数据域</b>，逻辑上等效于前插，时间 O(1)。<br>
+    <pre class="code" style="margin:6px 0">s-&gt;next = p-&gt;next;  p-&gt;next = s;      // 先后插
+temp = p-&gt;data;  p-&gt;data = s-&gt;data;  s-&gt;data = temp;   // 再换数据</pre>
+    <b>② O(1) 删除给定结点 *p</b>：把<b>后继的数据复制到 *p 中</b>，然后删除后继结点。<br>
+    <pre class="code" style="margin:6px 0">q = p-&gt;next;
+p-&gt;data = p-&gt;next-&gt;data;
+p-&gt;next = q-&gt;next;
+free(q);</pre>
+    <b>局限：这招不能用于删除尾结点</b>（尾结点没有后继）——大题里用它一定要补一句「若 *p 为尾结点则仍需 O(n) 找前驱」，否则扣分。
+  </div>
+
+  <figure>
+    <img src="图/图2-6_单链表删除.png" alt="图2.6 单链表结点的删除">
+    <figcaption>图 2.6　单链表结点的删除（裁自原书 p.34）——令前驱的 next 越过被删结点，再 free</figcaption>
+  </figure>
+
+  <h3>头插法与尾插法建立单链表</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=22">📄 p.34–35</a>
+
+  <div class="two">
+    <figure>
+      <img src="图/图2-7_头插法建表.png" alt="图2.7 头插法建立单链表">
+      <figcaption>图 2.7　头插法（原书 p.34）：新结点始终成为第一个数据结点 → <b>元素次序与输入相反</b></figcaption>
+    </figure>
+    <figure>
+      <img src="图/图2-8_尾插法建表.png" alt="图2.8 尾插法建立单链表">
+      <figcaption>图 2.8　尾插法（原书 p.35）：靠尾指针 r 追加 → <b>次序与输入一致</b></figcaption>
+    </figure>
+  </div>
+  <pre class="code">// 头插法核心两句（顺便就是「就地逆置」）
+s-&gt;next = L-&gt;next;   L-&gt;next = s;
+
+// 尾插法核心三句：多维护一个尾指针 r，最后要封尾
+s-&gt;next = NULL;   r-&gt;next = s;   r = s;   /* … 循环结束后 */  r-&gt;next = NULL;</pre>
+  <p>两种方法每插入一个结点的时间复杂度都是 O(1)，总时间复杂度 <b>O(n)</b>。尾插法因附设了尾指针，无须遍历查找尾部。</p>
+
+  <div class="key"><span class="tag">必记结论 · 头插=逆序，尾插=保序</span>
+    这一条在大题里能直接省一趟遍历：<b>拆表题要求 B 表逆序时，直接用头插即可</b>，不要先尾插再整体逆置。<br>
+    <b>就地逆置</b>的标准写法就是「摘下来重新头插一遍」，注意用 r 存后继防断链：
+    <pre class="code" style="margin:6px 0">p = L-&gt;next;  L-&gt;next = NULL;
+while(p){ r = p-&gt;next;                  // 存后继，防断链
+          p-&gt;next = L-&gt;next;  L-&gt;next = p;   // 头插
+          p = r; }</pre>
+  </div>
+
+  <h3>2.3.3　双链表</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=24">📄 p.36–37</a>
+  <span class="exam">考点追踪：双链表插入 2023 · 双链表删除 2016</span>
+
+  <p>单链表只能从前往后依次遍历，访问某结点的前驱需从头开始，时间 O(n)。双链表的每个结点包含 <code>prior</code> 和 <code>next</code> 两个指针，<b>得益于对前驱结点的直接访问，在已知目标结点的前提下，插入和删除的时间复杂度可降至 O(1)</b>。</p>
+  <pre class="code">typedef struct DNode{
+    ElemType data;
+    struct DNode *prior, *next;   // 前驱和后继指针
+}DNode, *DLinklist;</pre>
+
+  <figure>
+    <img src="图/图2-9_双链表.png" alt="图2.9 双链表示意图">
+    <figcaption>图 2.9　双链表示意图（裁自原书 p.36）——头结点的 prior 为 NULL，尾结点的 next 为 NULL</figcaption>
+  </figure>
+
+  <figure>
+    <img src="图/图2-10_双链表插入.png" alt="图2.10 双链表插入结点过程">
+    <figcaption>图 2.10　双链表插入结点过程（裁自原书 p.36）</figcaption>
+  </figure>
+  <pre class="code">① s-&gt;next = p-&gt;next;        // 将结点 *s 插入到结点 *p 之后
+② p-&gt;next-&gt;prior = s;
+③ s-&gt;prior = p;
+④ p-&gt;next = s;</pre>
+  <p><b>步骤①必须在④之前</b>，否则 <code>p-&gt;next</code> 被覆盖后就无法访问原后继结点，导致指针丢失；<b>②必须在④之前</b>（要借 <code>p-&gt;next</code> 找到原后继）。其余步骤可适当调整（③可在①前执行）。</p>
+
+  <figure>
+    <img src="图/图2-11_双链表删除.png" alt="图2.11 双链表删除结点过程">
+    <figcaption>图 2.11　双链表删除结点过程（裁自原书 p.37）</figcaption>
+  </figure>
+  <pre class="code">p-&gt;next = q-&gt;next;     // 删除 *p 的后继结点 *q
+q-&gt;next-&gt;prior = p;
+free(q);</pre>
+
+  <div class="key"><span class="tag">必记结论 · 双链表改 4 个指针域</span>
+    双链表<b>插入和删除都要改 4 个指针域</b>（新结点 2 个 + 左右邻各 1 个），别记成 2 个。<br>
+    删除的口诀：<b>让前驱和后继「手拉手」</b>——<code>前驱-&gt;next = 后继;  后继-&gt;prior = 前驱;</code>。选择题的错误选项通常就是把某一句的方向写反（如把 <code>p-&gt;next</code> 写成 <code>p-&gt;prior</code>）。<br>
+    另外：<b>双链表的真正优势是「能直接访问前驱」</b>，不是笼统的「插删更方便」——后者是常见误解选项。
+  </div>
+
+  <h3>2.3.4　循环链表</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=25">📄 p.37–38</a>
+  <span class="exam">考点追踪：循环单链表中删除首元素的操作 2021</span>
+
+  <p><b>循环单链表</b>：尾结点的 next 不再为 NULL，而是<b>指向头结点</b>，整个链表形成一个环。因此<b>链表中不存在 next 为 NULL 的结点</b>，判空条件变为 <code>L-&gt;next == L</code>。从任意结点出发均可遍历整个链表。</p>
+  <p><b>循环双链表</b>：尾结点 *p 的 next 指向头结点 L，同时 <code>L-&gt;prior</code> 指向 *p。空表时头结点的 prior 和 next 都指向自身。</p>
+
+  <div class="key"><span class="tag">必记结论 · 为什么循环单链表常用「尾指针」而不是头指针</span>
+    在循环单链表里，<b>有了尾指针 r，就能 O(1) 同时够到尾（r）和头（r-&gt;next）</b>；只有头指针时，要找尾得绕一圈 O(n)。<br>
+    由此推出一串选择题结论：<br>
+    · 「尾插 + 删首」（= 队列）→ 选<b>带尾指针的循环单链表</b>，两头都 O(1)；<br>
+    · 「尾插 + <b>尾删</b>」或首尾四种操作全要 → 选<b>循环双链表</b>（尾删需要尾的前驱）；<br>
+    · 两个循环单链表首尾相接要 O(1) → 两个都设<b>尾</b>指针。
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · 单链表的死穴：有尾指针也删不快尾</span>
+    即使设了尾指针，<b>删除表尾结点仍是 O(n)</b>——因为找不到尾结点的<b>前驱</b>。这是本章被反复考的头号陷阱，也是「尾插+尾删要用循环双链表」的根本原因。
+  </div>
+
+  <h3>2.3.5　静态链表</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=26">📄 p.38</a>
+  <p>静态链表<b>用数组来模拟链式存储结构</b>。每个结点包含 <code>data</code> 域和 <code>next</code> 域，这里的指针实际上是结点在数组中的<b>相对地址（数组下标）</b>，也称<b>游标</b>。它同样需要预先分配一块连续的内存空间，以 <code>next == -1</code> 作为结束标志。</p>
+  <pre class="code">#define MaxSize 50
+typedef struct{
+    ElemType data;
+    int next;               // 下一个元素的数组下标
+} SLinkList[MaxSize];</pre>
+
+  <figure>
+    <img src="图/图2-14_静态链表.png" alt="图2.14 静态链表和单链表的对应关系">
+    <figcaption>图 2.14　静态链表（a）与其对应的单链表（b）（裁自原书 p.38）</figcaption>
+  </figure>
+
+  <div class="trap"><span class="tag">陷阱 · 静态链表不能随机存取</span>
+    静态链表是「<b>数组骨、链表魂</b>」：<b>插入删除只需修改游标、无须移动元素</b>（链表的优点），但<b>查找第 i 个元素仍要顺着游标一个个走</b>，<b>不是</b> O(1) 随机存取。<br>
+    选择题原话：「静态链表兼具顺序表和单链表的优点，因此存取表中第 i 个元素的时间与 i 无关」——<b>错</b>。<br>
+    它的正确适用场景：<b>需要连续空间、且插删不希望移动元素</b>，或在不支持指针的语言环境中。
+  </div>
+
+  <h2>2.3.6　顺序表和链表的比较（选择题弹药总表）</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=26">📄 p.38–39</a>
+  <table>
+    <tr><th>维度</th><th>顺序表</th><th>链表</th></tr>
+    <tr><td><b>存取方式</b></td><td><b>随机存取</b> O(1)，也支持顺序存取</td><td><b>仅顺序存取</b>，访问第 i 个要遍历 i 个结点，平均 O(n)</td></tr>
+    <tr><td><b>逻辑与物理</b></td><td>逻辑相邻 → 物理也相邻，邻接关系由地址自然体现</td><td>物理上未必相邻，逻辑关系由<b>指针显式维护</b></td></tr>
+    <tr><td><b>按值查找</b></td><td>无序 O(n)；<b>有序可折半 O(log₂n)</b></td><td>无论有无序都只能 O(n)（<b>链表不能折半</b>）</td></tr>
+    <tr><td><b>按序号查找</b></td><td>O(1)</td><td>O(n)</td></tr>
+    <tr><td><b>插入 / 删除</b></td><td>平均移动约一半元素，开销大</td><td>只需改指针，<b>但前提是已知操作位置</b>（否则仍需 O(n) 定位）</td></tr>
+    <tr><td><b>空间分配</b></td><td>静态分配要预设容量：过大浪费、过小溢出；动态扩容需搬迁全部数据</td><td>按需扩展，灵活；但每结点有指针域开销，<b>存储密度小于 1</b></td></tr>
+  </table>
+  <p><b>怎么选</b>：规模稳定、以随机访问为主 → <b>顺序存储</b>；动态性强、频繁插删 → <b>链式存储</b>。</p>
+
+  <div class="mine"><span class="tag">我的补讲 · 把上面的表变成「三问」，选型题秒选</span>
+    选型题（「最常用的操作是…，应采用…存储」）不要凭感觉，把题目要求翻译成三个问题：<br>
+    <b>① 要不要按序号 O(1) 直达？</b> 要 → 只能顺序表。<br>
+    <b>② 插删发生在哪一端？</b> 表尾插 → 顺序表 / 带尾指针链表都行；表头删 → 链表。<br>
+    <b>③ 要不要拿到「前驱」？</b> 要 → 必须双链表或循环链表。<br>
+    完整对照表见 <a href="../练习系统/套路库.html#C_T2-1">套路卡 T2-1</a>。另外记住：<b>凡是「谁绝对优于谁」的说法一律是错的</b>，看到就排除。
+  </div>
+
+  <h2>归纳总结与思维拓展（原书章末）</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第2章_线性表.pdf#page=50">📄 p.62</a>
+  <p>王道原文：本章是<b>算法设计题的重点考查内容</b>。线性表相关的算法题通常代码量较小，却蕴含一定的设计技巧，非常适合用于笔试考查。此类题目常采用<b>「三段式」结构命题</b>：</p>
+  <ol>
+    <li>给出算法的基本设计思想；</li>
+    <li>采用 C 或 C++ 语言描述算法，关键之处给出注释；</li>
+    <li>分析所设计算法的时间复杂度和空间复杂度。</li>
+  </ol>
+  <p>常用算法设计技巧：<b>针对链表</b>——头插法、尾插法、逆置法、归并法、双指针法；<b>针对顺序表</b>——因其支持随机访问，常结合经典排序与查找策略，如归并排序、二分查找。</p>
+  <div class="key"><span class="tag">必记结论 · 王道给的得分口径（照着写就有分）</span>
+    「在算法设计题中，<b>若能正确定义数据结构并清晰阐述算法思想，通常可获得至少一半的分数</b>；若能进一步给出规范代码实现，则得分更有保障；<b>逻辑较复杂的部分可直接用文字说明</b>，确保思路完整。」<br>
+    → 所以答题一律套三段式：<b>【算法思想】2–4 句 →【算法实现】C 代码 →【复杂度】时间+空间各一句</b>。写不出最优解，先写暴力版拿保底分。
+  </div>
+
+  <p><b>思维拓展</b>：长度为 n 的整型数组 A[1…n]，给定整数 x，设计一个时间复杂度不超过 O(n log₂n) 的算法，找出数组中所有两数之和等于 x 的整数对（每个元素只输出一次）。<br>
+  <span style="color:var(--muted);font-size:.88rem">提示：先用 O(n log₂n) 的排序把 A 排好序，然后<b>首尾双指针对撞</b>：若 A[i]+A[j] &lt; x 则 i++；若 &gt; x 则 j−−；否则输出并同时 i++、j−−，直到 i ≥ j。</span></p>
+  <div class="mine"><span class="tag">我的补讲 · 这题还有一个 O(n) 解法</span>
+    用<b>散列表</b>：一趟扫描，对每个 A[i] 去查 <code>x − A[i]</code> 是否已在表中，在就输出这一对，然后把 A[i] 登记进表。时间 O(n)、空间 O(n)。<br>
+    这就是第 2 章大题模板⑤「<b>题目给的数值上界 = 叫你开标记数组 / 散列换时间</b>」的同一思想（2015、2018 两道真题）。<b>排序+双指针 vs 散列</b>这组对比，本质是「省空间」还是「省时间」，考场上看题干要哪个。
+  </div>
+
+  <div class="outro">
+    <h3 style="margin-top:0">读完这一章，去做这三件事</h3>
+    <ol>
+      <li><b>刷题</b>：<a href="../练习系统/第2章.html">练习系统 · 第 2 章（88 题：选择 53 + 综合 35）</a>——综合题里那 10 道统考真题必须写到能默写。</li>
+      <li><b>过套路</b>：<a href="../练习系统/套路库.html#C_T2-1">T2-1 选型三问</a> ·
+        <a href="../练习系统/套路库.html#C_T2-2">T2-2 判空四连</a> ·
+        <a href="../练习系统/套路库.html#C_T2-3">T2-3 指针语句铁律</a> ·
+        <a href="../练习系统/套路库.html#C_T2-5">T2-5~T2-11 七大解题模板</a> ·
+        <a href="../练习系统/套路库.html#C_T2-12">T2-12 审题词典</a></li>
+      <li><b>回笔记与代码</b>：<a href="../../../../11408备考体系/408笔记MD/数据结构/02_线性表.md">02_线性表.md</a>（真题落点 + 刷题补遗）、
+        <a href="../../../../11408备考体系/408笔记MD/数据结构/09_代码默写手册_C语言.md">09_代码默写手册</a>（可编译版模板）。</li>
+    </ol>
+  </div>
+
+  <footer>精读版第 2 章 · 覆盖原书 p.13–62 正文（习题与答案见练习系统）· 正文取舍与色块批注由 Claude 完成，插图裁自原书扫描件 · 2026-07-24</footer>
+</div>
+</body>
+</html>

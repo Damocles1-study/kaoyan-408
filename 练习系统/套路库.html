@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据结构 · 解题套路库</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.tkbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 0;margin:14px 0 4px}
+.tkbar .seg{display:inline-flex;border:1px solid var(--accent);border-radius:9px;overflow:hidden}
+.tkbar .seg button{border:0;background:var(--card);color:var(--accent);font-family:var(--sans);
+  font-size:.85rem;padding:6px 14px;cursor:pointer}
+.tkbar .seg button.on{background:var(--accent);color:var(--card)}
+.tkbar input{flex:1;min-width:160px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:9px;padding:7px 12px;font-size:.88rem;font-family:var(--sans)}
+.tkbar input:focus{outline:none;border-color:var(--accent)}
+
+.tcard{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
+  border-radius:12px;padding:16px 18px;margin:14px 0}
+.tcard.hot{border-left-color:var(--red)}
+.tcard h3{font-family:var(--serif);font-size:1.06rem;line-height:1.5;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.tcard h3 .cid{font-family:var(--mono);font-size:.72rem;color:var(--muted);border:1px solid var(--line);
+  border-radius:5px;padding:1px 6px}
+.trigs{margin:10px 0 0;display:flex;gap:6px;flex-wrap:wrap}
+.trig{background:var(--amber-soft);color:var(--amber);border-radius:6px;padding:3px 9px;
+  font-size:.82rem;font-family:var(--mono)}
+.tbody{display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+.tbody.open{display:block}
+.tbody h4{font-size:.82rem;color:var(--muted);letter-spacing:.06em;margin:14px 0 6px}
+.tbody h4:first-child{margin-top:0}
+.tbody .flow{font-size:.92rem;line-height:1.85}
+.tbody .tmpl{background:var(--blue-soft);border-radius:9px;padding:12px 14px;font-size:.9rem;line-height:1.8}
+.tbody .trap{background:var(--red-soft);border-radius:9px;padding:9px 12px;font-size:.88rem;
+  line-height:1.75;margin-bottom:7px}
+.tbody .trap::before{content:'⚠️ ';}
+.tbody .note{color:var(--muted);font-size:.85rem;margin-top:8px}
+.tbody pre.code{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+  font-family:var(--mono);font-size:.82rem;line-height:1.65;overflow-x:auto;margin:8px 0;white-space:pre}
+.tbody code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);
+  color:var(--accent);border-radius:4px;padding:1px 5px}
+.tbody .tmpl code{background:var(--card)}
+table.tk{width:100%;border-collapse:collapse;margin:8px 0;font-size:.86rem}
+table.tk th,table.tk td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+table.tk th{background:var(--accent-soft);color:var(--accent);font-weight:600;white-space:nowrap}
+.qlinks{margin-top:14px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.qlinks .lab{font-size:.8rem;color:var(--muted)}
+.qlinks a{font-family:var(--mono);font-size:.78rem;text-decoration:none;color:var(--blue);
+  background:var(--blue-soft);border-radius:5px;padding:2px 7px}
+.qlinks a:hover{background:var(--blue);color:var(--card)}
+.toggle{margin-top:12px;border:1px solid var(--line);background:transparent;color:var(--accent);
+  border-radius:8px;padding:5px 14px;font-size:.83rem;cursor:pointer;font-family:var(--sans)}
+.toggle:hover{background:var(--accent-soft)}
+.chapline{font-family:var(--serif);font-size:1.15rem;margin:26px 0 4px;color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 练习系统首页</a>
+  <header>
+    <h1>数据结构 · 解题套路库</h1>
+    <div class="sub">「看到什么字眼 → 想到什么套路」· 由 Claude 把王道课后题逐题做完后自己提炼 · 每张卡链回原题</div>
+  </header>
+
+  <div class="tkbar">
+    <div class="seg" id="chseg"></div>
+    <input id="q" placeholder="搜触发词，如「尽可能高效」「循环队列」「出栈序列」…">
+    <button class="toggle" id="expandAll">全部展开</button>
+    <button class="toggle" id="rand">🎲 随机抽一张盲测</button>
+  </div>
+
+  <div class="verdict ok" style="margin-top:14px;background:var(--amber-soft);color:var(--amber)">
+    <b>怎么用：</b>先只看卡片上的<b>触发词</b>，在心里把「该用什么套路、模板长什么样、坑在哪」讲一遍，再点开验证。
+    做题卡壳时反过来用——把题干里的关键词丢进搜索框，找对应的卡。
+  </div>
+
+  <div id="list"></div>
+  <footer id="foot"></footer>
+</div>
+
+<script src="data_tricks.js"></script>
+<script>
+(function(){
+  const $=s=>document.querySelector(s);
+  const CH_NAME={1:'绪论与复杂度',2:'线性表',3:'栈、队列和数组',4:'串与 KMP'};
+  let curCh='all', kw='';
+
+  // 章节筛选按钮
+  let segh='<button data-ch="all" class="on">全部</button>';
+  TRICK_META.ready.forEach(c=>segh+='<button data-ch="'+c+'">第'+c+'章</button>');
+  $('#chseg').innerHTML=segh;
+
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function plain(t){const d=document.createElement('div');d.innerHTML=t;return d.textContent;}
+
+  function cardHtml(t){
+    let h='<div class="tcard'+(t.tier==='🔴'?' hot':'')+'" id="C_'+t.id+'" data-ch="'+t.ch+'">';
+    h+='<h3><span class="cid">'+t.id+'</span><span>'+t.tier+'</span><span>'+t.title+'</span></h3>';
+    h+='<div class="trigs">'+t.trig.map(x=>'<span class="trig">'+esc(x)+'</span>').join('')+'</div>';
+    h+='<button class="toggle">看套路 ▾</button>';
+    h+='<div class="tbody">';
+    h+='<h4>判定 / 解题流程</h4><div class="flow">'+t.flow+'</div>';
+    if(t.tmpl)h+='<h4>模板 · 公式</h4><div class="tmpl">'+t.tmpl+'</div>';
+    if(t.traps&&t.traps.length){h+='<h4>陷阱</h4>';t.traps.forEach(x=>h+='<div class="trap">'+x+'</div>');}
+    if(t.qids&&t.qids.length){
+      h+='<div class="qlinks"><span class="lab">练这些题 →</span>';
+      /* 题号形如 3.4-14 / 4.2-综2 / 4-特训1，章号一律取开头的连续数字 */
+      t.qids.forEach(id=>{const ch=(String(id).match(/^\d+/)||[t.ch])[0];
+        h+='<a href="第'+ch+'章.html#Q_'+encodeURIComponent(id)+'">'+id+'</a>';});
+      h+='</div>';
+    }
+    h+='</div></div>';
+    return h;
+  }
+
+  function render(){
+    const list=TRICK_DATA.filter(t=>{
+      if(curCh!=='all'&&String(t.ch)!==curCh)return false;
+      if(!kw)return true;
+      const hay=(t.title+' '+t.trig.join(' ')+' '+plain(t.flow)+' '+plain(t.tmpl||'')+' '
+                +(t.traps||[]).map(plain).join(' ')+' '+(t.qids||[]).join(' ')).toLowerCase();
+      return hay.includes(kw.toLowerCase());
+    });
+    let h='',lastCh=null;
+    list.forEach(t=>{
+      if(t.ch!==lastCh){lastCh=t.ch;h+='<div class="chapline">第'+t.ch+'章　'+CH_NAME[t.ch]+'</div>';}
+      h+=cardHtml(t);
+    });
+    $('#list').innerHTML=h||'<div class="empty">没有匹配的套路卡。</div>';
+    $('#foot').textContent='共 '+TRICK_DATA.length+' 张套路卡，当前显示 '+list.length+' 张 · '+TRICK_META.note;
+    wire();
+  }
+
+  function wire(){
+    document.querySelectorAll('.tcard').forEach(c=>{
+      const btn=c.querySelector('.toggle'), body=c.querySelector('.tbody');
+      btn.onclick=()=>{const op=body.classList.toggle('open');btn.textContent=op?'收起 ▴':'看套路 ▾';};
+    });
+  }
+
+  $('#chseg').onclick=e=>{
+    const b=e.target.closest('button'); if(!b)return;
+    document.querySelectorAll('#chseg button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); curCh=b.dataset.ch; render();
+  };
+  $('#q').oninput=e=>{kw=e.target.value.trim();render();};
+  $('#expandAll').onclick=()=>{
+    const anyClosed=[...document.querySelectorAll('.tbody')].some(b=>!b.classList.contains('open'));
+    document.querySelectorAll('.tcard').forEach(c=>{
+      const b=c.querySelector('.tbody'), t=c.querySelector('.toggle');
+      b.classList.toggle('open',anyClosed); t.textContent=anyClosed?'收起 ▴':'看套路 ▾';
+    });
+    $('#expandAll').textContent=anyClosed?'全部收起':'全部展开';
+  };
+  $('#rand').onclick=()=>{
+    const cards=[...document.querySelectorAll('.tcard')];
+    if(!cards.length)return;
+    cards.forEach(c=>{c.querySelector('.tbody').classList.remove('open');
+                      c.querySelector('.toggle').textContent='看套路 ▾';});
+    const t=cards[Math.random()*cards.length|0];
+    t.scrollIntoView({behavior:'smooth',block:'center'});
+    t.style.transition='box-shadow .4s';
+    t.style.boxShadow='0 0 0 3px var(--accent)';
+    setTimeout(()=>t.style.boxShadow='',1400);
+  };
+
+  render();
+  // 支持从别处直接定位到某张卡：套路库.html#C_T3-9
+  if(location.hash.startsWith('#C_')){
+    const el=document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if(el){el.querySelector('.tbody').classList.add('open');
+           el.querySelector('.toggle').textContent='收起 ▴';
+           setTimeout(()=>el.scrollIntoView({block:'center'}),80);}
+  }
+})();
+</script>
+</body>
+</html>

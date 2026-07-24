@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>练习 · 数据结构 第4章 串与KMP</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 练习系统首页</a>
+  <header>
+    <h1>数据结构 · 第4章　串（KMP）</h1>
+    <div class="sub">题源：27 王道《数据结构》第 4 章 4.2.4 本节试题精选 + 自编手算特训 · 每题「📕书答案 × 🤖运行核对」交叉验证 ·
+      <a href="../精读版/第4章.html" style="color:var(--accent)">📖 本章精读版</a> ·
+      <a href="../模拟器_KMP.html" style="color:var(--accent)">🔧 KMP 步进器</a> ·
+      <a href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf" style="color:var(--accent)">📄 打开本章电子书</a></div>
+  </header>
+  <div class="verdict ok" style="margin-top:16px;background:var(--green-soft);color:var(--green)">✅ 第4章已完整：<b>21 题</b>（王道原题 15 = 选择 11 + 双空 1 + 综合 2 + 思维拓展 1，另加 6 道自编手算特训）。含 <b>3 道统考真题</b>（2015 指针变化、2019 比较次数、2024 nextval 最长滑动）。所有 next / nextval / 比较次数 / 滑动距离均由程序独立复算，与书答逐题一致。</div>
+  <div class="verdict" style="background:var(--amber-soft);color:var(--amber)">📌 本章考纲只有一句话：<b>字符串模式匹配</b>。4.1 串的定义与存储（王道原书标了 ✱，不在统考大纲内）不出题，全部火力压在 next / nextval 的手算与比较次数上——这也是本章 3 道真题的全部形态。</div>
+  <div id="root"></div>
+  <footer>21 题 · 书答×运行核对逐题一致 · 手算练不熟就去 <a href="../模拟器_KMP.html" style="color:var(--accent)">KMP 步进器</a> 逐步对答案</footer>
+</div>
+<script src="data_ds.js"></script>
+<script src="engine.js"></script>
+<script>
+DSApp.mount({root:'#root', scope:{type:'chapter',ch:4}, scopeLabel:'第4章',
+  mode:'practice', allowModeToggle:true, groupBySec:true});
+</script>
+</body>
+</html>

@@ -88,6 +88,20 @@ pre.code{font-family:var(--mono);font-size:.82rem;background:var(--accent-soft);
 .track.book h4{color:var(--blue)} .track.claude h4{color:var(--purple)}
 .track .final{font-family:var(--serif);font-weight:700;font-size:1.05rem}
 .track.book .final{color:var(--blue)} .track.claude .final{color:var(--purple)}
+/* 参考实现（综合题的答案代码）：整块收在核对面板里，默认打码 */
+.codeans{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--card)}
+.codeans h4{font-size:.8rem;margin-bottom:7px;color:var(--accent)}
+.codewrap{position:relative}
+.codewrap pre.code{margin:0}
+.codewrap.veiled pre.code{filter:blur(7px);opacity:.5;user-select:none;pointer-events:none;
+  max-height:210px;overflow:hidden}
+.codepeek{display:none}
+.codewrap.veiled .codepeek{display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  white-space:nowrap;font-family:var(--sans);font-size:.85rem;cursor:pointer;
+  border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:8px;padding:7px 18px;
+  box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.codewrap.veiled .codepeek:hover{background:var(--accent-soft)}
+@media (max-width:520px){.codewrap.veiled .codepeek{white-space:normal;width:86%;text-align:center}}
 .run{margin-top:8px;font-family:var(--mono);font-size:.76rem;background:rgba(0,0,0,.04);
   border-radius:6px;padding:6px 9px;color:var(--ink)}
 @media (prefers-color-scheme: dark){.run{background:rgba(255,255,255,.05)}}
@@ -152,3 +166,17 @@ footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:36px;line
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;
   padding:10px 22px;border-radius:10px;font-size:.85rem;opacity:0;transition:.25s;pointer-events:none;z-index:99}
 .toast.show{opacity:1}
+
+/* ---- 题干 / 答案配图（裁自王道原书扫描件） ---- */
+.qfig{margin:10px 0;text-align:center}
+.qfig img{max-width:100%;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px}
+.qfig figcaption{font-size:.78rem;color:var(--muted);margin-top:5px;line-height:1.6}
+/* 暗色模式下扫描图是白底黑线，压一点亮度免得刺眼 */
+@media (prefers-color-scheme: dark){ .qfig img{filter:brightness(.88)} }
+/* 题干 / 答案栏里的小表格（如 2016 地址表、next 数组表），比裁图更清晰且可搜索。
+   第4章起 next/nextval 表大量用到，故作用域从 .stem 放宽到整张卡（含双栏核对）。 */
+.q table.qtab{border-collapse:collapse;margin:10px 0;font-size:.85rem;font-family:var(--mono);
+  display:block;overflow-x:auto;max-width:100%;white-space:nowrap}
+.q table.qtab th,.q table.qtab td{border:1px solid var(--line);padding:4px 10px;text-align:center}
+.q table.qtab th{background:var(--accent-soft);color:var(--accent);font-family:var(--sans);font-weight:600}
+.q table.qtab td.rowh{background:var(--accent-soft);color:var(--accent);font-family:var(--sans)}

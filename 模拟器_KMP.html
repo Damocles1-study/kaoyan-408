@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMP 步进器 · next / nextval 手算 · 匹配过程 · 比较次数</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    --mono:"SF Mono","JetBrains Mono","Menlo",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:60px}
+  .wrap{max-width:1040px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:14px}
+
+  .ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .ctrl label{font-size:.85rem;color:var(--muted)}
+  select,input[type=text]{font-family:var(--mono);font-size:.9rem;color:var(--ink);background:var(--bg);
+    border:1px solid var(--line);border-radius:8px;padding:5px 10px}
+  input[type=text]{width:230px}
+  .btn{font-size:.85rem;border:1px solid var(--accent);background:none;color:var(--accent);
+    border-radius:8px;padding:5px 14px;cursor:pointer;font-family:var(--sans)}
+  .btn:hover{background:var(--accent-soft)}
+  .btn.primary{background:var(--accent);color:var(--card)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .preset{font-size:.78rem;border:1px solid var(--line);background:none;color:var(--muted);
+    border-radius:999px;padding:3px 12px;cursor:pointer}
+  .preset:hover{color:var(--accent);border-color:var(--accent)}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{font-size:.82rem;border:none;background:none;color:var(--muted);padding:5px 13px;cursor:pointer;font-family:var(--sans)}
+  .seg button.on{background:var(--accent);color:var(--card)}
+
+  /* 字符格 */
+  .grid{overflow-x:auto;padding-bottom:4px}
+  .row{display:flex;gap:4px;align-items:center;margin:3px 0;min-width:max-content}
+  .rowlab{width:74px;flex:0 0 74px;font-size:.78rem;color:var(--muted);text-align:right;padding-right:8px}
+  .cell{width:32px;height:32px;flex:0 0 32px;display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--line);border-radius:6px;font-family:var(--mono);font-size:.9rem;background:var(--bg)}
+  .cell.idx{border:none;background:none;color:var(--muted);font-size:.72rem}
+  .cell.done{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+  .cell.cur{background:var(--accent);color:var(--card);border-color:var(--accent);font-weight:700}
+  .cell.bad{background:var(--red-soft);color:var(--red);border-color:var(--red);font-weight:700}
+  .cell.hint{background:var(--blue-soft);color:var(--blue);border-color:var(--blue)}
+  .cell.ghost{opacity:.28}
+  .cell.val{background:var(--accent-soft);color:var(--accent)}
+  .cell.pend{color:var(--muted)}
+  .cell.blank{border-style:dashed;color:var(--muted)}
+  .cell input{width:100%;height:100%;border:none;background:none;color:var(--ink);text-align:center;
+    font-family:var(--mono);font-size:.88rem;outline:none}
+
+  .expl{background:var(--accent-soft);border-radius:10px;padding:14px 16px;font-size:.92rem;min-height:86px;margin-top:12px}
+  .expl b{color:var(--accent)}
+  .expl .ok{color:var(--green);font-weight:700}
+  .expl .no{color:var(--red);font-weight:700}
+  .expl .step{font-family:var(--mono);font-size:.82rem;color:var(--blue);margin-top:6px}
+
+  .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .cnt{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 14px;font-size:.85rem}
+  .cnt b{font-family:var(--serif);font-size:1.1rem;color:var(--accent)}
+  .note{font-size:.85rem;color:var(--muted);margin-top:12px;line-height:1.85}
+  .note code{font-family:var(--mono);background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:1px 5px}
+  .note b{color:var(--ink)}
+  .result{border-radius:10px;padding:12px 16px;font-size:.95rem;margin-top:14px;display:none}
+  .result.show{display:block}
+  .result.good{background:var(--green-soft);color:var(--green)}
+  .result.bad{background:var(--red-soft);color:var(--red)}
+  .log{margin-top:12px;max-height:230px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:10px 14px;
+    font-family:var(--mono);font-size:.8rem;line-height:1.9}
+  .log div.f{color:var(--red)} .log div.s{color:var(--green)}
+  table.kv{border-collapse:collapse;font-size:.85rem;margin-top:10px;width:100%}
+  table.kv th,table.kv td{border:1px solid var(--line);padding:5px 9px;text-align:left}
+  table.kv th{background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+  footer{color:var(--muted);font-size:.82rem;text-align:center;margin-top:30px}
+  .warn{background:var(--hl);border-left:3px solid var(--hl-border);border-radius:8px;padding:10px 14px;font-size:.86rem;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>KMP 步进器</h1>
+    <div class="sub">next / nextval 逐步手算复盘 · 匹配过程单步回放（比较次数自动计数）· 手算自测 —— 对应王道第 4 章唯一考点：字符串模式匹配</div>
+  </header>
+
+  <!-- ① next / nextval -->
+  <section class="card">
+    <h2>① next / nextval 是怎么一格一格填出来的</h2>
+    <div class="ctrl">
+      <label>模式串</label><input type="text" id="pat" value="aabaac">
+      <label>位序</label>
+      <span class="seg" id="baseSeg"><button data-b="1" class="on">从 1 开始</button><button data-b="0">从 0 开始</button></span>
+      <button class="btn primary" id="btnNextRun">重算</button>
+      <button class="btn" id="btnNextStep">下一步 ▸</button>
+      <button class="btn" id="btnNextAuto">▶ 自动</button>
+      <button class="btn" id="btnNextAll">一次到底 ⏭</button>
+    </div>
+    <div class="ctrl">
+      <span style="font-size:.78rem;color:var(--muted)">真题/课后题预设：</span>
+      <button class="preset" data-p="aabaac">综合2 · aabaac</button>
+      <button class="preset" data-p="ababaaababaa">4.2-6 · ababaaababaa</button>
+      <button class="preset" data-p="aaab">4.2-7/8 · aaab</button>
+      <button class="preset" data-p="ababaaa">4.2-9 · ababaaa</button>
+      <button class="preset" data-p="abaabc">2015/2019 · abaabc</button>
+      <button class="preset" data-p="aabaab">2024 · aabaab</button>
+      <button class="preset" data-p="abcac">课文例 · abcac</button>
+    </div>
+
+    <div class="grid" id="nextGrid"></div>
+    <div class="expl" id="nextExpl">点「下一步」看 <code>get_next</code> 每一步在做什么，或「一次到底」直接出结果。</div>
+    <div class="stats" id="nextStats"></div>
+
+    <div class="note">
+      <b>两种手算法，考场上互相验算：</b><br>
+      <b>Ⅰ. PM 右移法（快）：</b>先写部分匹配值表 PM[j]＝前 j 个字符的<b>最长相等真前后缀长度</b>；再把整张表<b>右移一位、首位补 0</b>，即得 next（位序从 1）。等价公式 <code>next[j]=PM[j−1]+1</code>。<br>
+      <b>Ⅱ. 递推法（稳，就是上面动画演示的）：</b>令 k=next[j−1]，比较 p<sub>j−1</sub> 与 p<sub>k</sub>：相等则 next[j]=k+1；不等则 k←next[k] 继续退，退到 0 就填 1。<br>
+      <b>nextval：</b>先有 next，再逐位修正——若 p<sub>j</sub> 与 p<sub>next[j]</sub> <b>相同</b>，则 nextval[j]=nextval[next[j]]（连锁塌陷）；否则 nextval[j]=next[j]。<br>
+      <b>自查三条硬约束：</b>① next[1]=0、next[2]=1 恒成立；② next[j+1] ≤ next[j]+1（每次最多涨 1，跳涨必错）；③ 位序从 0 时整张表<b>整体减 1</b>（next[0]=−1），答案的相对关系不变。
+    </div>
+  </section>
+
+  <!-- ② 匹配过程 -->
+  <section class="card">
+    <h2>② 匹配过程单步回放 —— 比较次数就是这么数出来的</h2>
+    <div class="ctrl">
+      <label>主串 S</label><input type="text" id="mainS" value="aabaabaabaac">
+      <label>模式串 T</label><input type="text" id="mainT" value="aabaac">
+      <span class="seg" id="algSeg">
+        <button data-a="next" class="on">KMP · next</button>
+        <button data-a="nextval">改进 · nextval</button>
+        <button data-a="brute">暴力匹配</button>
+      </span>
+      <button class="btn primary" id="btnMRun">重新开始</button>
+      <button class="btn" id="btnMStep">下一步 ▸</button>
+      <button class="btn" id="btnMAuto">▶ 自动</button>
+      <button class="btn" id="btnMAll">一次到底 ⏭</button>
+    </div>
+    <div class="ctrl">
+      <span style="font-size:.78rem;color:var(--muted)">真题预设：</span>
+      <button class="preset" data-s="aabaaaba" data-t="aaab">4.2-7/8 · 答案 9 次 / 改进 7 次</button>
+      <button class="preset" data-s="abaabaabcabaabc" data-t="abaabc">2019 · 答案 10 次</button>
+      <button class="preset" data-s="aabaabaabaac" data-t="aabaac">综合2 · 3 趟</button>
+      <button class="preset" data-s="abaabaabacacaabaabcc" data-t="abaabc">2015 · 首次失配</button>
+      <button class="preset" data-s="ababcabcacbab" data-t="abcac">课文例 4.2</button>
+      <button class="preset" data-s="0000000000000000000001" data-t="0000001">暴力最坏例</button>
+    </div>
+
+    <div class="grid" id="matchGrid"></div>
+    <div class="expl" id="matchExpl">点「下一步」逐次比较；每比较一次计数 +1，失配时看 j 退到哪里。</div>
+    <div class="stats" id="matchStats"></div>
+    <div class="result" id="matchResult"></div>
+    <div class="log" id="matchLog"></div>
+    <div class="warn">
+      <b>数比较次数的四条规矩（真题就靠这个给分）：</b>① 只有真正执行了 S[i] 与 T[j] 的那一次算 1 次；② <b>失配的那一次也要算</b>；
+      ③ 失配后 i 不动、j←next[j]，接着在<b>同一个 i</b> 上比，算新的一次；④ j 退到 0（位序从 0 时为 −1）时走的是"i、j 同时加 1"分支，<b>不产生比较</b>，别多数。
+    </div>
+  </section>
+
+  <!-- ③ 自测 -->
+  <section class="card">
+    <h2>③ 手算自测：先自己填，再判分</h2>
+    <div class="ctrl">
+      <label>用哪个串</label><input type="text" id="quizPat" value="">
+      <button class="btn primary" id="btnQuizNew">🎲 随机出一个</button>
+      <button class="btn" id="btnQuizUse">用输入框里的串</button>
+      <span class="seg" id="quizSeg"><button data-q="next" class="on">填 next</button><button data-q="nextval">填 nextval</button><button data-q="both">两个都填</button></span>
+      <button class="btn" id="btnQuizCheck">✅ 判分</button>
+    </div>
+    <div class="grid" id="quizGrid"></div>
+    <div class="result" id="quizResult"></div>
+    <div class="note">随机串默认用 2–3 种字符、长度 6–10——真题里的模式串就是这个规模（2015 <code>abaabc</code>、2019 <code>abaabc</code>、2024 <code>aabaab</code>）。填错的位置会标红并给出该位的推导过程。</div>
+  </section>
+
+  <footer>配套：<a href="练习系统/第4章.html" style="color:var(--accent)">第4章练习（21 题）</a> · <a href="精读版/第4章.html" style="color:var(--accent)">第4章精读版</a> · <a href="练习系统/套路库.html" style="color:var(--accent)">解题套路库</a></footer>
+</div>
+
+<script>
+/* ===================== 核心算法（位序从 1；对外可整体减 1 变成 0 起） ===================== */
+function pmTable(p){                 // 部分匹配值表
+  const m=p.length, v=new Array(m+1).fill(0);
+  for(let j=1;j<=m;j++){ let best=0;
+    for(let k=1;k<j;k++) if(p.slice(0,k)===p.slice(j-k,j)) best=k;
+    v[j]=best; }
+  return v;
+}
+/* 王道 get_next，逐步记录，用于动画 */
+function nextSteps(p){
+  const m=p.length, next=new Array(m+2).fill(0), steps=[];
+  let i=1,j=0; next[1]=0;
+  steps.push({i,j,next:next.slice(),msg:'初始化：i=1, j=0, <b>next[1]=0</b>（首字符失配只能整体右滑一位，这是固定规则）',set:1});
+  while(i<m){
+    if(j===0||p[i-1]===p[j-1]){
+      const why = j===0 ? 'j=0（已退到底，没有可用的相等前后缀）' : '<b>p'+i+'='+p[i-1]+'</b> 与 <b>p'+j+'='+p[j-1]+'</b> 相同';
+      i++; j++; next[i]=j;
+      steps.push({i,j,next:next.slice(),set:i,
+        msg:why+' → i、j 同时加 1，填 <b>next['+i+']='+j+'</b>'+(j===1?'（即"退到底"，下轮从模式串第 1 位重比）':'')});
+    }else{
+      const old=j; j=next[j];
+      steps.push({i,j,next:next.slice(),set:0,
+        msg:'<b>p'+i+'='+p[i-1]+'</b> 与 <b>p'+old+'='+p[old-1]+'</b> 不同 → j 回退：j←next['+old+']='+j+'　<span class="step">（这一步就是"沿着自己的前后缀往回缩"，缩到能接上为止）</span>'});
+    }
+  }
+  return {next:next.slice(0,m+1), steps};
+}
+function nextvalOf(p,next){
+  const m=p.length, nv=new Array(m+1).fill(0);
+  nv[1]=0;
+  for(let j=2;j<=m;j++) nv[j] = (next[j]>=1 && p[j-1]===p[next[j]-1]) ? nv[next[j]] : next[j];
+  return nv;
+}
+/* 匹配：返回逐次比较的轨迹 */
+function matchTrace(S,T,mode){
+  const m=T.length, res=[];
+  const next=nextSteps(T).next;
+  const arr = mode==='nextval'? nextvalOf(T,next) : next;
+  let i=1,j=1,c=0,pass=1;
+  let guard=0;
+  while(i<=S.length && j<=m && guard++<20000){
+    if(mode!=='brute' && j===0){ i++; j++; res.push({type:'skip',i,j,c,pass}); continue; }
+    c++;
+    const ok = S[i-1]===T[j-1];
+    const rec={type:ok?'eq':'ne',i,j,c,pass,si:S[i-1],tj:T[j-1]};
+    if(ok){ i++; j++; }
+    else{
+      if(mode==='brute'){ rec.to=1; rec.newi=i-j+2; i=i-j+2; j=1; pass++; }
+      else{ rec.to=arr[j]; rec.slide=j-arr[j]; j=arr[j]; pass++; }
+    }
+    res.push(rec);
+  }
+  return {trace:res, ok:j>m, start:j>m?i-m:0, cmps:res.filter(r=>r.type!=='skip').length, arr, next};
+}
+/* ===================== 通用小工具 ===================== */
+const $=s=>document.querySelector(s);
+function cells(chars,cls){ return chars.map((c,k)=>'<div class="cell '+(cls?cls(k):'')+'">'+c+'</div>').join(''); }
+function row(lab,html){ return '<div class="row"><div class="rowlab">'+lab+'</div>'+html+'</div>'; }
+function idxRow(n,base){ let h=''; for(let k=0;k<n;k++)h+='<div class="cell idx">'+(k+base)+'</div>'; return row('编号 j',h); }
+
+/* ===================== ① next 演示 ===================== */
+let NS={p:'',steps:[],k:0,base:1,timer:null};
+function nextRender(){
+  const p=NS.p, m=p.length, st=NS.steps[NS.k]||{next:[],i:0,j:0};
+  const shown=st.next||[];
+  let h=idxRow(m,NS.base);
+  h+=row('模式串', cells([...p], k=>{
+    const j=k+1;
+    if(j===st.i) return 'cur';
+    if(j===st.j) return 'hint';
+    return '';}));
+  const pm=pmTable(p);
+  h+=row('PM', cells(pm.slice(1).map(String), ()=> 'val'));
+  h+=row('next', cells(Array.from({length:m},(_,k)=>{
+      const j=k+1, v=shown[j];
+      return (v===undefined||(j>1&&v===0&&j>st.i)) ? '·' : String(NS.base? v : v-1);
+    }), k=>{
+      const j=k+1, v=shown[j];
+      if(j===st.set) return 'cur';
+      return (v===undefined||(j>1&&v===0&&j>st.i))?'blank':'done';}));
+  if(NS.k===NS.steps.length-1){
+    const nv=nextvalOf(p,NS.steps[NS.steps.length-1].next);
+    h+=row('nextval', cells(Array.from({length:m},(_,k)=>String(NS.base?nv[k+1]:nv[k+1]-1)),
+      k=>{const j=k+1; const nx=NS.steps[NS.steps.length-1].next[j];
+          return (j>1&&nv[j]!==nx)?'hint':'val';}));
+  }
+  $('#nextGrid').innerHTML=h;
+  $('#nextExpl').innerHTML=(st.msg||'')+
+    (NS.k===NS.steps.length-1?'<div class="step">✅ 已填完。蓝格＝nextval 与 next 不同的位置，也就是"本来会白比一次"的地方。</div>':'');
+  const done=NS.k===NS.steps.length-1;
+  $('#nextStats').innerHTML='<div class="cnt">步骤 <b>'+(NS.k+1)+'</b>/'+NS.steps.length+'</div>'
+    +'<div class="cnt">i=<b>'+(NS.steps[NS.k].i)+'</b></div><div class="cnt">j=<b>'+(NS.steps[NS.k].j)+'</b></div>'
+    +(done?'<div class="cnt">next = <b>'+NS.steps[NS.steps.length-1].next.slice(1,NS.p.length+1).map(v=>NS.base?v:v-1).join(', ')+'</b></div>':'');
+}
+function nextRun(){
+  const p=($('#pat').value||'').replace(/\s/g,'');
+  if(!p){alert('先输入模式串');return;}
+  NS.p=p; NS.steps=nextSteps(p).steps; NS.k=0; clearInterval(NS.timer); nextRender();
+}
+$('#btnNextRun').onclick=nextRun;
+$('#btnNextStep').onclick=()=>{ if(NS.k<NS.steps.length-1){NS.k++;nextRender();} };
+$('#btnNextAll').onclick=()=>{ NS.k=NS.steps.length-1; nextRender(); };
+$('#btnNextAuto').onclick=()=>{ clearInterval(NS.timer);
+  NS.timer=setInterval(()=>{ if(NS.k<NS.steps.length-1){NS.k++;nextRender();} else clearInterval(NS.timer); },700); };
+$('#baseSeg').onclick=e=>{ const b=e.target.dataset.b; if(b===undefined)return;
+  [...$('#baseSeg').children].forEach(x=>x.classList.toggle('on',x===e.target));
+  NS.base=+b; nextRender(); };
+document.querySelectorAll('.preset[data-p]').forEach(b=>b.onclick=()=>{ $('#pat').value=b.dataset.p; nextRun(); });
+
+/* ===================== ② 匹配演示 ===================== */
+let MS={S:'',T:'',mode:'next',tr:null,k:-1,timer:null};
+function matchRender(){
+  const {S,T,tr}=MS; if(!tr)return;
+  const cur = MS.k>=0 ? tr.trace[MS.k] : null;
+  const i = cur?cur.i:1, j=cur?cur.j:1, off=i-j;      // 模式串首字符对齐到主串的 off+1 位
+  let h=idxRow(S.length,1);
+  h+=row('主串 S', cells([...S], k=>{
+    const pos=k+1;
+    if(cur&&pos===cur.i&&cur.type!=='skip') return cur.type==='eq'?'cur':'bad';
+    if(pos>off&&pos<i) return 'done';
+    return '';}));
+  let ph=''; for(let k=0;k<S.length;k++){
+    const t=k+1-off;                                  // 该列对应模式串的第几个字符（1..m）
+    if(t>=1&&t<=T.length){
+      const pos=k+1; let cls='';
+      if(cur&&t===cur.j&&cur.type!=='skip') cls=cur.type==='eq'?'cur':'bad';
+      else if(t<j) cls='done';
+      ph+='<div class="cell '+cls+'">'+T[t-1]+'</div>';
+    } else ph+='<div class="cell ghost"></div>';
+  }
+  h+=row('模式串 T',ph);
+  h+=row(MS.mode==='brute'?'—':(MS.mode==='nextval'?'nextval':'next'),
+    (()=>{ let s=''; for(let k=0;k<S.length;k++){ const t=k+1-off;
+      s+= (MS.mode!=='brute'&&t>=1&&t<=T.length)?'<div class="cell val">'+MS.tr.arr[t]+'</div>':'<div class="cell ghost"></div>'; }
+      return s; })());
+  $('#matchGrid').innerHTML=h;
+
+  let msg='点「下一步」开始。';
+  if(cur){
+    if(cur.type==='skip') msg='j 已退到 0 → 走 <code>if(j==0)</code> 分支：i、j 同时加 1，<b>本步不产生字符比较</b>（i='+cur.i+', j='+cur.j+'）。';
+    else if(cur.type==='eq') msg='第 <b>'+cur.c+'</b> 次比较：S['+cur.i+']=<b>'+cur.si+'</b> 与 T['+cur.j+']=<b>'+cur.tj+'</b> <span class="ok">相等</span> → i、j 各加 1，继续。';
+    else if(MS.mode==='brute') msg='第 <b>'+cur.c+'</b> 次比较：S['+cur.i+']=<b>'+cur.si+'</b> 与 T['+cur.j+']=<b>'+cur.tj+'</b> <span class="no">失配</span> → 暴力法<b>主串指针回溯</b>到 i='+cur.newi+'，j 归 1（KMP 要省的正是这一步）。';
+    else msg='第 <b>'+cur.c+'</b> 次比较：S['+cur.i+']=<b>'+cur.si+'</b> 与 T['+cur.j+']=<b>'+cur.tj+'</b> <span class="no">失配</span> → <b>i 不动</b>，j←'+(MS.mode==='nextval'?'nextval':'next')+'['+cur.j+']=<b>'+cur.to+'</b>，相当于模式串右滑 <b>'+cur.slide+'</b> 位。';
+  }
+  $('#matchExpl').innerHTML=msg;
+  const done=MS.k>=MS.tr.trace.length-1;
+  const cc=cur?cur.c:0;
+  $('#matchStats').innerHTML='<div class="cnt">已比较 <b>'+cc+'</b> 次</div>'
+    +'<div class="cnt">第 <b>'+(cur?cur.pass:1)+'</b> 趟</div>'
+    +'<div class="cnt">i=<b>'+i+'</b>　j=<b>'+j+'</b></div>'
+    +'<div class="cnt">全程共 <b>'+MS.tr.cmps+'</b> 次</div>';
+  const R=$('#matchResult');
+  if(done){ R.className='result show '+(MS.tr.ok?'good':'bad');
+    R.innerHTML=MS.tr.ok
+      ? '✅ 匹配成功：起始位置 = 主串第 <b>'+MS.tr.start+'</b> 位（位序从 1）。单个字符比较总次数 = <b>'+MS.tr.cmps+'</b> 次。'
+      : '❌ 主串扫完仍未匹配。单个字符比较总次数 = <b>'+MS.tr.cmps+'</b> 次。';
+  } else R.className='result';
+  // 日志
+  $('#matchLog').innerHTML=MS.tr.trace.slice(0,MS.k+1).map(r=>{
+    if(r.type==='skip')return '<div>—　j=0，i→'+r.i+'，不计比较</div>';
+    if(r.type==='eq')return '<div>'+String(r.c).padStart(2)+'　S['+r.i+']='+r.si+' = T['+r.j+']='+r.tj+'</div>';
+    return '<div class="f">'+String(r.c).padStart(2)+'　S['+r.i+']='+r.si+' ≠ T['+r.j+']='+r.tj+'　→ j←'+r.to+(r.slide!==undefined?'（右滑 '+r.slide+' 位）':'（i 回溯到 '+r.newi+'）')+'</div>';
+  }).join('')+(done&&MS.tr.ok?'<div class="s">✔ 成功于第 '+MS.tr.start+' 位，共 '+MS.tr.cmps+' 次比较</div>':'');
+}
+function matchRun(){
+  const S=($('#mainS').value||'').replace(/\s/g,''), T=($('#mainT').value||'').replace(/\s/g,'');
+  if(!S||!T){alert('主串和模式串都要填');return;}
+  MS.S=S; MS.T=T; MS.tr=matchTrace(S,T,MS.mode); MS.k=-1; clearInterval(MS.timer); matchRender();
+}
+$('#btnMRun').onclick=matchRun;
+$('#btnMStep').onclick=()=>{ if(MS.tr&&MS.k<MS.tr.trace.length-1){MS.k++;matchRender();} };
+$('#btnMAll').onclick=()=>{ if(MS.tr){MS.k=MS.tr.trace.length-1;matchRender();} };
+$('#btnMAuto').onclick=()=>{ clearInterval(MS.timer);
+  MS.timer=setInterval(()=>{ if(MS.tr&&MS.k<MS.tr.trace.length-1){MS.k++;matchRender();} else clearInterval(MS.timer); },550); };
+$('#algSeg').onclick=e=>{ const a=e.target.dataset.a; if(!a)return;
+  [...$('#algSeg').children].forEach(x=>x.classList.toggle('on',x===e.target));
+  MS.mode=a; matchRun(); };
+document.querySelectorAll('.preset[data-s]').forEach(b=>b.onclick=()=>{
+  $('#mainS').value=b.dataset.s; $('#mainT').value=b.dataset.t; matchRun(); });
+
+/* ===================== ③ 自测 ===================== */
+let QZ={p:'',mode:'next'};
+function quizRender(){
+  const p=QZ.p, m=p.length;
+  let h=idxRow(m,1);
+  h+=row('模式串', cells([...p],()=>''));
+  const mk=name=>row(name, Array.from({length:m},(_,k)=>
+    '<div class="cell blank"><input data-t="'+name+'" data-j="'+(k+1)+'" maxlength="2" inputmode="numeric"></div>').join(''));
+  if(QZ.mode==='next'||QZ.mode==='both') h+=mk('next');
+  if(QZ.mode==='nextval'||QZ.mode==='both') h+=mk('nextval');
+  $('#quizGrid').innerHTML=h;
+  $('#quizResult').className='result';
+  // 输入后自动跳下一格
+  const ins=[...$('#quizGrid').querySelectorAll('input')];
+  ins.forEach((el,k)=>el.oninput=()=>{ if(el.value.length>=1&&k<ins.length-1)ins[k+1].focus(); });
+  if(ins[0])ins[0].focus();
+}
+function quizCheck(){
+  const p=QZ.p, m=p.length;
+  const nx=nextSteps(p).next, nv=nextvalOf(p,nx);
+  let wrong=[], blank=0;
+  $('#quizGrid').querySelectorAll('input').forEach(el=>{
+    const j=+el.dataset.j, want=(el.dataset.t==='next')?nx[j]:nv[j];
+    const got=el.value.trim();
+    const cell=el.parentElement;
+    if(got===''){blank++;cell.className='cell blank';return;}
+    if(+got===want){cell.className='cell done';}
+    else{cell.className='cell bad'; wrong.push({t:el.dataset.t,j,want,got});}
+  });
+  const R=$('#quizResult'); R.className='result show '+(wrong.length?'bad':'good');
+  if(!wrong.length&&!blank){
+    R.innerHTML='✅ 全对！'+(QZ.mode!=='nextval'?'next = '+nx.slice(1).join(', ')+'　':'')
+      +(QZ.mode!=='next'?'nextval = '+nv.slice(1).join(', '):'');
+  }else{
+    const pm=pmTable(p);
+    R.innerHTML='❌ 错 '+wrong.length+' 处'+(blank?'（还有 '+blank+' 格没填）':'')+'：<br>'
+      +wrong.map(w=>{
+        if(w.t==='next') return '· next['+w.j+'] 应为 <b>'+w.want+'</b>（你填 '+w.got+'）：前 '+(w.j-1)+' 个字符 <code>'+p.slice(0,w.j-1)+'</code> 的最长相等前后缀长度 PM='+pm[w.j-1]+'，next=PM+1='+w.want;
+        return '· nextval['+w.j+'] 应为 <b>'+w.want+'</b>（你填 '+w.got+'）：next['+w.j+']='+nx[w.j]
+          +(w.j>1&&nx[w.j]>=1&&p[w.j-1]===p[nx[w.j]-1] ? '，且 p'+w.j+'='+p[w.j-1]+' 与 p'+nx[w.j]+' 相同 → 塌陷取 nextval['+nx[w.j]+']='+w.want : '，且该位字符与回退位不同 → 直接沿用 next');
+      }).join('<br>');
+  }
+}
+function quizNew(){
+  const alpha=Math.random()<0.6?'ab':'abc';
+  const m=6+(Math.random()*5|0);
+  let p=''; for(let k=0;k<m;k++)p+=alpha[Math.random()*alpha.length|0];
+  QZ.p=p; $('#quizPat').value=p; quizRender();
+}
+$('#btnQuizNew').onclick=quizNew;
+$('#btnQuizUse').onclick=()=>{ const v=($('#quizPat').value||'').replace(/\s/g,''); if(!v){alert('先填一个串');return;} QZ.p=v; quizRender(); };
+$('#btnQuizCheck').onclick=quizCheck;
+$('#quizSeg').onclick=e=>{ const q=e.target.dataset.q; if(!q)return;
+  [...$('#quizSeg').children].forEach(x=>x.classList.toggle('on',x===e.target));
+  QZ.mode=q; quizRender(); };
+
+/* 启动 */
+nextRun(); matchRun(); quizNew();
+</script>
+</body>
+</html>

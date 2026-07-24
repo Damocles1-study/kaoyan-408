@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>精读版 · 数据结构 第4章 串（KMP）</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* 本章专用：字符对齐示意（比裁扫描图清晰、暗色友好、可搜索） */
+  .strfig{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:16px 0;
+    overflow-x:auto;clear:both}
+  .strfig .cap{font-size:.8rem;color:var(--muted);margin-bottom:8px}
+  .sr{display:flex;gap:3px;align-items:center;margin:3px 0;min-width:max-content}
+  .sr .lb{width:82px;flex:0 0 82px;font-size:.76rem;color:var(--muted);text-align:right;padding-right:8px}
+  .sr .c{width:26px;height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:.85rem;border:1px solid transparent;border-radius:5px}
+  .sr .c.box{border-color:var(--line);background:var(--bg)}
+  .sr .c.hit{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+  .sr .c.bad{background:var(--red-soft);color:var(--red);border-color:var(--red);font-weight:700}
+  .sr .c.pt{color:var(--accent);font-size:.7rem}
+  .sr .c.dim{color:var(--muted);opacity:.55}
+  .sr .c.idx{color:var(--muted);font-size:.68rem}
+  table.nx{width:auto;min-width:60%}
+  table.nx td,table.nx th{text-align:center;font-family:var(--mono);padding:4px 10px;white-space:nowrap}
+  table.nx td.h{background:var(--accent-soft);color:var(--accent);font-family:var(--sans)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>精读版 · 第 4 章　串（KMP）</h1>
+    <div class="sub">王道《数据结构》第 4 章（书内 p.109–123，全书最短的一章）正文重排 · 只留考点骨架 · 每节一键跳回原书页 · 配 <a href="../模拟器_KMP.html" style="color:var(--accent)">KMP 步进器</a> 边读边动手</div>
+  </header>
+
+  <div class="legend">
+    <b>怎么读这一页：</b>正文是书上的内容，我只做了<b>结构重排和取舍</b>。三种色块：
+    <span class="swatch" style="background:var(--blue)"></span><b style="color:var(--blue)">我的补讲</b>、
+    <span class="swatch" style="background:var(--amber)"></span><b style="color:var(--amber)">必记结论</b>、
+    <span class="swatch" style="background:var(--red)"></span><b style="color:var(--red)">陷阱</b>。
+    右侧 <span class="pg" style="float:none;margin:0">📄 p.N</span> 点开跳到原书对应页。本章的字符对齐示意我<b>重画成了 HTML</b>（扫描件那几张在暗色下发白且看不清），只有块链存储图是从原书直接裁的。
+  </div>
+
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=1">📄 p.109</a>
+  <h2>本章定位</h2>
+  <p><b>考纲内容</b>：<b>字符串模式匹配</b>——统考大纲对本章只有这七个字。（本章为大纲第 6 章内容，王道根据读者建议单独成章。）</p>
+  <p><b>王道的复习提示</b>：重点是理解 <b>KMP 算法的原理、next 数组和 nextval 数组的推导过程</b>。手工计算 next 数组时，可先求出部分匹配值表再进行转换，也可直接依据递推公式求解。</p>
+
+  <div class="mine"><span class="tag">我的补讲 · 这一章的性价比是全书最高的</span>
+    15 页正文、14 道课后题，考点却窄得只剩一个：<b>把 next / nextval 算对，把比较次数数对</b>。<br>
+    统考真题在本章只出过三种形态，全都能用同一套手算解决：<b>2015</b>（失配后 i、j 的新值）、<b>2019</b>（比较次数）、<b>2024</b>（nextval 的最长滑动距离）。<br>
+    另外注意王道给 4.1 节打了 ✱ 号并加脚注「本节不在统考大纲范围，仅供学习参考」——串的定长顺序/堆分配/块链三种存储<b>不会单独出题</b>，扫一眼记住结论即可，火力全压 4.2。
+  </div>
+
+  <h2>4.1　串的定义和实现<span style="font-size:.8rem;color:var(--muted)">（✱ 大纲外，扫读）</span></h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=1">📄 p.109–110</a>
+
+  <h3>4.1.1　串的定义</h3>
+  <p><b>串（string）</b>是由零个或多个字符组成的有限序列，记为 S = '<i>a</i>₁<i>a</i>₂…<i>a</i><sub>n</sub>'（n ≥ 0）。其中 S 是串名，单引号括起的字符序列是<b>串的值</b>；串中字符的个数 n 称为<b>串的长度</b>，n = 0 时称为<b>空串</b>（用 ∅ 表示）。</p>
+  <ul>
+    <li><b>子串</b>：串中任意多个<b>连续</b>字符组成的子序列；包含该子串的串称为<b>主串</b>。</li>
+    <li><b>位置</b>：字符在串中的序号；子串在主串中的位置以其<b>第 1 个字符</b>在主串中的位置来标识。</li>
+    <li><b>串相等</b>：两个串<b>长度相等且对应位置字符全部相同</b>。</li>
+  </ul>
+  <p>例：A='China Beijing'、B='Beijing'、C='China'，长度分别为 13、7、5；B、C 都是 A 的子串，B 在 A 中的位置为 7，C 在 A 中的位置为 1。</p>
+
+  <div class="trap"><span class="tag">陷阱 · 空串 vs 空格串</span>
+    由一个或多个<b>空格</b>组成的串称为<b>空格串</b>，<b>空格串不是空串</b>——它的长度等于其中空格字符的个数。这是概念题最爱设的坑。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 串和线性表的关系</span>
+    串的<b>逻辑结构与线性表极为相似</b>，区别仅在于<b>数据对象被限定为字符集</b>；但<b>基本操作差别很大</b>：线性表通常以<b>单个元素</b>为操作单位（查/插/删某个元素），而串一般以<b>子串</b>为操作单位（查/插/删一个子串）。
+  </div>
+
+  <h3>4.1.2　串的基本操作</h3>
+  <table>
+    <tr><th>操作</th><th>含义</th></tr>
+    <tr><td><code>StrAssign(&amp;T,chars)</code></td><td>赋值：把串 T 赋值为 chars</td></tr>
+    <tr><td><code>StrCopy(&amp;T,S)</code></td><td>复制：把串 S 复制给串 T</td></tr>
+    <tr><td><code>StrEmpty(S)</code></td><td>判空：S 为空串返回 TRUE</td></tr>
+    <tr><td><code>StrCompare(S,T)</code></td><td>比较：S&gt;T 返回值&gt;0，S=T 返回 0，S&lt;T 返回值&lt;0</td></tr>
+    <tr><td><code>StrLength(S)</code></td><td>求串长：返回 S 中字符个数</td></tr>
+    <tr><td><code>SubString(&amp;Sub,S,pos,len)</code></td><td>求子串：用 Sub 返回从第 pos 个字符起长度为 len 的子串</td></tr>
+    <tr><td><code>Concat(&amp;T,S1,S2)</code></td><td>联接：T 返回 S1 与 S2 联接而成的新串</td></tr>
+    <tr><td><code>Index(S,T)</code></td><td><b>定位（＝模式匹配）</b>：返回 T 在 S 中首次出现的位置，不存在返回 0</td></tr>
+    <tr><td><code>ClearString(&amp;S)</code> / <code>DestroyString(&amp;S)</code></td><td>清空 / 销毁</td></tr>
+  </table>
+  <div class="key"><span class="tag">必记结论 · 最小操作子集</span>
+    <b>StrAssign（赋值）、StrCompare（比较）、StrLength（求长）、Concat（联接）、SubString（求子串）</b> 这五种操作构成串类型的<b>最小操作子集</b>——它们<b>无法用其他串操作实现</b>；其余操作（除 ClearString 和 DestroyString 外）均可基于该子集实现。
+  </div>
+
+  <h3>4.1.3　串的存储结构</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=2">📄 p.110–111</a>
+  <h4>1. 定长顺序存储表示</h4>
+  <pre class="code">#define MAXLEN 255
+typedef struct{
+    char ch[MAXLEN];      // 每个分量存储一个字符
+    int  length;          // 串的实际长度
+}SString;</pre>
+  <p>串长有两种表示方式：一是如上用<b>独立的整型变量 length 显式记录</b>；二是在串值末尾加一个<b>不计入串长的结束标记 '\0'</b>，此时串长是隐含值，需遍历计算。实际长度不得超过 MAXLEN，超出部分被舍弃，称为<b>截断</b>。</p>
+  <h4>2. 堆分配存储表示</h4>
+  <pre class="code">typedef struct{
+    char *ch;             // 按串长分配存储区，ch 指向串的基地址
+    int  length;          // 串的长度
+}HString;</pre>
+  <p>仍以<b>地址连续</b>的存储单元存放字符序列，但空间在程序<b>运行时用 malloc() 动态申请</b>，free() 释放。这样就取消了串长上限的硬性规定。</p>
+  <h4>3. 块链存储表示</h4>
+  <p>类似线性表的链式存储，每个结点可存放<b>一个或多个字符</b>，每个结点称为一个<b>块</b>，整个链表称为<b>块链结构</b>。最后一块存不满时通常用 “#” 补齐。</p>
+  <figure>
+    <img src="图/图4-1_串的块链存储.png" alt="串值的链式存储方式：块大小为 4 与块大小为 1 的两种链表">
+    <figcaption>图 4.1　串值的链式存储方式（裁自王道 p.111）。块大，则存储密度高、但插删要在块内移动字符；块为 1 时最灵活，存储密度最低。</figcaption>
+  </figure>
+
+  <h2>4.2　串的模式匹配<span style="font-size:.8rem;color:var(--muted)">（考纲全部火力）</span></h2>
+
+  <h3>4.2.1　简单的模式匹配算法（暴力匹配）</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=3">📄 p.111–112</a>
+  <p><b>模式匹配</b>：在主串中查找与<b>模式串</b>（待搜索的字符串）完全相同的子串，并返回其首次出现的位置。</p>
+  <pre class="code">int Index(SString S,SString T){
+    int i=1,j=1;
+    while(i&lt;=S.length&amp;&amp;j&lt;=T.length){
+        if(S.ch[i]==T.ch[j]){
+            ++i;++j;              // 继续比较后继字符
+        }
+        else{
+            i=i-j+2;j=1;          // 指针后退重新开始匹配
+        }
+    }
+    if(j&gt;T.length) return i-T.length;   // 匹配成功，返回起始位置
+    else return 0;                       // 匹配失败
+}</pre>
+  <div class="mine"><span class="tag">我的补讲 · 把 <code>i=i-j+2</code> 看懂，KMP 就懂了一半</span>
+    本趟开始时模式串首字符对齐的位置是 <code>i−j+1</code>；失配后要把它<b>右移一位</b>重来，于是新的 i 就是 <code>i−j+2</code>，j 归 1。<br>
+    这一行的实质是<b>主串指针回溯</b>——已经比对过的字符全部作废重比。KMP 要干掉的就是这个回溯。
+  </div>
+  <p>设主串与模式串长度分别为 n 和 m（n ≫ m），则最多需要 n−m+1 趟匹配，每趟最多比较 m 次，因此<b>最坏时间复杂度为 O(mn)</b>。</p>
+  <div class="key"><span class="tag">必记结论 · 暴力匹配的最坏用例</span>
+    模式串 <code>0000001</code>、主串 <code>000…0001</code>（前 45 个字符全为 0）：模式串前 6 个字符全是 0，<b>每趟都要比到最后一个字符才发现不匹配</b>。整个过程中主串指针 i 回溯 39 次，总比较次数达 40×7 = 280 次。<br>
+    这也是「暴力匹配<b>平均</b>接近 O(m+n)、<b>最坏</b>才是 O(mn)」的由来——选择题问复杂度按<b>最坏</b>答（课后题 4.2-3）。
+  </div>
+
+  <h3>4.2.2　KMP 算法</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=4">📄 p.112–116</a>
+  <span class="exam">考点追踪：KMP 算法中指针变化 / 比较次数的分析（2015、2019）</span>
+
+  <p>先看暴力匹配哪里浪费了。主串 <code>ababcabcacbab</code>、模式串 <code>abcac</code>：</p>
+  <div class="strfig">
+    <div class="cap">第三趟：比到 i=7、j=5 失配。已匹配的 <code>abca</code> 是模式串的前缀——这个信息暴力法直接扔了。</div>
+    <div class="sr"><span class="lb">主串</span><span class="c box">a</span><span class="c box">b</span><span class="c box hit">a</span><span class="c box hit">b</span><span class="c box hit">c</span><span class="c box hit">a</span><span class="c box bad">b</span><span class="c box">c</span><span class="c box">a</span><span class="c box">c</span><span class="c box">b</span><span class="c box">a</span><span class="c box">b</span></div>
+    <div class="sr"><span class="lb">模式串</span><span class="c"></span><span class="c"></span><span class="c box hit">a</span><span class="c box hit">b</span><span class="c box hit">c</span><span class="c box hit">a</span><span class="c box bad">c</span></div>
+    <div class="sr"><span class="lb"></span><span class="c"></span><span class="c"></span><span class="c pt">j=1</span><span class="c pt">2</span><span class="c pt">3</span><span class="c pt">4</span><span class="c pt">j=5</span></div>
+  </div>
+  <p>接下来暴力法会把模式串右移一位、从头再比，而 i=4/j=1、i=5/j=1、i=6/j=1 这三次比较<b>都是多余的</b>：由第三趟已知主串第 4、5、6 个字符是 <code>b</code>、<code>c</code>、<code>a</code>，而模式串首字符是 <code>a</code>，前两个必然对不上。<b>只需将模式串右滑 3 位，从 i=7、j=2 继续比即可</b>——主串指针 i 全程不回溯。这就是 KMP 的核心。</p>
+
+  <h4>1. KMP 的原理：前缀、后缀与部分匹配值</h4>
+  <ul>
+    <li><b>前缀</b>：除最后一个字符外，字符串的所有头部子串；</li>
+    <li><b>后缀</b>：除第一个字符外，字符串的所有尾部子串；</li>
+    <li><b>部分匹配值（PM）</b>：该串<b>前缀与后缀的最长相等长度</b>。</li>
+  </ul>
+  <p>以 <code>ababa</code> 为例：<code>a</code>→0；<code>ab</code> 前缀{a}∩后缀{b}=∅→0；<code>aba</code> 前缀{a,ab}∩后缀{a,ba}={a}→1；<code>abab</code>→{ab}→2；<code>ababa</code>→{a,aba}，取最长→3。故 <code>ababa</code> 的部分匹配值为 <b>00123</b>。</p>
+  <p>同法求得模式串 <code>abcac</code> 的部分匹配值表（PM 表）：</p>
+  <table class="nx"><tr><td class="h">编号</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+    <tr><td class="h">S</td><td>a</td><td>b</td><td>c</td><td>a</td><td>c</td></tr>
+    <tr><td class="h">PM</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr></table>
+  <div class="key"><span class="tag">必记结论 · 右滑公式</span>
+    <div class="fml">右滑位数 ＝ 已匹配的字符数 − 对应的部分匹配值</div>
+    第一趟：在第 3 位失配，已匹配 2 个字符 <code>ab</code>，查表 PM=0 → 右滑 2−0 = <b>2</b> 位。<br>
+    第二趟：在第 5 位失配，已匹配 4 个字符 <code>abca</code>，查表 PM=1 → 右滑 4−1 = <b>3</b> 位。<br>
+    第三趟：全部匹配成功。<b>整个过程主串指针从未回溯</b>，所以 KMP 的时间复杂度稳定在 <b>O(n+m)</b>。
+  </div>
+  <p>两种极端都统一在这个公式里：已匹配序列中<b>不存在相等前后缀</b>（PM=0）时滑动位数最大，直接把模式串首字符对到当前失配位置；<b>存在最长相等前后缀</b>时，把模式串滑到该后缀对齐处，跳过已知相等的部分。特别地，若<b>模式串第一个字符就失配</b>，则已匹配字符数为 0，模式串整体右移一位，从主串下一个位置开始新一轮匹配。</p>
+
+  <h4>2. next 数组：把「滑动」翻译成「j 跳到哪」</h4>
+  <p>实际匹配时模式串在内存中<b>并不会真的滑动</b>，变化的只是指针。定义 <b>next[j]</b>：当模式串第 j 个字符失配时，下一轮应从模式串的<b>第 next[j] 个位置</b>继续与主串当前字符比较。</p>
+  <div class="key"><span class="tag">必记结论 · next 与 PM 表的关系（会推更会用）</span>
+    <div class="fml">next[j] = j − 右滑位数 = j − [(j−1) − PM[j−1]] = <b>PM[j−1] + 1</b></div>
+    也就是说：<b>next 数组 = 把 PM 表整体右移一位，再整体加 1</b>。<br>
+    ① 右移后空出的第 1 位补 0：因为模式串首字符失配时规定 next[1]=0，表示主串和模式串<b>同步右移一位</b>；<br>
+    ② PM 表最后一个元素右移后被移出丢弃：它本该供「下一个字符」使用，而已经没有下一个字符了。<br>
+    <b>⚠️ 以上讨论均假设串的编号从 1 开始；若编号从 0 开始，则 next 数组整体减 1。</b>
+  </div>
+  <table class="nx"><tr><td class="h">编号</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+    <tr><td class="h">S</td><td>a</td><td>b</td><td>c</td><td>a</td><td>c</td></tr>
+    <tr><td class="h">next</td><td>0</td><td>1</td><td>1</td><td>1</td><td>2</td></tr></table>
+
+  <h4>3. 手算 next 的两种方法</h4>
+  <div class="mine"><span class="tag">我的补讲 · 考场上「一种算、一种验」</span>
+    <b>Ⅰ. PM 右移法（快）：</b>写出 PM 表 → 右移一位、首位补 0 → 即得 next。<br>
+    <b>Ⅱ. 递推法（稳）：</b>令 k = next[j−1]，比较 p<sub>j−1</sub> 与 p<sub>k</sub>：相等则 next[j] = k+1；不等则 k ← next[k] 继续退，一直退到 0 就填 1。<br>
+    <b>Ⅲ. 王道正文里的画线法（直观）：</b>在失配位置前画一条分界线，把模式串向右移动，直到<b>分界线左侧的部分能够首尾对齐</b>（存在相等前后缀），或模式串完全跨过分界线为止；此时模式串首字符落在哪一格，next 就是几。<br>
+    三种方法结果必然一致。想看每一步怎么走，直接开 <a href="../模拟器_KMP.html">KMP 步进器</a> 的第①区，它把 <code>get_next</code> 的每一步 i、j 变化都演出来了。
+  </div>
+  <p>仍以 <code>abcac</code> 为例（下标为字符编号）：第 1 个字符失配 → next[1]=0；第 2 个字符失配 → next[2]=1（<b>next[1]=0、next[2]=1 是固定规则</b>）；第 3 个失配 → 下次比较位置为 1，即 next[3]=1，相当于右滑 2 位；第 4 个失配 → next[4]=1，右滑 3 位；第 5 个失配 → 前面已匹配 <code>abca</code>，其中 <code>a</code> 首尾相等，下次从第 2 个字符比，即 next[5]=2，右滑 3 位。</p>
+
+  <h4>4. next 的推理公式（了解即可）</h4>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=7">📄 p.115–116</a>
+  <p>设主串为 's₁s₂…s<sub>n</sub>'、模式串为 'p₁p₂…p<sub>m</sub>'。当 s<sub>i</sub> 与 p<sub>j</sub> 失配时，若应改与 p<sub>k</sub>（k＜j）比较，则模式串前 k−1 个字符必须满足</p>
+  <div class="fml">'p₁p₂…p<sub>k−1</sub>' = 'p<sub>j−k+1</sub>p<sub>j−k+2</sub>…p<sub>j−1</sub>'</div>
+  <p>且不存在更大的 k′＞k 满足条件。由此得</p>
+  <div class="fml">next[j] = 0（j=1）；= max{ k | 1＜k＜j 且 'p₁…p<sub>k−1</sub>' = 'p<sub>j−k+1</sub>…p<sub>j−1</sub>' }（集合非空）；= 1（其他情况）</div>
+  <div class="mine"><span class="tag">我的补讲 · 三条分支各回答一个「为什么」（课后综合题 01 就考这个）</span>
+    <b>为什么 j=1 取 0？</b>——前面一个字符都没匹配上，没有前缀可保留，只能整体右滑一位；0 同时充当代码里 <code>if(j==0)</code> 的哨兵，让 i、j 同时加 1。<br>
+    <b>为什么取 max{k}？</b>——k 越大保留的前缀越长、右滑距离 j−k 越小；<b>滑得越少越不会跳过潜在的匹配</b>，取 max 是为了<b>不漏解</b>，不是为了快。k 的最大值为 <b>j−1</b>。<br>
+    <b>「其他情况」是什么？</b>——已匹配部分不存在任何相等的真前后缀（k 只能取 1），此时模式串整体滑到当前失配位置，从第 1 个字符重新比，故 next[j]=1。
+  </div>
+
+  <h4>5. KMP 的代码实现</h4>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=8">📄 p.116–117</a>
+  <pre class="code">void get_next(SString T,int next[]){
+    int i=1,j=0;
+    next[1]=0;
+    while(i&lt;T.length){
+        if(j==0||T.ch[i]==T.ch[j]){
+            ++i; ++j;
+            next[i]=j;        // 若 pi=pj，则 next[j+1]=next[j]+1
+        }
+        else
+            j=next[j];        // 否则令 j=next[j]，循环继续
+    }
+}
+
+int Index_KMP(SString S,SString T,int next[]){
+    int i=1, j=1;
+    while(i&lt;=S.length&amp;&amp;j&lt;=T.length){
+        if(j==0||S.ch[i]==T.ch[j]){
+            ++i; ++j;                    // 继续比较后继字符
+        }
+        else
+            j=next[j];                   // 模式串向右滑动
+    }
+    if(j&gt;T.length) return i-T.length;    // 匹配成功
+    else return 0;
+}</pre>
+  <div class="key"><span class="tag">必记结论 · KMP 与暴力匹配的唯一区别</span>
+    两段主循环长得几乎一样，<b>关键区别只在 else 分支</b>：暴力是 <code>i=i-j+2; j=1;</code>（主串指针回溯），KMP 是 <code>j=next[j];</code>（<b>i 保持不变</b>）。<br>
+    特别地，当 j=0 时 i 和 j 同时加 1——即模式串首字符失配，下一轮从主串第 i+1 个位置开始。<b>这一步不产生字符比较</b>，数比较次数时千万别多数。
+  </div>
+  <div class="mine"><span class="tag">我的补讲 · KMP 并没有想象中那么「碾压」</span>
+    尽管暴力匹配最坏 O(mn)、KMP 可达 O(m+n)，但一般情况下暴力匹配的平均执行时间往往也接近 O(m+n)，因此至今仍被广泛采用。<b>KMP 仅在主串与模式串存在大量「部分匹配」时才显著占优</b>，它的核心优点是主串指针不回溯（在流式读入、无法回退的场景里这是刚需）。<br>
+    实测两组数据：<code>aabaaaba</code>×<code>aaab</code>，暴力 10 次 vs KMP 9 次（几乎没差）；<code>aabaabaabaac</code>×<code>aabaac</code>，暴力 24 次 vs KMP 14 次（省 42%）。差距取决于模式串自身的重复程度。
+  </div>
+
+  <h3>4.2.3　KMP 算法的进一步优化：nextval</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=9">📄 p.117–118</a>
+  <span class="exam">考点追踪：nextval 数组的计算（2024）</span>
+  <p>模式串 <code>aaaab</code> 与主串 <code>aaabaaaab</code> 匹配时暴露了 next 的缺陷：</p>
+  <table class="nx"><tr><td class="h">j</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+    <tr><td class="h">模式串</td><td>a</td><td>a</td><td>a</td><td>a</td><td>b</td></tr>
+    <tr><td class="h">next[j]</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+    <tr><td class="h">nextval[j]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>4</td></tr></table>
+  <p>当 i=4、j=4 时主串字符 <code>b</code> 与模式串 <code>a</code> 失配。若用 next，还要依次拿 p₃、p₂、p₁ 与 s₄ 比三次——可这三个位置上的字符都是 <code>a</code>，与刚失配的 p₄ 一模一样，<b>必然还是失配</b>。</p>
+  <div class="key"><span class="tag">必记结论 · nextval 的修正规则</span>
+    问题根源：<b>不应出现 p<sub>j</sub> = p<sub>next[j]</sub></b>。因为 p<sub>j</sub> ≠ s<sub>i</sub> 时，下一轮要用 p<sub>next[j]</sub> 与同一个 s<sub>i</sub> 比；若二者相同，结果必定仍是失配。<br>
+    修正做法：<b>不断把 next[j] 替换为 next[next[j]]</b>，直到找到某个位置 k 使 p<sub>j</sub> ≠ p<sub>k</sub> 或 k=0 为止。等价的逐位写法：<br>
+    <b>若 p<sub>j</sub> 与 p<sub>next[j]</sub> 相同 → nextval[j] = nextval[next[j]]（连锁塌陷）；否则 nextval[j] = next[j]。</b><br>
+    <b>匹配算法本身一个字都不用改</b>，只是把 next 换成 nextval。
+  </div>
+  <pre class="code">void get_nextval(SString T,int nextval[]){
+    int i=1, j=0;
+    nextval[1]=0;
+    while(i&lt;T.length){
+        if(j==0||T.ch[i]==T.ch[j]){
+            ++i; ++j;
+            if(T.ch[i]!=T.ch[j]) nextval[i]=j;
+            else                 nextval[i]=nextval[j];
+        }
+        else
+            j=nextval[j];
+    }
+}</pre>
+  <div class="trap"><span class="tag">陷阱 · 2024 真题就藏在这张表里</span>
+    问「S 向右滑动的<b>最长</b>距离」时，必须把<b>每一位</b>的 j − nextval[j] 都算出来再取最大值。以 2024 真题 S=<code>aabaab</code>（位序从 0）为例：<br>
+    next = −1, 0, 1, 0, 1, 2；nextval = −1, −1, 1, −1, −1, 1；j−nextval = 1, 2, 1, <b>4</b>, <b>5</b>, 4 → 最长是 <b>5</b>（j=4 处），只看最后一位会误答 4。
+  </div>
+
+  <h2>归纳总结</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=15">📄 p.123</a>
+  <p>学习 KMP 应从暴力匹配的低效性入手：<b>主串指针的回溯会导致大量重复比较</b>。实际上，已匹配的部分恰好是模式串的一个前缀，而每次回溯相当于把模式串与其自身的某个前缀反复比对。为提升效率，需要深入分析模式串<b>自身的结构</b>：当某个字符失配时，若已匹配部分存在一个与模式串前缀相等的后缀（最长相等前后缀），则可将模式串滑动至该前后缀对齐的位置（对齐部分显然无须重新比较），直接从主串当前失配位置继续匹配即可。KMP 的核心就是<b>预计算每个失配位置的最佳跳转位置</b>（如 next 数组），避免无效比较。</p>
+
+  <div class="mine"><span class="tag">我的补讲 · 本章唯一要练的三件事</span>
+    ① <b>手算 next / nextval</b>——两种方法互验，做到 6 位串 30 秒内出表且不出错；<br>
+    ② <b>数比较次数</b>——失配那次也算，j 退到 0 那步不算（2019 真题就是这个）；<br>
+    ③ <b>分清位序基准</b>——题干写 <code>s[i]≠t[j]</code> 多半从 0 起，写「第 j 个字符」从 1 起；两套约定下 next 整体差 1，但滑动距离 j−next[j] 不变（2015 真题就是这个）。<br>
+    思维拓展题（统计模式串在主串中完全匹配的子串个数）书上标了「统考应不会考 KMP 算法题」，当作理解练习即可，写法见练习页 <code>4-思维拓展</code>。
+  </div>
+
+  <div class="outro">
+    <b>接下来做什么：</b><br>
+    · <a href="../练习系统/第4章.html">第 4 章练习（21 题）</a> —— 12 道选择 + 2 道综合 + 思维拓展 + 6 道自编手算特训，含 2015/2019/2024 三道真题。<br>
+    · <a href="../模拟器_KMP.html">KMP 步进器</a> —— next/nextval 逐步生成、匹配过程单步回放（自动数比较次数）、手算自测判分。<br>
+    · <a href="../练习系统/套路库.html">解题套路库 · 第 4 章</a> —— 6 张卡：求 next 双算法、nextval 塌陷、数比较次数四规矩、失配去向、位序判别、串的概念小坑。
+  </div>
+  <footer>精读版 · 第 4 章｜正文取自王道《数据结构》p.109–123，结构重排与批注为 Claude 所加｜配图 1 张裁自原书，字符对齐示意为重画</footer>
+</div>
+</body>
+</html>
