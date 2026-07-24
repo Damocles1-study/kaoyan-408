@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>精读版 · 数据结构 第5章 树与二叉树</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* 本章专用：数组格、遍历序列、结点结构示意（暗色友好、可搜索，替代扫描小图） */
+  .arr{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:2px 0;
+    font-family:var(--mono);font-size:.82rem;vertical-align:middle}
+  .arr span{padding:3px 9px;border-right:1px solid var(--line);min-width:26px;text-align:center}
+  .arr span:last-child{border-right:none}
+  .arr span.h{background:var(--accent-soft);color:var(--accent)}
+  .arr span.z{color:var(--muted);opacity:.6}
+  .node{display:inline-flex;border:1px solid var(--line);border-radius:5px;overflow:hidden;
+    font-family:var(--mono);font-size:.8rem;vertical-align:middle;margin:0 2px}
+  .node span{padding:2px 8px;border-right:1px solid var(--line)}
+  .node span:last-child{border-right:none}
+  .node span.d{background:var(--accent-soft);color:var(--accent);font-weight:700}
+  .node span.t{background:var(--amber-soft);color:var(--amber)}
+  .seq{font-family:var(--mono);letter-spacing:.12em;font-size:.95rem;color:var(--accent);
+    background:var(--accent-soft);border-radius:6px;padding:2px 9px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>精读版 · 第 5 章　树与二叉树</h1>
+    <div class="sub">王道《数据结构》第 5 章（书内 p.124–193，<b>全书最大的一章</b>，70 页）正文重排 · 只留考点骨架 · 每节一键跳回原书页 · 配 <a href="../模拟器_二叉树遍历.html" style="color:var(--accent)">二叉树遍历步进器</a> 边读边动手</div>
+  </header>
+
+  <div class="legend">
+    <b>怎么读这一页：</b>正文是书上的内容，我只做了<b>结构重排和取舍</b>。三种色块：
+    <span class="swatch" style="background:var(--blue)"></span><b style="color:var(--blue)">我的补讲</b>、
+    <span class="swatch" style="background:var(--amber)"></span><b style="color:var(--amber)">必记结论</b>、
+    <span class="swatch" style="background:var(--red)"></span><b style="color:var(--red)">陷阱</b>。
+    右侧 <span class="pg" style="float:none;margin:0">📄 p.N</span> 点开跳到原书对应页；紫色 <span class="exam" style="margin:0">考点追踪</span> 是王道标注的真题年份。本章从原书<b>裁切了 11 张关键插图</b>（树形/满与完全/两种存储/树与森林的转换/哈夫曼/并查集），结点结构等简单示意我<b>重画成了 HTML</b>（扫描小图在暗色下发白）。
+  </div>
+
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=1">📄 p.124</a>
+  <h2>本章定位</h2>
+  <p><b>考纲内容</b>：（一）树的基本概念；（二）二叉树——定义及主要特征、顺序与链式存储、遍历、线索二叉树；（三）树、森林——存储结构、森林与二叉树的转换、树和森林的遍历；（四）应用——哈夫曼树和哈夫曼编码、并查集及其应用、堆及其应用（<b>堆放在第 8 章排序讲</b>）。</p>
+  <p><b>王道的复习提示</b>：本章以<b>选择题和综合题</b>为主，统考也可能出现与<b>树遍历相关的算法题</b>。基本性质、遍历操作、相互转换、存储结构及操作特性，以及满二叉树、完全二叉树、线索二叉树、哈夫曼树的定义与性质，均为<b>选择题高频考点</b>。</p>
+
+  <div class="mine"><span class="tag">我的补讲 · 这一章的重量与打法</span>
+    70 页、161 道课后题、<b>27 道统考真题</b>（几乎年年考）——这是全书体量最大、真题最密的一章，408 里数据结构的分数一半压在这儿。<br>
+    但它的考点是<b>高度模式化</b>的，可以拆成五块各个击破：<b>① 数关系</b>（n₀=n₂+1、Σ度数=n−1、完全二叉树编号）；<b>② 遍历</b>（三序 + 层序 + 由序列建树）；<b>③ 线索</b>（找前驱后继）；<b>④ 树森林↔二叉树</b>（左孩子右兄弟）；<b>⑤ 哈夫曼 + 并查集</b>。<br>
+    每一块都有一套固定手算流程，练熟了就是<b>送分</b>。算法题只考在遍历框架上做文章（求高度/宽度/WPL/判相似），全部是层序或递归的变体。
+  </div>
+
+  <h2>5.1　树的基本概念</h2>
+
+  <h3>5.1.1　树的定义</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=1">📄 p.124–125</a>
+  <p><b>树</b>是 n（n ≥ 0）个结点的有限集。n = 0 时称为<b>空树</b>。任意一棵非空树必须满足：① 有且仅有一个特定的结点称为<b>根结点</b>；② 当 n &gt; 1 时，其余结点可分为 m（m &gt; 0）个<b>互不相交</b>的有限集 T₁, T₂, …, T<sub>m</sub>，其中每个集合本身又是一棵树，称为根的<b>子树</b>。</p>
+  <div class="key"><span class="tag">必记结论 · 树是递归 + 分层结构</span>
+    定义中引用了自身，所以树是<b>典型的递归数据结构</b>。作为分层结构它有两个特征：<b>① 根结点没有前驱，除根外每个结点有且仅有一个前驱；② 所有结点可有零个或多个后继。</b><br>
+    由此得出最常用的一条：含 n 个结点的树<b>恰好有 n−1 条边</b>（除根外每个结点与其双亲之间有唯一一条边）。
+  </div>
+
+  <h3>5.1.2　基本术语</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=2">📄 p.125–126</a>
+  <figure>
+    <img src="图/图5-1_树形表示.png" alt="树的树形表示：根 A，B/C/D 为第 2 层，高度为 4">
+    <figcaption>图 5.1　树的树形表示（裁自原书 p.125）。下面所有术语都对照这棵树来记。</figcaption>
+  </figure>
+  <ul>
+    <li><b>祖先 / 子孙 / 双亲 / 孩子 / 兄弟 / 堂兄弟</b>：从根到结点 K 的唯一路径上经过的其他结点都是 K 的<b>祖先</b>，K 是它们的<b>子孙</b>；路径上最接近 K 的结点是 K 的<b>双亲</b>。<b>根是树中唯一没有双亲的结点。</b>双亲相同的结点互为<b>兄弟</b>；双亲在同一层的结点互为<b>堂兄弟</b>。</li>
+    <li><b>层次 / 深度 / 高度</b>：根为第 1 层。结点的<b>深度</b>＝它所在的层次（从根往下数）；结点的<b>高度</b>＝以它为根的子树的高度（从叶往上数）。<b>树的高度（深度）＝结点的最大层数。</b></li>
+    <li><b>结点的度 / 树的度</b>：结点的<b>孩子个数</b>＝该结点的度；<b>所有结点度的最大值</b>＝树的度。</li>
+    <li><b>分支结点 / 叶结点</b>：度 &gt; 0 为<b>分支结点</b>（非终端结点）；度 = 0 为<b>叶结点</b>（终端结点）。</li>
+    <li><b>有序树 / 无序树</b>：各结点的子树从左到右<b>次序不可互换</b>为有序树，否则为无序树。<b>统考默认树是有序的。</b></li>
+    <li><b>路径 / 路径长度</b>：路径＝两结点间所经过的结点序列；<b>路径长度＝路径上边的数目</b>。</li>
+    <li><b>森林</b>：m（m ≥ 0）棵互不相交的树的集合。<span class="exam">考点追踪：森林中树/边/结点数的关系（2016）</span></li>
+  </ul>
+  <div class="key"><span class="tag">必记结论 · 森林 ⇄ 树的两个变换</span>
+    <b>删去一棵树的根</b>，其各子树就构成一个森林；反过来，<b>给 m 棵树添一个公共新根</b>，森林就变成一棵树。2016 真题（森林 15 条边、25 个结点，求树的棵数）就靠这个：森林里<b>结点数比边数多的量＝树的棵数</b>，25 − 15 = <b>10 棵</b>。
+  </div>
+
+  <h3>5.1.3　树的性质</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=3">📄 p.126</a>
+  <span class="exam">考点追踪：树中结点数和度数的关系（2010、2016）　·　指定结点数的三叉树最小高度（2022）</span>
+  <ol>
+    <li><b>结点数 n ＝ 所有结点的度数之和 + 1。</b>（度数之和＝边数，n＝边数+1。）</li>
+    <li>度为 m 的树中，<b>第 i 层至多有 m<sup>i−1</sup> 个结点</b>（i ≥ 1）。</li>
+    <li>高度为 h 的 m 叉树至多有 <b>(m<sup>h</sup>−1)/(m−1)</b> 个结点（各层全满、等比求和）。</li>
+    <li>度为 m、有 n 个结点的树，<b>最小高度 h = ⌈log<sub>m</sub>(n(m−1)+1)⌉</b>（树尽量饱满时取到）。</li>
+    <li>度为 m、有 n 个结点的树，<b>最大高度 h = n − m + 1</b>（一层塞满 m 个孩子、其余每层只 1 个）；反推：高 h、度 m 的树至少 h+m−1 个结点。</li>
+  </ol>
+  <div class="mine"><span class="tag">我的补讲 · 三个「度—结点」关系是本节的命根子</span>
+    王道在课后题后专门用「注意」框强调，选择题极爱考：<br>
+    ① <b>总结点数 = n₀ + n₁ + n₂ + … + n<sub>m</sub></b>（按度分类累加）；<br>
+    ② <b>总分支数（边数）= 1·n₁ + 2·n₂ + … + m·n<sub>m</sub></b>（度为 i 的结点引出 i 条分支）；<br>
+    ③ <b>总结点数 = 总分支数 + 1</b>。<br>
+    两式联立就能解各类「已知部分 n<sub>i</sub> 求某个 n<sub>i</sub> 或总数」的题（2010 真题：度 4 的树给出 n₄/n₃/n₂/n₁ 求叶子数 n₀，联立即得 82）。二叉树的 <b>n₀ = n₂ + 1</b> 就是它的特例。
+  </div>
+
+  <h2>5.2　二叉树的概念</h2>
+
+  <h3>5.2.1　二叉树的定义及主要特性</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=6">📄 p.129–130</a>
+  <p>二叉树的<b>核心特征</b>：每个结点<b>至多两棵子树</b>（不存在度 &gt; 2 的结点），且两棵子树有明确的<b>左右之分、次序固定不可交换</b>。它同样递归定义：或为空（n = 0），或由根 + 两棵互不相交的左、右子树构成，且左右子树本身也是二叉树。二叉树有 <b>5 种基本形态</b>（空 / 只有根 / 只有左子树 / 左右都有 / 只有右子树）。</p>
+  <div class="trap"><span class="tag">陷阱 · 二叉树 ≠ 度为 2 的有序树</span>
+    ① 度为 2 的树<b>至少 3 个结点</b>，而二叉树<b>可以为空</b>；<br>
+    ② 度为 2 的有序树中，某结点只有一个孩子时<b>无须区分左右</b>（左右是相对另一个孩子而言的）；而二叉树中<b>无论有几个孩子，左右位置都是确定且不可省略的</b>——这种次序是结构固有属性，不是相对概念。
+  </div>
+
+  <h4>几种特殊的二叉树</h4>
+  <span class="exam">考点追踪：完全二叉树的特性（2009、2011、2018、2025）　·　正则 k 叉树树高与结点数的关系（2016）</span>
+  <figure>
+    <img src="图/图5-3_满二叉树与完全二叉树.png" alt="满二叉树（15 结点）与完全二叉树（12 结点）编号对照">
+    <figcaption>图 5.3　两种特殊形态的二叉树（裁自原书 p.130）。完全二叉树＝结点编号与同高满二叉树 1~n 一一对应。</figcaption>
+  </figure>
+  <ul>
+    <li><b>满二叉树</b>：高 h 且含 2<sup>h</sup>−1 个结点。每层都满，叶子全在最下层，除叶子外每个结点度均为 2。按层序编号后：结点 i 的双亲为 ⌊i/2⌋，左孩子 2i，右孩子 2i+1。</li>
+    <li><b>完全二叉树</b>：高 h、n 个结点，当且仅当每个结点都与同高满二叉树中编号 1~n 的结点一一对应。<b>本章最重要的特殊树。</b></li>
+    <li><b>二叉排序树（BST）</b>：左子树全部关键字 &lt; 根 &lt; 右子树全部关键字，且左右子树也是 BST（详见第 7 章）。</li>
+    <li><b>平衡二叉树</b>：任一结点左右子树高度之差绝对值 ≤ 1（详见第 7 章）。</li>
+    <li><b>正则二叉树（严格二叉树）</b>：每个分支结点都恰有 2 个孩子，即只有度 0 或度 2 的结点。<b>哈夫曼树就是正则二叉树。</b></li>
+  </ul>
+
+  <h4>二叉树的性质</h4>
+  <span class="exam">考点追踪：二叉树中结点数的关系（2025）</span>
+  <ol>
+    <li><b>n₀ = n₂ + 1</b>——非空二叉树叶结点数＝度 2 结点数 + 1。<br>
+      <span style="color:var(--muted);font-size:.86rem">推导：n = n₀+n₁+n₂；又分支数 B = n−1 = n₁+2n₂；两式消去即得。<b>王道特别提示这条选择题常考。</b></span></li>
+    <li>非空二叉树第 k 层<b>至多 2<sup>k−1</sup></b> 个结点。</li>
+    <li>高度为 h 的二叉树<b>至多 2<sup>h</sup>−1</b> 个结点（性质 2 前 h 项求和）。<br>
+      <span style="color:var(--muted);font-size:.86rem">性质 2、3 可推广到 m 叉树：第 k 层至多 m<sup>k−1</sup>，高 h 至多 (m<sup>h</sup>−1)/(m−1)。</span></li>
+    <li><b>完全二叉树按 1~n 层序编号的 8 条关系</b>（结点 i）：<br>
+      ① 最后一个分支结点编号 ⌊n/2⌋，i ≤ ⌊n/2⌋ 是分支结点，否则叶结点；<br>
+      ② 叶结点只出现在最后两层；<br>
+      ③ 若有度 1 结点则<b>至多一个</b>，且<b>只有左孩子无右孩子</b>，编号必为 ⌊n/2⌋；<br>
+      ④ 一旦某结点是叶或仅有左孩子，编号更大的结点全是叶；<br>
+      ⑤ n 为奇数则无度 1 结点；n 为偶数则<b>恰有一个</b>度 1 结点（编号 n/2，只有左孩子）；<br>
+      ⑥ i &gt; 1 时双亲为 <b>⌊i/2⌋</b>；⑦ 左孩子 <b>2i</b>、右孩子 <b>2i+1</b>；⑧ 所在层次 ⌊log₂i⌋+1。</li>
+    <li>n 个结点的完全二叉树高度 = <b>⌈log₂(n+1)⌉</b> 或 <b>⌊log₂n⌋+1</b>。</li>
+  </ol>
+  <div class="key"><span class="tag">必记结论 · n₀ = n₂ + 1 的两个常见变形</span>
+    知叶子求总数、知总数求叶子，都靠 n = n₀+n₁+n₂ 和 n₀ = n₂+1 联立：<br>
+    · 若二叉树<b>没有度 1 结点</b>（n₁=0，即正则），则 <b>n = 2n₀ − 1</b>；<br>
+    · 完全二叉树里 <b>n₁ 只能是 0 或 1</b>（由性质 4⑤），所以给出 n 就能定出叶子数（2025 真题就靠这个奇偶讨论）。
+  </div>
+
+  <h3>5.2.2　二叉树的存储结构</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=8">📄 p.131–133</a>
+  <span class="exam">考点追踪：二叉树的顺序存储结构相关应用（2020、2025）</span>
+  <h4>1. 顺序存储</h4>
+  <p>用一组连续单元按层序存放，<b>编号 i 的结点存于下标 i 的位置</b>（建议从下标 1 开始存，让下标与编号一致）。</p>
+  <figure>
+    <img src="图/图5-4_二叉树顺序存储.png" alt="完全二叉树与一般二叉树的顺序存储数组，空结点用 0 占位">
+    <figcaption>图 5.4　二叉树的顺序存储（裁自原书 p.132）。用 0 表示空结点。</figcaption>
+  </figure>
+  <div class="trap"><span class="tag">陷阱 · 顺序存储只适合完全 / 满二叉树</span>
+    一般二叉树想用下标反映逻辑关系，必须先插入若干「空结点」补成同高完全二叉树的形状再按层序入数组——<b>最坏情况极浪费</b>：高 h、只有 h 个结点的<b>单支树</b>要占近 2<sup>h</sup>−1 个单元。所以顺序存储<b>只对完全 / 满二叉树划算</b>。这正是 2020、2025 顺序存储题的坑。
+  </div>
+  <h4>2. 链式存储</h4>
+  <p>二叉链表结点至少 3 个域：<b>左指针 lchild、数据 data、右指针 rchild</b>。</p>
+  <p style="text-align:center"><span class="node"><span>lchild</span><span class="d">data</span><span>rchild</span></span></p>
+  <pre class="code">typedef struct BiTNode{
+    ElemType data;                    // 数据域
+    struct BiTNode *lchild,*rchild;   // 左右孩子指针
+}BiTNode,*BiTree;</pre>
+  <figure>
+    <img src="图/图5-6_二叉链表.png" alt="一棵二叉树及其二叉链表存储">
+    <figcaption>图 5.6　二叉链表的存储结构（裁自原书 p.132）。加一个指向父结点的指针即成<b>三叉链表</b>。</figcaption>
+  </figure>
+  <div class="key"><span class="tag">必记结论 · n 个结点的二叉链表有 n+1 个空链域</span>
+    n 个结点共 2n 个指针域，非空的只有 n−1 个（每条边占一个），故<b>空链域 = 2n − (n−1) = n + 1</b> 个。<b>这条选择题极常考</b>，而且下一节的线索二叉树正是靠这 n+1 个空链域来存前驱后继的。
+  </div>
+
+  <h2>5.3　二叉树的遍历和线索二叉树</h2>
+
+  <h3>5.3.1　二叉树的遍历</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=17">📄 p.140–142</a>
+  <span class="exam">考点追踪：遍历的相关分析（2009、2011、2012）　·（算法题）遍历的应用（2014、2017、2022）　·　中序序列中结点关系（2017、2024）</span>
+  <p>遍历＝按某种搜索路径<b>访问每个结点一次且仅一次</b>。遵循「先左后右」，按<b>根</b>在序列中的位置分三种：先序 <b>NLR</b>、中序 <b>LNR</b>、后序 <b>LRN</b>（另有层序）。</p>
+  <table>
+    <tr><th>遍历</th><th>顺序</th><th>递归代码骨架</th></tr>
+    <tr><td><b>先序 PreOrder</b></td><td>访问根 → 遍历左 → 遍历右</td><td><code>visit(T); Pre(T-&gt;l); Pre(T-&gt;r);</code></td></tr>
+    <tr><td><b>中序 InOrder</b></td><td>遍历左 → 访问根 → 遍历右</td><td><code>In(T-&gt;l); visit(T); In(T-&gt;r);</code></td></tr>
+    <tr><td><b>后序 PostOrder</b></td><td>遍历左 → 遍历右 → 访问根</td><td><code>Post(T-&gt;l); Post(T-&gt;r); visit(T);</code></td></tr>
+  </table>
+  <div class="key"><span class="tag">必记结论 · 三种递归遍历的复杂度</span>
+    区别只在<b>访问根的时机</b>，递归遍历左右子树的顺序永远固定。每个结点访问一次，<b>时间 O(n)</b>；递归栈深度 = 树高，最坏（单支树）<b>空间 O(n)</b>。
+  </div>
+  <h4>层次遍历（借助队列）</h4>
+  <p>根入队 → 反复：队头出队并访问，其非空左右孩子依次入队 → 直到队空。<b>算法题里求树高、宽度、判完全二叉树全靠它，务必背到能默写。</b></p>
+  <pre class="code">void LevelOrder(BiTree T){
+    InitQueue(Q); BiTree p; EnQueue(Q,T);
+    while(!IsEmpty(Q)){
+        DeQueue(Q,p); visit(p);
+        if(p-&gt;lchild) EnQueue(Q,p-&gt;lchild);
+        if(p-&gt;rchild) EnQueue(Q,p-&gt;rchild);
+    }
+}</pre>
+
+  <h4>由遍历序列构造二叉树</h4>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=18">📄 p.142–143</a>
+  <span class="exam">考点追踪：先序序列对应的不同二叉树（2015）　·　先序+中序确定二叉树（2017、2020、2021）　·　后序+树形（2017、2023）</span>
+  <p>一棵二叉树的四种序列都唯一确定，但<b>单凭任意一种序列无法反推出树</b>。规律：</p>
+  <div class="key"><span class="tag">必记结论 · 建树必须有中序</span>
+    <b>已知中序 + 先序 / 后序 / 层序 中任意一种 → 唯一确定二叉树。</b>方法都一样：<br>
+    · 先序第 1 个、后序最后 1 个、层序第 1 个 = <b>整棵树的根</b>；<br>
+    · 用这个根到<b>中序序列</b>里一劈两半，左段是左子树的中序、右段是右子树的中序（左右子树的结点数就此确定）；<br>
+    · 回到先序 / 后序 / 层序里切出左右子树各自的序列，<b>递归</b>。<br>
+    例：先序 ABCDEFGHI + 中序 BCAEDGHFI，A 为根，中序中 A 左边 BC 是左子树、右边 EDGHFI 是右子树……逐层递归还原。
+  </div>
+  <div class="trap"><span class="tag">陷阱 · 没有中序就废了</span>
+    <b>先序+后序、先序+层序、后序+层序</b> 这三种组合<b>通常无法唯一确定</b>二叉树。最小反例：两棵树先序都 <span class="seq">AB</span>、后序都 <span class="seq">BA</span>、层序都 <span class="seq">AB</span>，但一棵 B 是左孩子、一棵 B 是右孩子（2015 真题考的就是「先序确定时有几种不同二叉树」）。
+  </div>
+
+  <h3>5.3.2　线索二叉树</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=21">📄 p.144–146</a>
+  <span class="exam">考点追踪：线索二叉树的定义（2010）　·　中序线索中线索的指向（2014）　·　后序线索二叉树的特点（2013）</span>
+  <p>普通二叉链表只反映父子关系，拿不到某种遍历序列里的<b>前驱 / 后继</b>。而二叉链表恰有 <b>n+1 个空指针</b>——把它们利用起来指向前驱后继，就能像遍历链表一样高效遍历。规定：<b>无左子树 → lchild 指向前驱；无右子树 → rchild 指向后继</b>。为区分指针指的是孩子还是线索，加两个标志位：</p>
+  <p style="text-align:center"><span class="node"><span>lchild</span><span class="t">ltag</span><span class="d">data</span><span class="t">rtag</span><span>rchild</span></span></p>
+  <p><b>tag = 0</b> 指向孩子，<b>tag = 1</b> 指向线索（前驱 / 后继）。</p>
+  <pre class="code">typedef struct ThreadNode{
+    ElemType data;
+    struct ThreadNode *lchild,*rchild;
+    int ltag,rtag;                     // 左右线索标志
+}ThreadNode,*ThreadTree;</pre>
+  <h4>中序线索化 = 一趟中序遍历</h4>
+  <p>用 <code>pre</code> 记刚访问过的结点、<code>p</code> 记当前结点，<code>pre</code> 就是 <code>p</code> 的中序前驱。中序遍历中：p 左指针空则指向 pre；pre 右指针空则指向 p。核心两段：</p>
+  <pre class="code">// 访问 p 时（InThread 递归到 p）：
+if(p-&gt;lchild==NULL){ p-&gt;lchild=pre; p-&gt;ltag=1; }              // 建前驱线索
+if(pre!=NULL&amp;&amp;pre-&gt;rchild==NULL){ pre-&gt;rchild=p; pre-&gt;rtag=1;} // 建后继线索
+pre=p;
+// 主过程结尾处理中序最后一个结点：pre-&gt;rchild=NULL; pre-&gt;rtag=1;</pre>
+  <h4>中序线索二叉树的遍历（无栈无递归）</h4>
+  <p>找中序第一个结点、再不断找后继即可。查后继规则：<b>rtag=1 → rchild 就是后继；rtag=0 → 后继是右子树中「最左下」结点</b>（右子树的中序第一个）。</p>
+  <pre class="code">ThreadNode *Firstnode(ThreadNode *p){
+    while(p-&gt;ltag==0) p=p-&gt;lchild;   // 沿左孩子链走到最左下
+    return p;
+}
+ThreadNode *Nextnode(ThreadNode *p){
+    if(p-&gt;rtag==0) return Firstnode(p-&gt;rchild);
+    else return p-&gt;rchild;
+}
+void Inorder(ThreadNode *T){
+    for(ThreadNode *p=Firstnode(T); p!=NULL; p=Nextnode(p)) visit(p);
+}</pre>
+  <p>还可加一个<b>头结点</b>：lchild 指根、rchild 指中序最后一个结点，首尾结点回指头结点，形成<b>双向循环线索链表</b>，支持正向反向遍历。</p>
+  <h4>先序线索、后序线索</h4>
+  <div class="trap"><span class="tag">陷阱 · 后序线索找后继要靠父指针（2013 真题）</span>
+    <b>先序线索</b>找后继很直接：有左孩子则左孩子是后继，无左有右则右孩子是后继，叶结点直接看 rchild 线索。<br>
+    <b>后序线索</b>找后继却很麻烦，分三种：① x 是整树的根 → 后继为空；② x 是双亲的右孩子，或是左孩子且双亲无右子树 → 后继是双亲；③ x 是左孩子且双亲有右子树 → 后继是右子树后序遍历的第一个结点。<b>情况里频繁需要「双亲」，而标准二叉线索链表没有父指针</b>——所以后序线索通常要用<b>带父指针的三叉链表</b>存储。这是 2013 真题的落点。
+  </div>
+
+  <h2>5.4　树、森林</h2>
+
+  <h3>5.4.1　树的存储结构</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=45">📄 p.168–170</a>
+  <h4>1. 双亲表示法</h4>
+  <p>用数组存所有结点，每个结点额外存<b>双亲下标</b>（根的双亲域设 −1）。</p>
+  <figure>
+    <img src="图/图5-20_双亲表示法.png" alt="树、双亲数组表示、双亲指针图示三种对照">
+    <figcaption>图 5.20　树的双亲表示法（裁自原书 p.169）。</figcaption>
+  </figure>
+  <p><b>查双亲 O(1)、查孩子要遍历整个数组（慢）。</b></p>
+  <div class="trap"><span class="tag">陷阱 · 别把树的双亲数组当成二叉树的顺序数组</span>
+    双亲表示法里，<b>下标只是结点编号，父子关系靠 parent 域显式记录</b>；而二叉树的顺序存储里<b>下标本身隐含父子关系</b>（i 的左孩子 2i+1、右孩子 2i+2）。二叉树是树的特例可以借用树的存储，但<b>一般的树不能直接用二叉树的顺序方式存</b>。
+  </div>
+  <h4>2. 孩子表示法 &amp; 3. 孩子兄弟表示法</h4>
+  <p><b>孩子表示法</b>：每个结点的所有孩子拉成一条单链表，n 个头指针放进顺序表。查孩子快、查双亲慢（与双亲表示法相反）。<br>
+  <b>孩子兄弟表示法（＝二叉树表示法）</b>：结点存 <b>data + firstchild（第一个孩子）+ nextsibling（右兄弟）</b>，即「左孩子—右兄弟」，用二叉链表存树。</p>
+  <pre class="code">typedef struct CSNode{
+    ElemType data;
+    struct CSNode *firstchild,*nextsibling;  // 第一个孩子、右兄弟
+}CSNode,*CSTree;</pre>
+  <figure>
+    <img src="图/图5-21_孩子与孩子兄弟表示.png" alt="孩子表示法与孩子兄弟表示法">
+    <figcaption>图 5.21　孩子表示法（左）与孩子兄弟表示法（右，裁自原书 p.169）。</figcaption>
+  </figure>
+  <p><b>孩子兄弟表示法最大的价值：能自然地把树转成二叉树，从而复用二叉树的算法。</b>查孩子快、回溯双亲难（可加 parent 域变三叉链表）。</p>
+
+  <h3>5.4.2　树、森林与二叉树的转换</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=47">📄 p.170–171</a>
+  <span class="exam">考点追踪：树↔二叉树转换及性质（2009、2011）　·　森林↔二叉树转换（2014）　·　由遍历序列建二叉树并转森林（2020、2021）</span>
+  <p>树的孩子兄弟表示与二叉树的二叉链表<b>物理结构完全相同</b>，所以同一存储换个解释就能互转。</p>
+  <div class="key"><span class="tag">必记结论 · 「左孩子右兄弟」＋一个铁律</span>
+    <b>树转二叉树</b>：每结点左指针指<b>第一个孩子</b>、右指针指<b>下一个右兄弟</b>。手工画法：兄弟间连线 → 每结点只留与第一个孩子的连线 → 以树根为轴顺时针转 45°。<br>
+    <b>铁律：由树转成的二叉树，根结点一定没有右子树</b>（因为根没有兄弟）。
+  </div>
+  <figure>
+    <img src="图/图5-22_树转二叉树.png" alt="树与二叉树的对应关系及二叉链表">
+    <figcaption>图 5.22　树与二叉树的对应关系（裁自原书 p.170）。</figcaption>
+  </figure>
+  <p><b>森林转二叉树</b>：每棵树各自转成二叉树（根都无右子树）→ 把各根视为兄弟，第二棵接到第一棵根的右子树，依次串下去。<br>
+  <b>二叉树转回森林</b>：把根及其左子树作为第一棵树，<b>断开根的右链</b>，右子树代表剩余森林，递归分离。<b>转换结果唯一。</b></p>
+  <figure>
+    <img src="图/图5-23_森林与二叉树.png" alt="森林、对应的树、对应的二叉树三者关系">
+    <figcaption>图 5.23　森林与二叉树的对应关系（裁自原书 p.171）。三层对照：森林 ⇄ 各树 ⇄ 二叉树。</figcaption>
+  </figure>
+
+  <h3>5.4.3　树和森林的遍历</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=48">📄 p.171–172</a>
+  <span class="exam">考点追踪：树与二叉树遍历方法的对应（2019）　·　森林与二叉树遍历方法的对应（2020）</span>
+  <ul>
+    <li><b>树的先根遍历</b>：先访问根，再依次先根遍历每棵子树 —— 与对应二叉树的<b>先序</b>序列相同。</li>
+    <li><b>树的后根遍历</b>：先依次后根遍历每棵子树，再访问根 —— 与对应二叉树的<b>中序</b>序列相同。</li>
+    <li><b>森林的先序遍历</b>＝对应二叉树先序；<b>森林的中序遍历</b>＝对应二叉树中序。</li>
+  </ul>
+  <div class="key"><span class="tag">必记结论 · 遍历对应表（表 5.1）</span>
+    <table style="margin-top:6px">
+      <tr><th>树</th><th>森林</th><th>二叉树</th></tr>
+      <tr><td>先根遍历</td><td>先序遍历</td><td><b>先序遍历</b></td></tr>
+      <tr><td>后根遍历</td><td>中序遍历</td><td><b>中序遍历</b></td></tr>
+    </table>
+    <b>关键记忆点：树 / 森林的「后根 / 中序」对应二叉树的「中序」，不是后序！</b>（有的教材把森林中序叫「后序」，因为根确实最后才访问——命名不同，别被绕晕。2019、2020 真题就靠这张表。）
+  </div>
+
+  <h2>5.5　树与二叉树的应用</h2>
+
+  <h3>5.5.1　哈夫曼树和哈夫曼编码</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=57">📄 p.180–182</a>
+  <p><b>结点的权</b>：赋给结点的值。<b>带权路径长度（WPL）</b>＝所有叶结点的（权 × 到根路径长度）之和：<span class="fml">WPL = Σ w<sub>i</sub> l<sub>i</sub></span>在含 n 个带权叶结点的所有二叉树中，<b>WPL 最小的称为哈夫曼树（最优二叉树）</b>。</p>
+  <h4>哈夫曼树的构造</h4>
+  <span class="exam">考点追踪：路径上权值序列的合法性（2010）　·　哈夫曼树的性质（2010、2019）</span>
+  <p>给定 n 个权值：① 视为 n 棵单结点树组成森林 F；② 取 F 中<b>根权最小的两棵</b>合并，新根权＝两子根权之和；③ 从 F 删这两棵、加入新树；④ 重复直到只剩一棵。</p>
+  <figure>
+    <img src="图/图5-25_哈夫曼树构造.png" alt="权值 7 5 2 4 构造哈夫曼树的四步过程">
+    <figcaption>图 5.25　哈夫曼树的构造过程（裁自原书 p.181）。每次挑最小的两棵合并。</figcaption>
+  </figure>
+  <div class="key"><span class="tag">必记结论 · 哈夫曼树的三条性质</span>
+    ① 权值越小的结点，到根路径越长（越靠下）；<br>
+    ② 构造中新建了 n−1 个结点，<b>总结点数 = 2n − 1</b>（n 个初始叶 + n−1 个内部结点）；<br>
+    ③ 每次合并都取两棵，故<b>不存在度为 1 的结点</b>（是严格 / 正则二叉树）。<br>
+    另外常用：<b>WPL = 所有非叶（内部）结点的权值之和</b>（免去数路径长度，算 WPL 更快）；形态可能不唯一，但 WPL 唯一且最小。
+  </div>
+  <h4>哈夫曼编码 &amp; 前缀编码</h4>
+  <span class="exam">考点追踪：据编码译码（2017）　·　构造与分析（2012、2018、2021、2023）　·　前缀编码（2014、2020）　·　与定长编码的差异（2022）</span>
+  <p><b>前缀编码</b>：任一编码都不是另一编码的前缀，从而<b>解码无歧义</b>。用二叉树设计前缀码：约定左分支 0、右分支 1，<b>每个字符放在叶结点</b>，从根到叶的 0/1 串即其编码——这样生成的必是前缀码。把字符出现频率当权构造哈夫曼树，得到的就是<b>总长最短的二进制前缀编码</b>（数据压缩）。</p>
+  <figure>
+    <img src="图/图5-27_哈夫曼编码.png" alt="由哈夫曼树构造哈夫曼编码，a:45 b:13 c:12 d:16 e:9 f:5">
+    <figcaption>图 5.27　由哈夫曼树构造哈夫曼编码（裁自原书 p.182）。WPL = 224，比 3 位定长的 300 位压缩约 25%。</figcaption>
+  </figure>
+  <div class="trap"><span class="tag">陷阱 · 前缀码判定 &amp; 形态不唯一</span>
+    ① <b>某编码是另一编码的前缀 → 不是前缀码</b>（如给 A/B/C 编 0/10/110 后再给 D 编 11，11 是 110 的前缀，非法）。选择题给一组编码判是否前缀码，就看有没有谁是谁的前缀。<br>
+    ② 左右分支谁标 0 谁标 1<b>没有强制规定</b>，权值相同的结点合并顺序也可不同，所以哈夫曼树<b>形态可能不唯一</b>，但<b>WPL 恒定且最小</b>——问「哈夫曼树是否唯一」答<b>不唯一</b>，问 WPL 答<b>唯一</b>。
+  </div>
+
+  <h3>5.5.2　并查集</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=60">📄 p.183–185</a>
+  <p><b>并查集</b>是处理<b>不相交集合的合并与查询</b>的树状结构，支持三种操作：<code>Initial(S)</code> 每个元素自成单元素集；<code>Union(S,Root1,Root2)</code> 把 Root2 集并入 Root1 集（要求二者不同集）；<code>Find(S,x)</code> 查 x 所属集合并返回<b>根</b>。</p>
+  <h4>存储：双亲表示法（数组）</h4>
+  <p>用<b>树的双亲表示法</b>：数组下标＝元素编号，值＝双亲下标；<b>根的值取负数</b>——负号标识它是根，绝对值记录该集合的元素个数。初始化全 −1（各自为根、规模 1）。</p>
+  <figure>
+    <img src="图/图5-28_并查集.png" alt="并查集初始化、用树表示、并操作的数组变化">
+    <figcaption>图 5.28–5.30　并查集的初始化、树形表示与并操作（裁自原书 p.183）。根存负数＝−集合大小。</figcaption>
+  </figure>
+  <pre class="code">void Initial(int S[]){ for(int i=0;i&lt;SIZE;i++) S[i]=-1; }   // 各自为根
+
+int Find(int S[],int x){          // 查根：Find 与 Union 基础版
+    while(S[x]&gt;=0) x=S[x];         // 循环找到根（根的 S[] &lt; 0）
+    return x;
+}
+void Union(int S[],int Root1,int Root2){
+    if(Root1==Root2) return;
+    S[Root2]=Root1;               // 把 Root2 挂到 Root1 下
+}</pre>
+  <p>基础版 <b>Find 时间 O(d)</b>（d 为树高）、<b>Union O(1)</b>。极端情况树退化成链，Find 最坏 O(n)。</p>
+  <div class="key"><span class="tag">必记结论 · 两大优化（真题热点 2022/2023）</span>
+    <b>① 小树并大树（按秩/规模合并）：</b>Union 时比较两集规模（根的负值绝对值），<b>把规模小的挂到规模大的根下</b>，并累加规模。这样树高<b>不超过 ⌊log₂n⌋+1</b>。<br>
+    <b>② 路径压缩：</b>Find 找到根后，把从 x 到根路径上<b>所有结点直接挂到根下</b>（压平整条路径）。<br>
+    两者一起用，并查集操作近乎常数：树高<b>不超过 O(α(n))</b>，α 是增长极慢的反阿克曼函数，常见 n 下 α(n) ≤ 4。
+  </div>
+  <pre class="code">void Union(int S[],int Root1,int Root2){   // 优化①：小树并大树
+    if(Root1==Root2) return;
+    if(S[Root2]&gt;S[Root1]){ S[Root1]+=S[Root2]; S[Root2]=Root1; } // Root2 更小
+    else               { S[Root2]+=S[Root1]; S[Root1]=Root2; }   // Root1 更小
+}
+int Find(int S[],int x){                    // 优化②：路径压缩
+    int root=x;
+    while(S[root]&gt;=0) root=S[root];          // 先找到根
+    while(x!=root){ int t=S[x]; S[x]=root; x=t; } // 沿途结点直接挂根下
+    return root;
+}</pre>
+
+  <h2>归纳总结</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第5章_树与二叉树.pdf#page=62">📄 p.185</a>
+  <div class="mine"><span class="tag">我的补讲 · 本章五块骨架 + 各自的手算流程</span>
+    <b>① 数关系</b>：Σ度数=n−1、n₀=n₂+1、完全二叉树 8 条编号关系 → 联立 n=Σn<sub>i</sub> 与 n=Σi·n<sub>i</sub>+1 解题。<br>
+    <b>② 遍历</b>：三序递归 + 层序队列；建树认准「<b>必须含中序</b>，根劈中序、递归切先/后/层」。<br>
+    <b>③ 线索</b>：n+1 个空链域的用途；找后继 —— 中序看右子树最左下，后序要父指针。<br>
+    <b>④ 树森林↔二叉树</b>：左孩子右兄弟；树根无右子树；先根=先序、后根=<b>中序</b>；森林树数=二叉树根的右链长、森林叶数=二叉链表左指针为空的结点数。<br>
+    <b>⑤ 哈夫曼 + 并查集</b>：哈夫曼 2n−1 结点、无度 1、WPL=内部结点权和、前缀码判定；并查集根存负规模、小树并大树 + 路径压缩到 O(α(n))。<br>
+    算法题只在遍历框架上变形（求高度/宽度/WPL/最近公共祖先/判相似），会写层序和递归就能拿分。
+  </div>
+
+  <div class="outro">
+    <b>接下来做什么：</b><br>
+    · <a href="../练习系统/第5章.html">第 5 章练习（161 题）</a> —— 全书最大章，127 选择 + 25 算法/综合 + 真题，选择题答案全部程序独立复算、算法题可运行对拍，含 <b>27 道统考真题</b>（2009–2025）。<br>
+    · <a href="../模拟器_二叉树遍历.html">二叉树遍历步进器</a> —— 先/中/后/层序逐结点动画 + 三序列对照 + 「先序+中序建树」自测（自动判能否唯一确定）+ 层序数组随手造树。<br>
+    · <a href="../卡库_数据结构.html">数据结构卡库</a> —— 易混辨析（满 vs 完全、树 vs 森林、先根 vs 中序对应）随手翻。<br>
+    · <a href="../算法题_代码手册.html">C 代码模板手册</a> —— 树递归 / 层次队列 / 建树 等模板可开「默写模式」逐行自测。
+  </div>
+  <footer>精读版 · 第 5 章｜正文取自王道《数据结构》p.124–193，结构重排与批注为 Claude 所加｜配图 11 张裁自原书，结点结构等示意为重画</footer>
+</div>
+</body>
+</html>
