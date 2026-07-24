@@ -20,6 +20,14 @@ function stripHtml(h){const d=document.createElement('div');d.innerHTML=h;return
 /* 代码块是纯源码，含 < > & 必须转义，否则 <n/2) 之类会被当成 HTML 标签吞掉 */
 function escCode(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
+/* 求和号排版升级：把行内的 Σ<sub>下限</sub><sup>上限</sup> 转成上下限叠在 ∑ 上下的三层结构，
+   贴近课后题/真题的标准排版（样式见 style.css 的 .sum）。纯字符串替换，离线、无依赖；
+   只吃紧跟 Σ 的那一对 sub/sup，后面的 (i−1)N<sub>i</sub> 等普通下标不受影响。 */
+function mathup(html){
+  return String(html).replace(/Σ<sub>([^<]*)<\/sub><sup>([^<]*)<\/sup>/g,
+    '<span class="sum"><span class="up">$2</span><span class="sig">∑</span><span class="lo">$1</span></span>');
+}
+
 /* ---------- 参考代码遮罩 ----------
    综合应用题的 code 字段放的是「参考实现」＝答案的一部分，直接摊在题干下面等于送答案。
    规则：subjective 且未标 codeStem 的 code 一律当答案代码 → 收进核对面板并默认打码；
@@ -121,7 +129,7 @@ function mount(cfg){
         +(state.mode==='exam'?'✅ 交卷判分':'📊 结算这组')+'</button></div>';
       h+='<div id="resultSlot"></div>';
     }
-    root.innerHTML=h;
+    root.innerHTML=mathup(h);
     wire();
     applyMode();
   }

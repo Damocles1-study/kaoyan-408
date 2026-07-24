@@ -72,6 +72,10 @@ pre.code{background:var(--card);border:1px solid var(--line);border-radius:10px;
   overflow-x:auto;margin:12px 0;white-space:pre}
 code{font-family:var(--mono);font-size:.87em;background:var(--accent-soft);color:var(--accent);
   border-radius:4px;padding:1px 5px}
+/* 上下标：line-height:0 让上下标不再撑高行盒，否则带 n₀/n² 的行会忽高忽低。 */
+sub,sup{font-size:.72em;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.28em}
 .key code,.trap code,.mine code{background:var(--card)}
 .fml{text-align:center;font-family:var(--serif);font-size:1.02rem;margin:12px 0;
   background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}

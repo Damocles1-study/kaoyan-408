@@ -28,7 +28,20 @@ a.back{color:var(--muted);text-decoration:none;font-size:.85rem}
 a.back:hover{color:var(--accent)}
 header h1{font-family:var(--serif);font-size:1.55rem;margin-top:8px}
 header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
-sup,sub{font-size:.72em}
+/* 上下标：line-height:0 是关键——不加的话带上标的行会往上撑、带下标的行往下撑、
+   都不带的行又正常，于是同一段里数字忽高忽低。归零后行盒不受上下标影响，基线一致。 */
+sub,sup{font-size:.72em;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.28em}
+/* 求和号带上下限：原来 Σ<sub>i=1</sub><sup>m</sup> 把上下限甩到右边、又小又歪，
+   不像试卷。engine.js 的 mathup() 把它转成这个三层结构：上限在 ∑ 上方、下限在下方，
+   跟课后题/真题的排版一致。纯 CSS，离线可用，不依赖任何数学库。 */
+.sum{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+  vertical-align:middle;line-height:1;margin:0 .15em;font-family:var(--serif)}
+.sum .sig{font-size:1.5em;font-weight:400}
+.sum .up,.sum .lo{font-size:.6em;font-style:italic;white-space:nowrap}
+.sum .up{margin-bottom:-.12em}
+.sum .lo{margin-top:-.06em}
 
 /* toolbar */
 .toolbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
@@ -73,6 +86,11 @@ pre.code{font-family:var(--mono);font-size:.82rem;background:var(--accent-soft);
 .opt .k{flex:0 0 20px;font-family:var(--serif);font-weight:700;color:var(--accent)}
 .opt.correct .k{color:var(--green)} .opt.wrong .k{color:var(--red)}
 .opt.disabled{cursor:default;pointer-events:none}
+/* 选项配图（如 5.3-33 线索树四种连法）：SVG 只有 viewBox 无固定宽高，须给死宽度否则在
+   flex 选项里被压成 0。强制白底+内边距，暗色模式下墨线也看得清。 */
+.opt .optsvg{display:block;width:230px;max-width:100%;height:auto;background:#fff;
+  border:1px solid var(--line);border-radius:6px;padding:4px;margin-top:2px}
+@media (prefers-color-scheme: dark){.opt .optsvg{filter:brightness(.9)}}
 
 .reveal{margin:14px 0 2px;font-size:.85rem;border:1px solid var(--accent);background:var(--accent-soft);
   color:var(--accent);border-radius:8px;padding:6px 16px;cursor:pointer;font-family:var(--sans)}
