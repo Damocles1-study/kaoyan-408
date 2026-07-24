@@ -5,15 +5,21 @@
      ds_wrong_v1     错题本 {qid:{n:错次, res:是否已消化, ts:最近}}
 */
 (function(){
-const LS_A='ds_attempts_v1', LS_W='ds_wrong_v1', LS_CV='ds_codeveil_v1';
+const LS_A='ds_attempts_v1', LS_W='ds_wrong_v1', LS_CV='ds_codeveil_v1', LS_AT='ds_attr_v1';
 const $=(s,r)=>(r||document).querySelector(s);
 const byId=id=>DS_DATA.find(q=>q.id===id);
+
+/* 错因归因标签（借鉴数学错题页）：对照答案后勾一下「错在哪」，统计页汇成分布条。 */
+const ATTR_TAGS=['概念记混','性质公式用错','边界特例漏','数据结构选错','指针代码写错','复杂度算错','读题看图错'];
+const ATTR_PAL=['#b04a3a','#a5732a','#3e7a4e','#3d6a8a','#6d5a8e','#8b5e34','#8a8578'];
 
 function load(k,def){try{return JSON.parse(localStorage.getItem(k))??def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function attempts(){return load(LS_A,[]);}
 function wrongBook(){return load(LS_W,{});}
 
+function attrBook(){return load(LS_AT,{});}
+function toggleAttr(qid,tag){const b=attrBook();const arr=b[qid]||[];const i=arr.indexOf(tag);if(i>=0)arr.splice(i,1);else arr.push(tag);if(arr.length)b[qid]=arr;else delete b[qid];save(LS_AT,b);return arr.includes(tag);}
 function addWrong(qid){const w=wrongBook();const e=w[qid]||{n:0,res:false};e.n++;e.res=false;e.ts=Date.now();w[qid]=e;save(LS_W,w);}
 function resolveWrong(qid){const w=wrongBook();if(w[qid]){w[qid].res=true;w[qid].ts=Date.now();save(LS_W,w);}}
 function stripHtml(h){const d=document.createElement('div');d.innerHTML=h;return d.textContent.replace(/\s+/g,' ').trim();}
@@ -65,6 +71,18 @@ function qHtml(q,idx){
       h+='<div class="opt" data-k="'+k+'"><span class="k">'+k+'</span><span>'+q.opts[i]+'</span></div>';});
     h+='</div>';
   }
+  /* 大题四层渐进提示（借鉴数学错题页）：题干 → 提示①方向 → 提示②关键步骤 → 完整解答（看核对）。
+     只对写了 hints 的主观题渲染；先逼自己想，卡住了一层层点开。 */
+  if(q.type==='subjective' && q.hints && q.hints.length){
+    h+='<div class="hints">';
+    q.hints.forEach((ht,i)=>{
+      const lab=i===0?'提示① 方向':(i===1?'提示② 关键步骤':'提示'+(i+1));
+      const peek=i===0?'先自己想 · 卡住了点这里':'还卡再点';
+      h+='<div class="hintl" data-i="'+i+'"><span class="hl">'+lab+'</span><span class="ht">'+ht+'</span><span class="peek">'+peek+'</span></div>';
+    });
+    h+='<div class="hintl l-sol"><span class="hl">完整解答</span><span class="peek">做完 / 彻底卡死 → 点下方「看核对」对采分点</span></div>';
+    h+='</div>';
+  }
   h+='<button class="reveal">看核对 ▾</button>';
   h+='<div class="ans"><div class="tracks">';
   h+='<div class="track book"><h4>📕 王道书答案</h4>'+(q.type==='choice'?'<div class="final">'+q.ans+'</div>':'')+'<div>'+q.book+'</div>'
@@ -82,6 +100,11 @@ function qHtml(q,idx){
   h+='<div class="verdict '+vc+'">'+vt+'</div>';
   if(q.type==='subjective')
     h+='<div class="selfmark"><span class="lab">对照后自评：</span><button class="gok" data-m="ok">✔ 我答对了</button><button class="gbad" data-m="bad">✘ 我答错了</button></div>';
+  /* 错因归因：对照答案后勾「错在哪」，进统计页的分布条。 */
+  {const sel=attrBook()[q.id]||[];
+   h+='<div class="attrrow"><span class="lab">🏷 对照后，这题错在哪？（可多选，进统计）</span>';
+   ATTR_TAGS.forEach(t=>{h+='<button class="attrtag'+(sel.indexOf(t)>=0?' on':'')+'" data-t="'+t+'">'+t+'</button>';});
+   h+='</div>';}
   h+='<div class="askrow">🙋 不懂？告诉我：<code>'+q.id+' …</code></div>';
   h+='</div></div>';
   return h;
@@ -140,9 +163,9 @@ function mount(cfg){
       ? '闭卷：先选完全部，再点交卷才判分与揭示答案'
       : (state.mode==='exam'?'已交卷，可展开核对':'开卷：点选项即判，可随时展开核对');
     root.querySelectorAll('.q').forEach(qd=>{
-      const reveal=$('.reveal',qd), ans=$('.ans',qd);
-      if(exam){reveal.style.display='none';ans.classList.remove('open');}
-      else{reveal.style.display='';}
+      const reveal=$('.reveal',qd), ans=$('.ans',qd), hints=$('.hints',qd);
+      if(exam){reveal.style.display='none';ans.classList.remove('open');if(hints)hints.style.display='none';}
+      else{reveal.style.display='';if(hints)hints.style.display='';}
     });
   }
 
@@ -178,6 +201,15 @@ function mount(cfg){
           if(ok)resolveWrong(id); else addWrong(id);
           markCard(qd,ok);
         }
+      });
+      // 渐进提示：一层层点开（完整解答那层引导去「看核对」）
+      qd.querySelectorAll('.hintl').forEach(hl=>hl.onclick=()=>{
+        if(hl.classList.contains('l-sol')){const rv=$('.reveal',qd);if(rv&&rv.style.display!=='none')rv.click();return;}
+        hl.classList.toggle('open');
+      });
+      // 错因归因标签：勾选存 localStorage，进统计
+      qd.querySelectorAll('.attrtag').forEach(bt=>bt.onclick=()=>{
+        const on=toggleAttr(id,bt.dataset.t); bt.classList.toggle('on',on);
       });
       // 参考代码打码 → 点一下揭开（只影响这一题）
       const pk=$('.codepeek',qd);
@@ -324,6 +356,18 @@ function renderStats(sel){
   else h+='<div class="empty">暂无未消化错题 👍</div>';
   h+='</div>';
 
+  // 错因归因分布（借鉴数学错题页）：汇总各题勾的「错在哪」标签
+  h+='<div class="card"><h2>错因归因分布（你在题目里标的「错在哪」汇总）</h2>';
+  const ab=attrBook(),acnt={};let atot=0;
+  Object.values(ab).forEach(a=>a.forEach(t=>{acnt[t]=(acnt[t]||0)+1;atot++;}));
+  const aents=Object.entries(acnt).sort((a,b)=>b[1]-a[1]);
+  if(atot){
+    h+='<div class="attrbar">';aents.forEach(([t,v])=>{const ci=ATTR_TAGS.indexOf(t);h+='<i class="seg" style="flex:'+v+';background:'+ATTR_PAL[(ci>=0?ci:0)%ATTR_PAL.length]+'" title="'+t+' '+v+'"></i>';});h+='</div>';
+    h+='<div class="attrlegend">';aents.forEach(([t,v])=>{const ci=ATTR_TAGS.indexOf(t);h+='<span><i class="dot" style="background:'+ATTR_PAL[(ci>=0?ci:0)%ATTR_PAL.length]+'"></i>'+t+' '+v+'</span>';});h+='</div>';
+    h+='<div class="hint" style="margin-top:8px">占比最大的那类＝你最该针对性补的短板。标签在各章练习题「看核对」展开后勾选。</div>';
+  }else h+='<div class="empty">还没标错因。做题展开核对后，点题目里的「🏷 错在哪」标签，这里就有分布了。</div>';
+  h+='</div>';
+
   // 分章结算次数
   h+='<div class="card"><h2>各来源结算次数</h2><table class="tbl"><tr><th>来源</th><th>结算次数</th><th>最近正确率</th><th>最好</th></tr>';
   const byScope={};arr.forEach(a=>{(byScope[a.scope]=byScope[a.scope]||[]).push(a);});
@@ -375,6 +419,6 @@ function buildReport(){
 
 function toast(msg){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t);}t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
 
-window.DSApp={mount,renderStats,buildReport,pool,attempts,wrongBook,toast,
+window.DSApp={mount,renderStats,buildReport,pool,attempts,wrongBook,attrBook,toast,
   chapters:()=>DS_META.chapters, byId};
 })();
