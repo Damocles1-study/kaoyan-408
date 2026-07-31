@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>练习 · 数据结构 第6章 图</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 练习系统首页</a>
+  <header>
+    <h1>数据结构 · 第6章　图</h1>
+    <div class="sub">题源：27 王道《数据结构》第 6 章本节试题精选 · 每题「📕书答案 × 🤖运行核对」交叉验证 ·
+      <a href="../../王道教材/数据结构_分章/王道数据结构_第6章_图.pdf" style="color:var(--accent)">📄 打开本章电子书</a></div>
+  </header>
+  <div class="verdict" style="margin-top:16px;background:var(--amber-soft);color:var(--amber)">🚧 <b>本章建设中</b>：与第 5 章并列全书最大（70 页）。全书 70 页已通读并转录完毕，题库分小节上线中——
+    <b>6.1 图的基本概念（19 题）已完成</b>；6.2 存储（28 题）、6.3 遍历（23 题）、6.4 应用（61 题，含 28 道统考真题）陆续补齐，全章目标 <b>131 题 / 41 道真题</b>。</div>
+  <div class="verdict" style="background:var(--amber-soft);color:var(--amber)">📌 <b>本章铁律，先背再做题</b>：① <b>无向图 ΣTD = 2|E|</b>，有向图 ΣID = ΣOD = |E|；
+    ② 三条临界线 —— 连通最少 <b>n−1</b> 条边、<b>保证</b>连通要 <b>(n−1)(n−2)/2 + 1</b> 条、强连通有向图最少 <b>n</b> 条（一个环）；
+    ③ <b>极大</b>连通子图 = 连通分量，<b>极小</b>连通子图 = 生成树；
+    ④ 顶点子集 + 边子集<b>不一定</b>构成子图（边的端点必须在顶点子集里）；
+    ⑤ 边数 &gt; n−1 必有环，边数 &lt; n−1 必不连通。</div>
+  <div id="root"></div>
+  <footer>6.1 已完成 19 题（含 2009/2010/2017/2022 四道统考真题）· 书答×运行核对逐题一致</footer>
+</div>
+<script src="data_ds.js"></script>
+<script src="engine.js"></script>
+<script>
+DSApp.mount({root:'#root', scope:{type:'chapter',ch:6}, scopeLabel:'第6章',
+  mode:'practice', allowModeToggle:true, groupBySec:true});
+</script>
+</body>
+</html>
