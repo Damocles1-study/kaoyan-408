@@ -1,0 +1,18 @@
+<svg width="480" height="300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" font-family="Georgia,serif"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2b2b2b"/></marker></defs>
+<line x1="61.0" y1="195.0" x2="112.0" y2="195.0" stroke="#2b2b2b" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="142.0" y1="184.4" x2="201.5" y2="131.9" stroke="#2b2b2b" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="142.4" y1="205.2" x2="201.1" y2="253.6" stroke="#2b2b2b" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="228.8" y1="111.9" x2="309.5" y2="64.2" stroke="#2b2b2b" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="228.3" y1="128.9" x2="305.0" y2="180.0" stroke="#2b2b2b" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="228.0" y1="255.7" x2="305.4" y2="200.5" stroke="#2b2b2b" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="229.4" y1="258.0" x2="413.8" y2="167.9" stroke="#2b2b2b" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="335.4" y1="185.8" x2="412.6" y2="164.7" stroke="#2b2b2b" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="336.3" y1="66.3" x2="417.3" y2="147.3" stroke="#2b2b2b" stroke-width="1.5" marker-end="url(#ah)"/>
+<circle cx="45" cy="195" r="16" fill="#fff" stroke="#2b2b2b" stroke-width="1.5"/><text x="45" y="200" text-anchor="middle" font-size="14" fill="#2b2b2b">A</text>
+<circle cx="130" cy="195" r="16" fill="#fff" stroke="#2b2b2b" stroke-width="1.5"/><text x="130" y="200" text-anchor="middle" font-size="14" fill="#2b2b2b">B</text>
+<circle cx="215" cy="120" r="16" fill="#fff" stroke="#2b2b2b" stroke-width="1.5"/><text x="215" y="125" text-anchor="middle" font-size="14" fill="#2b2b2b">C</text>
+<circle cx="215" cy="265" r="16" fill="#fff" stroke="#2b2b2b" stroke-width="1.5"/><text x="215" y="270" text-anchor="middle" font-size="14" fill="#2b2b2b">D</text>
+<circle cx="320" cy="190" r="16" fill="#fff" stroke="#2b2b2b" stroke-width="1.5"/><text x="320" y="195" text-anchor="middle" font-size="14" fill="#2b2b2b">E</text>
+<circle cx="325" cy="55" r="16" fill="#fff" stroke="#2b2b2b" stroke-width="1.5"/><text x="325" y="60" text-anchor="middle" font-size="14" fill="#2b2b2b">F</text>
+<circle cx="430" cy="160" r="16" fill="#fff" stroke="#2b2b2b" stroke-width="1.5"/><text x="430" y="165" text-anchor="middle" font-size="14" fill="#2b2b2b">G</text>
+</svg>

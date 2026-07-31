@@ -98,7 +98,7 @@
 <div class="wrap">
   <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
   <header>
-    <h1>算法题训练场（18 个模板）</h1>
+    <h1>算法题训练场（20 个模板）</h1>
     <div class="sub">408 算法设计题（通常为第 41 题）的 C 语言弹药库 · 提炼自 826 代码默写手册，已转 408/王道 C 口径 · 结合王道教材逐章校订、补入真题实战套路 · 每个模板可开「默写模式」逐行自测</div>
   </header>
 
@@ -108,7 +108,7 @@
       <li><b>三段式作答，三段都给分</b>：① 算法思想（文字说清套路）② 代码（C / C++，规范伪代码通常也可）③ 时空复杂度。<span class="em">复杂度是白给的分，永远别忘写。</span></li>
       <li><b>暴力保底</b>：想不出最优解就写 O(n²) 暴力——408 评分通常仍给大部分分数；<span class="em">空着才是 0 分</span>。先写个暴力占住分，有时间再优化。</li>
       <li><b>先声明再动手</b>：结点/结构体定义、变量含义、边界假设先写清，阅卷人看得懂才有分。</li>
-      <li><b>套路优先</b>：408 算法题 80% 落在下面 18 个模板的变形上——反转、双指针（含间隔k/尾对齐）、归并、划分、树递归、层次队列、建树与森林转换、哈夫曼、标记数组空间换时间。先认出套路，再改模板。</li>
+      <li><b>套路优先</b>：408 算法题 80% 落在下面 20 个模板的变形上——反转、双指针（含间隔k/尾对齐）、归并、划分、树递归、层次队列、建树与森林转换、哈夫曼、标记数组空间换时间、<b>图的遍历 / 拓扑排序 / 邻接矩阵扫行列</b>。先认出套路，再改模板。</li>
       <li><b>默写训练法</b>：点开模板 → 读懂思路 → 开「默写模式」→ 在纸上写 → 逐行点击核对。合上书能写出【默】级模板，才算过关。</li>
     </ul>
   </section>
@@ -352,7 +352,7 @@ void CreateHuffman(HTNode HT[], int w[], int n){
  trap:"哈夫曼树只有度 0 和 2（无度 1），n 个叶共 2n−1 个结点。形态不唯一但 WPL 唯一。编码长度 = 该叶的深度：权越小埋得越深、码越长。前缀码 ⟺ 字符只在叶结点。多路归并「最小比较次数」（2012 真题）也是哈夫曼思想：每次并最短两个表。",
  src:"王道第5章 5.5 哈夫曼【默】级"},
 
-{tag:"graph",must:0,name:"图 BFS / DFS 邻接表模板",
+{tag:"graph",must:1,name:"图 BFS / DFS 邻接表模板",
  q:"连通性、最短路径（无权图）、求距离顶点 v 最远的结点、判断路径存在。",
  idea:"BFS 用队列层层推进（无权图最短路）；DFS 递归一路到底。visited 数组防重复。邻接表遍历邻居：for(p=G.vex[u].first; p; p=p->next)。",
  code:`void BFS(Graph G, int v, int visited[]){
@@ -376,6 +376,59 @@ void DFS(Graph G, int v, int visited[]){
 }`,
  trap:"BFS 的标记必须在入队时（出队时标记会重复入队）。「距 v 最远的顶点」= BFS 最后一个出队者。非连通图要外层循环对每个未访问顶点再调一次。",
  src:"826 第6章 BFS/DFS【懂】级 → C 邻接表版"},
+
+{tag:"graph",must:1,name:"拓扑排序模板（+ 判环 + 判唯一）",
+ q:"2024 统考算法题原型。还能一题多用：判有向图是否有环、判拓扑序列是否唯一、AOV 网排先后、按拓扑序重编号使邻接矩阵成上三角。",
+ idea:"三步：① 统计入度（邻接表扫一遍所有边的 adjvex，或邻接矩阵按列求和）；② 把入度为 0 的顶点入栈/入队；③ 反复弹出一个、输出、把它的所有后继入度减 1，减到 0 就入栈。输出个数 count < n ⟹ 有环。判唯一：每轮弹之前若「入度为 0 的顶点多于一个」，序列就不唯一。",
+ code:`bool TopoSort(ALGraph G, int print[]){
+    int indeg[MAXV]={0}, S[MAXV], top=-1, count=0;
+    for(int i=0;i<G.vexnum;i++)                    // ① 统计入度
+        for(ArcNode *p=G.vertices[i].firstarc; p; p=p->nextarc)
+            indeg[p->adjvex]++;
+    for(int i=0;i<G.vexnum;i++)                    // ② 入度0入栈
+        if(indeg[i]==0) S[++top]=i;
+    while(top>=0){                                 // ③ 弹一个、减一圈
+        int i=S[top--];
+        print[count++]=i;
+        for(ArcNode *p=G.vertices[i].firstarc; p; p=p->nextarc)
+            if(--indeg[p->adjvex]==0) S[++top]=p->adjvex;
+    }
+    return count==G.vexnum;                        // false ⟹ 图中有回路
+}
+// —— 只判「拓扑序列是否唯一」时，把栈换成"每轮扫一遍找入度0" ——
+// 每轮若找到的入度0顶点 ≥ 2 个 ⟹ 不唯一，直接 return 0。
+// 2024 真题技巧：用一个 in0 变量兼做标志——初值 -1；
+//   扫到第一个入度0顶点记下它的编号，再扫到第二个就置 -2（表示"多于一个"）。`,
+ trap:"① 别忘了返回值/count 判环，这是采分点；② 入度统计不要漏掉「有向图入度看列、出度看行」；③ 用栈还是队列都对，但会给出不同的合法序列——题目给了具体存储结构时必须按它的顺序走；④ 复杂度：邻接表 O(|V|+|E|)、邻接矩阵 O(|V|²)，写完顺手答上。",
+ src:"王道第6章 6.4.4（2024 统考算法题）"},
+
+{tag:"graph",must:1,name:"邻接矩阵「扫行扫列」模板（近年真题主力）",
+ q:"2021 判 EL（欧拉）路径、2023 找出度大于入度的 K 顶点——统考连续出题的套路：题干把判据直接告诉你，你只需按行/列统计度。",
+ idea:"一句话：行求出度、列求入度、无向图行列同值即度。双重 for 扫矩阵即可，别自作聪明去发明图论算法。带权图记得排除 0 和 ∞ 两种「非边」。",
+ code:`// 【2021】无向图：度为奇数的顶点数为 0 或 2 ⟹ 存在 EL 路径
+int IsExistEL(MGraph G){
+    int count=0;
+    for(int i=0;i<G.numVertices;i++){
+        int degree=0;
+        for(int j=0;j<G.numVertices;j++)
+            degree += G.Edge[i][j];            // 无向图：扫一行即为度
+        if(degree%2!=0) count++;
+    }
+    return (count==0 || count==2) ? 1 : 0;
+}
+// 【2023】有向图：出度 > 入度的顶点称 K 顶点，输出并返回个数
+int printVertices(MGraph G){
+    int count=0;
+    for(int k=0;k<G.numVertices;k++){
+        int outd=0, ind=0;
+        for(int m=0;m<G.numVertices;m++) outd += G.Edge[k][m];   // 行 = 出度
+        for(int m=0;m<G.numVertices;m++) ind  += G.Edge[m][k];   // 列 = 入度
+        if(outd>ind){ printf("%c", G.VerticesList[k]); count++; }
+    }
+    return count;
+}`,
+ trap:"① 这两题都是「题干送思想」的送分题，先把题干那句判据抄进设计思想里再写码；② 时间复杂度一律 O(n²)、空间 O(1)，写完必答；③ 带权图不能直接 += ，要先判 (0 < w && w < INF)；④ 无向图别把度算成两倍。",
+ src:"王道第6章 6.2.6（2021、2023 统考算法题）"},
 
 {tag:"str",must:0,name:"KMP：next 数组求法",
  q:"手算 next/nextval 数组（几乎必考选择题）+ 读懂求 next 的代码。",

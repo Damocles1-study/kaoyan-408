@@ -89,7 +89,7 @@
 <div class="wrap">
   <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
   <header>
-    <h1>概念卡库 · 数据结构（41 张）</h1>
+    <h1>概念卡库 · 数据结构（44 张）</h1>
     <div class="sub">提炼自 826 时代第 1–10 章精讲遗产，已按 408 / 王道口径校正（下标约定、术语差异均标注） · 每卡 = 定义 + 易混辨析 + 记忆法 + 408 考法</div>
   </header>
 
@@ -97,7 +97,7 @@
     <main>
       <section class="card">
         <h2>卡片列表（点卡看详情）</h2>
-        <p class="selftest">自测法：看到卡名先<b>在心里说出定义和易混点</b>，再点开验证；或点 🎲 随机抽卡盲测。相关模拟器：<a href="模拟器_排序过程.html" style="color:var(--green)">排序过程</a></p>
+        <p class="selftest">自测法：看到卡名先<b>在心里说出定义和易混点</b>，再点开验证；或点 🎲 随机抽卡盲测。相关模拟器：<a href="模拟器_排序过程.html" style="color:var(--green)">排序过程</a> · <a href="模拟器_二叉树遍历.html" style="color:var(--green)">二叉树遍历</a> · <a href="模拟器_图算法.html" style="color:var(--green)">图算法八合一</a></p>
         <div class="filters" id="filters"></div>
         <div class="vgrid" id="vgrid"></div>
       </section>
@@ -204,6 +204,10 @@ const K = [
  mix:"稠密图用矩阵、稀疏图用表。无向图邻接表每条边存两次（2|E| 个表结点）；邻接表判断 (i,j) 是否有边要遍历链表。进阶：邻接矩阵 A 的 k 次幂 (i,j) 元 = i 到 j 长为 k 的路径条数。",
  mem:"矩阵是「花名册」，表是「朋友圈列表」。",
  exam:"存储结构与遍历复杂度搭配考，选择题高频。",src:"826 第6章"},
+{ch:"graph",name:"十字链表 vs 邻接多重表",def:"两种「链式」存储：十字链表<b>只存有向图</b>（弧结点 tailvex|headvex|hlink|tlink，顶点结点 data|firstin|firstout）；邻接多重表<b>只存无向图</b>（边结点 ivex|ilink|jvex|jlink，顶点结点 data|firstedge）。",
+ mix:"口诀「<b>十字有向、多重无向</b>」，反了就丢分。十字链表的价值：求<b>入度</b>和出度都方便（邻接表求入度必须扫全表）；邻接多重表的价值：<b>一条无向边只有一个结点</b>（邻接表要存两次），判边/删边只遍历一次。两者都<b>不唯一</b>，空间都是 O(|V|+|E|)。",
+ mem:"十字路口有方向 → 有向；多重边合并成一个 → 无向。",
+ exam:"2024 真题给邻接多重表求某顶点的度。秒杀法：<b>把所有边结点的 (ivex,jvex) 抄成边集，数顶点出现次数</b>，指针域根本不用看。",src:"王道第6章 6.2.3/6.2.4"},
 {ch:"graph",name:"BFS vs DFS",def:"BFS 用队列层层推进；DFS 用栈/递归一条道走到黑。邻接表 O(|V|+|E|)，矩阵 O(|V|²)。",
  mix:"BFS 可求无权图单源最短路、生成树高度最小；DFS 用于拓扑排序、判环、强连通分量。空间都是最坏 O(|V|)（队列/递归栈）。同一张图遍历序列不唯一（邻接表存储顺序影响）。",
  mem:"BFS 泛洪，DFS 钻洞。",
@@ -212,6 +216,10 @@ const K = [
  mix:"有等权边时 MST 可能不唯一，但 MST 的权值和唯一；各边权互异则 MST 唯一。过程形态：Prim 始终一棵树，Kruskal 中途是森林。Kruskal 判环用并查集。",
  mem:"Prim 点长大，Kruskal 边挑小。",
  exam:"选择题几乎年年考（唯一性 + 复杂度 + 适用场景）。",src:"826 第6章"},
+{ch:"graph",name:"最小生成树 vs 最短路径树",def:"MST 让<b>全部边权之和</b>最小（Prim/Kruskal）；最短路径树让<b>源点到每个点的路径</b>各自最短（Dijkstra）。两者一般<b>不是同一棵树</b>。",
+ mix:"⚠️ <b>MST 中两点之间的路径未必是最短路径</b>。反例：A–D=1、A–B=3、A–C=4、B–C=2 ⟹ MST={AD,AB,BC}，MST 里 A 到 C 长 5，原图直接边只有 4。选点标准也不同：Prim 选「离<b>这棵树</b>最近」的点，Dijkstra 选「离<b>源点</b>最近」的点。适用面：Prim 只能带权连通<b>无向</b>图，Dijkstra 有向无向都行（都要求非负权）。",
+ mem:"MST 省的是「修路总长」，最短路径树省的是「每个人回家的路」。",
+ exam:"2023 考「MST 中某顶点到其他顶点是否具有最短路径」；2009 考「离当前顶点最近 ≠ 离源点最近」。",src:"王道第6章 6.4.1/6.4.2"},
 {ch:"graph",name:"Dijkstra vs Floyd",def:"Dijkstra 单源最短路，按路径长度递增逐个「收编」顶点，O(|V|²)；Floyd 多源，三重循环动态规划，O(|V|³)。",
  mix:"⚠️ Dijkstra 不能处理负权边（贪心前提被破坏）；Floyd 允许负权边、但不允许负权回路。Dijkstra 收编后的顶点距离不再变——利用这点可做「执行到中途」类题目。",
  mem:"D = 贪心逐点收编；F = 「让每个 k 当一次中转站」。",

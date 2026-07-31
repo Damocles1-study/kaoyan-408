@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图算法八合一模拟器 · BFS/DFS/Prim/Kruskal/Dijkstra/Floyd/拓扑排序/关键路径</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    --mono:"SF Mono","JetBrains Mono","Menlo",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding:0 0 60px}
+  .wrap{max-width:1000px;margin:0 auto;padding:22px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:12px 0 18px}
+  h1{font-family:var(--serif);font-size:1.55rem;line-height:1.3}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  header .sub a{color:var(--accent)}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+  h2{font-size:1.02rem;color:var(--accent);margin-bottom:12px;font-family:var(--serif)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  select,input[type=text],textarea{font-family:var(--mono);font-size:.86rem;color:var(--ink);background:var(--bg);
+    border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+  textarea{width:100%;min-height:104px;line-height:1.6;resize:vertical}
+  .btn{font-size:.85rem;border:1px solid var(--accent);background:none;color:var(--accent);
+    border-radius:8px;padding:6px 14px;cursor:pointer;font-family:var(--sans)}
+  .btn:hover{background:var(--accent-soft)}
+  .btn.primary{background:var(--accent);color:var(--card)}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .preset{font-size:.78rem;border:1px solid var(--line);background:none;color:var(--muted);
+    border-radius:999px;padding:4px 12px;cursor:pointer}
+  .preset:hover{border-color:var(--accent);color:var(--accent)}
+  .preset.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .algos{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+  .algos button{font-size:.84rem;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    border-radius:9px;padding:6px 13px;cursor:pointer;font-family:var(--sans)}
+  .algos button:hover{border-color:var(--accent);color:var(--accent)}
+  .algos button.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+  .hint{font-size:.8rem;color:var(--muted)}
+  .kbd{font-family:var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.82rem}
+  .stage{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  @media (max-width:820px){.stage{grid-template-columns:1fr}}
+  svg{width:100%;height:auto;background:transparent}
+  .desc{font-size:.88rem;background:var(--accent-soft);border-radius:9px;padding:9px 13px;margin:10px 0;min-height:3.2em}
+  .desc b{color:var(--accent)}
+  .panel{font-size:.84rem}
+  .panel table{border-collapse:collapse;font-size:.82rem;margin:6px 0 10px;width:100%}
+  .panel td,.panel th{border:1px solid var(--line);padding:4px 7px;text-align:center;font-family:var(--mono);white-space:nowrap}
+  .panel th{background:var(--accent-soft);color:var(--accent)}
+  .panel td.up{background:var(--hl);color:var(--ink);font-weight:700}
+  .panel td.fin{background:var(--green-soft);color:var(--green)}
+  .panel td.no{color:var(--muted)}
+  .panel h4{font-size:.82rem;color:var(--muted);margin:10px 0 2px;font-weight:600}
+  .tags{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px}
+  .tag{font-family:var(--mono);font-size:.78rem;border:1px solid var(--line);border-radius:6px;padding:1px 8px;color:var(--muted)}
+  .tag.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .tag.done{border-color:var(--green);color:var(--green);background:var(--green-soft)}
+  .tag.no{text-decoration:line-through;opacity:.55}
+  .seqline{font-family:var(--mono);font-size:1rem;letter-spacing:.08em;margin:4px 0 8px;word-break:break-all}
+  .seqline b{color:var(--accent)}
+  .note{background:var(--blue-soft);border-left:4px solid var(--blue);border-radius:0 9px 9px 0;
+    padding:9px 13px;margin-top:12px;font-size:.84rem}
+  .note .t{display:block;font-size:.74rem;color:var(--blue);font-weight:700;letter-spacing:.06em;margin-bottom:3px}
+  .prog{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+  /* SVG 语义色 */
+  .e{stroke:var(--line);stroke-width:2;fill:none}
+  .e-dim{stroke:var(--line);stroke-width:1.5;fill:none;opacity:.45}
+  .e-cand{stroke:var(--blue);stroke-width:2.5;fill:none;stroke-dasharray:5 3}
+  .e-on{stroke:var(--red);stroke-width:3.4;fill:none}
+  .e-tree{stroke:var(--green);stroke-width:3.4;fill:none}
+  .e-no{stroke:var(--line);stroke-width:1.5;fill:none;opacity:.3;stroke-dasharray:3 3}
+  .wt{font-family:var(--mono);font-size:12px;fill:var(--muted)}
+  .wt.hot{fill:var(--red);font-weight:700}
+  .nc{fill:var(--card);stroke:var(--line);stroke-width:2}
+  .nc.on{fill:var(--hl);stroke:var(--hl-border);stroke-width:3}
+  .nc.done{fill:var(--green-soft);stroke:var(--green);stroke-width:2.5}
+  .nc.cand{fill:var(--blue-soft);stroke:var(--blue);stroke-width:2.5}
+  .nc.out{fill:var(--card);stroke:var(--line);stroke-width:1.5;opacity:.4}
+  .nt{font-family:var(--mono);font-size:13px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+  .nsub{font-family:var(--mono);font-size:11px;fill:var(--accent);text-anchor:middle}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>图算法八合一模拟器</h1>
+    <div class="sub">BFS · DFS · Prim · Kruskal · Dijkstra · Floyd · 拓扑排序 · 关键路径，全部<b>逐步可回放</b>。默认图就是王道第 6 章的样板图。配套 <a href="精读版/第6章.html">精读版第 6 章</a> 与 <a href="练习系统/第6章.html">练习系统第 6 章（131 题）</a>。</div>
+  </header>
+
+  <section class="card">
+    <h2>① 选算法</h2>
+    <div class="algos" id="algos"></div>
+    <div class="hint" id="algohint" style="margin-top:8px"></div>
+  </section>
+
+  <section class="card">
+    <h2>② 选图（或自己改）</h2>
+    <div class="row" id="presets"><span class="hint">预设：</span></div>
+    <div class="row">
+      <span class="hint">起点：</span><select id="src"></select>
+      <span class="hint" style="margin-left:10px" id="dirlab"></span>
+      <button class="btn" id="apply">用下面的边表重建</button>
+      <button class="btn" id="reset">还原预设图</button>
+    </div>
+    <textarea id="edges" spellcheck="false"></textarea>
+    <div class="hint">每行一条边：<span class="kbd">起点 终点 权值</span>（无权图省略权值）。顶点名任意，按出现顺序编号。有向/无向由预设决定。</div>
+  </section>
+
+  <section class="card">
+    <h2>③ 单步执行</h2>
+    <div class="row">
+      <button class="btn" id="first">⏮ 开头</button>
+      <button class="btn" id="prev">◀ 上一步</button>
+      <button class="btn primary" id="next">下一步 ▶</button>
+      <button class="btn" id="play">▶ 自动</button>
+      <button class="btn" id="last">最后一步 ⏭</button>
+      <span class="prog" id="prog"></span>
+      <span class="hint">键盘 <span class="kbd">←</span> <span class="kbd">→</span> 也能翻</span>
+    </div>
+    <div class="desc" id="desc"></div>
+    <div class="stage">
+      <div><svg id="svg" viewBox="0 0 500 320"></svg></div>
+      <div class="panel" id="panel"></div>
+    </div>
+    <div class="note" id="note"><span class="t">考点提示</span></div>
+  </section>
+
+  <footer style="color:var(--muted);font-size:.82rem;text-align:center">图算法八合一模拟器 · 数据结构第 6 章配套 · 样板图取自王道教材图 6.11 / 6.15 / 6.17 / 6.19 / 6.22 / 6.23</footer>
+</div>
+
+<script>
+/* ============ 预设图 ============ */
+const PRESETS = {
+  trav: {name:'图6.11 遍历样板（无向无权）', dir:false, wt:false,
+    nodes:['a','b','c','d','e','f','g','h'],
+    pos:[[250,40],[150,120],[350,120],[80,205],[210,205],[300,205],[420,205],[210,285]],
+    edges:[[0,1,1],[0,2,1],[1,3,1],[1,4,1],[2,5,1],[2,6,1],[4,7,1]]},
+  mst: {name:'图6.15/6.16 MST 样板（无向带权）', dir:false, wt:true,
+    nodes:['V1','V2','V3','V4','V5','V6'],
+    pos:[[250,40],[90,125],[250,150],[410,125],[110,265],[390,265]],
+    edges:[[0,1,6],[0,2,1],[0,3,5],[1,2,5],[1,4,3],[2,3,5],[2,4,6],[2,5,4],[3,5,2],[4,5,6]]},
+  dij: {name:'图6.17 Dijkstra 样板（有向带权）', dir:true, wt:true,
+    nodes:['v1','v2','v3','v4','v5'],
+    pos:[[60,150],[225,45],[420,70],[410,255],[195,265]],
+    edges:[[0,1,10],[0,4,5],[1,2,1],[1,3,2],[2,3,4],[3,2,6],[3,0,7],[4,1,3],[4,2,9],[4,3,2]]},
+  floyd: {name:'图6.19 Floyd 样板（有向带权 3 点）', dir:true, wt:true,
+    nodes:['V0','V1','V2'],
+    pos:[[120,70],[370,70],[245,240]],
+    edges:[[0,1,6],[0,2,13],[1,0,10],[1,2,4],[2,0,5]]},
+  topo: {name:'图6.22 拓扑排序样板（DAG）', dir:true, wt:false,
+    nodes:['1','2','3','4','5'],
+    pos:[[90,70],[90,240],[275,240],[275,70],[430,155]],
+    edges:[[0,1,1],[0,3,1],[1,2,1],[1,3,1],[3,2,1],[3,4,1],[2,4,1]]},
+  aoe: {name:'图6.23 关键路径样板（AOE 网）', dir:true, wt:true,
+    nodes:['V1','V2','V3','V4','V5','V6'],
+    pos:[[55,160],[195,55],[195,265],[300,160],[365,55],[450,160]],
+    edges:[[0,1,3],[0,2,2],[1,3,2],[1,4,3],[2,3,4],[2,5,3],[3,5,2],[4,5,1]]}
+};
+
+const ALGOS = [
+  {k:'bfs',   n:'BFS 广度优先', pre:'trav', src:true,
+   hint:'队列逐层扩展。每个顶点最多入队一次；<b>非带权图</b>的首次访问路径即最短路径。',
+   note:'<b>判 BFS 序列</b>：起点的全部邻接点必须<b>连续成段</b>出现，第二层不能插队（2013 真题）。<b>复杂度</b>：邻接表 O(|V|+|E|)、邻接矩阵 O(|V|²)。<b>唯一性</b>：邻接矩阵 + 同一源点 ⟹ 唯一；邻接表 ⟹ 不唯一。BFS 生成树的树高 ≤ DFS 生成树的树高。'},
+  {k:'dfs',   n:'DFS 深度优先', pre:'trav', src:true,
+   hint:'递归 + 回溯，类似树的<b>先序</b>遍历。走不动就退回上一顶点。',
+   note:'<b>判 DFS 序列</b>：下一个顶点若与当前顶点不邻接，说明发生了回溯——<b>回溯只能按栈一层层退，不能跳过栈中还有未访问邻接点的顶点</b>。调用 DFS 的次数 = 无向图的连通分量数。'},
+  {k:'prim',  n:'Prim 最小生成树', pre:'mst', src:true,
+   hint:'从一个顶点开始"长"：每轮选<b>离当前这棵树最近</b>的顶点并入。',
+   note:'<b>O(|V|²)、与边数无关 ⟹ 适合稠密图。</b>注意与 Dijkstra 的区别：Prim 选"离<b>树</b>最近"的点，Dijkstra 选"离<b>源点</b>最近"的点。MST 边数恒为 n−1；边权互不相同则 MST 唯一。'},
+  {k:'kruskal',n:'Kruskal 最小生成树', pre:'mst', src:false,
+   hint:'把边按权值<b>从小到大</b>排队，逐条考察：两端不在同一连通分量就收，否则弃。',
+   note:'<b>O(|E|log₂|E|)、不依赖顶点数 ⟹ 适合边稀疏但顶点多的图。</b>判"是否成环"用<b>并查集</b>。中途的 T 是一片<b>森林</b>，最后才合成一棵树；与 Prim 结果的总权值必然相等。'},
+  {k:'dij',   n:'Dijkstra 单源最短路', pre:'dij', src:true,
+   hint:'每轮从 V−S 中选 dist 最小的顶点并入 S，再用它<b>松弛</b>其余顶点。',
+   note:'<b>不适用于负权边</b>（顶点一旦并入 S 就不再更新）。即使只求到某一个终点，最坏仍要处理所有顶点，复杂度不变 O(|V|²)。⚠️「离<b>当前顶点</b>最近」≠「离<b>源点</b>最近」，前者是错误的最近邻贪心（2009 真题的坑）。'},
+  {k:'floyd', n:'Floyd 各点对最短路', pre:'floyd', src:false,
+   hint:'以 k = 0,1,2,… 逐个顶点做"中转站"，A⁽ᵏ⁾[i][j] = min(A[i][j], A[i][k]+A[k][j])。',
+   note:'A⁽ᵏ⁾[i][j] 的含义是「从 i 到 j、<b>中间顶点编号不超过 k</b> 的最短路径长度」。<b>O(|V|³)；允许负权边、不允许负权回路</b>；也适用于带权无向图（一条无向边看作两条反向弧）。'},
+  {k:'topo',  n:'拓扑排序', pre:'topo', src:false,
+   hint:'反复输出一个<b>入度为 0</b> 的顶点并删掉它的所有出边。',
+   note:'<b>输出顶点数 &lt; n ⟹ 图中有环。</b>拓扑序列<b>唯一的充要条件</b>是任意两顶点间都存在单向路径；手算判据：<b>每一步入度为 0 的顶点都恰好只有一个</b>。复杂度：邻接表 O(|V|+|E|)、邻接矩阵 O(|V|²)。另可按 <b>DFS 结束时间降序</b>得到拓扑序列（2020 考点）。'},
+  {k:'aoe',   n:'关键路径', pre:'aoe', src:false,
+   hint:'ve 正推取 <b>max</b> → vl 逆推取 <b>min</b> → e = 起点 ve、l = 终点 vl − 权 → <b>d = l − e = 0 即关键活动</b>。',
+   note:'<b>完成工程的最短时间 = 关键路径长度。</b>缩短工期两个坑：① 过度压缩会<b>转移</b>关键路径；② 有多条关键路径时，只有压缩<b>所有关键路径的公共关键活动</b>才有效。合并式：<b>d(i) = vl(终点) − ve(起点) − 权</b>。'}
+];
+
+/* ============ 状态 ============ */
+let G = null, curPreset=null, algo='bfs', steps=[], idx=0, timer=null;
+const $ = s=>document.querySelector(s);
+const INF = Infinity;
+
+function loadPreset(k){
+  curPreset = k;
+  const p = PRESETS[k];
+  G = {dir:p.dir, wt:p.wt, nodes:p.nodes.slice(), pos:p.pos.map(a=>a.slice()), edges:p.edges.map(a=>a.slice())};
+  $('#edges').value = G.edges.map(([u,v,w])=>G.nodes[u]+' '+G.nodes[v]+(G.wt?' '+w:'')).join('\n');
+  fillSrc();
+  paintPresets();
+  $('#dirlab').innerHTML = (G.dir?'<b>有向图</b>':'<b>无向图</b>') + (G.wt?' · 带权':' · 无权');
+  run();
+}
+function fillSrc(){
+  const s=$('#src'); s.innerHTML='';
+  G.nodes.forEach((n,i)=>{const o=document.createElement('option');o.value=i;o.textContent=n;s.appendChild(o);});
+  s.disabled = !ALGOS.find(a=>a.k===algo).src;
+}
+function paintPresets(){
+  [...document.querySelectorAll('#presets .preset')].forEach(b=>b.classList.toggle('on', b.dataset.k===curPreset));
+}
+function parseEdges(){
+  const lines = $('#edges').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const names=[], idxOf=n=>{let i=names.indexOf(n); if(i<0){names.push(n); i=names.length-1;} return i;};
+  const es=[];
+  for(const ln of lines){
+    const t = ln.split(/[\s,;:\-→>]+/).filter(Boolean);
+    if(t.length<2) continue;
+    const u=idxOf(t[0]), v=idxOf(t[1]);
+    const w = t.length>2 ? Number(t[2]) : 1;
+    es.push([u,v,isNaN(w)?1:w]);
+  }
+  if(!es.length){alert('边表为空或格式不对');return;}
+  const n=names.length, R=Math.min(130, 40+n*11), cx=250, cy=160;
+  const pos = names.map((_,i)=>{const a=-Math.PI/2 + i*2*Math.PI/n; return [cx+R*Math.cos(a), cy+R*Math.sin(a)];});
+  // 顶点名与预设一致时沿用预设坐标，改动的才用环形布局
+  const p=PRESETS[curPreset];
+  names.forEach((nm,i)=>{const j=p.nodes.indexOf(nm); if(j>=0) pos[i]=p.pos[j].slice();});
+  G = {dir:G.dir, wt:G.wt, nodes:names, pos, edges:es};
+  fillSrc(); run();
+}
+
+/* ============ 图工具 ============ */
+function adj(){ // 邻接表（无向图双向）
+  const a = G.nodes.map(()=>[]);
+  G.edges.forEach(([u,v,w],i)=>{a[u].push({to:v,w,i}); if(!G.dir) a[v].push({to:u,w,i});});
+  a.forEach(l=>l.sort((x,y)=>x.to-y.to));
+  return a;
+}
+function ekey(u,v){ return G.dir ? u+'>'+v : Math.min(u,v)+'-'+Math.max(u,v); }
+const fmt = x => x===INF ? '∞' : String(x);
+
+/* ============ 各算法的步骤生成 ============ */
+function stepsBFS(s){
+  const A=adj(), n=G.nodes.length, vis=Array(n).fill(false), d=Array(n).fill(INF);
+  const st=[], order=[], q=[], tree={};
+  const snap=(desc,cur,E)=>st.push({d:desc, N:nodeCls(vis,cur,q), E:Object.assign({},tree,E||{}),
+    panel:`<h4>访问序列</h4><div class="seqline">${order.map(i=>'<b>'+G.nodes[i]+'</b>').join(' ')||'—'}</div>
+           <h4>队列（队头在左）</h4><div class="tags">${q.length?q.map(i=>`<span class="tag on">${G.nodes[i]}</span>`).join(''):'<span class="hint">空</span>'}</div>
+           <h4>d[ ]　源点到各点的边数（BFS 求非带权最短路径）</h4>${tbl1(d)}`});
+  function nodeCls(vis,cur,q){const o={}; vis.forEach((v,i)=>{if(v)o[i]='done';}); q.forEach(i=>o[i]='cand'); if(cur!=null)o[cur]='on'; return o;}
+  vis[s]=true; d[s]=0; q.push(s); order.push(s);
+  snap(`初始化：访问起点 <b>${G.nodes[s]}</b>，置 visited=TRUE、d=0，入队。`, s);
+  let guard=0;
+  while(q.length && guard++<600){
+    const u=q.shift();
+    snap(`队头 <b>${G.nodes[u]}</b> 出队，准备扫描它的全部邻接点。`, u);
+    for(const {to:w,i} of A[u]){
+      if(!vis[w]){
+        vis[w]=true; d[w]=d[u]+1; q.push(w); order.push(w); tree[ekey(u,w)]='e-tree';
+        snap(`<b>${G.nodes[w]}</b> 未访问 ⟹ 访问它、d[${G.nodes[w]}] = d[${G.nodes[u]}] + 1 = ${d[w]}，入队。这条边进入<b>广度优先生成树</b>。`, w, {[ekey(u,w)]:'e-on'});
+      }else{
+        snap(`邻接点 <b>${G.nodes[w]}</b> 已访问 ⟹ 跳过（visited[] 的作用就在这里，否则会绕回去）。`, u, {[ekey(u,w)]:'e-no'});
+      }
+    }
+  }
+  const un = vis.map((v,i)=>v?null:i).filter(x=>x!==null);
+  st.push({d:`队列空，本连通分量遍历结束。BFS 序列 = <b>${order.map(i=>G.nodes[i]).join('')}</b>。`+
+      (un.length?`还有 <b>${un.map(i=>G.nodes[i]).join('、')}</b> 未访问 ⟹ 外层循环要另选起点再调用一次 BFS（<b>调用次数 = 连通分量数</b>）。`:'全部顶点都已访问，本图连通。'),
+    N:nodeCls(vis,null,[]), E:tree,
+    panel:`<h4>最终 BFS 序列</h4><div class="seqline">${order.map(i=>'<b>'+G.nodes[i]+'</b>').join(' ')}</div>
+           <h4>d[ ]　源点到各点的最短边数</h4>${tbl1(d)}
+           <div class="hint">绿色的边即广度优先生成树。</div>`});
+  return st;
+}
+function stepsDFS(s){
+  const A=adj(), n=G.nodes.length, vis=Array(n).fill(false), st=[], order=[], stack=[], tree={};
+  const snap=(desc,cur,E)=>st.push({d:desc,
+    N:(()=>{const o={};vis.forEach((v,i)=>{if(v)o[i]='done';});stack.forEach(i=>o[i]='cand');if(cur!=null)o[cur]='on';return o;})(),
+    E:Object.assign({},tree,E||{}),
+    panel:`<h4>访问序列（DFS ≈ 先序）</h4><div class="seqline">${order.map(i=>'<b>'+G.nodes[i]+'</b>').join(' ')||'—'}</div>
+           <h4>递归栈（栈底在左）</h4><div class="tags">${stack.length?stack.map(i=>`<span class="tag on">${G.nodes[i]}</span>`).join(''):'<span class="hint">空</span>'}</div>
+           <div class="hint">回溯时只能从栈顶一层层退，退到谁就先处理谁剩下的邻接点。</div>`});
+  let guard=0;
+  (function dfs(u,from){
+    vis[u]=true; order.push(u); stack.push(u);
+    if(from!=null) tree[ekey(from,u)]='e-tree';
+    snap(`访问 <b>${G.nodes[u]}</b>，压栈。`+(from!=null?`（由 ${G.nodes[from]} 深入而来，这条边进入<b>深度优先生成树</b>）`:''), u, from!=null?{[ekey(from,u)]:'e-on'}:null);
+    for(const {to:w} of A[u]){
+      if(guard++>600) return;
+      if(!vis[w]) dfs(w,u);
+      else snap(`从 <b>${G.nodes[u]}</b> 看邻接点 ${G.nodes[w]}：已访问 ⟹ 跳过。`, u, {[ekey(u,w)]:'e-no'});
+    }
+    stack.pop();
+    snap(`<b>${G.nodes[u]}</b> 的邻接点已全部处理完 ⟹ <b>回溯</b>（出栈），退回 ${stack.length?G.nodes[stack[stack.length-1]]:'外层循环'}。`, stack.length?stack[stack.length-1]:null);
+  })(s,null);
+  const un=vis.map((v,i)=>v?null:i).filter(x=>x!==null);
+  st.push({d:`本次 DFS 结束，序列 = <b>${order.map(i=>G.nodes[i]).join('')}</b>。`+
+      (un.length?`还有 <b>${un.map(i=>G.nodes[i]).join('、')}</b> 未访问 ⟹ 外层循环需再次调用 DFS（得到<b>深度优先生成森林</b>）。`:'全部顶点已访问。'),
+    N:(()=>{const o={};vis.forEach((v,i)=>{if(v)o[i]='done';});return o;})(), E:tree,
+    panel:`<h4>最终 DFS 序列</h4><div class="seqline">${order.map(i=>'<b>'+G.nodes[i]+'</b>').join(' ')}</div>
+           <div class="hint">绿色的边即深度优先生成树。<b>换一种邻接点顺序就会得到不同的序列</b>——这正是"邻接表表示不唯一 ⟹ 遍历序列不唯一"。</div>`});
+  return st;
+}
+function stepsPrim(s){
+  const n=G.nodes.length, inU=Array(n).fill(false), st=[], tree={}, chosen=[];
+  const cost=Array(n).fill(INF), from=Array(n).fill(-1);
+  const w=(u,v)=>{let b=INF; G.edges.forEach(([a,c,ww])=>{if((a===u&&c===v)||(!G.dir&&a===v&&c===u)) b=Math.min(b,ww);}); return b;};
+  const snap=(desc,cur,E)=>st.push({d:desc,
+    N:(()=>{const o={};inU.forEach((v,i)=>{if(v)o[i]='done';});if(cur!=null)o[cur]='on';return o;})(),
+    E:Object.assign({},tree,E||{}),
+    panel:`<h4>U（已在树中的顶点）</h4><div class="tags">${G.nodes.map((nm,i)=>`<span class="tag ${inU[i]?'done':''}">${nm}</span>`).join('')}</div>
+           <h4>各顶点到 U 的最小距离 / 由谁引出</h4>${tbl2(cost, from)}
+           <h4>已选入 MST 的边（共 ${chosen.length} 条，总权 ${chosen.reduce((a,b)=>a+b.w,0)}）</h4>
+           <div class="tags">${chosen.map(c=>`<span class="tag done">${G.nodes[c.u]}–${G.nodes[c.v]}=${c.w}</span>`).join('')||'<span class="hint">还没有</span>'}</div>`});
+  inU[s]=true; cost[s]=0;
+  for(let v=0;v<n;v++) if(!inU[v]){const d=w(s,v); if(d<cost[v]){cost[v]=d; from[v]=s;}}
+  snap(`任取一个顶点 <b>${G.nodes[s]}</b> 加入树 T，此时 U = {${G.nodes[s]}}。刷新其余顶点到 U 的距离。`, s);
+  for(let k=1;k<n;k++){
+    let best=-1;
+    for(let v=0;v<n;v++) if(!inU[v] && cost[v]<(best<0?INF:cost[best])) best=v;
+    if(best<0 || cost[best]===INF){ st.push({d:'<b>剩下的顶点与 U 之间没有边 ⟹ 图不连通，最小生成树不存在。</b>',N:{},E:tree,panel:''}); return st; }
+    const cands = G.nodes.map((_,v)=>v).filter(v=>!inU[v] && cost[v]<INF);
+    const E={}; cands.forEach(v=>{if(from[v]>=0) E[ekey(from[v],v)]='e-cand';});
+    E[ekey(from[best],best)]='e-on';
+    snap(`第 ${k} 轮：横跨 U 与 V−U 的候选边中，<b>${G.nodes[from[best]]}–${G.nodes[best]} = ${cost[best]}</b> 权值最小 ⟹ 选它，把 <b>${G.nodes[best]}</b> 并入 U。`, best, E);
+    tree[ekey(from[best],best)]='e-tree'; chosen.push({u:from[best],v:best,w:cost[best]});
+    inU[best]=true; cost[best]=0;
+    for(let v=0;v<n;v++) if(!inU[v]){const d=w(best,v); if(d<cost[v]){cost[v]=d; from[v]=best;}}
+    snap(`把 <b>${G.nodes[best]}</b> 并入后刷新其余顶点到 U 的距离（这一步就是 Prim 的 O(|V|) 扫描，总复杂度 O(|V|²)）。`, best);
+  }
+  const tot=chosen.reduce((a,b)=>a+b.w,0);
+  st.push({d:`全部顶点并入，Prim 结束。<b>MST 共 ${chosen.length} 条边（= n−1），总权值 ${tot}</b>。`, N:(()=>{const o={};G.nodes.forEach((_,i)=>o[i]='done');return o;})(), E:tree,
+    panel:`<h4>最小生成树</h4><div class="tags">${chosen.map(c=>`<span class="tag done">${G.nodes[c.u]}–${G.nodes[c.v]}=${c.w}</span>`).join('')}</div>
+           <div class="seqline">总权值 = <b>${tot}</b></div>
+           <div class="hint">用 Kruskal 跑同一张图，选边<b>顺序</b>会不同，但总权值必然也是 ${tot}。</div>`});
+  return st;
+}
+function stepsKruskal(){
+  const n=G.nodes.length, st=[], tree={}, chosen=[], p=G.nodes.map((_,i)=>i);
+  const find=x=>{while(p[x]!==x){p[x]=p[p[x]];x=p[x];}return x;};
+  const es=G.edges.map(([u,v,w],i)=>({u,v,w,i})).sort((a,b)=>a.w-b.w || a.u-b.u || a.v-b.v);
+  const mark={};
+  const comps=()=>{const m={};G.nodes.forEach((_,i)=>{const r=find(i);(m[r]=m[r]||[]).push(G.nodes[i]);});return Object.values(m);};
+  const snap=(desc,cur,E)=>st.push({d:desc,
+    N:(()=>{const o={};chosen.forEach(c=>{o[c.u]='done';o[c.v]='done';});if(cur){o[cur.u]='on';o[cur.v]='on';}return o;})(),
+    E:Object.assign({},tree,E||{}),
+    panel:`<h4>边按权值递增排队（↓ 已考察）</h4>
+           <div class="tags">${es.map(e=>`<span class="tag ${mark[e.i]||''}">${G.nodes[e.u]}${G.dir?'→':'–'}${G.nodes[e.v]}=${e.w}</span>`).join('')}</div>
+           <h4>当前连通分量（并查集）</h4>
+           <div class="tags">${comps().map(c=>`<span class="tag">{${c.join(',')}}</span>`).join('')}</div>
+           <h4>已选入 MST（${chosen.length} 条，总权 ${chosen.reduce((a,b)=>a+b.w,0)}）</h4>
+           <div class="tags">${chosen.map(c=>`<span class="tag done">${G.nodes[c.u]}–${G.nodes[c.v]}=${c.w}</span>`).join('')||'<span class="hint">还没有</span>'}</div>`});
+  snap(`初始化：T 只含 ${n} 个顶点、不含任何边，<b>每个顶点自成一个连通分量</b>（numS = ${n}）。把全部 ${es.length} 条边按权值<b>递增</b>排好队。`, null);
+  let numS=n;
+  for(const e of es){
+    if(numS===1) break;
+    const ru=find(e.u), rv=find(e.v);
+    if(ru!==rv){
+      p[ru]=rv; numS--; chosen.push(e); tree[ekey(e.u,e.v)]='e-tree'; mark[e.i]='done';
+      snap(`考察 <b>${G.nodes[e.u]}–${G.nodes[e.v]} = ${e.w}</b>：两端属于<b>不同</b>的连通分量 ⟹ <b>收</b>，两棵树合并，numS = ${numS}。`, e, {[ekey(e.u,e.v)]:'e-on'});
+    }else{
+      mark[e.i]='no';
+      snap(`考察 <b>${G.nodes[e.u]}–${G.nodes[e.v]} = ${e.w}</b>：两端已在<b>同一个</b>连通分量里，加进来会<b>成环</b> ⟹ <b>弃</b>。（这一步就是并查集的用武之地）`, e, {[ekey(e.u,e.v)]:'e-no'});
+    }
+  }
+  const tot=chosen.reduce((a,b)=>a+b.w,0);
+  st.push({d:`连通分量数降为 1（或已选够 n−1 = ${n-1} 条边），Kruskal 结束。<b>总权值 ${tot}</b>。`,
+    N:(()=>{const o={};G.nodes.forEach((_,i)=>o[i]='done');return o;})(), E:tree,
+    panel:`<h4>最小生成树</h4><div class="tags">${chosen.map(c=>`<span class="tag done">${G.nodes[c.u]}–${G.nodes[c.v]}=${c.w}</span>`).join('')}</div>
+           <div class="seqline">总权值 = <b>${tot}</b></div>
+           <div class="hint">对比 Prim：Kruskal 中途的 T 是<b>散开的森林</b>，Prim 中途始终是<b>一棵连着的树</b>。</div>`});
+  return st;
+}
+function stepsDij(s){
+  const n=G.nodes.length, st=[], dist=Array(n).fill(INF), path=Array(n).fill(-1), fin=Array(n).fill(false);
+  const A=adj(), tree={};
+  const route=v=>{const r=[];let x=v,g=0;while(x>=0&&g++<50){r.unshift(G.nodes[x]);x=path[x];}return r.join('→');};
+  const snap=(desc,cur,E)=>st.push({d:desc,
+    N:(()=>{const o={};fin.forEach((v,i)=>{if(v)o[i]='done';});if(cur!=null)o[cur]='on';return o;})(),
+    E:Object.assign({},tree,E||{}),
+    panel:`<h4>三个辅助数组</h4>
+      <table><tr><th>顶点</th>${G.nodes.map(x=>`<th>${x}</th>`).join('')}</tr>
+      <tr><td>dist[ ]</td>${dist.map((d,i)=>`<td class="${fin[i]?'fin':''}">${fmt(d)}</td>`).join('')}</tr>
+      <tr><td>path[ ]</td>${path.map(p=>`<td class="${p<0?'no':''}">${p<0?'−1':G.nodes[p]}</td>`).join('')}</tr>
+      <tr><td>final[ ]</td>${fin.map(f=>`<td class="${f?'fin':'no'}">${f?'T':'F'}</td>`).join('')}</tr></table>
+      <h4>S（已确定最短路径的顶点）</h4>
+      <div class="tags">${G.nodes.map((nm,i)=>`<span class="tag ${fin[i]?'done':''}">${nm}</span>`).join('')}</div>
+      <h4>当前各点的最短路径</h4>
+      <div class="hint">${G.nodes.map((nm,i)=>fin[i]?`${nm}: ${route(i)} = ${dist[i]}`:'').filter(Boolean).join('　|　')||'—'}</div>`});
+  dist[s]=0;
+  A[s].forEach(({to,w})=>{if(w<dist[to]){dist[to]=w;path[to]=s;}});
+  fin[s]=true;
+  snap(`初始化：S = {<b>${G.nodes[s]}</b>}，dist[ ] 填源点到各点的<b>直接边权</b>（没有直接边的记 ∞）。`, s);
+  for(let k=1;k<n;k++){
+    let best=-1;
+    for(let v=0;v<n;v++) if(!fin[v] && dist[v]<(best<0?INF:dist[best])) best=v;
+    if(best<0||dist[best]===INF){ st.push({d:'剩余顶点均不可达（dist = ∞），算法结束。',N:{},E:tree,panel:''}); break; }
+    fin[best]=true; if(path[best]>=0) tree[ekey(path[best],best)]='e-tree';
+    snap(`第 ${k} 轮 · <b>选点</b>：V−S 中 dist 最小的是 <b>${G.nodes[best]}（${dist[best]}）</b> ⟹ 并入 S，它的最短路径就此<b>敲定</b>：${route(best)} = ${dist[best]}。`,
+      best, path[best]>=0?{[ekey(path[best],best)]:'e-on'}:null);
+    const upd=[];
+    A[best].forEach(({to,w})=>{
+      if(!fin[to] && dist[best]+w<dist[to]){ dist[to]=dist[best]+w; path[to]=best; upd.push(to); }
+    });
+    const E={}; A[best].forEach(({to})=>{if(!fin[to]) E[ekey(best,to)]='e-cand';}); upd.forEach(t=>E[ekey(best,t)]='e-on');
+    snap(upd.length
+      ? `第 ${k} 轮 · <b>松弛</b>：用 ${G.nodes[best]} 更新它的邻接点 ⟹ ${upd.map(t=>`dist[${G.nodes[t]}] 改为 <b>${dist[t]}</b>`).join('、')}。`
+      : `第 ${k} 轮 · <b>松弛</b>：绕道 ${G.nodes[best]} 没能让任何顶点变短，dist[ ] 不变。`, best, E);
+  }
+  st.push({d:`Dijkstra 结束。绿色的边构成<b>最短路径树</b>（注意：<b>它不是最小生成树</b>）。`,
+    N:(()=>{const o={};fin.forEach((v,i)=>{if(v)o[i]='done';});return o;})(), E:tree,
+    panel:`<h4>最终结果</h4><table><tr><th>终点</th><th>最短路径</th><th>长度</th></tr>
+      ${G.nodes.map((nm,i)=>i===s?'':`<tr><td>${nm}</td><td>${dist[i]===INF?'不可达':route(i)}</td><td>${fmt(dist[i])}</td></tr>`).join('')}</table>
+      <div class="hint">回溯 path[ ] 就能还原整条路径——综合题里<b>要把 path[] 这一行写出来</b>。</div>`});
+  return st;
+}
+function stepsFloyd(){
+  const n=G.nodes.length, st=[];
+  let A=Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>i===j?0:INF));
+  G.edges.forEach(([u,v,w])=>{A[u][v]=Math.min(A[u][v],w); if(!G.dir) A[v][u]=Math.min(A[v][u],w);});
+  const mat=(M,hi,k)=>`<table><tr><th>${k==null?'A⁽⁻¹⁾':'A⁽'+k+'⁾'}</th>${G.nodes.map(x=>`<th>${x}</th>`).join('')}</tr>
+    ${M.map((r,i)=>`<tr><th>${G.nodes[i]}</th>${r.map((x,j)=>`<td class="${hi&&hi[i+'-'+j]?'up':''}">${fmt(x)}</td>`).join('')}</tr>`).join('')}</table>`;
+  st.push({d:`初始矩阵 <b>A⁽⁻¹⁾</b> 就是邻接矩阵（对角线为 0，无边为 ∞）。下面令中间顶点 k = 0, 1, …, ${n-1} 逐轮松弛。`,
+    N:{}, E:{}, panel:mat(A,null,null)});
+  for(let k=0;k<n;k++){
+    const B=A.map(r=>r.slice()), hi={}, logs=[];
+    for(let i=0;i<n;i++) for(let j=0;j<n;j++){
+      if(i===j) continue;
+      if(A[i][k]+A[k][j] < A[i][j]){
+        B[i][j]=A[i][k]+A[k][j]; hi[i+'-'+j]=1;
+        logs.push(`A[${G.nodes[i]}][${G.nodes[j]}]：${fmt(A[i][j])} → <b>${B[i][j]}</b>（绕 ${G.nodes[k]}：${fmt(A[i][k])}+${fmt(A[k][j])}）`);
+      }
+    }
+    A=B;
+    const N={}; N[k]='on';
+    st.push({d:`<b>第 ${k+1} 轮：以 ${G.nodes[k]} 作中间顶点</b>。${logs.length?'更新了 '+logs.length+' 个格子。':'没有任何格子变短。'}`,
+      N, E:(()=>{const e={};G.edges.forEach(([u,v])=>{if(u===k||v===k)e[ekey(u,v)]='e-cand';});return e;})(),
+      panel:mat(A,hi,k)+(logs.length?`<h4>本轮的更新</h4><div class="hint">${logs.join('<br>')}</div>`:'')
+        +`<div class="hint" style="margin-top:8px">A⁽${k}⁾[i][j] 的含义：从 i 到 j、<b>中间顶点编号不超过 ${G.nodes[k]}</b> 的最短路径长度。</div>`});
+  }
+  st.push({d:`${n} 轮结束，<b>A⁽${n-1}⁾ 就是各顶点对之间的最短路径长度</b>。三重循环 ⟹ O(|V|³)。`,
+    N:{}, E:{}, panel:mat(A,null,n-1)+`<div class="hint">若某轮出现<b>对角线元素变为负数</b>，说明图中存在<b>负权回路</b>，此时最短路径无意义。</div>`});
+  return st;
+}
+function stepsTopo(){
+  const n=G.nodes.length, st=[], out=[], removed=Array(n).fill(false), gone={};
+  const ind=Array(n).fill(0); G.edges.forEach(([u,v])=>ind[v]++);
+  const hist=[ind.slice()], unique=[];
+  const snap=(desc,cur,E,cands)=>st.push({d:desc,
+    N:(()=>{const o={};removed.forEach((r,i)=>{if(r)o[i]='out';});(cands||[]).forEach(i=>o[i]='cand');if(cur!=null)o[cur]='on';return o;})(),
+    E:Object.assign({},gone,E||{}),
+    panel:`<h4>输出序列</h4><div class="seqline">${out.map(i=>'<b>'+G.nodes[i]+'</b>').join(' → ')||'—'}</div>
+      <h4>入度表（逐轮递减，这就是综合题的标准卷面）</h4>
+      <table><tr><th>顶点</th>${G.nodes.map(x=>`<th>${x}</th>`).join('')}</tr>
+      ${hist.map((h,r)=>`<tr><td>${r===0?'初始入度':'第 '+r+' 轮'}</td>${h.map((x,i)=>`<td class="${x===null?'no':(x===0&&!removed[i]?'up':'')}">${x===null?'—':x}</td>`).join('')}</tr>`).join('')}</table>`});
+  snap(`统计各顶点的<b>入度</b>（有向图邻接矩阵里"<b>列</b>非零元素个数"就是入度）。入度为 0 的顶点没有前驱，可以先做。`, null, {}, ind.map((x,i)=>x===0?i:null).filter(x=>x!==null));
+  let guard=0;
+  while(out.length<n && guard++<200){
+    const cands = ind.map((x,i)=>(!removed[i]&&x===0)?i:null).filter(x=>x!==null);
+    if(!cands.length){
+      st.push({d:`<b style="color:var(--red)">找不到入度为 0 的顶点，但还有 ${n-out.length} 个顶点没输出 ⟹ 图中必然存在环，拓扑排序失败（对应代码里 count &lt; G.vexnum 返回 false）。</b>`,
+        N:(()=>{const o={};removed.forEach((r,i)=>{if(r)o[i]='out';});return o;})(), E:gone,
+        panel:`<h4>已输出</h4><div class="seqline">${out.map(i=>G.nodes[i]).join(' → ')}</div>
+               <div class="hint">剩下的 ${G.nodes.filter((_,i)=>!removed[i]).join('、')} 互相成环。</div>`});
+      return st;
+    }
+    unique.push(cands.length===1);
+    const u=cands[0];
+    snap(`当前入度为 0 的顶点：<b>${cands.map(i=>G.nodes[i]).join('、')}</b>`+
+      (cands.length>1?`——有 <b>${cands.length}</b> 个可选，<b style="color:var(--red)">说明拓扑序列不唯一</b>，这里取 ${G.nodes[u]}。`:`——<b>只有一个</b>，这一步的选择是被迫的。`),
+      u, {}, cands);
+    out.push(u); removed[u]=true;
+    const E={}; G.edges.forEach(([a,b])=>{if(a===u){ind[b]--; E[ekey(a,b)]='e-no'; gone[ekey(a,b)]='e-no';}});
+    const row=ind.map((x,i)=>removed[i]?null:x); hist.push(row);
+    snap(`输出 <b>${G.nodes[u]}</b>，并删除所有<b>以它为起点</b>的边 ⟹ 这些边的终点入度各减 1。`, u, E);
+  }
+  const uni = unique.every(Boolean);
+  st.push({d:`全部 ${n} 个顶点都已输出，拓扑排序成功（⟹ <b>本图无环</b>）。序列 = <b>${out.map(i=>G.nodes[i]).join(', ')}</b>。`+
+      (uni?'　每一步入度为 0 的顶点都<b>只有一个</b> ⟹ <b>该拓扑序列唯一</b>。':'　中途出现过多个候选 ⟹ <b>拓扑序列不唯一</b>。'),
+    N:(()=>{const o={};G.nodes.forEach((_,i)=>o[i]='done');return o;})(), E:gone,
+    panel:`<h4>拓扑序列</h4><div class="seqline">${out.map(i=>'<b>'+G.nodes[i]+'</b>').join(' → ')}</div>
+      <div class="hint">按这个顺序给顶点重新编号，邻接矩阵会变成<b>上三角矩阵</b>——反过来，能重排成三角矩阵的有向图一定是 DAG。</div>`});
+  return st;
+}
+function stepsAOE(){
+  const n=G.nodes.length, st=[];
+  const ind=Array(n).fill(0), outd=Array(n).fill(0);
+  G.edges.forEach(([u,v])=>{ind[v]++;outd[u]++;});
+  const src=ind.findIndex(x=>x===0), snk=outd.findIndex(x=>x===0);
+  if(src<0||snk<0) return [{d:'<b>这张图没有唯一的源点或汇点，不是标准 AOE 网。</b>请换回预设的 AOE 样板图。',N:{},E:{},panel:''}];
+  // 拓扑序
+  const deg=ind.slice(), q=[], topo=[];
+  for(let i=0;i<n;i++) if(!deg[i]) q.push(i);
+  while(q.length){const u=q.shift(); topo.push(u); G.edges.forEach(([a,b])=>{if(a===u&&--deg[b]===0)q.push(b);});}
+  if(topo.length<n) return [{d:'<b>图中有环，AOE 网必须是有向无环图。</b>',N:{},E:{},panel:''}];
+  const ve=Array(n).fill(0), vl=Array(n).fill(null);
+  const acts=G.edges.map(([u,v,w],i)=>({u,v,w,name:'a'+(i+1)}));
+  const e=Array(acts.length).fill(null), l=Array(acts.length).fill(null);
+  const tblV=(hiV,hiL)=>`<table><tr><th></th>${G.nodes.map(x=>`<th>${x}</th>`).join('')}</tr>
+      <tr><td>ve(i)</td>${ve.map((x,i)=>`<td class="${hiV===i?'up':''}">${x===null?'':x}</td>`).join('')}</tr>
+      <tr><td>vl(i)</td>${vl.map((x,i)=>`<td class="${hiL===i?'up':(x===null?'no':'')}">${x===null?'—':x}</td>`).join('')}</tr></table>`;
+  const tblA=(hi)=>`<table><tr><th></th>${acts.map(a=>`<th>${a.name}</th>`).join('')}</tr>
+      <tr><td>弧</td>${acts.map(a=>`<td>${G.nodes[a.u]}→${G.nodes[a.v]}</td>`).join('')}</tr>
+      <tr><td>权</td>${acts.map(a=>`<td>${a.w}</td>`).join('')}</tr>
+      <tr><td>e(i)</td>${e.map((x,i)=>`<td class="${hi===i?'up':(x===null?'no':'')}">${x===null?'—':x}</td>`).join('')}</tr>
+      <tr><td>l(i)</td>${l.map((x,i)=>`<td class="${hi===i?'up':(x===null?'no':'')}">${x===null?'—':x}</td>`).join('')}</tr>
+      <tr><td>d=l−e</td>${l.map((x,i)=>`<td class="${x===null?'no':(x-e[i]===0?'fin':'')}">${x===null?'—':(x-e[i])}</td>`).join('')}</tr></table>`;
+  const snap=(desc,N,E,panel)=>st.push({d:desc,N:N||{},E:E||{},panel});
+  snap(`AOE 网：<b>顶点是事件、边是活动、边权是活动持续时间</b>。源点 <b>${G.nodes[src]}</b>（入度 0）、汇点 <b>${G.nodes[snk]}</b>（出度 0）。
+        先求拓扑序列：<b>${topo.map(i=>G.nodes[i]).join(' → ')}</b>，ve 就按这个顺序正推。`,
+    {[src]:'on',[snk]:'cand'}, {}, tblV()+tblA());
+  // ve 正推
+  for(const u of topo){
+    const ins=acts.filter(a=>a.v===u);
+    if(!ins.length){ snap(`<b>ve(${G.nodes[u]}) = 0</b>（源点）。`, {[u]:'on'}, {}, tblV(u)+tblA()); continue; }
+    ve[u]=Math.max(...ins.map(a=>ve[a.u]+a.w));
+    snap(`<b>ve(${G.nodes[u]}) = Max{ ${ins.map(a=>`ve(${G.nodes[a.u]})+${a.w} = ${ve[a.u]+a.w}`).join('，')} } = ${ve[u]}</b>
+          　—— 事件最早发生时间 = 源点到它的<b>最长</b>路径，所以取 <b>max</b>（前面的活动必须<b>全部</b>做完）。`,
+      {[u]:'on'}, (()=>{const E={};ins.forEach(a=>E[ekey(a.u,a.v)]='e-cand');return E;})(), tblV(u)+tblA());
+  }
+  // vl 逆推
+  vl[snk]=ve[snk];
+  snap(`正推完毕，<b>ve(汇点) = ${ve[snk]} 就是完成整个工程所需的最短时间</b>。<br>下面<b>按逆拓扑顺序</b>倒推 vl，先令 <b>vl(${G.nodes[snk]}) = ve(${G.nodes[snk]}) = ${ve[snk]}</b>。`,
+    {[snk]:'on'}, {}, tblV(null,snk)+tblA());
+  for(const u of topo.slice().reverse()){
+    const outs=acts.filter(a=>a.u===u);
+    if(!outs.length) continue;
+    vl[u]=Math.min(...outs.map(a=>vl[a.v]-a.w));
+    snap(`<b>vl(${G.nodes[u]}) = Min{ ${outs.map(a=>`vl(${G.nodes[a.v]})−${a.w} = ${vl[a.v]-a.w}`).join('，')} } = ${vl[u]}</b>
+          　—— 事件最迟发生时间要保证<b>每一个</b>后继都不被拖延，所以取 <b>min</b>。`,
+      {[u]:'on'}, (()=>{const E={};outs.forEach(a=>E[ekey(a.u,a.v)]='e-cand');return E;})(), tblV(null,u)+tblA());
+  }
+  // e / l / d
+  acts.forEach((a,i)=>{
+    e[i]=ve[a.u]; l[i]=vl[a.v]-a.w;
+    snap(`活动 <b>${a.name}</b>（${G.nodes[a.u]}→${G.nodes[a.v]}，权 ${a.w}）：<b>e = ve(${G.nodes[a.u]}) = ${e[i]}</b>，<b>l = vl(${G.nodes[a.v]}) − ${a.w} = ${l[i]}</b>，
+          <b>d = l − e = ${l[i]-e[i]}</b>${l[i]-e[i]===0?' ⟹ <b style="color:var(--green)">关键活动</b>':' ⟹ 有 '+(l[i]-e[i])+' 的时间余量，可以拖'}。`,
+      {[a.u]:'on',[a.v]:'cand'}, {[ekey(a.u,a.v)]: (l[i]-e[i]===0?'e-tree':'e-on')}, tblV()+tblA(i));
+  });
+  const crit=acts.map((a,i)=>l[i]-e[i]===0?i:null).filter(x=>x!==null);
+  const E={}; crit.forEach(i=>E[ekey(acts[i].u,acts[i].v)]='e-tree');
+  const N={}; crit.forEach(i=>{N[acts[i].u]='done';N[acts[i].v]='done';});
+  const maxd = Math.max(...l.map((x,i)=>x-e[i]));
+  snap(`<b>d = 0 的活动构成关键路径</b>：${crit.map(i=>acts[i].name).join('、')} ⟹ 关键路径 <b>(${(()=>{const seq=[src];let cur=src;let g=0;while(cur!==snk&&g++<50){const nx=crit.map(i=>acts[i]).find(a=>a.u===cur);if(!nx)break;seq.push(nx.v);cur=nx.v;}return seq.map(i=>G.nodes[i]).join(', ');})()})</b>，长度 = <b>${ve[snk]}</b>。`,
+    N, E, tblV()+tblA()+
+    `<div class="hint" style="margin-top:8px">时间余量最大的活动是 <b>${acts.map((a,i)=>l[i]-e[i]===maxd?a.name:null).filter(Boolean).join('、')}</b>（d = ${maxd}）。<br>
+     ⚠️ 若关键路径不止一条，只有加快<b>所有关键路径共有</b>的关键活动才能缩短工期；过度压缩还会让关键路径<b>转移</b>。</div>`);
+  return st;
+}
+
+/* ============ 小表格 ============ */
+function tbl1(d){
+  return `<table><tr><th>顶点</th>${G.nodes.map(x=>`<th>${x}</th>`).join('')}</tr>
+    <tr><td>d</td>${d.map(x=>`<td class="${x===INF?'no':''}">${fmt(x)}</td>`).join('')}</tr></table>`;
+}
+function tbl2(c,f){
+  return `<table><tr><th>顶点</th>${G.nodes.map(x=>`<th>${x}</th>`).join('')}</tr>
+    <tr><td>最小边权</td>${c.map(x=>`<td class="${x===INF?'no':(x===0?'fin':'')}">${fmt(x)}</td>`).join('')}</tr>
+    <tr><td>来自</td>${f.map(x=>`<td class="${x<0?'no':''}">${x<0?'—':G.nodes[x]}</td>`).join('')}</tr></table>`;
+}
+
+/* ============ 绘图 ============ */
+function draw(step){
+  const R=19, svg=$('#svg');
+  const xs=G.pos.map(p=>p[0]), ys=G.pos.map(p=>p[1]);
+  const W=Math.max(500,Math.max(...xs)+60), H=Math.max(320,Math.max(...ys)+50);
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  let s = `<defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="var(--line)"/></marker>
+    <marker id="ar-on" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="var(--red)"/></marker>
+    <marker id="ar-tree" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="var(--green)"/></marker>
+    <marker id="ar-cand" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="var(--blue)"/></marker>
+  </defs>`;
+  const pairSeen={};
+  G.edges.forEach(([u,v,w])=>{
+    const k=ekey(u,v), cls=(step&&step.E&&step.E[k])||'e';
+    const [x1,y1]=G.pos[u], [x2,y2]=G.pos[v];
+    let dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy)||1; dx/=L; dy/=L;
+    // 双向弧错开
+    const pk=Math.min(u,v)+'-'+Math.max(u,v);
+    const twin = G.dir && G.edges.some(([a,b])=>a===v&&b===u);
+    let bend = 0;
+    if(twin){ pairSeen[pk]=(pairSeen[pk]||0)+1; bend = (pairSeen[pk]===1? 22 : -22); }
+    const nx=-dy, ny=dx;
+    const mx=(x1+x2)/2 + nx*bend*0.6, my=(y1+y2)/2 + ny*bend*0.6;
+    const ax=x1+dx*R + (twin? nx*bend*0.25:0), ay=y1+dy*R + (twin? ny*bend*0.25:0);
+    const bx=x2-dx*(R+(G.dir?5:0)) + (twin? nx*bend*0.25:0), by=y2-dy*(R+(G.dir?5:0)) + (twin? ny*bend*0.25:0);
+    const mk = G.dir ? ` marker-end="url(#${cls==='e-on'?'ar-on':cls==='e-tree'?'ar-tree':cls==='e-cand'?'ar-cand':'ar'})"` : '';
+    s += twin
+      ? `<path class="${cls}" d="M${ax},${ay} Q${mx},${my} ${bx},${by}"${mk}/>`
+      : `<line class="${cls}" x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}"${mk}/>`;
+    if(G.wt){
+      const lx=(x1+x2)/2 + nx*(twin?bend*0.75:11), ly=(y1+y2)/2 + ny*(twin?bend*0.75:11);
+      s += `<text class="wt ${cls==='e-on'||cls==='e-tree'?'hot':''}" x="${lx}" y="${ly}" text-anchor="middle">${w}</text>`;
+    }
+  });
+  G.nodes.forEach((nm,i)=>{
+    const c=(step&&step.N&&step.N[i])||'';
+    const [x,y]=G.pos[i];
+    s += `<circle class="nc ${c}" cx="${x}" cy="${y}" r="${R}"/><text class="nt" x="${x}" y="${y}">${nm}</text>`;
+  });
+  svg.innerHTML=s;
+}
+
+/* ============ 驱动 ============ */
+function run(){
+  const a=ALGOS.find(x=>x.k===algo), s=Number($('#src').value)||0;
+  try{
+    steps = a.k==='bfs'?stepsBFS(s) : a.k==='dfs'?stepsDFS(s) : a.k==='prim'?stepsPrim(s)
+      : a.k==='kruskal'?stepsKruskal() : a.k==='dij'?stepsDij(s) : a.k==='floyd'?stepsFloyd()
+      : a.k==='topo'?stepsTopo() : stepsAOE();
+  }catch(err){ steps=[{d:'<b>这张图不适合当前算法：</b>'+err.message,N:{},E:{},panel:''}]; }
+  idx=0; render();
+}
+function render(){
+  const st=steps[idx]||{d:'',N:{},E:{},panel:''};
+  $('#desc').innerHTML = `<b>第 ${idx+1} 步 /</b> ` + st.d;
+  $('#panel').innerHTML = st.panel||'';
+  $('#prog').textContent = `${idx+1} / ${steps.length}`;
+  draw(st);
+  $('#prev').disabled = idx===0; $('#first').disabled = idx===0;
+  $('#next').disabled = idx>=steps.length-1; $('#last').disabled = idx>=steps.length-1;
+}
+function go(i){ idx=Math.max(0,Math.min(steps.length-1,i)); render(); }
+function stopPlay(){ if(timer){clearInterval(timer);timer=null;$('#play').textContent='▶ 自动';} }
+
+/* ============ 初始化 ============ */
+(function init(){
+  const ab=$('#algos');
+  ALGOS.forEach(a=>{
+    const b=document.createElement('button'); b.textContent=a.n; b.dataset.k=a.k;
+    b.onclick=()=>{ algo=a.k; stopPlay();
+      [...ab.children].forEach(x=>x.classList.toggle('on',x.dataset.k===algo));
+      $('#algohint').innerHTML=a.hint; $('#note').innerHTML='<span class="t">考点提示</span>'+a.note;
+      if(!G || curPreset!==a.pre) loadPreset(a.pre); else { fillSrc(); run(); }
+    };
+    ab.appendChild(b);
+  });
+  const pb=$('#presets');
+  Object.entries(PRESETS).forEach(([k,p])=>{
+    const b=document.createElement('button'); b.className='preset'; b.textContent=p.name; b.dataset.k=k;
+    b.onclick=()=>{ stopPlay(); loadPreset(k); };
+    pb.appendChild(b);
+  });
+  $('#src').onchange=()=>{stopPlay();run();};
+  $('#apply').onclick=()=>{stopPlay();parseEdges();};
+  $('#reset').onclick=()=>{stopPlay();loadPreset(curPreset);};
+  $('#next').onclick=()=>go(idx+1);
+  $('#prev').onclick=()=>go(idx-1);
+  $('#first').onclick=()=>{stopPlay();go(0);};
+  $('#last').onclick=()=>{stopPlay();go(steps.length-1);};
+  $('#play').onclick=()=>{
+    if(timer){stopPlay();return;}
+    $('#play').textContent='⏸ 暂停';
+    timer=setInterval(()=>{ if(idx>=steps.length-1){stopPlay();return;} go(idx+1); },1100);
+  };
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT') return;
+    if(e.key==='ArrowRight'){stopPlay();go(idx+1);} if(e.key==='ArrowLeft'){stopPlay();go(idx-1);}
+  });
+  ab.children[0].click();
+})();
+</script>
+</body>
+</html>

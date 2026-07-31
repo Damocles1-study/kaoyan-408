@@ -198,6 +198,9 @@ footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:36px;line
 .q table.qtab th,.q table.qtab td{border:1px solid var(--line);padding:4px 10px;text-align:center}
 .q table.qtab th{background:var(--accent-soft);color:var(--accent);font-family:var(--sans);font-weight:600}
 .q table.qtab td.rowh{background:var(--accent-soft);color:var(--accent);font-family:var(--sans)}
+/* 题干里的补充说明（第6章起用于把原书插图的信息转成文字，如"图中弧集为…"） */
+.q .qnote{display:block;margin:8px 0;padding:8px 12px;border-left:3px solid var(--line);
+  background:var(--card);border-radius:0 8px 8px 0;font-size:.85rem;color:var(--muted);line-height:1.8}
 
 /* ============ 大题四层渐进提示（借鉴数学错题页） ============ */
 .hints{margin:12px 0 6px}
