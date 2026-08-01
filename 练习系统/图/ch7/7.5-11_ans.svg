@@ -1,0 +1,93 @@
+<svg width="695" height="474" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 695 474" font-family="Georgia,serif">
+<defs><marker id="ah2b2b2b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#2b2b2b"/></marker><marker id="ah2c6fa8" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#2c6fa8"/></marker><marker id="ahc0392b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#c0392b"/></marker><marker id="ah2e7d32" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#2e7d32"/></marker><marker id="ah8a6d3b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#8a6d3b"/></marker><marker id="ah9a9a9a" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#9a9a9a"/></marker></defs>
+<text x="10" y="16" text-anchor="start" font-size="13" fill="#8a6d3b">链地址法：H(key)=key%13，关键字 19,14,23,1,68,20,84,27,55,11,10,79（王道图 7.33）</text>
+<rect x="14" y="30" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="48" text-anchor="middle" font-size="12" fill="#8a6d3b">0</text>
+<line x1="60" y1="43" x2="82" y2="43" stroke="#9a9a9a" stroke-width="1.3"/>
+<text x="88" y="48" text-anchor="start" font-size="13" fill="#9a9a9a">∧</text>
+<rect x="14" y="62" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="80" text-anchor="middle" font-size="12" fill="#8a6d3b">1</text>
+<line x1="60" y1="75" x2="83" y2="75" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="86" y="62" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="113" y="80" text-anchor="middle" font-size="12" fill="#2b2b2b">1</text>
+<line x1="140" y1="75" x2="163" y2="75" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="166" y="62" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="193" y="80" text-anchor="middle" font-size="12" fill="#2b2b2b">14</text>
+<line x1="220" y1="75" x2="243" y2="75" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="246" y="62" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="273" y="80" text-anchor="middle" font-size="12" fill="#2b2b2b">27</text>
+<line x1="300" y1="75" x2="323" y2="75" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="326" y="62" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="353" y="80" text-anchor="middle" font-size="12" fill="#2b2b2b">79</text>
+<line x1="380" y1="75" x2="400" y2="75" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="404" y="80" text-anchor="start" font-size="13" fill="#2b2b2b">∧</text>
+<rect x="14" y="94" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="112" text-anchor="middle" font-size="12" fill="#8a6d3b">2</text>
+<line x1="60" y1="107" x2="82" y2="107" stroke="#9a9a9a" stroke-width="1.3"/>
+<text x="88" y="112" text-anchor="start" font-size="13" fill="#9a9a9a">∧</text>
+<rect x="14" y="126" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="144" text-anchor="middle" font-size="12" fill="#8a6d3b">3</text>
+<line x1="60" y1="139" x2="83" y2="139" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="86" y="126" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="113" y="144" text-anchor="middle" font-size="12" fill="#2b2b2b">55</text>
+<line x1="140" y1="139" x2="163" y2="139" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="166" y="126" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="193" y="144" text-anchor="middle" font-size="12" fill="#2b2b2b">68</text>
+<line x1="220" y1="139" x2="240" y2="139" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="244" y="144" text-anchor="start" font-size="13" fill="#2b2b2b">∧</text>
+<rect x="14" y="158" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="176" text-anchor="middle" font-size="12" fill="#8a6d3b">4</text>
+<line x1="60" y1="171" x2="82" y2="171" stroke="#9a9a9a" stroke-width="1.3"/>
+<text x="88" y="176" text-anchor="start" font-size="13" fill="#9a9a9a">∧</text>
+<rect x="14" y="190" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="208" text-anchor="middle" font-size="12" fill="#8a6d3b">5</text>
+<line x1="60" y1="203" x2="82" y2="203" stroke="#9a9a9a" stroke-width="1.3"/>
+<text x="88" y="208" text-anchor="start" font-size="13" fill="#9a9a9a">∧</text>
+<rect x="14" y="222" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="240" text-anchor="middle" font-size="12" fill="#8a6d3b">6</text>
+<line x1="60" y1="235" x2="83" y2="235" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="86" y="222" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="113" y="240" text-anchor="middle" font-size="12" fill="#2b2b2b">19</text>
+<line x1="140" y1="235" x2="163" y2="235" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="166" y="222" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="193" y="240" text-anchor="middle" font-size="12" fill="#2b2b2b">84</text>
+<line x1="220" y1="235" x2="240" y2="235" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="244" y="240" text-anchor="start" font-size="13" fill="#2b2b2b">∧</text>
+<rect x="14" y="254" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="272" text-anchor="middle" font-size="12" fill="#8a6d3b">7</text>
+<line x1="60" y1="267" x2="83" y2="267" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="86" y="254" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="113" y="272" text-anchor="middle" font-size="12" fill="#2b2b2b">20</text>
+<line x1="140" y1="267" x2="160" y2="267" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="164" y="272" text-anchor="start" font-size="13" fill="#2b2b2b">∧</text>
+<rect x="14" y="286" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="304" text-anchor="middle" font-size="12" fill="#8a6d3b">8</text>
+<line x1="60" y1="299" x2="82" y2="299" stroke="#9a9a9a" stroke-width="1.3"/>
+<text x="88" y="304" text-anchor="start" font-size="13" fill="#9a9a9a">∧</text>
+<rect x="14" y="318" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="336" text-anchor="middle" font-size="12" fill="#8a6d3b">9</text>
+<line x1="60" y1="331" x2="82" y2="331" stroke="#9a9a9a" stroke-width="1.3"/>
+<text x="88" y="336" text-anchor="start" font-size="13" fill="#9a9a9a">∧</text>
+<rect x="14" y="350" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="368" text-anchor="middle" font-size="12" fill="#8a6d3b">10</text>
+<line x1="60" y1="363" x2="83" y2="363" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="86" y="350" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="113" y="368" text-anchor="middle" font-size="12" fill="#2b2b2b">10</text>
+<line x1="140" y1="363" x2="163" y2="363" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="166" y="350" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="193" y="368" text-anchor="middle" font-size="12" fill="#2b2b2b">23</text>
+<line x1="220" y1="363" x2="240" y2="363" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="244" y="368" text-anchor="start" font-size="13" fill="#2b2b2b">∧</text>
+<rect x="14" y="382" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="400" text-anchor="middle" font-size="12" fill="#8a6d3b">11</text>
+<line x1="60" y1="395" x2="83" y2="395" stroke="#2b2b2b" stroke-width="1.3" marker-end="url(#ah2b2b2b)"/>
+<rect x="86" y="382" width="54" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="113" y="400" text-anchor="middle" font-size="12" fill="#2b2b2b">11</text>
+<line x1="140" y1="395" x2="160" y2="395" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="164" y="400" text-anchor="start" font-size="13" fill="#2b2b2b">∧</text>
+<rect x="14" y="414" width="46" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="432" text-anchor="middle" font-size="12" fill="#8a6d3b">12</text>
+<line x1="60" y1="427" x2="82" y2="427" stroke="#9a9a9a" stroke-width="1.3"/>
+<text x="88" y="432" text-anchor="start" font-size="13" fill="#9a9a9a">∧</text>
+<text x="14" y="458" text-anchor="start" font-size="12" fill="#8a6d3b">地址 1 的链最长，含 1、14、27、79 共 4 个；⚠️ 链内的先后取决于头插还是尾插，本图按王道图 7.33 的画法（链内升序）</text>
+</svg>

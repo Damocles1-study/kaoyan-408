@@ -1,0 +1,59 @@
+<svg width="492" height="264" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 492 264" font-family="Georgia,serif">
+<defs><marker id="ah2b2b2b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#2b2b2b"/></marker><marker id="ah2c6fa8" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#2c6fa8"/></marker><marker id="ahc0392b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#c0392b"/></marker><marker id="ah2e7d32" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#2e7d32"/></marker><marker id="ah8a6d3b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#8a6d3b"/></marker><marker id="ah9a9a9a" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#9a9a9a"/></marker></defs>
+<text x="10" y="16" text-anchor="start" font-size="13" fill="#8a6d3b">为什么"堆积"是非同义词也参与的：两条探测序列在地址上交织</text>
+<rect x="20" y="46" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="43" y="40" text-anchor="middle" font-size="11" fill="#8a6d3b">0</text>
+<rect x="66" y="46" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="89" y="40" text-anchor="middle" font-size="11" fill="#8a6d3b">1</text>
+<rect x="112" y="46" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="135" y="40" text-anchor="middle" font-size="11" fill="#8a6d3b">2</text>
+<rect x="158" y="46" width="46" height="26" rx="3" fill="#eaf4ea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="181" y="64" text-anchor="middle" font-size="12" fill="#2e7d32" font-weight="bold">a₁</text>
+<text x="181" y="40" text-anchor="middle" font-size="11" fill="#8a6d3b">3</text>
+<rect x="204" y="46" width="46" height="26" rx="3" fill="#eaf4ea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="227" y="64" text-anchor="middle" font-size="12" fill="#2e7d32" font-weight="bold">a₂</text>
+<text x="227" y="40" text-anchor="middle" font-size="11" fill="#8a6d3b">4</text>
+<rect x="250" y="46" width="46" height="26" rx="3" fill="#fdecea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="273" y="64" text-anchor="middle" font-size="12" fill="#c0392b" font-weight="bold">b₁</text>
+<text x="273" y="40" text-anchor="middle" font-size="11" fill="#8a6d3b">5</text>
+<rect x="296" y="46" width="46" height="26" rx="3" fill="#eaf4ea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="319" y="64" text-anchor="middle" font-size="12" fill="#2e7d32" font-weight="bold">a₃</text>
+<text x="319" y="40" text-anchor="middle" font-size="11" fill="#8a6d3b">6</text>
+<rect x="342" y="46" width="46" height="26" rx="3" fill="#fdecea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="365" y="64" text-anchor="middle" font-size="12" fill="#c0392b" font-weight="bold">b₂</text>
+<text x="365" y="40" text-anchor="middle" font-size="11" fill="#8a6d3b">7</text>
+<rect x="388" y="46" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="411" y="40" text-anchor="middle" font-size="11" fill="#8a6d3b">8</text>
+<rect x="434" y="46" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="457" y="40" text-anchor="middle" font-size="11" fill="#8a6d3b">9</text>
+<text x="20" y="94" text-anchor="start" font-size="12" fill="#2b2b2b">H(a₁)=H(a₂)=H(a₃)=3（绿：同义词）　　H(b₁)=H(b₂)=5（红：另一组同义词）</text>
+<path d="M 181 44 Q 204 28 227 44" fill="none" stroke="#2e7d32" stroke-width="1.4" marker-end="url(#ah2e7d32)"/>
+<path d="M 185 44 Q 252 10 319 44" fill="none" stroke="#2e7d32" stroke-width="1.4" marker-end="url(#ah2e7d32)"/>
+<path d="M 273 74 Q 319 90 365 74" fill="none" stroke="#c0392b" stroke-width="1.4" marker-end="url(#ahc0392b)"/>
+<text x="20" y="118" text-anchor="start" font-size="12" fill="#2b2b2b">⚠️ a₃ 本该落 3，却被 b₁ 挡在 5、只能跑到 6：<tspan fill="#c0392b">挡住 a₃ 的 b₁ 不是它的同义词</tspan></text>
+<text x="20" y="138" text-anchor="start" font-size="12" fill="#8a6d3b">⟹ 堆积 = 同义词的探测序列与非同义词的探测序列<tspan font-weight="bold">交织</tspan>在一起（选 C）</text>
+<text x="20" y="172" text-anchor="start" font-size="12" fill="#8a6d3b">对照：链地址法把同义词收进各自的链，两组永不相干 ⟹ 不产生堆积</text>
+<rect x="20" y="192" width="34" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="210" text-anchor="middle" font-size="12" fill="#8a6d3b">3</text>
+<rect x="78" y="192" width="46" height="26" rx="3" fill="#ffffff" stroke="#2e7d32" stroke-width="1.3"/>
+<text x="101" y="210" text-anchor="middle" font-size="12" fill="#2e7d32">a₁</text>
+<line x1="54" y1="205" x2="76" y2="205" stroke="#2e7d32" stroke-width="1.3" marker-end="url(#ah2e7d32)"/>
+<rect x="152" y="192" width="46" height="26" rx="3" fill="#ffffff" stroke="#2e7d32" stroke-width="1.3"/>
+<text x="175" y="210" text-anchor="middle" font-size="12" fill="#2e7d32">a₂</text>
+<line x1="128" y1="205" x2="150" y2="205" stroke="#2e7d32" stroke-width="1.3" marker-end="url(#ah2e7d32)"/>
+<rect x="226" y="192" width="46" height="26" rx="3" fill="#ffffff" stroke="#2e7d32" stroke-width="1.3"/>
+<text x="249" y="210" text-anchor="middle" font-size="12" fill="#2e7d32">a₃</text>
+<line x1="202" y1="205" x2="224" y2="205" stroke="#2e7d32" stroke-width="1.3" marker-end="url(#ah2e7d32)"/>
+<line x1="272" y1="205" x2="292" y2="205" stroke="#2e7d32" stroke-width="1.3"/>
+<text x="296" y="210" text-anchor="start" font-size="13" fill="#2e7d32">∧</text>
+<rect x="20" y="226" width="34" height="26" rx="3" fill="#f6f6f6" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="37" y="244" text-anchor="middle" font-size="12" fill="#8a6d3b">5</text>
+<rect x="78" y="226" width="46" height="26" rx="3" fill="#ffffff" stroke="#c0392b" stroke-width="1.3"/>
+<text x="101" y="244" text-anchor="middle" font-size="12" fill="#c0392b">b₁</text>
+<line x1="54" y1="239" x2="76" y2="239" stroke="#c0392b" stroke-width="1.3" marker-end="url(#ahc0392b)"/>
+<rect x="152" y="226" width="46" height="26" rx="3" fill="#ffffff" stroke="#c0392b" stroke-width="1.3"/>
+<text x="175" y="244" text-anchor="middle" font-size="12" fill="#c0392b">b₂</text>
+<line x1="128" y1="239" x2="150" y2="239" stroke="#c0392b" stroke-width="1.3" marker-end="url(#ahc0392b)"/>
+<line x1="198" y1="239" x2="218" y2="239" stroke="#c0392b" stroke-width="1.3"/>
+<text x="222" y="244" text-anchor="start" font-size="13" fill="#c0392b">∧</text>
+</svg>

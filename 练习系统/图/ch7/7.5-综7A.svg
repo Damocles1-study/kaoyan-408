@@ -1,0 +1,87 @@
+<svg width="534" height="420" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 534 420" font-family="Georgia,serif">
+<defs><marker id="ah2b2b2b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#2b2b2b"/></marker><marker id="ah2c6fa8" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#2c6fa8"/></marker><marker id="ahc0392b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#c0392b"/></marker><marker id="ah2e7d32" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#2e7d32"/></marker><marker id="ah8a6d3b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#8a6d3b"/></marker><marker id="ah9a9a9a" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#9a9a9a"/></marker></defs>
+<text x="10" y="16" text-anchor="start" font-size="13" fill="#8a6d3b">2024 统考：H(key)=(key×3)%11，H<tspan baseline-shift="sub" font-size="9">k</tspan>=(H₀+k²)%11</text>
+<rect x="16" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="39" y="76" text-anchor="middle" font-size="12" fill="#2b2b2b">11</text>
+<text x="39" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">0</text>
+<rect x="62" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="85" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">1</text>
+<rect x="108" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="131" y="76" text-anchor="middle" font-size="12" fill="#2b2b2b">14</text>
+<text x="131" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">2</text>
+<rect x="154" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="177" y="76" text-anchor="middle" font-size="12" fill="#2b2b2b">7</text>
+<text x="177" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">3</text>
+<rect x="200" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="223" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">4</text>
+<rect x="246" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="269" y="76" text-anchor="middle" font-size="12" fill="#2b2b2b">20</text>
+<text x="269" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">5</text>
+<rect x="292" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="315" y="76" text-anchor="middle" font-size="12" fill="#2b2b2b">9</text>
+<text x="315" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">6</text>
+<rect x="338" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="361" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">7</text>
+<rect x="384" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="407" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">8</text>
+<rect x="430" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="453" y="76" text-anchor="middle" font-size="12" fill="#2b2b2b">3</text>
+<text x="453" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">9</text>
+<rect x="476" y="58" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="499" y="76" text-anchor="middle" font-size="12" fill="#2b2b2b">18</text>
+<text x="499" y="52" text-anchor="middle" font-size="11" fill="#8a6d3b">10</text>
+<text x="16" y="104" text-anchor="start" font-size="12" fill="#8a6d3b">装填因子 α = 7/11 ≈ 0.64</text>
+<text x="16" y="130" text-anchor="start" font-size="12" fill="#2c6fa8">② 查 14：H₀=(14×3)%11=9</text>
+<rect x="16" y="186" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="39" y="204" text-anchor="middle" font-size="12" fill="#2b2b2b">11</text>
+<rect x="62" y="186" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="108" y="186" width="46" height="26" rx="3" fill="#eaf4ea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="131" y="204" text-anchor="middle" font-size="12" fill="#2e7d32" font-weight="bold">14</text>
+<rect x="154" y="186" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="177" y="204" text-anchor="middle" font-size="12" fill="#2b2b2b">7</text>
+<rect x="200" y="186" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="246" y="186" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="269" y="204" text-anchor="middle" font-size="12" fill="#2b2b2b">20</text>
+<rect x="292" y="186" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="315" y="204" text-anchor="middle" font-size="12" fill="#2b2b2b">9</text>
+<rect x="338" y="186" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="384" y="186" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="430" y="186" width="46" height="26" rx="3" fill="#eef4fb" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="453" y="204" text-anchor="middle" font-size="12" fill="#2b2b2b">3</text>
+<rect x="476" y="186" width="46" height="26" rx="3" fill="#eef4fb" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="499" y="204" text-anchor="middle" font-size="12" fill="#2b2b2b">18</text>
+<path d="M 453 183 Q 476 163 499 183" fill="none" stroke="#2c6fa8" stroke-width="1.4" marker-end="url(#ah2c6fa8)"/>
+<text x="476" y="160" text-anchor="middle" font-size="11" fill="#2c6fa8">+1²</text>
+<path d="M 499 183 Q 315 149 131 183" fill="none" stroke="#2e7d32" stroke-width="1.4" marker-end="url(#ah2e7d32)"/>
+<text x="315" y="146" text-anchor="middle" font-size="11" fill="#2e7d32">+2²</text>
+<text x="16" y="232" text-anchor="start" font-size="12" fill="#2b2b2b">比较序列 = <tspan font-weight="bold">3, 18, 14</tspan>（问的是"和谁比过"，不是问地址）</text>
+<text x="16" y="260" text-anchor="start" font-size="12" fill="#c0392b">③ 查 8：H₀=(8×3)%11=2</text>
+<rect x="16" y="336" width="46" height="26" rx="3" fill="#fdecea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="39" y="354" text-anchor="middle" font-size="12" fill="#2b2b2b">11</text>
+<rect x="62" y="336" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="108" y="336" width="46" height="26" rx="3" fill="#fdecea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="131" y="354" text-anchor="middle" font-size="12" fill="#2b2b2b">14</text>
+<rect x="154" y="336" width="46" height="26" rx="3" fill="#fdecea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="177" y="354" text-anchor="middle" font-size="12" fill="#2b2b2b">7</text>
+<rect x="200" y="336" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="246" y="336" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="269" y="354" text-anchor="middle" font-size="12" fill="#2b2b2b">20</text>
+<rect x="292" y="336" width="46" height="26" rx="3" fill="#fdecea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="315" y="354" text-anchor="middle" font-size="12" fill="#2b2b2b">9</text>
+<rect x="338" y="336" width="46" height="26" rx="3" fill="#fff6cc" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="384" y="336" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="430" y="336" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="453" y="354" text-anchor="middle" font-size="12" fill="#2b2b2b">3</text>
+<rect x="476" y="336" width="46" height="26" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="499" y="354" text-anchor="middle" font-size="12" fill="#2b2b2b">18</text>
+<path d="M 131 333 Q 154 317 177 333" fill="none" stroke="#c0392b" stroke-width="1.4" marker-end="url(#ahc0392b)"/>
+<text x="154" y="323" text-anchor="middle" font-size="11" fill="#c0392b">+1²</text>
+<path d="M 177 333 Q 246 302 315 333" fill="none" stroke="#c0392b" stroke-width="1.4" marker-end="url(#ahc0392b)"/>
+<text x="246" y="308" text-anchor="middle" font-size="11" fill="#c0392b">+2²</text>
+<path d="M 315 333 Q 177 287 39 333" fill="none" stroke="#c0392b" stroke-width="1.4" marker-end="url(#ahc0392b)"/>
+<text x="177" y="293" text-anchor="middle" font-size="11" fill="#c0392b">+3²</text>
+<path d="M 39 333 Q 200 272 361 333" fill="none" stroke="#c0392b" stroke-width="1.4" marker-end="url(#ahc0392b)"/>
+<text x="200" y="278" text-anchor="middle" font-size="11" fill="#c0392b">+4²</text>
+<text x="16" y="382" text-anchor="start" font-size="12" fill="#2b2b2b">2(14)→3(7)→6(9)→0(11)→<tspan font-weight="bold" fill="#c0392b">7 为空 ⟹ 查找失败，确认失败的地址是 7</tspan></text>
+<text x="16" y="404" text-anchor="start" font-size="12" fill="#8a6d3b">⚠️ (2+9)%11=0、(2+16)%11=7 —— k² 超过表长后要取模，别以为探测只往右走</text>
+</svg>
