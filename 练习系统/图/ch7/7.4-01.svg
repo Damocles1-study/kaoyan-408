@@ -1,0 +1,24 @@
+<svg width="515" height="104" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 515 104" font-family="Georgia,serif">
+<text x="10.0" y="16.0" font-size="13" fill="#8a6d3b" text-anchor="start">关键字数 = 子树数 − 1 ⟹ 一定是 B 树而不是 B+树；但阶数 4 / 5 / 6 都说得通</text>
+<line x1="99.0" y1="50.0" x2="40.0" y2="72.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="129.0" y1="50.0" x2="129.0" y2="72.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="159.0" y1="50.0" x2="218.0" y2="72.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="99.0" y="26.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="114.0" y="42.5" text-anchor="middle" font-size="13" fill="#2b2b2b">12</text>
+<line x1="129.0" y1="26.0" x2="129.0" y2="50.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="144.0" y="42.5" text-anchor="middle" font-size="13" fill="#2b2b2b">25</text>
+<rect x="10.0" y="72.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="25.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">05</text>
+<line x1="40.0" y1="72.0" x2="40.0" y2="96.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="55.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">10</text>
+<rect x="84.0" y="72.0" width="90" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="99.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">15</text>
+<line x1="114.0" y1="72.0" x2="114.0" y2="96.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="129.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">19</text>
+<line x1="144.0" y1="72.0" x2="144.0" y2="96.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="159.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">22</text>
+<rect x="188.0" y="72.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="203.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">26</text>
+<line x1="218.0" y1="72.0" x2="218.0" y2="96.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="233.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">28</text>
+</svg>

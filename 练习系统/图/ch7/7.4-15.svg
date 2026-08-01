@@ -1,0 +1,35 @@
+<svg width="429" height="150" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 429 150" font-family="Georgia,serif">
+<text x="10.0" y="16.0" font-size="13" fill="#8a6d3b" text-anchor="start">3 阶 B 树：删除最右叶结点中的 78（粉色结点删后为空，必须调整）</text>
+<line x1="39.0" y1="96.0" x2="25.0" y2="118.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="69.0" y1="96.0" x2="69.0" y2="118.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="99.0" y1="96.0" x2="113.0" y2="118.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="135.0" y1="50.0" x2="69.0" y2="72.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="186.0" y1="96.0" x2="157.0" y2="118.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="216.0" y1="96.0" x2="216.0" y2="118.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="246.0" y1="96.0" x2="275.0" y2="118.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="165.0" y1="50.0" x2="216.0" y2="72.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="135.0" y="26.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="150.0" y="42.5" text-anchor="middle" font-size="13" fill="#2b2b2b">45</text>
+<rect x="39.0" y="72.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="54.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">17</text>
+<line x1="69.0" y1="72.0" x2="69.0" y2="96.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="84.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">35</text>
+<rect x="10.0" y="118.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="25.0" y="134.5" text-anchor="middle" font-size="13" fill="#2b2b2b">10</text>
+<rect x="54.0" y="118.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="69.0" y="134.5" text-anchor="middle" font-size="13" fill="#2b2b2b">21</text>
+<rect x="98.0" y="118.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="113.0" y="134.5" text-anchor="middle" font-size="13" fill="#2b2b2b">37</text>
+<rect x="186.0" y="72.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="201.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">55</text>
+<line x1="216.0" y1="72.0" x2="216.0" y2="96.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="231.0" y="88.5" text-anchor="middle" font-size="13" fill="#2b2b2b">65</text>
+<rect x="142.0" y="118.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="157.0" y="134.5" text-anchor="middle" font-size="13" fill="#2b2b2b">47</text>
+<rect x="186.0" y="118.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="201.0" y="134.5" text-anchor="middle" font-size="13" fill="#2b2b2b">60</text>
+<line x1="216.0" y1="118.0" x2="216.0" y2="142.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="231.0" y="134.5" text-anchor="middle" font-size="13" fill="#2b2b2b">62</text>
+<rect x="260.0" y="118.0" width="30" height="24" rx="3" fill="#fdeaea" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="275.0" y="134.5" text-anchor="middle" font-size="13" fill="#2b2b2b">78</text>
+</svg>

@@ -1,0 +1,154 @@
+<svg width="684" height="818" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 684 818" font-family="Georgia,serif">
+<text x="10.0" y="22.0" font-size="13" fill="#8a6d3b" text-anchor="start">五步操作逐步结果（每步都在上一步的树上继续）</text>
+<text x="10.0" y="47.0" font-size="13" fill="#8a6d3b" text-anchor="start">插入 90　直接插入 [100] → [90 100]，不溢出</text>
+<line x1="60.0" y1="126.0" x2="38.0" y2="148.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="90.0" y1="126.0" x2="110.0" y2="148.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="123.5" y1="80.0" x2="75.0" y2="102.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="195.5" y1="126.0" x2="169.0" y2="148.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="225.5" y1="126.0" x2="232.5" y2="148.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="153.5" y1="80.0" x2="210.5" y2="102.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="123.5" y="56.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="138.5" y="72.5" text-anchor="middle" font-size="13" fill="#2b2b2b">50</text>
+<rect x="60.0" y="102.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="75.0" y="118.5" text-anchor="middle" font-size="13" fill="#2b2b2b">30</text>
+<rect x="10.0" y="148.0" width="56" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="23.0" y="164.5" text-anchor="middle" font-size="13" fill="#2b2b2b">8</text>
+<line x1="36.0" y1="148.0" x2="36.0" y2="172.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="51.0" y="164.5" text-anchor="middle" font-size="13" fill="#2b2b2b">20</text>
+<rect x="80.0" y="148.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="95.0" y="164.5" text-anchor="middle" font-size="13" fill="#2b2b2b">35</text>
+<line x1="110.0" y1="148.0" x2="110.0" y2="172.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="125.0" y="164.5" text-anchor="middle" font-size="13" fill="#2b2b2b">40</text>
+<rect x="195.5" y="102.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="210.5" y="118.5" text-anchor="middle" font-size="13" fill="#2b2b2b">80</text>
+<rect x="154.0" y="148.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="169.0" y="164.5" text-anchor="middle" font-size="13" fill="#2b2b2b">60</text>
+<rect x="198.0" y="148.0" width="69" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="213.0" y="164.5" text-anchor="middle" font-size="13" fill="#2b2b2b">90</text>
+<line x1="228.0" y1="148.0" x2="228.0" y2="172.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="247.5" y="164.5" text-anchor="middle" font-size="13" fill="#2b2b2b">100</text>
+<text x="10.0" y="203.0" font-size="13" fill="#8a6d3b" text-anchor="start">插入 25　[8 20 25] 溢出 → 20 上升，父变 [20 30]，止</text>
+<line x1="52.0" y1="282.0" x2="23.0" y2="304.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="82.0" y1="282.0" x2="65.0" y2="304.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="112.0" y1="282.0" x2="124.0" y2="304.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="130.5" y1="236.0" x2="82.0" y2="258.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="209.5" y1="282.0" x2="183.0" y2="304.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="239.5" y1="282.0" x2="246.5" y2="304.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="160.5" y1="236.0" x2="224.5" y2="258.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="130.5" y="212.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="145.5" y="228.5" text-anchor="middle" font-size="13" fill="#2b2b2b">50</text>
+<rect x="52.0" y="258.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="67.0" y="274.5" text-anchor="middle" font-size="13" fill="#2b2b2b">20</text>
+<line x1="82.0" y1="258.0" x2="82.0" y2="282.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="97.0" y="274.5" text-anchor="middle" font-size="13" fill="#2b2b2b">30</text>
+<rect x="10.0" y="304.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="23.0" y="320.5" text-anchor="middle" font-size="13" fill="#2b2b2b">8</text>
+<rect x="50.0" y="304.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="65.0" y="320.5" text-anchor="middle" font-size="13" fill="#2b2b2b">25</text>
+<rect x="94.0" y="304.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="109.0" y="320.5" text-anchor="middle" font-size="13" fill="#2b2b2b">35</text>
+<line x1="124.0" y1="304.0" x2="124.0" y2="328.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="139.0" y="320.5" text-anchor="middle" font-size="13" fill="#2b2b2b">40</text>
+<rect x="209.5" y="258.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="224.5" y="274.5" text-anchor="middle" font-size="13" fill="#2b2b2b">80</text>
+<rect x="168.0" y="304.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="183.0" y="320.5" text-anchor="middle" font-size="13" fill="#2b2b2b">60</text>
+<rect x="212.0" y="304.0" width="69" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="227.0" y="320.5" text-anchor="middle" font-size="13" fill="#2b2b2b">90</text>
+<line x1="242.0" y1="304.0" x2="242.0" y2="328.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="261.5" y="320.5" text-anchor="middle" font-size="13" fill="#2b2b2b">100</text>
+<text x="10.0" y="359.0" font-size="13" fill="#8a6d3b" text-anchor="start">插入 45　[35 40 45] 溢出 → 40 上升 → 父 [20 30 40] 再溢出 → 30 上升到根，树高 2→3</text>
+<line x1="30.0" y1="438.0" x2="23.0" y2="460.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="60.0" y1="438.0" x2="65.0" y2="460.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="122.5" y1="392.0" x2="45.0" y2="414.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="116.0" y1="438.0" x2="109.0" y2="460.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="146.0" y1="438.0" x2="153.0" y2="460.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="152.5" y1="392.0" x2="131.0" y2="414.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="223.5" y1="438.0" x2="197.0" y2="460.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="253.5" y1="438.0" x2="260.5" y2="460.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="182.5" y1="392.0" x2="238.5" y2="414.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="122.5" y="368.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="137.5" y="384.5" text-anchor="middle" font-size="13" fill="#2b2b2b">30</text>
+<line x1="152.5" y1="368.0" x2="152.5" y2="392.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="167.5" y="384.5" text-anchor="middle" font-size="13" fill="#2b2b2b">50</text>
+<rect x="30.0" y="414.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="45.0" y="430.5" text-anchor="middle" font-size="13" fill="#2b2b2b">20</text>
+<rect x="10.0" y="460.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="23.0" y="476.5" text-anchor="middle" font-size="13" fill="#2b2b2b">8</text>
+<rect x="50.0" y="460.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="65.0" y="476.5" text-anchor="middle" font-size="13" fill="#2b2b2b">25</text>
+<rect x="116.0" y="414.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="131.0" y="430.5" text-anchor="middle" font-size="13" fill="#2b2b2b">40</text>
+<rect x="94.0" y="460.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="109.0" y="476.5" text-anchor="middle" font-size="13" fill="#2b2b2b">35</text>
+<rect x="138.0" y="460.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="153.0" y="476.5" text-anchor="middle" font-size="13" fill="#2b2b2b">45</text>
+<rect x="223.5" y="414.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="238.5" y="430.5" text-anchor="middle" font-size="13" fill="#2b2b2b">80</text>
+<rect x="182.0" y="460.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="197.0" y="476.5" text-anchor="middle" font-size="13" fill="#2b2b2b">60</text>
+<rect x="226.0" y="460.0" width="69" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="241.0" y="476.5" text-anchor="middle" font-size="13" fill="#2b2b2b">90</text>
+<line x1="256.0" y1="460.0" x2="256.0" y2="484.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="275.5" y="476.5" text-anchor="middle" font-size="13" fill="#2b2b2b">100</text>
+<text x="10.0" y="515.0" font-size="13" fill="#8a6d3b" text-anchor="start">删除 60　[60] 删后为空 → 右兄弟 [90 100] 够借：父的 80 下移、兄弟的 90 上移</text>
+<line x1="30.0" y1="594.0" x2="23.0" y2="616.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="60.0" y1="594.0" x2="65.0" y2="616.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="107.5" y1="548.0" x2="45.0" y2="570.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="116.0" y1="594.0" x2="109.0" y2="616.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="146.0" y1="594.0" x2="153.0" y2="616.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="137.5" y1="548.0" x2="131.0" y2="570.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="208.5" y1="594.0" x2="197.0" y2="616.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="238.5" y1="594.0" x2="245.5" y2="616.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="167.5" y1="548.0" x2="223.5" y2="570.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="107.5" y="524.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="122.5" y="540.5" text-anchor="middle" font-size="13" fill="#2b2b2b">30</text>
+<line x1="137.5" y1="524.0" x2="137.5" y2="548.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="152.5" y="540.5" text-anchor="middle" font-size="13" fill="#2b2b2b">50</text>
+<rect x="30.0" y="570.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="45.0" y="586.5" text-anchor="middle" font-size="13" fill="#2b2b2b">20</text>
+<rect x="10.0" y="616.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="23.0" y="632.5" text-anchor="middle" font-size="13" fill="#2b2b2b">8</text>
+<rect x="50.0" y="616.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="65.0" y="632.5" text-anchor="middle" font-size="13" fill="#2b2b2b">25</text>
+<rect x="116.0" y="570.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="131.0" y="586.5" text-anchor="middle" font-size="13" fill="#2b2b2b">40</text>
+<rect x="94.0" y="616.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="109.0" y="632.5" text-anchor="middle" font-size="13" fill="#2b2b2b">35</text>
+<rect x="138.0" y="616.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="153.0" y="632.5" text-anchor="middle" font-size="13" fill="#2b2b2b">45</text>
+<rect x="208.5" y="570.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="223.5" y="586.5" text-anchor="middle" font-size="13" fill="#2b2b2b">90</text>
+<rect x="182.0" y="616.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="197.0" y="632.5" text-anchor="middle" font-size="13" fill="#2b2b2b">80</text>
+<rect x="226.0" y="616.0" width="39" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="245.5" y="632.5" text-anchor="middle" font-size="13" fill="#2b2b2b">100</text>
+<text x="10.0" y="671.0" font-size="13" fill="#8a6d3b" text-anchor="start">删除 80　[80] 删后为空且兄弟不够借 → 合并；父结点因此空了，再与左兄弟 [40] + 根的 50 合并，树高 3→2</text>
+<line x1="30.0" y1="750.0" x2="23.0" y2="772.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="60.0" y1="750.0" x2="65.0" y2="772.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="115.5" y1="704.0" x2="45.0" y2="726.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="142.5" y1="750.0" x2="109.0" y2="772.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="172.5" y1="750.0" x2="153.0" y2="772.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="202.5" y1="750.0" x2="216.5" y2="772.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="145.5" y1="704.0" x2="172.5" y2="726.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="115.5" y="680.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="130.5" y="696.5" text-anchor="middle" font-size="13" fill="#2b2b2b">30</text>
+<rect x="30.0" y="726.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="45.0" y="742.5" text-anchor="middle" font-size="13" fill="#2b2b2b">20</text>
+<rect x="10.0" y="772.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="23.0" y="788.5" text-anchor="middle" font-size="13" fill="#2b2b2b">8</text>
+<rect x="50.0" y="772.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="65.0" y="788.5" text-anchor="middle" font-size="13" fill="#2b2b2b">25</text>
+<rect x="142.5" y="726.0" width="60" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="157.5" y="742.5" text-anchor="middle" font-size="13" fill="#2b2b2b">40</text>
+<line x1="172.5" y1="726.0" x2="172.5" y2="750.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="187.5" y="742.5" text-anchor="middle" font-size="13" fill="#2b2b2b">50</text>
+<rect x="94.0" y="772.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="109.0" y="788.5" text-anchor="middle" font-size="13" fill="#2b2b2b">35</text>
+<rect x="138.0" y="772.0" width="30" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="153.0" y="788.5" text-anchor="middle" font-size="13" fill="#2b2b2b">45</text>
+<rect x="182.0" y="772.0" width="69" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="197.0" y="788.5" text-anchor="middle" font-size="13" fill="#2b2b2b">90</text>
+<line x1="212.0" y1="772.0" x2="212.0" y2="796.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="231.5" y="788.5" text-anchor="middle" font-size="13" fill="#2b2b2b">100</text>
+</svg>

@@ -1,0 +1,40 @@
+<svg width="617" height="166" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 617 166" font-family="Georgia,serif">
+<text x="10.0" y="16.0" font-size="13" fill="#8a6d3b" text-anchor="start">第 2 层的 4 个关键字要“摊”到尽量多的结点里：2+1+1 分成 3 个结点（而不是 2+2 的 2 个结点）</text>
+<text x="10.0" y="32.0" font-size="13" fill="#c0392b" text-anchor="start">⟹ 第 1 层 1 个 + 第 2 层 3 个 + 第 3 层 (3+2+2) = 7 个 ＝ 11 个结点</text>
+<line x1="37.0" y1="112.0" x2="23.0" y2="134.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="63.0" y1="112.0" x2="63.0" y2="134.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="89.0" y1="112.0" x2="103.0" y2="134.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="117.0" y1="66.0" x2="63.0" y2="88.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="150.0" y1="112.0" x2="143.0" y2="134.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="176.0" y1="112.0" x2="183.0" y2="134.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="143.0" y1="66.0" x2="163.0" y2="88.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="230.0" y1="112.0" x2="223.0" y2="134.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="256.0" y1="112.0" x2="263.0" y2="134.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<line x1="169.0" y1="66.0" x2="243.0" y2="88.0" stroke="#2b2b2b" stroke-width="1.3"/>
+<rect x="117.0" y="42.0" width="52" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="130.0" y="58.5" text-anchor="middle" font-size="13" fill="#2b2b2b">A</text>
+<line x1="143.0" y1="42.0" x2="143.0" y2="66.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="156.0" y="58.5" text-anchor="middle" font-size="13" fill="#2b2b2b">B</text>
+<rect x="37.0" y="88.0" width="52" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="50.0" y="104.5" text-anchor="middle" font-size="13" fill="#2b2b2b">C</text>
+<line x1="63.0" y1="88.0" x2="63.0" y2="112.0" stroke="#2b2b2b" stroke-width="1.1"/>
+<text x="76.0" y="104.5" text-anchor="middle" font-size="13" fill="#2b2b2b">D</text>
+<rect x="10.0" y="134.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="23.0" y="150.5" text-anchor="middle" font-size="13" fill="#2b2b2b">·</text>
+<rect x="50.0" y="134.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="63.0" y="150.5" text-anchor="middle" font-size="13" fill="#2b2b2b">·</text>
+<rect x="90.0" y="134.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="103.0" y="150.5" text-anchor="middle" font-size="13" fill="#2b2b2b">·</text>
+<rect x="150.0" y="88.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="163.0" y="104.5" text-anchor="middle" font-size="13" fill="#2b2b2b">E</text>
+<rect x="130.0" y="134.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="143.0" y="150.5" text-anchor="middle" font-size="13" fill="#2b2b2b">·</text>
+<rect x="170.0" y="134.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="183.0" y="150.5" text-anchor="middle" font-size="13" fill="#2b2b2b">·</text>
+<rect x="230.0" y="88.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="243.0" y="104.5" text-anchor="middle" font-size="13" fill="#2b2b2b">F</text>
+<rect x="210.0" y="134.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="223.0" y="150.5" text-anchor="middle" font-size="13" fill="#2b2b2b">·</text>
+<rect x="250.0" y="134.0" width="26" height="24" rx="3" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.3"/>
+<text x="263.0" y="150.5" text-anchor="middle" font-size="13" fill="#2b2b2b">·</text>
+</svg>
