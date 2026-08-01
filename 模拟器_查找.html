@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>查找四合一模拟器 · 折半判定树 / BST·AVL / B树 / 散列表</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    --mono:"SF Mono","JetBrains Mono","Menlo",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding:0 0 60px}
+  .wrap{max-width:1000px;margin:0 auto;padding:22px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:12px 0 18px}
+  h1{font-family:var(--serif);font-size:1.55rem;line-height:1.3}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  header .sub a{color:var(--accent)}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+  h2{font-size:1.02rem;color:var(--accent);margin-bottom:12px;font-family:var(--serif)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  select,input[type=text],input[type=number],textarea{font-family:var(--mono);font-size:.86rem;color:var(--ink);
+    background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+  input[type=text]{min-width:230px}
+  input[type=number]{width:78px}
+  .btn{font-size:.85rem;border:1px solid var(--accent);background:none;color:var(--accent);
+    border-radius:8px;padding:6px 14px;cursor:pointer;font-family:var(--sans)}
+  .btn:hover{background:var(--accent-soft)}
+  .btn.primary{background:var(--accent);color:var(--card)}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .preset{font-size:.78rem;border:1px solid var(--line);background:none;color:var(--muted);
+    border-radius:999px;padding:4px 12px;cursor:pointer}
+  .preset:hover{border-color:var(--accent);color:var(--accent)}
+  .algos{display:flex;flex-wrap:wrap;gap:6px}
+  .algos button{font-size:.84rem;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    border-radius:9px;padding:6px 13px;cursor:pointer;font-family:var(--sans)}
+  .algos button:hover{border-color:var(--accent);color:var(--accent)}
+  .algos button.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+  .hint{font-size:.8rem;color:var(--muted)}
+  .kbd{font-family:var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.82rem}
+  .stage{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+  @media (max-width:860px){.stage{grid-template-columns:minmax(0,1fr)}}
+  .stage>div{min-width:0}
+  svg{width:100%;height:auto;background:transparent}
+  .desc{font-size:.88rem;background:var(--accent-soft);border-radius:9px;padding:9px 13px;margin:10px 0;min-height:3.4em}
+  .desc b{color:var(--accent)}
+  .panel{font-size:.84rem;overflow-x:auto}
+  .panel table{border-collapse:collapse;font-size:.8rem;margin:6px 0 10px}
+  .panel td,.panel th{border:1px solid var(--line);padding:3px 7px;text-align:center;font-family:var(--mono);white-space:nowrap}
+  .panel th{background:var(--accent-soft);color:var(--accent)}
+  .panel td.rowh{background:var(--accent-soft);color:var(--accent);font-family:var(--sans)}
+  .panel td.up{background:var(--hl);font-weight:700}
+  .panel td.fin{background:var(--green-soft);color:var(--green);font-weight:700}
+  .panel td.bad{background:var(--red-soft);color:var(--red)}
+  .panel td.no{color:var(--muted)}
+  .panel h4{font-size:.82rem;color:var(--muted);margin:10px 0 2px;font-weight:600}
+  .asl{font-family:var(--mono);font-size:.86rem;background:var(--green-soft);color:var(--green);
+    border-radius:8px;padding:7px 11px;margin:8px 0}
+  .note{background:var(--blue-soft);border-left:4px solid var(--blue);border-radius:0 9px 9px 0;
+    padding:9px 13px;margin-top:12px;font-size:.84rem}
+  .note .t{display:block;font-size:.74rem;color:var(--blue);font-weight:700;letter-spacing:.06em;margin-bottom:3px}
+  .note b{color:var(--blue)}
+  .prog{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+  .cfgbox{display:none}
+  .cfgbox.on{display:block}
+  /* SVG 语义 */
+  .nc{fill:var(--card);stroke:var(--line);stroke-width:2}
+  .nc.on{fill:var(--hl);stroke:var(--hl-border);stroke-width:3}
+  .nc.done{fill:var(--green-soft);stroke:var(--green);stroke-width:2.6}
+  .nc.path{fill:var(--blue-soft);stroke:var(--blue);stroke-width:2.4}
+  .nc.bad{fill:var(--red-soft);stroke:var(--red);stroke-width:2.6}
+  .nc.dim{opacity:.42}
+  .nt{font-family:var(--mono);font-size:12.5px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+  .nt.sm{font-size:11px}
+  .nsub{font-family:var(--mono);font-size:10.5px;fill:var(--accent);text-anchor:middle}
+  .lk{stroke:var(--line);stroke-width:2;fill:none}
+  .lk.on{stroke:var(--blue);stroke-width:3}
+  .arc{fill:none;stroke:var(--blue);stroke-width:2}
+  .arc.hit{stroke:var(--green);stroke-width:2.6}
+  .arc.miss{stroke:var(--red);stroke-width:2}
+  .alab{font-family:var(--mono);font-size:10.5px;text-anchor:middle;fill:var(--blue)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>查找四合一模拟器</h1>
+    <div class="sub">折半判定树 · BST/AVL 建树与旋转 · B 树插入分裂 · 散列表五种冲突处理，全部<b>逐步可回放，并同步给出两个 ASL</b>。
+      配套 <a href="练习系统/第7章.html">练习系统第 7 章（136 题）</a> 与 <a href="练习系统/套路库.html">套路库 T7-1~T7-10</a>。</div>
+  </header>
+
+  <section class="card">
+    <h2>① 选模块</h2>
+    <div class="algos" id="algos"></div>
+    <div class="hint" id="algohint" style="margin-top:9px"></div>
+  </section>
+
+  <section class="card">
+    <h2>② 参数</h2>
+
+    <div class="cfgbox" id="cfg-bs">
+      <div class="row">
+        <span class="hint">有序表元素个数 n：</span><input type="number" id="bs_n" value="11" min="1" max="30">
+        <span class="hint">mid 取整：</span>
+        <select id="bs_r"><option value="floor">向下取整 ⌊(low+high)/2⌋</option><option value="ceil">向上取整 ⌈(low+high)/2⌉</option></select>
+        <span class="hint">查找第几个元素（0=只看树）：</span><input type="number" id="bs_k" value="0" min="0" max="30">
+      </div>
+      <div class="row"><span class="hint">预设：</span>
+        <button class="preset" data-bs="11,floor,0">n=11（王道样板）</button>
+        <button class="preset" data-bs="10,ceil,0">n=10 向上取整（2017 真题）</button>
+        <button class="preset" data-bs="14,floor,0">n=14（综合题2）</button>
+        <button class="preset" data-bs="11,floor,3">n=11 查第 3 个</button>
+      </div>
+      <div class="hint">元素默认取 1…n（判定树的形状只跟 n 与取整方式有关，与具体数值无关——这正是「给定 n 与取整方式后判定树唯一」）。</div>
+    </div>
+
+    <div class="cfgbox" id="cfg-bst">
+      <div class="row">
+        <span class="hint">插入序列：</span><input type="text" id="bst_seq" value="45,24,53,45,12,24,90">
+        <select id="bst_mode"><option value="bst">BST（不平衡）</option><option value="avl">AVL（自动旋转）</option></select>
+      </div>
+      <div class="row"><span class="hint">预设：</span>
+        <button class="preset" data-bst="45,24,53,45,12,24,90|bst">王道 BST 样板</button>
+        <button class="preset" data-bst="1,2,3,4,5,6,7|bst">升序插入（退化成单支）</button>
+        <button class="preset" data-bst="15,3,7,10,9,8|avl">AVL 逐步（含 RL 双旋）</button>
+        <button class="preset" data-bst="1,2,3,4,5,6,7|avl">AVL 升序（每步都转）</button>
+        <button class="preset" data-bst="16,3,7,11,9,26,18,14,15|avl">AVL 王道图 7.10</button>
+      </div>
+      <div class="hint">重复关键字会被忽略（BST 不允许相等）。AVL 模式下每次插入若失衡，会单独用一步展示<b>失衡类型与谁上位</b>。</div>
+    </div>
+
+    <div class="cfgbox" id="cfg-bt">
+      <div class="row">
+        <span class="hint">阶数 m：</span><select id="bt_m"><option>3</option><option selected>4</option><option>5</option></select>
+        <span class="hint">插入序列：</span><input type="text" id="bt_seq" value="20,30,50,52,60,68,70">
+      </div>
+      <div class="row"><span class="hint">预设：</span>
+        <button class="preset" data-bt="3|20,30,50,52,60,68,70">3阶·综合题1（末步连裂长高）</button>
+        <button class="preset" data-bt="4|6,9,13,5,2,8,12,15">4阶·2020 真题八步</button>
+        <button class="preset" data-bt="5|1,2,3,4,5,6,7,8,9,10,11,12">5阶·升序 12 个</button>
+      </div>
+      <div class="hint">关键字数区间 [⌈m/2⌉−1, m−1]（根除外）；插入后达到 m 个即分裂，<b>上升第 ⌈m/2⌉ 个</b>关键字。</div>
+    </div>
+
+    <div class="cfgbox" id="cfg-hash">
+      <div class="row">
+        <span class="hint">表长 m：</span><input type="number" id="h_m" value="16" min="2" max="30">
+        <span class="hint">H(key) = ( key ×</span><input type="number" id="h_mul" value="1" min="1" max="9">
+        <span class="hint">) %</span><input type="number" id="h_p" value="13" min="2" max="30">
+      </div>
+      <div class="row">
+        <span class="hint">冲突处理：</span>
+        <select id="h_mode">
+          <option value="lin">线性探测 d=1,2,3,…</option>
+          <option value="qpm">平方探测 d=±1²,±2²,…</option>
+          <option value="qp">平方探测（只 +k²）</option>
+          <option value="dbl">双散列 d=i·H₂(key)</option>
+          <option value="chain">链地址法（拉链）</option>
+        </select>
+        <span class="hint" id="h2lab" style="display:none">H₂(key)=1+key%</span><input type="number" id="h_p2" value="11" min="2" max="30" style="display:none">
+      </div>
+      <div class="row"><span class="hint">插入序列：</span><input type="text" id="h_seq" value="19,14,23,1,68,20,84,27,55,11,10,79"></div>
+      <div class="row"><span class="hint">预设：</span>
+        <button class="preset" data-h="16|1|13|lin|19,14,23,1,68,20,84,27,55,11,10,79">王道图7.34 线性探测</button>
+        <button class="preset" data-h="13|1|13|chain|19,14,23,1,68,20,84,27,55,11,10,79">王道图7.33 链地址</button>
+        <button class="preset" data-h="11|1|11|lin|1,13,12,34,38,33,27,22">综合题3 线性（ASL 21/8、47/11）</button>
+        <button class="preset" data-h="10|3|7|lin|7,8,30,11,18,9,14">2010 真题（(key×3)%7）</button>
+        <button class="preset" data-h="11|3|11|qp|20,3,11,18,9,14,7">2024 真题（平方探测 +k²）</button>
+        <button class="preset" data-h="11|1|7|lin|87,40,30,6,11,22,98,20">2019 真题（失败 ASL=6）</button>
+        <button class="preset" data-h="17|1|17|qpm|6,22,7,26,9,23">±i² 平方探测（第16题）</button>
+      </div>
+      <div class="hint">⚠️ <b>散列函数取模用 p，探测回绕取模用表长 m</b>——两者可以不同（如 2019 真题 m=11 而 p=7）。失败 ASL 的起点数恒为 <b>p</b>。</div>
+    </div>
+
+    <div class="row" style="margin-top:6px"><button class="btn primary" id="run">重新模拟</button></div>
+  </section>
+
+  <section class="card">
+    <h2>③ 单步执行</h2>
+    <div class="row">
+      <button class="btn" id="first">⏮ 开头</button>
+      <button class="btn" id="prev">◀ 上一步</button>
+      <button class="btn primary" id="next">下一步 ▶</button>
+      <button class="btn" id="play">▶ 自动</button>
+      <button class="btn" id="last">最后一步 ⏭</button>
+      <span class="prog" id="prog"></span>
+      <span class="hint">键盘 <span class="kbd">←</span> <span class="kbd">→</span> 也能翻</span>
+    </div>
+    <div class="desc" id="desc"></div>
+    <div class="stage">
+      <div><svg id="svg" viewBox="0 0 560 340"></svg></div>
+      <div class="panel" id="panel"></div>
+    </div>
+    <div class="note" id="note"><span class="t">考点提示</span></div>
+  </section>
+
+  <footer style="color:var(--muted);font-size:.82rem;text-align:center">
+    查找四合一模拟器 · 数据结构第 7 章配套 · 样板取自王道教材图 7.3 / 7.10 / 7.19 / 7.33 / 7.34 与 2010/2017/2019/2020/2024 统考真题
+  </footer>
+</div>
+
+<script>
+/* ==================== 通用工具 ==================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const frac = (a,b) => { // 显示「原式 = 约分 ≈ 小数」，不重复
+  if(!b) return '—';
+  const g=(x,y)=>y?g(y,x%y):x; const d=g(a,b)||1;
+  const p=a/d, q=b/d;
+  if(q===1) return a+'/'+b+' = '+p;                       // 整除
+  if(d===1) return a+'/'+b+' ≈ '+(a/b).toFixed(3);        // 已是最简
+  return a+'/'+b+' = '+p+'/'+q+' ≈ '+(a/b).toFixed(3);
+};
+const parseSeq = s => s.split(/[^0-9-]+/).filter(x=>x!=='').map(Number);
+
+/* ==================== 模块注册 ==================== */
+const MODS = {
+  bs:  {name:'① 折半判定树', cfg:'cfg-bs',
+        hint:'判定树的四条身份证：是 BST、是平衡二叉树、n 个圆结点 + n+1 个方结点、给定 n 与取整方式后<b>唯一</b>。方结点<b>不计比较次数</b>，失败长度数到它的父圆结点为止。'},
+  bst: {name:'② BST / AVL 建树', cfg:'cfg-bst',
+        hint:'BST 的效率只取决于树高，树高只取决于插入顺序（升序插入退化成单支）。AVL 用旋转把树高压回 O(log n)：<b>单旋是中间的 B 上位、双旋是最里层的 C 上位</b>。'},
+  bt:  {name:'③ B 树插入与分裂', cfg:'cfg-bt',
+        hint:'插入后关键字数达到 m 就分裂，<b>上升第 ⌈m/2⌉ 个</b>；父结点接住后可能自己再裂 ⟹ 连锁向上，<b>传到根才长高</b>。'},
+  hash:{name:'④ 散列表冲突处理', cfg:'cfg-hash',
+        hint:'五种冲突处理放在同一组数据上跑，最后同时给出 ASL成功 与 ASL失败——<b>失败 ASL 的起点数 = 散列函数的模 p，不是表长 m</b>。'}
+};
+let cur='bs', steps=[], idx=0, timer=null;
+
+/* ==================== ① 折半判定树 ==================== */
+function buildBS(){
+  const n = Math.max(1, Math.min(30, +$('#bs_n').value||11));
+  const rnd = $('#bs_r').value;
+  const kpos = Math.max(0, Math.min(n, +$('#bs_k').value||0));
+  const A = Array.from({length:n},(_,i)=>i+1);   // 元素 1..n
+  // 建判定树：结点 = {i(数组下标), lo, hi, dep, l, r}
+  let nodes=[], fails=[];
+  function build(lo, hi, dep){
+    if(lo>hi){ fails.push({lo:lo, dep:dep}); return null; }
+    const mid = rnd==='floor' ? Math.floor((lo+hi)/2) : Math.ceil((lo+hi)/2);
+    const nd = {i:mid, lo, hi, dep, l:null, r:null};
+    nodes.push(nd);
+    nd.l = build(lo, mid-1, dep+1);
+    nd.r = build(mid+1, hi, dep+1);
+    return nd;
+  }
+  const root = build(0, n-1, 1);
+  const H = Math.max(...nodes.map(d=>d.dep));
+  const sumS = nodes.reduce((s,d)=>s+d.dep, 0);
+  const sumF = fails.reduce((s,d)=>s+(d.dep-1), 0);   // 方结点不计比较：数到父结点
+  // 布局：中序序号定 x（圆结点用数组下标，方结点插在缝里），深度定 y
+  const CW=44, RH=58, PADX=30, PADY=34;
+  const W = (n*2+1)*(CW/2) + PADX*2, Hh = (H+1)*RH + PADY;
+  function xOfKey(i){ return PADX + (i*2+1)*(CW/2) + CW/2; }
+  function xOfFail(lo){ return PADX + (lo*2)*(CW/2) + CW/2; }
+  function drawTree(hi){        // hi = {path:Set(下标), cur:下标, done:下标, failLo:number|null}
+    hi = hi||{};
+    let s='';
+    (function walk(nd){
+      if(!nd) return;
+      const x=xOfKey(nd.i), y=PADY+(nd.dep-1)*RH;
+      [nd.l,nd.r].forEach(c=>{
+        if(c){ s+='<line class="lk'+((hi.path&&hi.path.has(c.i))?' on':'')+'" x1="'+x+'" y1="'+(y+15)+'" x2="'+xOfKey(c.i)+'" y2="'+(PADY+(c.dep-1)*RH-15)+'"/>'; }
+      });
+      walk(nd.l); walk(nd.r);
+    })(root);
+    fails.forEach(f=>{
+      const x=xOfFail(f.lo), y=PADY+(f.dep-1)*RH;
+      const cls = (hi.failLo===f.lo)?'nc bad':'nc dim';
+      s+='<rect class="'+cls+'" x="'+(x-12)+'" y="'+(y-11)+'" width="24" height="22" rx="3"/>';
+    });
+    nodes.forEach(nd=>{
+      const x=xOfKey(nd.i), y=PADY+(nd.dep-1)*RH;
+      let cls='nc';
+      if(hi.cur===nd.i) cls='nc on';
+      else if(hi.done===nd.i) cls='nc done';
+      else if(hi.path&&hi.path.has(nd.i)) cls='nc path';
+      s+='<circle class="'+cls+'" cx="'+x+'" cy="'+y+'" r="15"/>';
+      s+='<text class="nt" x="'+x+'" y="'+y+'">'+A[nd.i]+'</text>';
+    });
+    return {svg:s, vb:'0 0 '+W+' '+Hh};
+  }
+  const aslTab = () => {
+    let byLev={}; nodes.forEach(d=>byLev[d.dep]=(byLev[d.dep]||0)+1);
+    let byLevF={}; fails.forEach(d=>byLevF[d.dep-1]=(byLevF[d.dep-1]||0)+1);
+    let h='<h4>成功：每层的圆结点个数</h4><table><tr><th>比较次数</th>';
+    for(let l=1;l<=H;l++) h+='<th>'+l+'</th>'; h+='<th>合计</th></tr><tr><td class="rowh">结点数</td>';
+    for(let l=1;l<=H;l++) h+='<td>'+(byLev[l]||0)+'</td>'; h+='<td class="fin">'+n+'</td></tr></table>';
+    h+='<h4>失败：每种比较次数的方结点个数</h4><table><tr><th>比较次数</th>';
+    const ks=Object.keys(byLevF).map(Number).sort((a,b)=>a-b);
+    ks.forEach(k=>h+='<th>'+k+'</th>'); h+='<th>合计</th></tr><tr><td class="rowh">方结点</td>';
+    ks.forEach(k=>h+='<td>'+byLevF[k]+'</td>'); h+='<td class="fin">'+(n+1)+'</td></tr></table>';
+    h+='<div class="asl">ASL<sub>成功</sub> = '+frac(sumS,n)+'<br>'
+      +'ASL<sub>失败</sub> = '+frac(sumF,n+1)+'</div>';
+    return h;
+  };
+  const st=[];
+  const d0 = drawTree({});
+  st.push({desc:'<b>n = '+n+'、'+(rnd==='floor'?'向下':'向上')+'取整</b>的折半查找判定树。'
+      +'圆结点 <b>'+n+'</b> 个（表中元素）、方结点 <b>'+(n+1)+'</b> 个（n+1 个失败区间）；树高 h = <b>'+H+'</b> = ⌈log₂(n+1)⌉ = '+Math.ceil(Math.log2(n+1))+'，'
+      +'正是成功与失败的<b>最多比较次数</b>。', svg:d0.svg, vb:d0.vb, panel:aslTab()});
+  if(kpos>0){
+    const target=kpos-1; let lo=0, hi=n-1, cnt=0, path=new Set(), rows=[];
+    while(lo<=hi){
+      const mid = rnd==='floor'?Math.floor((lo+hi)/2):Math.ceil((lo+hi)/2);
+      cnt++;
+      rows.push([cnt, lo+1, hi+1, mid+1, A[mid]===A[target]?'=':(A[target]<A[mid]?'<':'>')]);
+      let tab='<h4>查找 '+A[target]+' 的过程</h4><table><tr><th>次</th><th>low</th><th>high</th><th>mid</th><th>比较</th></tr>';
+      rows.forEach(r=>tab+='<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td class="up">'+r[3]+'</td><td>'+esc('key '+r[4]+' A[mid]')+'</td></tr>');
+      tab+='</table>';
+      const hit = mid===target;
+      const dd = drawTree({path:new Set(path), cur:mid});
+      st.push({desc:'第 <b>'+cnt+'</b> 次比较：low='+(lo+1)+'、high='+(hi+1)+' ⟹ mid=<b>'+(mid+1)+'</b>（元素 '+A[mid]+'）。'
+        +(hit?'<b>与 '+A[target]+' 相等 ⟹ 查找成功，比较 '+cnt+' 次</b>（= 该结点在判定树中的层号）。'
+              :'目标 '+A[target]+' '+(A[target]<A[mid]?'更小 ⟹ 往<b>左</b>子树走（high = mid−1）':'更大 ⟹ 往<b>右</b>子树走（low = mid+1）')),
+        svg:dd.svg, vb:dd.vb, panel:tab});
+      path.add(mid);
+      if(hit) break;
+      if(A[target]<A[mid]) hi=mid-1; else lo=mid+1;
+    }
+  }
+  return {steps:st, note:'<b>判定树 = 折半查找的全部信息</b>：查找路径就是根到某结点的路径、比较次数就是层号。'
+    +'⚠️ <b>方结点不计比较次数</b>——失败的查找长度数到它的<u>父圆结点</u>为止，所以本例失败 ASL 的分子是各方结点层号<b>减一</b>之和。'
+    +'⚠️ 取整方式改一下（试试上面的两个预设），<b>树形与两个 ASL 都会变</b>——2017 真题四选一考的就是这件事，全程必须统一取整方式。'};
+}
+
+/* ==================== ② BST / AVL ==================== */
+function buildBST(){
+  const seq = parseSeq($('#bst_seq').value);
+  const isAVL = $('#bst_mode').value==='avl';
+  let root=null; const st=[];
+  const H = t => t? t.h : 0;
+  const upd = t => { t.h = Math.max(H(t.l),H(t.r))+1; };
+  const bf = t => t? H(t.l)-H(t.r) : 0;
+  function rotR(y){ const x=y.l; y.l=x.r; x.r=y; upd(y); upd(x); return x; }
+  function rotL(y){ const x=y.r; y.r=x.l; x.l=y; upd(y); upd(x); return x; }
+  // 布局
+  function layout(t){
+    let ord=0, list=[];
+    (function ino(nd,d){ if(!nd) return; ino(nd.l,d+1); nd._x=ord++; nd._d=d; list.push(nd); ino(nd.r,d+1); })(t,1);
+    return list;
+  }
+  function draw(hi){
+    hi=hi||{};
+    const list=layout(root);
+    if(!list.length) return {svg:'', vb:'0 0 560 120'};
+    const CW=46, RH=58, PADX=28, PADY=32;
+    const maxd=Math.max(...list.map(d=>d._d));
+    const W=Math.max(320, list.length*CW+PADX*2), Hh=maxd*RH+PADY;
+    const X=nd=>PADX+nd._x*CW+CW/2, Y=nd=>PADY+(nd._d-1)*RH;
+    let s='';
+    list.forEach(nd=>{ [nd.l,nd.r].forEach(c=>{ if(c) s+='<line class="lk" x1="'+X(nd)+'" y1="'+(Y(nd)+16)+'" x2="'+X(c)+'" y2="'+(Y(c)-16)+'"/>'; }); });
+    list.forEach(nd=>{
+      let cls='nc';
+      if(hi.cur===nd.k) cls='nc on';
+      else if(hi.bad===nd.k) cls='nc bad';
+      else if(hi.path&&hi.path.has(nd.k)) cls='nc path';
+      else if(hi.up===nd.k) cls='nc done';
+      s+='<circle class="'+cls+'" cx="'+X(nd)+'" cy="'+Y(nd)+'" r="16"/>';
+      s+='<text class="nt" x="'+X(nd)+'" y="'+Y(nd)+'">'+nd.k+'</text>';
+      if(isAVL) s+='<text class="nsub" x="'+X(nd)+'" y="'+(Y(nd)-21)+'">'+bf(nd)+'</text>';
+    });
+    return {svg:s, vb:'0 0 '+W+' '+Hh};
+  }
+  function tabOf(extra){
+    const list=layout(root);
+    if(!list.length) return '';
+    let h='<h4>当前树（中序 = 升序）</h4><div style="font-family:var(--mono);font-size:.82rem;word-break:break-all">'
+        + list.map(d=>d.k).join(' ') + '</div>';
+    const maxd=Math.max(...list.map(d=>d._d));
+    const sum=list.reduce((s,d)=>s+d._d,0);
+    h+='<table style="margin-top:8px"><tr><th>结点数</th><th>树高</th><th>ASL成功</th></tr><tr><td>'+list.length+'</td><td>'+maxd+'</td><td class="fin">'+frac(sum,list.length)+'</td></tr></table>';
+    if(isAVL){
+      h+='<h4>平衡因子（结点上方小字）</h4><table><tr><th>结点</th>';
+      list.forEach(d=>h+='<th>'+d.k+'</th>'); h+='</tr><tr><td class="rowh">BF</td>';
+      list.forEach(d=>h+='<td'+(Math.abs(bf(d))>1?' class="bad"':'')+'>'+bf(d)+'</td>'); h+='</tr></table>';
+    }
+    return h+(extra||'');
+  }
+  const seen=new Set();
+  seq.forEach(k=>{
+    if(seen.has(k)) return; seen.add(k);
+    // 记录插入路径
+    let path=[], p=root;
+    while(p){ path.push(p.k); p = k<p.k? p.l : p.r; }
+    function ins(t){
+      if(!t) return {k, l:null, r:null, h:1};
+      if(k<t.k) t.l=ins(t.l); else t.r=ins(t.r);
+      upd(t); return t;
+    }
+    root = ins(root);
+    let d1 = draw({cur:k, path:new Set(path)});
+    st.push({desc:'插入 <b>'+k+'</b>：'+(path.length? '从根一路比较 '+path.join(' → ')+'，'+(path.length)+' 次比较后落到空位。':'空树，直接作根。'),
+             svg:d1.svg, vb:d1.vb, panel:tabOf()});
+    if(isAVL){
+      // 找最小失衡子树并旋转
+      let type=null, Ak=null, upk=null;
+      function fix(t){
+        if(!t) return null;
+        if(k<t.k) t.l=fix(t.l); else if(k>t.k) t.r=fix(t.r); else return t;
+        upd(t);
+        const b=bf(t);
+        if(b>1 && !type){
+          Ak=t.k;
+          if(k<t.l.k){ type='LL'; upk=t.l.k; return rotR(t); }
+          else { type='LR'; upk=t.l.r.k; t.l=rotL(t.l); return rotR(t); }
+        }
+        if(b<-1 && !type){
+          Ak=t.k;
+          if(k>t.r.k){ type='RR'; upk=t.r.k; return rotL(t); }
+          else { type='RL'; upk=t.r.l.k; t.r=rotR(t.r); return rotL(t); }
+        }
+        return t;
+      }
+      const before = draw({bad:null});
+      root = fix(root);
+      if(type){
+        const d2=draw({up:upk});
+        st.push({desc:'⚠️ 结点 <b>'+Ak+'</b> 失衡（|BF| = 2），类型 <b>'+type+'</b> ⟹ '
+          +(type.length===2 && type[0]===type[1] ? '<b>单</b>旋，中间的 <b>'+upk+'</b> 上位' : '<b>双</b>旋，最里层的 <b>'+upk+'</b> 上位')
+          +'。转完树高恢复，<b>本次插入的调整到此结束</b>。',
+          svg:d2.svg, vb:d2.vb, panel:tabOf('<div class="asl">失衡类型 '+type+' → 新的子树根 = '+upk+'</div>')});
+      }
+    }
+  });
+  if(!st.length) st.push({desc:'序列为空。', svg:'', vb:'0 0 560 120', panel:''});
+  const last=draw({});
+  const list=layout(root);
+  st.push({desc:'建成。共 <b>'+list.length+'</b> 个结点、树高 <b>'+(list.length?Math.max(...list.map(d=>d._d)):0)+'</b>。'
+    +(isAVL?'AVL 的高度被旋转压在 O(log n)；':'BST 的高度完全由插入顺序决定——把序列改成升序试试，会退化成一条链。')
+    +'中序遍历必为升序，这是 BST 的身份证。', svg:last.svg, vb:last.vb, panel:tabOf()});
+  return {steps:st, note: isAVL
+    ? '<b>旋转判型只看两个字母</b>：A 往哪边偏 + 新结点落在那棵子树的哪一侧。<b>单旋（LL/RR）是中间的 B 上位、双旋（LR/RL）是最里层的 C 上位</b>——2010、2021 两道真题问「调整后谁是根」，靠这句可以不转直接答。⚠️ 高度 h 的 AVL <b>最少结点数 1, 2, 4, 7, 12, 20, 33</b>（n<sub>h</sub>=n<sub>h−1</sub>+n<sub>h−2</sub>+1）必须背死。'
+    : '<b>BST 的效率只取决于树高、树高只取决于插入顺序</b>：最好 ⌈log₂(n+1)⌉、最坏 n。⚠️ 判「某序列能否是查找 x 的比较序列」用<b>区间夹逼</b>（左拐锁上界、右拐锁下界，锁上永不放宽）；判「哪些插入序列生成同一棵 BST」用<b>祖先先于子孙</b>。'};
+}
+
+/* ==================== ③ B 树 ==================== */
+function buildBT(){
+  const m = +$('#bt_m').value, seq = parseSeq($('#bt_seq').value);
+  const MAXK=m-1, MINK=Math.ceil(m/2)-1, UP=Math.ceil(m/2);   // 上升第 UP 个（1-based）
+  let root={k:[], c:[]};
+  const st=[];
+  function isLeaf(t){ return t.c.length===0; }
+  function insert(t,key,log){
+    if(isLeaf(t)){ let i=0; while(i<t.k.length && t.k[i]<key) i++; t.k.splice(i,0,key); }
+    else{ let i=0; while(i<t.k.length && t.k[i]<key) i++; insert(t.c[i],key,log);
+          if(t.c[i].k.length>MAXK) splitChild(t,i,log); }
+  }
+  function splitChild(par,i,log){
+    const ch=par.c[i], mid=UP-1;
+    const upKey=ch.k[mid];
+    const right={k:ch.k.slice(mid+1), c:ch.c.length?ch.c.slice(mid+1):[]};
+    ch.k=ch.k.slice(0,mid); if(ch.c.length) ch.c=ch.c.slice(0,mid+1);
+    par.k.splice(i,0,upKey); par.c.splice(i+1,0,right);
+    log.push(upKey);
+  }
+  // 布局：递归算子树宽
+  function measure(t){
+    const cellW = Math.max(...t.k.map(x=>String(x).length), 1)*9+16;
+    const selfW = Math.max(t.k.length,1)*cellW+6;
+    if(isLeaf(t)) { t._w=selfW; t._cw=cellW; return selfW; }
+    let s=0; t.c.forEach(c=>{ s+=measure(c)+14; });
+    t._cw=cellW; t._w=Math.max(selfW, s-14); return t._w;
+  }
+  function place(t,x,d){
+    t._d=d; t._x=x+t._w/2;
+    if(!isLeaf(t)){ let cx=x+(t._w-(t.c.reduce((s,c)=>s+c._w+14,0)-14))/2;
+      t.c.forEach(c=>{ place(c,cx,d+1); cx+=c._w+14; }); }
+  }
+  function drawTree(hiKeys){
+    hiKeys=hiKeys||new Set();
+    measure(root); place(root,10,1);
+    let maxd=1, s='';
+    (function walk(t){
+      maxd=Math.max(maxd,t._d);
+      const bw=Math.max(t.k.length,1)*t._cw, x0=t._x-bw/2, y=26+(t._d-1)*66;
+      if(!isLeaf(t)){
+        t.c.forEach((c,i)=>{ const px=x0+i*t._cw; s+='<line class="lk" x1="'+px+'" y1="'+(y+13)+'" x2="'+c._x+'" y2="'+(26+(c._d-1)*66-13)+'"/>'; });
+      }
+      s+='<rect class="nc'+(t.k.some(k=>hiKeys.has(k))?' on':'')+'" x="'+x0+'" y="'+(y-13)+'" width="'+bw+'" height="26" rx="4"/>';
+      t.k.forEach((k,i)=>{
+        if(i) s+='<line class="lk" x1="'+(x0+i*t._cw)+'" y1="'+(y-13)+'" x2="'+(x0+i*t._cw)+'" y2="'+(y+13)+'"/>';
+        s+='<text class="nt sm" x="'+(x0+i*t._cw+t._cw/2)+'" y="'+y+'">'+k+'</text>';
+      });
+      if(!isLeaf(t)) t.c.forEach(walk);
+    })(root);
+    return {svg:s, vb:'0 0 '+(root._w+24)+' '+(maxd*66+16)};
+  }
+  function stat(){
+    let cnt=0, keys=0, maxd=1;
+    (function walk(t,d){ cnt++; keys+=t.k.length; maxd=Math.max(maxd,d); t.c.forEach(c=>walk(c,d+1)); })(root,1);
+    return {cnt, keys, maxd};
+  }
+  function tab(){
+    const s=stat();
+    let h='<table><tr><th>阶 m</th><th>关键字数区间</th><th>分裂时上升第几个</th></tr>'
+      +'<tr><td>'+m+'</td><td class="fin">['+MINK+', '+MAXK+']（根除外）</td><td class="fin">第 ⌈m/2⌉ = '+UP+' 个</td></tr></table>'
+      +'<table style="margin-top:8px"><tr><th>结点数</th><th>关键字总数</th><th>树高</th></tr><tr><td>'+s.cnt+'</td><td>'+s.keys+'</td><td>'+s.maxd+'</td></tr></table>';
+    // 逐层展示
+    let lev=[]; (function walk(t,d){ (lev[d]=lev[d]||[]).push('['+t.k.join(' ')+']'); t.c.forEach(c=>walk(c,d+1)); })(root,0);
+    h+='<h4>逐层结点</h4><div style="font-family:var(--mono);font-size:.8rem;line-height:1.9;word-break:break-all">';
+    lev.forEach((r,i)=>h+='第'+(i+1)+'层：'+r.join(' ')+'<br>');
+    return h+'</div>';
+  }
+  seq.forEach(key=>{
+    const before=stat().maxd;
+    const log=[];
+    insert(root,key,log);
+    if(root.k.length>MAXK){ const nr={k:[],c:[root]}; splitChild(nr,0,log); root=nr; }
+    const after=stat().maxd;
+    const d=drawTree(new Set([key].concat(log)));
+    st.push({desc:'插入 <b>'+key+'</b>：'
+      + (log.length? '发生 <b>'+log.length+'</b> 次分裂，上升的关键字是 <b>'+log.join('、')+'</b>。' : '未溢出，直接放进终端结点。')
+      + (after>before? ' ⟹ <b>分裂一直传到根，树高 '+before+' → '+after+'</b>（B 树只从根上面长高）。':''),
+      svg:d.svg, vb:d.vb, panel:tab()});
+  });
+  if(!st.length) st.push({desc:'序列为空。', svg:'', vb:'0 0 560 120', panel:''});
+  return {steps:st, note:'<b>关键字数区间 [⌈m/2⌉−1, m−1]，但根结点除外</b>（根只要 1 个）——「除根结点外」这五个字至少值三道题。'
+    +'⚠️ <b>分裂上升的是第 ⌈m/2⌉ 个关键字</b>：m=3 与 m=4 都上升第 2 个、m=5 上升第 3 个。写成「左边留 ⌈m/2⌉−1 个」更好数。'
+    +'⚠️ <b>树高只在分裂传到根时才 +1</b>；删除时反过来，合并吃空根才降高。'};
+}
+
+/* ==================== ④ 散列表 ==================== */
+function buildHash(){
+  const m=+$('#h_m').value, mul=+$('#h_mul').value, p=+$('#h_p').value, p2=+$('#h_p2').value;
+  const mode=$('#h_mode').value, seq=parseSeq($('#h_seq').value);
+  const h0 = k => ((k*mul)%p+p)%p;
+  const label = mode==='lin'?'线性探测':mode==='qpm'?'平方探测 ±i²':mode==='qp'?'平方探测 +k²':mode==='dbl'?'双散列':'链地址法';
+  const st=[];
+  const hf = '('+ (mul>1? 'key×'+mul : 'key') +') % '+p;
+
+  if(mode==='chain'){
+    const chains=Array.from({length:p},()=>[]);
+    function draw(hi){
+      const RH=30, W=520; let s='';
+      for(let i=0;i<p;i++){
+        const y=16+i*RH;
+        s+='<rect class="nc'+(hi===i?' on':'')+'" x="8" y="'+(y-11)+'" width="34" height="22" rx="3"/>';
+        s+='<text class="nt sm" x="25" y="'+y+'">'+i+'</text>';
+        chains[i].forEach((k,j)=>{
+          const x=60+j*70;
+          s+='<line class="lk" x1="'+(x-18)+'" y1="'+y+'" x2="'+(x-2)+'" y2="'+y+'"/>';
+          s+='<rect class="nc'+(hi===i&&j===chains[i].length-1?' done':'')+'" x="'+x+'" y="'+(y-11)+'" width="46" height="22" rx="3"/>';
+          s+='<text class="nt sm" x="'+(x+23)+'" y="'+y+'">'+k+'</text>';
+        });
+        const xe=60+chains[i].length*70;
+        s+='<line class="lk" x1="'+(xe-18)+'" y1="'+y+'" x2="'+(xe-4)+'" y2="'+y+'"/>';
+        s+='<text class="nt sm" x="'+(xe+6)+'" y="'+y+'">∧</text>';
+      }
+      return {svg:s, vb:'0 0 '+W+' '+(p*RH+16)};
+    }
+    function tab(){
+      let succ=0, n=0;
+      chains.forEach(c=>{ c.forEach((k,j)=>{ succ+=j+1; n++; }); });
+      const failA=chains.reduce((s,c)=>s+c.length+1,0);   // 空指针算 1 次
+      const failB=chains.reduce((s,c)=>s+c.length,0);     // 只数关键字比较
+      let h='<h4>各地址链长</h4><table><tr><th>地址</th>';
+      for(let i=0;i<p;i++) h+='<th>'+i+'</th>'; h+='</tr><tr><td class="rowh">链长</td>';
+      for(let i=0;i<p;i++) h+='<td'+(chains[i].length>2?' class="bad"':'')+'>'+chains[i].length+'</td>'; h+='</tr></table>';
+      h+='<div class="asl">ASL<sub>成功</sub> = '+(n?frac(succ,n):'—')+'<br>'
+        +'ASL<sub>失败</sub> = '+frac(failA,p)+'　（空指针算 1 次）<br>'
+        +'ASL<sub>失败</sub> = '+frac(failB,p)+'　（只数关键字比较）</div>';
+      return h;
+    }
+    seq.forEach(k=>{
+      const a=h0(k); chains[a].push(k);
+      const d=draw(a);
+      st.push({desc:'插入 <b>'+k+'</b>：H('+k+') = '+hf.replace('key',k)+' = <b>'+a+'</b> ⟹ 挂到 '+a+' 号链的末尾（链内第 '+chains[a].length+' 个）。'
+        +(chains[a].length>1?' <b>与同链的 '+chains[a].slice(0,-1).join('、')+' 是同义词</b>。':''),
+        svg:d.svg, vb:d.vb, panel:tab()});
+    });
+    const d=draw(-1);
+    st.push({desc:'建表完成。<b>链地址法不产生堆积</b>（每条链只装同义词，别人进不来），<b>可以物理删除</b>，特别适合频繁插入删除。',
+      svg:d.svg, vb:d.vb, panel:tab()});
+    return {steps:st, note:'⚠️ <b>失败 ASL 的分母是散列函数的模 p（这里 '+p+'），不是表长</b>。'
+      +'⚠️ 链地址法失败 ASL 有<b>两种口径</b>：「空指针算 1 次」（代价 = 链长+1，空链算 1）与「只数关键字比较」（代价 = 链长，空链算 0）——王道自己在注释框里承认两者并存，<b>按题干括号里的说明走，并在卷面写明用的哪种</b>。后一种有自查式 ASL失败 = n/p。'};
+  }
+
+  /* 开放定址法 */
+  const T=new Array(m).fill(null);
+  function probes(k){                       // 生成探测地址序列
+    const a=h0(k)%m, out=[a];
+    if(mode==='lin'){ for(let i=1;i<m;i++) out.push((a+i)%m); }
+    else if(mode==='qp'){ for(let i=1;i<m;i++) out.push(((a+i*i)%m+m)%m); }
+    else if(mode==='qpm'){ for(let i=1;i<=Math.floor(m/2);i++){ out.push(((a+i*i)%m+m)%m); out.push(((a-i*i)%m+m)%m); } }
+    else if(mode==='dbl'){ const d=1+k%p2; for(let i=1;i<m;i++) out.push(((a+i*d)%m+m)%m); }
+    return out;
+  }
+  const cmpCnt={};                          // 关键字 → 成功查找比较次数
+  function draw(hi){
+    hi=hi||{};
+    const CW=Math.max(34, Math.min(46, Math.floor(520/m))), PADX=10, y=64;
+    let s='';
+    for(let i=0;i<m;i++){
+      const x=PADX+i*CW;
+      let cls='nc';
+      if(hi.hit===i) cls='nc done'; else if(hi.miss&&hi.miss.includes(i)) cls='nc bad';
+      s+='<rect class="'+cls+'" x="'+x+'" y="'+(y-13)+'" width="'+(CW-2)+'" height="26" rx="3"/>';
+      s+='<text class="nsub" x="'+(x+CW/2-1)+'" y="'+(y-20)+'">'+i+'</text>';
+      if(T[i]!==null) s+='<text class="nt sm" x="'+(x+CW/2-1)+'" y="'+y+'">'+T[i]+'</text>';
+      if(i>=p) s+='<text class="nsub" x="'+(x+CW/2-1)+'" y="'+(y+26)+'" style="fill:var(--muted)">✗起点</text>';
+    }
+    // 探测跳跃弧
+    if(hi.path && hi.path.length>1){
+      for(let i=0;i+1<hi.path.length;i++){
+        const x1=PADX+hi.path[i]*CW+CW/2-1, x2=PADX+hi.path[i+1]*CW+CW/2-1;
+        const hgt=18+i*13, last=(i+2===hi.path.length);
+        s+='<path class="arc'+(last?' hit':' miss')+'" d="M '+x1+' '+(y-14)+' Q '+((x1+x2)/2)+' '+(y-14-hgt)+' '+x2+' '+(y-14)+'"/>';
+      }
+    }
+    return {svg:s, vb:'0 0 '+(PADX*2+m*CW)+' 108'};
+  }
+  function tab(){
+    let h='<h4>散列表</h4><table><tr><th>地址</th>';
+    for(let i=0;i<m;i++) h+='<th>'+i+'</th>'; h+='</tr><tr><td class="rowh">关键字</td>';
+    for(let i=0;i<m;i++) h+='<td'+(T[i]!==null?'':' class="no"')+'>'+(T[i]===null?'':T[i])+'</td>'; h+='</tr>';
+    h+='<tr><td class="rowh">比较次数</td>';
+    for(let i=0;i<m;i++) h+='<td'+(T[i]!==null?' class="up"':' class="no"')+'>'+(T[i]===null?'':cmpCnt[T[i]])+'</td>'; h+='</tr></table>';
+    const ks=T.filter(x=>x!==null); const succ=ks.reduce((s,k)=>s+cmpCnt[k],0);
+    // 失败：起点只能是 0..p-1
+    let fc=[], fs=0;
+    for(let a=0;a<p;a++){ let c=0, i=a%m; while(T[i]!==null){ c++; i=(i+1)%m; if(c>m) break; } c++; fc.push(c); fs+=c; }
+    h+='<h4>查找失败（起点只有 '+p+' 个：0~'+(p-1)+'，按线性口径一直走到第一个空位）</h4><table><tr><th>H₀</th>';
+    for(let a=0;a<p;a++) h+='<th>'+a+'</th>'; h+='</tr><tr><td class="rowh">比较次数</td>';
+    fc.forEach(c=>h+='<td>'+c+'</td>'); h+='</tr></table>';
+    h+='<div class="asl">装填因子 α = '+ks.length+'/'+m+' = '+(ks.length/m).toFixed(3)+'<br>'
+      +'ASL<sub>成功</sub> = '+(ks.length?frac(succ,ks.length):'—')+'<br>'
+      +'ASL<sub>失败</sub> = '+frac(fs,p)+'</div>';
+    if(mode!=='lin') h+='<div class="hint">⚠️ 失败 ASL 一栏按<b>线性口径</b>给出（统考只在线性探测下考失败 ASL）；本次建表用的是 '+label+'。</div>';
+    return h;
+  }
+  seq.forEach(k=>{
+    const seqA=probes(k); let placed=-1, path=[], c=0;
+    for(const a of seqA){ c++; path.push(a); if(T[a]===null){ T[a]=k; placed=a; break; } }
+    cmpCnt[k]=c;
+    const d=draw({path:path, hit:placed, miss:path.slice(0,-1)});
+    let how='H('+k+') = '+hf.replace('key',k)+' = <b>'+h0(k)+'</b>';
+    if(mode==='dbl') how+='，H₂('+k+') = 1 + '+k+'%'+p2+' = <b>'+(1+k%p2)+'</b>';
+    st.push({desc:'插入 <b>'+k+'</b>：'+how+'。'
+      +(c===1? ' 该格为空，<b>一次入座</b>。'
+             : ' 连撞 '+(c-1)+' 次（'+path.slice(0,-1).map(a=>a+'('+T[a]+')').join(' → ')+'），'
+               +'第 <b>'+c+'</b> 次探测落在地址 <b>'+placed+'</b>。')
+      +(placed<0? ' <b style="color:var(--red)">⚠️ 探测序列走完仍没找到空位——'+label+'探不遍全表！</b>':''),
+      svg:d.svg, vb:d.vb, panel:tab()});
+  });
+  const d=draw({});
+  st.push({desc:'建表完成，<b>'+label+'</b>。右栏同时给出装填因子、ASL成功 与 ASL失败。'
+    +'<b>换一种冲突处理方法再跑一遍同一组数据</b>，会看到表结构与两个 ASL 全变——这正是王道正文强调的那句话。',
+    svg:d.svg, vb:d.vb, panel:tab()});
+  return {steps:st, note:'⚠️ <b>散列函数取模用 p（'+p+'），探测回绕取模用表长 m（'+m+'）</b>——两个模可以不同'
+    +(p<m ? '（本例就不同）。' : '（本例恰好相同，但 2019 真题里 m=11 而 p=7）。')
+    +'⚠️ <b>失败 ASL 的起点只有 p 个（0~'+(p-1)+'）</b>'
+    +(p<m ? '，地址 '+p+'~'+(m-1)+' 里就算有记录也当不了起点，但每条路都要<b>路过</b>它们（2019 真题的题眼）。' : '。')
+    +'⚠️ 每条失败路径要<b>一直走到第一个空位，且撞空位那一次也算一次比较</b>。'
+    +'⚠️ 开放定址法<b>不能物理删除</b>，只能打删除标记；查找遇到标记要继续往后走。'};
+}
+
+/* ==================== 步进器 ==================== */
+const BUILDERS={bs:buildBS, bst:buildBST, bt:buildBT, hash:buildHash};
+let noteHtml='';
+function run(){
+  try{ const r=BUILDERS[cur](); steps=r.steps; noteHtml=r.note; }
+  catch(e){ steps=[{desc:'参数有误：'+esc(e.message), svg:'', vb:'0 0 560 120', panel:''}]; noteHtml=''; }
+  idx=0; render();
+}
+function render(){
+  const s=steps[idx]||{};
+  $('#desc').innerHTML=s.desc||'';
+  $('#svg').setAttribute('viewBox', s.vb||'0 0 560 340');
+  $('#svg').innerHTML=s.svg||'';
+  $('#panel').innerHTML=s.panel||'';
+  $('#note').innerHTML='<span class="t">考点提示</span>'+noteHtml;
+  $('#prog').textContent='第 '+(idx+1)+' / '+steps.length+' 步';
+  $('#prev').disabled=idx===0; $('#first').disabled=idx===0;
+  $('#next').disabled=idx>=steps.length-1; $('#last').disabled=idx>=steps.length-1;
+}
+function go(d){ idx=Math.max(0,Math.min(steps.length-1, idx+d)); render(); }
+$('#next').onclick=()=>go(1); $('#prev').onclick=()=>go(-1);
+$('#first').onclick=()=>{idx=0;render()}; $('#last').onclick=()=>{idx=steps.length-1;render()};
+$('#play').onclick=function(){
+  if(timer){ clearInterval(timer); timer=null; this.textContent='▶ 自动'; return; }
+  this.textContent='⏸ 暂停';
+  timer=setInterval(()=>{ if(idx>=steps.length-1){ clearInterval(timer); timer=null; $('#play').textContent='▶ 自动'; } else go(1); }, 1100);
+};
+document.addEventListener('keydown', e=>{ if(e.key==='ArrowRight') go(1); if(e.key==='ArrowLeft') go(-1); });
+$('#run').onclick=run;
+
+/* 模块切换 */
+const algos=$('#algos');
+Object.keys(MODS).forEach(k=>{
+  const b=document.createElement('button'); b.textContent=MODS[k].name; b.dataset.k=k;
+  b.onclick=()=>{ cur=k; [...algos.children].forEach(x=>x.classList.toggle('on', x.dataset.k===k));
+    document.querySelectorAll('.cfgbox').forEach(c=>c.classList.toggle('on', c.id===MODS[k].cfg));
+    $('#algohint').innerHTML=MODS[k].hint; run(); };
+  algos.appendChild(b);
+});
+/* 预设按钮 */
+document.querySelectorAll('[data-bs]').forEach(b=>b.onclick=()=>{ const [n,r,k]=b.dataset.bs.split(','); $('#bs_n').value=n; $('#bs_r').value=r; $('#bs_k').value=k; run(); });
+document.querySelectorAll('[data-bst]').forEach(b=>b.onclick=()=>{ const [s,mo]=b.dataset.bst.split('|'); $('#bst_seq').value=s; $('#bst_mode').value=mo; run(); });
+document.querySelectorAll('[data-bt]').forEach(b=>b.onclick=()=>{ const [mm,s]=b.dataset.bt.split('|'); $('#bt_m').value=mm; $('#bt_seq').value=s; run(); });
+document.querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{ const [mm,mu,pp,mo,s]=b.dataset.h.split('|');
+  $('#h_m').value=mm; $('#h_mul').value=mu; $('#h_p').value=pp; $('#h_mode').value=mo; $('#h_seq').value=s; syncH2(); run(); });
+function syncH2(){ const on=$('#h_mode').value==='dbl'; $('#h2lab').style.display=on?'':'none'; $('#h_p2').style.display=on?'':'none'; }
+$('#h_mode').onchange=()=>{ syncH2(); run(); };
+['#bs_n','#bs_r','#bs_k','#bst_mode','#bt_m'].forEach(s=>$(s).onchange=run);
+
+algos.children[0].click();
+</script>
+</body>
+</html>
