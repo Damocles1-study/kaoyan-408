@@ -63,7 +63,7 @@ function qHtml(q,idx){
     +' '+q.stem+'</div>';
   if(q.code&&!isAnsCode(q))h+='<pre class="code">'+escCode(q.code)+'</pre>';
   /* fig：题干配图（裁自王道原书扫描件）。只在「不看图做不了题」时才配。 */
-  if(q.fig)h+='<figure class="qfig"><img src="'+q.fig+'" alt="题图" loading="lazy">'
+  if(q.fig)h+='<figure class="qfig"><a href="'+q.fig+'" target="_blank" rel="noopener" title="点击看大图（新标签页打开原图）"><img src="'+q.fig+'" alt="题图" loading="lazy"></a>'
     +(q.figcap?'<figcaption>'+q.figcap+'</figcaption>':'')+'</figure>';
   if(q.type==='choice'){
     h+='<div class="opts">';
@@ -86,7 +86,7 @@ function qHtml(q,idx){
   h+='<button class="reveal">看核对 ▾</button>';
   h+='<div class="ans"><div class="tracks">';
   h+='<div class="track book"><h4>📕 王道书答案</h4>'+(q.type==='choice'?'<div class="final">'+q.ans+'</div>':'')+'<div>'+q.book+'</div>'
-    +(q.figA?'<figure class="qfig"><img src="'+q.figA+'" alt="答案图" loading="lazy">'
+    +(q.figA?'<figure class="qfig"><a href="'+q.figA+'" target="_blank" rel="noopener" title="点击看大图（新标签页打开原图）"><img src="'+q.figA+'" alt="答案图" loading="lazy"></a>'
       +(q.figAcap?'<figcaption>'+q.figAcap+'</figcaption>':'')+'</figure>':'')+'</div>';
   h+='<div class="track claude"><h4>🤖 Claude 运行核对</h4><div>'+q.claude+'</div>'+(q.run?'<div class="run">▸ '+q.run+'</div>':'')+'</div>';
   h+='</div>';

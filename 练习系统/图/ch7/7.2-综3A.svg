@@ -1,0 +1,45 @@
+<svg width="1150" height="430" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 430" font-family="Georgia,serif">
+<text x="16" y="26" font-size="14" fill="#8a8a8a">① 上层：对 A[7], A[15], …, A[8n−1] 做<tspan font-weight="bold" fill="#b0652f">顺序查找</tspan> —— 第 k 个索引结点在第 k 层，命中它需比较 k 次</text>
+<text x="16" y="50" font-size="14" fill="#8a8a8a">② 下层：落到第 k 块后，在块内<tspan font-weight="bold" fill="#b0652f">剩下的 7 个</tspan>元素上做<tspan font-weight="bold" fill="#b0652f">折半查找</tspan>（块尾 A[8k−1] 已在上层比过）—— 再花 1~3 次</text>
+<line x1="186" y1="114" x2="434" y2="136" stroke="#2b2b2b" stroke-width="1.6"/>
+<text x="310.0" y="115.0" text-anchor="middle" font-size="12" fill="#8a8a8a">未命中，往后跳一个</text>
+<line x1="506" y1="144" x2="754" y2="166" stroke="#2b2b2b" stroke-width="1.6"/>
+<text x="630.0" y="145.0" text-anchor="middle" font-size="12" fill="#8a8a8a">未命中，往后跳一个</text>
+<line x1="826" y1="174" x2="890" y2="184" stroke="#2b2b2b" stroke-width="1.6" stroke-dasharray="5,4"/>
+<text x="902" y="194" font-size="15" fill="#8a8a8a">…… A[8n−1]</text>
+<line x1="150" y1="134" x2="150" y2="164" stroke="#b0652f" stroke-width="1.4" stroke-dasharray="4,3"/>
+<line x1="150" y1="184" x2="78" y2="240" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="150" y1="184" x2="222" y2="240" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="78" y1="240" x2="42" y2="296" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="78" y1="240" x2="114" y2="296" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="222" y1="240" x2="186" y2="296" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="222" y1="240" x2="258" y2="296" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="150" cy="184" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="150" y="189" text-anchor="middle" font-size="13" fill="#2b2b2b">3</text>
+<circle cx="78" cy="240" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="78" y="245" text-anchor="middle" font-size="13" fill="#2b2b2b">1</text>
+<circle cx="222" cy="240" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="222" y="245" text-anchor="middle" font-size="13" fill="#2b2b2b">5</text>
+<circle cx="42" cy="296" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="42" y="301" text-anchor="middle" font-size="13" fill="#2b2b2b">0</text>
+<circle cx="114" cy="296" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="114" y="301" text-anchor="middle" font-size="13" fill="#2b2b2b">2</text>
+<circle cx="186" cy="296" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="186" y="301" text-anchor="middle" font-size="13" fill="#2b2b2b">4</text>
+<circle cx="258" cy="296" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="258" y="301" text-anchor="middle" font-size="13" fill="#2b2b2b">6</text>
+<text x="150" y="334" text-anchor="middle" font-size="12" fill="#8a8a8a">第 1 块：块内 A[0..6]，圈内数字＝块内下标</text>
+<line x1="470" y1="164" x2="470" y2="194" stroke="#b0652f" stroke-width="1.4" stroke-dasharray="4,3"/>
+<line x1="470" y1="214" x2="398" y2="270" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="470" y1="214" x2="542" y2="270" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="398" y1="270" x2="362" y2="326" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="398" y1="270" x2="434" y2="326" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="542" y1="270" x2="506" y2="326" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="542" y1="270" x2="578" y2="326" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="470" cy="214" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="470" y="219" text-anchor="middle" font-size="13" fill="#2b2b2b">3</text>
+<circle cx="398" cy="270" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="398" y="275" text-anchor="middle" font-size="13" fill="#2b2b2b">1</text>
+<circle cx="542" cy="270" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="542" y="275" text-anchor="middle" font-size="13" fill="#2b2b2b">5</text>
+<circle cx="362" cy="326" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="362" y="331" text-anchor="middle" font-size="13" fill="#2b2b2b">0</text>
+<circle cx="434" cy="326" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="434" y="331" text-anchor="middle" font-size="13" fill="#2b2b2b">2</text>
+<circle cx="506" cy="326" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="506" y="331" text-anchor="middle" font-size="13" fill="#2b2b2b">4</text>
+<circle cx="578" cy="326" r="17" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/><text x="578" y="331" text-anchor="middle" font-size="13" fill="#2b2b2b">6</text>
+<text x="470" y="364" text-anchor="middle" font-size="12" fill="#8a8a8a">第 2 块：块内 A[8..14]</text>
+<text x="790" y="300" text-anchor="middle" font-size="22" fill="#8a8a8a">⋱</text>
+<rect x="114" y="89" width="72" height="42" rx="6" fill="#fff8ec" stroke="#b0652f" stroke-width="1.8"/><text x="150" y="116" text-anchor="middle" font-size="15" fill="#b0652f">A[7]</text>
+<rect x="434" y="119" width="72" height="42" rx="6" fill="#fff8ec" stroke="#b0652f" stroke-width="1.8"/><text x="470" y="146" text-anchor="middle" font-size="15" fill="#b0652f">A[15]</text>
+<rect x="754" y="149" width="72" height="42" rx="6" fill="#fff8ec" stroke="#b0652f" stroke-width="1.8"/><text x="790" y="176" text-anchor="middle" font-size="15" fill="#b0652f">A[23]</text>
+<text x="575.0" y="418" text-anchor="middle" font-size="13" fill="#8a8a8a">第 k 块内 8 个元素的比较次数：索引元素 A[8k−1] 为 k 次，块内 7 个依次为 k+1, k+2, k+2, k+3, k+3, k+3, k+3 —— 合计 8k+17</text>
+</svg>

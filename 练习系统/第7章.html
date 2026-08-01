@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>练习 · 数据结构 第7章 查找</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 练习系统首页</a>
+  <header>
+    <h1>数据结构 · 第7章　查找</h1>
+    <div class="sub">题源：27 王道《数据结构》第 7 章本节试题精选 · 每题「📕书答案 × 🤖运行核对」交叉验证 ·
+      <a href="../../王道教材/数据结构_分章/王道数据结构_第7章_查找.pdf" style="color:var(--accent)">📄 打开本章电子书</a></div>
+  </header>
+  <div class="verdict" style="margin-top:16px">🚧 <b>本章建设中</b>：全章目标 <b>136 题</b>（选择 109 + 综合 27，含 <b>2009–2025 共 41 道统考真题</b>）。
+    当前已上线 <b>7.2 顺序查找和折半查找 33 题</b>（选择 26 + 综合 7，含 2010/2015/2016/2017/2023/2024/2025 与 2013 综合共 <b>8 道真题</b>）。
+    <b>7.3 树形查找（44）· 7.4 B树与B+树（28）· 7.5 散列表（31）</b> 陆续补齐。</div>
+  <div class="verdict" style="background:var(--amber-soft);color:var(--amber)">📌 <b>7.2 的七条命根子，先背再做题</b>：
+    ① <b>ASL = Σ p<sub>i</sub>C<sub>i</sub></b> 是全章唯一的效率标尺；顺序查找 <b>成功 (n+1)/2、失败 n+1</b>。
+    ② <b>「有序」在顺序查找里只对<u>失败</u>有用</b>（失败降到 n/2 + n/(n+1)），<b>对成功一分钱便宜都不占</b>——第 2、3 题与综合 1 反复考这一句。
+    ③ <b>折半的两个硬条件：有序 + 顺序存储</b>；<b>链表、静态链表都不行</b>（2024 真题），<b>升序降序都行</b>、<b>关键字不必是数</b>。
+    ④ <b>判定树四条身份证</b>：是 BST（2015 真题靠它）、是<b>平衡</b>二叉树（不一定完全、更不一定满）、<b>n 个圆结点 + n+1 个方结点</b>、
+       <b>给定 n 与取整方式后唯一</b>（2017 真题靠它）。<b>树高 h = ⌈log₂(n+1)⌉ = 成功与失败的最多比较次数</b>（2010、2023 真题）。
+    ⑤ <b>方结点不计比较次数</b> —— 失败的查找长度数到<b>它的父圆结点</b>为止。这是本节最高频的失分点。
+    ⑥ <b>折半不是"必然更快"</b>：概率悬殊时按概率降序排的顺序查找可以反超（第 6、15 题与 2013 真题）。
+    ⑦ <b>分块查找 ASL = L<sub>I</sub> + L<sub>S</sub></b>；<b>两层都用顺序查找时 s=√n 最优，ASL=√n+1</b>（2025 真题）；
+       <b>但两层都用折半就不再是 √n</b>（第 19 题）——<b>做分块题第一件事是看清两层各用什么查找法</b>。
+    <br>⚠️ 三个易错：<b>失败 ASL 的分母是 n+1 不是 n</b>；<b>⌈log₂(n+1)⌉ 别写成 ⌊log₂n⌋</b>；<b>有序表的顺序查找 ≠ 折半查找</b>（前者可链式、仍是 O(n)）。</div>
+  <div id="root"></div>
+  <footer>已上线 33 题：7.2 顺序查找和折半查找（选择 26 + 综合 7）· 含 2010/2013/2015/2016/2017/2023/2024/2025 共 8 道统考真题 · 书答×运行核对逐题一致
+  <br>🚧 下一步：7.3 树形查找（二叉排序树 / 平衡二叉树 / 红黑树，44 题、12 道真题，本章题量最大的一节）</footer>
+</div>
+<script src="data_ds.js"></script>
+<script src="engine.js"></script>
+<script>
+DSApp.mount({root:'#root', scope:{type:'chapter',ch:7}, scopeLabel:'第7章',
+  mode:'practice', allowModeToggle:true, groupBySec:true});
+</script>
+</body>
+</html>

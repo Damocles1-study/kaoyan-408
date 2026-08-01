@@ -1,0 +1,65 @@
+<svg width="1086" height="330" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1086 330" font-family="Georgia,serif">
+<line x1="134" y1="147" x2="100" y2="207" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="134" y1="147" x2="202" y2="207" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="202" y1="207" x2="168" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="202" y1="207" x2="236" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="270" y1="87" x2="134" y2="147" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="270" y1="87" x2="406" y2="147" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="338" y1="207" x2="304" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="338" y1="207" x2="372" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="406" y1="147" x2="338" y2="207" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="406" y1="147" x2="474" y2="207" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="474" y1="207" x2="440" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="474" y1="207" x2="508" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="542" y1="27" x2="270" y2="87" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="542" y1="27" x2="814" y2="87" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="610" y1="207" x2="576" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="610" y1="207" x2="644" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="678" y1="147" x2="610" y2="207" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="678" y1="147" x2="746" y2="207" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="746" y1="207" x2="712" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="746" y1="207" x2="780" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="814" y1="87" x2="678" y2="147" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="814" y1="87" x2="950" y2="147" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="882" y1="207" x2="848" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="882" y1="207" x2="916" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="950" y1="147" x2="882" y2="207" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="950" y1="147" x2="1018" y2="207" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="1018" y1="207" x2="984" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="1018" y1="207" x2="1052" y2="267" stroke="#2b2b2b" stroke-width="1.4"/>
+<rect x="91" y="198" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="134" cy="147" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="134" y="152" text-anchor="middle" font-size="13" fill="#b0652f">017</text>
+<rect x="159" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="202" cy="207" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="202" y="212" text-anchor="middle" font-size="13" fill="#b0652f">094</text>
+<rect x="227" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="270" cy="87" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="270" y="92" text-anchor="middle" font-size="13" fill="#b0652f">154</text>
+<rect x="295" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="338" cy="207" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="338" y="212" text-anchor="middle" font-size="13" fill="#b0652f">170</text>
+<rect x="363" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="406" cy="147" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="406" y="152" text-anchor="middle" font-size="13" fill="#b0652f">275</text>
+<rect x="431" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="474" cy="207" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="474" y="212" text-anchor="middle" font-size="13" fill="#b0652f">503</text>
+<rect x="499" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="542" cy="27" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="542" y="32" text-anchor="middle" font-size="13" fill="#b0652f">509</text>
+<rect x="567" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="610" cy="207" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="610" y="212" text-anchor="middle" font-size="13" fill="#b0652f">512</text>
+<rect x="635" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="678" cy="147" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="678" y="152" text-anchor="middle" font-size="13" fill="#b0652f">553</text>
+<rect x="703" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="746" cy="207" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="746" y="212" text-anchor="middle" font-size="13" fill="#b0652f">612</text>
+<rect x="771" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="814" cy="87" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="814" y="92" text-anchor="middle" font-size="13" fill="#b0652f">677</text>
+<rect x="839" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="882" cy="207" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="882" y="212" text-anchor="middle" font-size="13" fill="#b0652f">765</text>
+<rect x="907" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="950" cy="147" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="950" y="152" text-anchor="middle" font-size="13" fill="#b0652f">897</text>
+<rect x="975" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<circle cx="1018" cy="207" r="17" fill="#fff8ec" stroke="#b0652f" stroke-width="1.6"/><text x="1018" y="212" text-anchor="middle" font-size="13" fill="#b0652f">908</text>
+<rect x="1043" y="258" width="18" height="18" fill="#f2f2f2" stroke="#9a9a9a" stroke-width="1.2"/>
+<text x="6" y="32" font-size="12" fill="#9a9a9a">第1层</text>
+<text x="6" y="92" font-size="12" fill="#9a9a9a">第2层</text>
+<text x="6" y="152" font-size="12" fill="#9a9a9a">第3层</text>
+<text x="6" y="212" font-size="12" fill="#9a9a9a">第4层</text>
+<text x="6" y="272" font-size="12" fill="#9a9a9a">第5层</text>
+<text x="543.0" y="322" text-anchor="middle" font-size="13" fill="#8a8a8a">14 个元素的折半判定树（mid 向下取整）· 圆＝表中元素，方＝15 个失败结点（不计比较）</text>
+</svg>
