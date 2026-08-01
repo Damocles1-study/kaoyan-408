@@ -1,0 +1,22 @@
+<svg width="337" height="293" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337 293" font-family="Georgia,serif">
+<line x1="254" y1="30" x2="166" y2="84" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="254" y1="30" x2="298" y2="84" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="166" y1="84" x2="34" y2="138" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="166" y1="84" x2="210" y2="138" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="34" y1="138" x2="78" y2="192" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="78" y1="192" x2="122" y2="246" stroke="#2b2b2b" stroke-width="1.5"/>
+<circle cx="254" cy="30" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="254" y="34.7" text-anchor="middle" font-size="13" fill="#2b2b2b"></text>
+<circle cx="166" cy="84" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="166" y="88.7" text-anchor="middle" font-size="13" fill="#2b2b2b"></text>
+<circle cx="34" cy="138" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="34" y="142.7" text-anchor="middle" font-size="13" fill="#2b2b2b"></text>
+<circle cx="78" cy="192" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="78" y="196.7" text-anchor="middle" font-size="13" fill="#2b2b2b"></text>
+<circle cx="122" cy="246" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="122" y="250.7" text-anchor="middle" font-size="13" fill="#2b2b2b"></text>
+<circle cx="210" cy="138" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="210" y="142.7" text-anchor="middle" font-size="13" fill="#2b2b2b"></text>
+<circle cx="298" cy="84" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="298" y="88.7" text-anchor="middle" font-size="13" fill="#2b2b2b"></text>
+</svg>

@@ -1,0 +1,157 @@
+<svg width="920" height="484" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 484" font-family="Georgia,serif">
+<text x="14" y="20" font-size="14" fill="#8a6d3b">高度为 3 的平衡二叉树全部 15 种形态（按「左高2右高2 → 9 种、左高2右高1 → 3 种、左高1右高2 → 3 种」分组）</text>
+<text x="14" y="41" font-size="12" fill="#8a6d3b">1.</text>
+<line x1="95" y1="61" x2="47" y2="97" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="95" y1="61" x2="143" y2="97" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="47" y1="97" x2="23" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="47" y1="97" x2="71" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="143" y1="97" x2="119" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="143" y1="97" x2="167" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="95" cy="61" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="47" cy="97" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="23" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="71" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="143" cy="97" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="119" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="167" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="194" y="41" font-size="12" fill="#8a6d3b">2.</text>
+<line x1="275" y1="61" x2="227" y2="97" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="275" y1="61" x2="323" y2="97" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="227" y1="97" x2="203" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="227" y1="97" x2="251" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="323" y1="97" x2="299" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="275" cy="61" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="227" cy="97" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="203" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="251" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="323" cy="97" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="299" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="374" y="41" font-size="12" fill="#8a6d3b">3.</text>
+<line x1="455" y1="61" x2="407" y2="97" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="455" y1="61" x2="479" y2="97" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="407" y1="97" x2="383" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="407" y1="97" x2="431" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="479" y1="97" x2="503" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="455" cy="61" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="407" cy="97" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="383" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="431" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="479" cy="97" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="503" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="554" y="41" font-size="12" fill="#8a6d3b">4.</text>
+<line x1="611" y1="61" x2="587" y2="97" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="611" y1="61" x2="659" y2="97" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="587" y1="97" x2="563" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="659" y1="97" x2="635" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="659" y1="97" x2="683" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="611" cy="61" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="587" cy="97" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="563" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="659" cy="97" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="635" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="683" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="734" y="41" font-size="12" fill="#8a6d3b">5.</text>
+<line x1="791" y1="61" x2="767" y2="97" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="791" y1="61" x2="839" y2="97" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="767" y1="97" x2="743" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="839" y1="97" x2="815" y2="133" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="791" cy="61" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="767" cy="97" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="743" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="839" cy="97" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="815" cy="133" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="14" y="191" font-size="12" fill="#8a6d3b">6.</text>
+<line x1="71" y1="211" x2="47" y2="247" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="71" y1="211" x2="95" y2="247" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="47" y1="247" x2="23" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="95" y1="247" x2="119" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="71" cy="211" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="47" cy="247" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="23" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="95" cy="247" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="119" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="194" y="191" font-size="12" fill="#8a6d3b">7.</text>
+<line x1="251" y1="211" x2="203" y2="247" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="251" y1="211" x2="299" y2="247" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="203" y1="247" x2="227" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="299" y1="247" x2="275" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="299" y1="247" x2="323" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="251" cy="211" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="203" cy="247" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="227" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="299" cy="247" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="275" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="323" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="374" y="191" font-size="12" fill="#8a6d3b">8.</text>
+<line x1="431" y1="211" x2="383" y2="247" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="431" y1="211" x2="479" y2="247" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="383" y1="247" x2="407" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="479" y1="247" x2="455" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="431" cy="211" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="383" cy="247" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="407" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="479" cy="247" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="455" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="554" y="191" font-size="12" fill="#8a6d3b">9.</text>
+<line x1="611" y1="211" x2="563" y2="247" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="611" y1="211" x2="635" y2="247" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="563" y1="247" x2="587" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="635" y1="247" x2="659" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="611" cy="211" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="563" cy="247" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="587" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="635" cy="247" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="659" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="734" y="191" font-size="12" fill="#8a6d3b">10.</text>
+<line x1="815" y1="211" x2="767" y2="247" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="815" y1="211" x2="839" y2="247" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="767" y1="247" x2="743" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="767" y1="247" x2="791" y2="283" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="815" cy="211" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="767" cy="247" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="743" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="791" cy="283" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="839" cy="247" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="14" y="341" font-size="12" fill="#8a6d3b">11.</text>
+<line x1="71" y1="361" x2="47" y2="397" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="71" y1="361" x2="95" y2="397" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="47" y1="397" x2="23" y2="433" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="71" cy="361" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="47" cy="397" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="23" cy="433" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="95" cy="397" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="194" y="341" font-size="12" fill="#8a6d3b">12.</text>
+<line x1="251" y1="361" x2="203" y2="397" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="251" y1="361" x2="275" y2="397" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="203" y1="397" x2="227" y2="433" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="251" cy="361" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="203" cy="397" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="227" cy="433" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="275" cy="397" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="374" y="341" font-size="12" fill="#8a6d3b">13.</text>
+<line x1="407" y1="361" x2="383" y2="397" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="407" y1="361" x2="455" y2="397" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="455" y1="397" x2="431" y2="433" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="455" y1="397" x2="479" y2="433" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="407" cy="361" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="383" cy="397" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="455" cy="397" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="431" cy="433" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="479" cy="433" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="554" y="341" font-size="12" fill="#8a6d3b">14.</text>
+<line x1="587" y1="361" x2="563" y2="397" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="587" y1="361" x2="635" y2="397" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="635" y1="397" x2="611" y2="433" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="587" cy="361" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="563" cy="397" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="635" cy="397" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="611" cy="433" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="734" y="341" font-size="12" fill="#8a6d3b">15.</text>
+<line x1="767" y1="361" x2="743" y2="397" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="767" y1="361" x2="791" y2="397" stroke="#2b2b2b" stroke-width="1.4"/>
+<line x1="791" y1="397" x2="815" y2="433" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="767" cy="361" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="743" cy="397" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="791" cy="397" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+<circle cx="815" cy="433" r="9" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.4"/>
+</svg>

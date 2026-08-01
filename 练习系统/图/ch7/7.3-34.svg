@@ -1,0 +1,22 @@
+<svg width="385" height="251" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 385 251" font-family="Georgia,serif">
+<line x1="86" y1="30" x2="34" y2="88" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="86" y1="30" x2="294" y2="88" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="294" y1="88" x2="190" y2="146" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="294" y1="88" x2="346" y2="146" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="190" y1="146" x2="138" y2="204" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="190" y1="146" x2="242" y2="204" stroke="#2b2b2b" stroke-width="1.5"/>
+<circle cx="86" cy="30" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="86" y="34.7" text-anchor="middle" font-size="13" fill="#2b2b2b">k₁</text>
+<path d="M 34 71 L 13 109 L 55 109 Z" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="34" y="104" text-anchor="middle" font-size="13" fill="#2b2b2b">　</text>
+<circle cx="294" cy="88" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="294" y="92.7" text-anchor="middle" font-size="13" fill="#2b2b2b">k₂</text>
+<circle cx="190" cy="146" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="190" y="150.7" text-anchor="middle" font-size="13" fill="#2b2b2b">k₃</text>
+<path d="M 138 187 L 117 225 L 159 225 Z" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="138" y="220" text-anchor="middle" font-size="13" fill="#2b2b2b">　</text>
+<path d="M 242 187 L 221 225 L 263 225 Z" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="242" y="220" text-anchor="middle" font-size="13" fill="#2b2b2b">T</text>
+<path d="M 346 129 L 325 167 L 367 167 Z" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="346" y="162" text-anchor="middle" font-size="13" fill="#2b2b2b">　</text>
+</svg>

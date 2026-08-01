@@ -1,0 +1,64 @@
+<svg width="913" height="301" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 913 301" font-family="Georgia,serif">
+<line x1="496" y1="30" x2="160" y2="86" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="496" y1="30" x2="664" y2="86" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="160" y1="86" x2="76" y2="142" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="160" y1="86" x2="328" y2="142" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="76" y1="142" x2="34" y2="198" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="76" y1="142" x2="118" y2="198" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="328" y1="142" x2="244" y2="198" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="328" y1="142" x2="412" y2="198" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="244" y1="198" x2="202" y2="254" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="244" y1="198" x2="286" y2="254" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="412" y1="198" x2="370" y2="254" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="412" y1="198" x2="454" y2="254" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="664" y1="86" x2="580" y2="142" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="664" y1="86" x2="748" y2="142" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="580" y1="142" x2="538" y2="198" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="580" y1="142" x2="622" y2="198" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="748" y1="142" x2="706" y2="198" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="748" y1="142" x2="832" y2="198" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="832" y1="198" x2="790" y2="254" stroke="#2b2b2b" stroke-width="1.5"/>
+<line x1="832" y1="198" x2="874" y2="254" stroke="#2b2b2b" stroke-width="1.5"/>
+<circle cx="496" cy="30" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="496" y="34.7" text-anchor="middle" font-size="13" fill="#2b2b2b">50</text>
+<circle cx="160" cy="86" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="160" y="90.7" text-anchor="middle" font-size="13" fill="#2b2b2b">38</text>
+<circle cx="76" cy="142" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="76" y="146.7" text-anchor="middle" font-size="13" fill="#2b2b2b">30</text>
+<rect x="21" y="185" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="34" y="202.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+<rect x="105" y="185" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="118" y="202.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+<circle cx="328" cy="142" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="328" y="146.7" text-anchor="middle" font-size="13" fill="#2b2b2b">45</text>
+<circle cx="244" cy="198" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="244" y="202.7" text-anchor="middle" font-size="13" fill="#2b2b2b">40</text>
+<rect x="189" y="241" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="202" y="258.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+<rect x="273" y="241" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="286" y="258.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+<circle cx="412" cy="198" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="412" y="202.7" text-anchor="middle" font-size="13" fill="#2b2b2b">48</text>
+<rect x="357" y="241" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="370" y="258.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+<rect x="441" y="241" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="454" y="258.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+<circle cx="664" cy="86" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="664" y="90.7" text-anchor="middle" font-size="13" fill="#2b2b2b">70</text>
+<circle cx="580" cy="142" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="580" y="146.7" text-anchor="middle" font-size="13" fill="#2b2b2b">60</text>
+<rect x="525" y="185" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="538" y="202.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+<rect x="609" y="185" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="622" y="202.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+<circle cx="748" cy="142" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="748" y="146.7" text-anchor="middle" font-size="13" fill="#2b2b2b">75</text>
+<rect x="693" y="185" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="706" y="202.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+<circle cx="832" cy="198" r="15" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+<text x="832" y="202.7" text-anchor="middle" font-size="13" fill="#2b2b2b">80</text>
+<rect x="777" y="241" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="790" y="258.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+<rect x="861" y="241" width="26" height="26" fill="#eeeeee" stroke="#2b2b2b" stroke-width="1.4"/>
+<text x="874" y="258.7" text-anchor="middle" font-size="13" fill="#777777"></text>
+</svg>
