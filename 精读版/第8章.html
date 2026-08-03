@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>精读版 · 数据结构 第8章 排序</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* 本章专用：排序过程一律用可搜索的等宽表格重排，只有树形/面板图才裁原书图 */
+  table.trace{font-family:var(--mono);font-size:.8rem;table-layout:auto;width:100%}
+  table.trace th,table.trace td{padding:5px 7px;text-align:center;white-space:nowrap}
+  table.trace th{background:var(--accent-soft);color:var(--accent);font-weight:400}
+  table.trace td.lbl{text-align:left;color:var(--muted);font-family:var(--sans);font-size:.82rem;white-space:nowrap}
+  table.trace td.done{background:var(--green-soft);color:var(--green);font-weight:700}
+  table.trace td.act{background:var(--amber-soft);color:var(--amber);font-weight:700}
+  .seq{font-family:var(--mono);letter-spacing:.06em;font-size:.9rem;color:var(--accent);
+    background:var(--accent-soft);border-radius:6px;padding:2px 9px;white-space:nowrap}
+  .cmp{font-size:.83rem}
+  .cmp td:first-child{white-space:nowrap}
+  .cmp td.y{color:var(--green);font-weight:700}
+  .cmp td.n{color:var(--red)}
+  .ov{overflow-x:auto;margin:12px 0}
+  .ov table{margin:0}
+  ol.rule{margin-left:20px}
+  ol.rule li{margin:6px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>精读版 · 第 8 章　排　序</h1>
+    <div class="sub">王道《数据结构》第 8 章（书内 p.331–392，<b>62 页</b>）正文重排 · 只留考点骨架 · 每节一键跳回原书页 · 配 <a href="../模拟器_排序过程.html" style="color:var(--accent)">排序过程模拟器</a> 与 <a href="../练习系统/第8章.html" style="color:var(--accent)">第 8 章练习（148 题、42 道真题）</a> 边读边动手</div>
+  </header>
+
+  <div class="legend">
+    <b>怎么读这一页：</b>正文是书上的内容，我只做了<b>结构重排和取舍</b>。三种色块：
+    <span class="swatch" style="background:var(--blue)"></span><b style="color:var(--blue)">我的补讲</b>、
+    <span class="swatch" style="background:var(--amber)"></span><b style="color:var(--amber)">必记结论</b>、
+    <span class="swatch" style="background:var(--red)"></span><b style="color:var(--red)">陷阱</b>。
+    右侧 <span class="pg" style="float:none;margin:0">📄 p.N</span> 点开跳到原书对应页；紫色 <span class="exam" style="margin:0">考点追踪</span> 是王道标注的真题年份。本章从原书<b>裁切了 10 张插图</b>（冒泡黑块图 / 快排递归四面板 / 大根堆 / 建堆五面板 / 输出堆顶三面板 / 堆插入四面板 / 5 路败者树两面板 / 三棵归并树），<b>其余排序过程一律改写成可搜索的等宽表格</b>——排序这一章的"图"本来就是表，裁成图片反而查不了。<b>图看不清就点一下</b>（300 dpi 原图）。<br>
+    <b style="color:var(--amber)">另：本页里凡是写"实测""程序复算"的数字，都是我在写这 148 道题时真跑出来的</b>，不是抄书，也不是估算。
+  </div>
+
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=1">📄 p.331</a>
+  <h2>本章定位</h2>
+  <p><b>考纲内容</b>：（一）排序的基本概念；（二）插入排序——直接插入排序、折半插入排序、希尔排序；（三）交换排序——冒泡排序、快速排序；（四）选择排序——简单选择排序、堆排序；（五）2 路归并排序；（六）基数排序；（七）外部排序；（八）排序算法的分析和应用。</p>
+  <p><b>王道的复习提示</b>：<em>堆排序、快速排序和归并排序是本章的重点与难点。</em>要深入掌握各类算法思想、排序过程（<b>能动手模拟</b>）及其特性，包括<b>初始状态的影响、时空复杂度、稳定性和适用场景</b>。考试通常以<b>选择题</b>形式考查不同算法的对比。此外应能熟练编写常用排序算法的关键代码，并能根据序列特点结合算法特性<b>选择最合适的排序方法</b>。</p>
+
+  <div class="mine"><span class="tag">我的补讲 · 这一章的重量与打法</span>
+    62 页、148 道课后题、<b>42 道统考真题——真题密度全书之最</b>（第 7 章 41 道用了 67 页，本章 42 道只用 62 页）。而且分布极不均匀：<b>8.6 一节 26 题里就有 11 道真题</b>，是全书真题最密的一节；8.4 选择排序 8 道、8.3 交换排序 7 道、8.5 归并/基数 7 道。<b>没有一节可以跳，但 8.6 要单独当一节课上。</b><br>
+    <b>这一章的性格与前七章完全不同</b>：前面考"这个结构长什么样"，本章考"<b>这个过程走到第几步是什么样</b>"。所以全章真正的主线只有两根——<b>① 动手模拟一趟的结果；② 表 8.1 的五列（最好/平均/最坏/空间/稳定）</b>。前者靠手，后者靠背。<br>
+    <b>读法建议</b>：每读完一种算法，立刻做三件事——<b>(1) 拿 {49,38,65,97,76,13,27,49} 这八个数手推一趟</b>（全书示例都用它，推熟了各算法的中间态就能互相对照）；<b>(2) 在表 8.1 上把这一行填出来</b>；<b>(3) 问自己"它每趟能不能定死一个元素的最终位置"</b>——这一问单独撑起了 2009/2010/2012/2014/2019 五道真题。<br>
+    <b>配套动手</b>：<a href="../模拟器_排序过程.html">排序过程模拟器</a>（八种内部排序单步回放 + 建堆/插删 + 快排双指针 + 败者树 + 置换-选择 + 最佳归并树）、<a href="../练习系统/第8章.html">练习系统第 8 章 148 题</a>、<a href="../练习系统/套路库.html">套路库 ch8 卡</a>。
+  </div>
+
+  <h2>8.1　排序的基本概念</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=1">📄 p.331–332</a>
+  <ul>
+    <li><b>排序</b>：把表中元素重新排列，使其按关键字有序。形式地说，输入 n 个记录 R<sub>1</sub>…R<sub>n</sub>，输出输入序列的一个<b>重排</b>，使 k′<sub>1</sub> ≤ k′<sub>2</sub> ≤ … ≤ k′<sub>n</sub>。<b>本书凡未特别注明，默认排成非递减序列。</b></li>
+    <li><b>稳定性</b>：若 key<sub>i</sub> = key<sub>j</sub> 且排序前 R<sub>i</sub> 在 R<sub>j</sub> 之前，排序后 R<sub>i</sub> 仍在 R<sub>j</sub> 之前，则算法<b>稳定</b>，否则不稳定。</li>
+    <li><b>内部排序</b>：排序期间元素全在内存；<b>外部排序</b>：元素装不进内存，需在内外存之间频繁交换数据。</li>
+    <li>内部排序的两种基本操作是<b>比较</b>与<b>移动</b>。⚠️ 但<b>并非所有内部排序都基于比较</b>——<b>基数排序</b>就是典型的非比较排序。</li>
+    <li>五大类：插入、交换、选择、归并、基数。性能由<b>时间复杂度</b>与<b>空间复杂度</b>决定，时间复杂度通常取决于<b>比较与移动的次数</b>。</li>
+    <li>【注意】<b>大多数内部排序算法更适用于顺序存储的线性表。</b></li>
+  </ul>
+
+  <div class="key"><span class="tag">必记结论 · 开篇就要立住的三句话</span>
+    <b>① 稳定性不能用来衡量算法优劣</b>，它只是算法的性质之一。<b>当待排关键字互不重复时，排序结果唯一，稳不稳定完全无关紧要。</b><br>
+    <b>② 证明一个算法不稳定，只需举出<u>一组</u>关键字实例</b>——不需要任何推导。书上给的三个反例都只有 2~3 个数：简单选择 {2, <u>2</u>, 1}、快排 {3, <u>2</u>, 2}、堆排 {1, <u>2</u>, 2}。<b>考场上被问"为什么不稳定"，直接甩这三个数。</b><br>
+    <b>③ 拓扑排序不是内部排序</b>（8.1 第 01 题）——它把有向图结点排成线性序列，虽然也在内存里做，但<b>不满足上面"按关键字重排"的定义</b>。
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · "稳定"与"绝对位置不变"是两回事</span>
+    8.1 第 02 题的干扰项：稳定性是"关键字相同的元素保持原来的<b>相对位置</b>"，不是"<b>绝对位置</b>（下标 i）不变"——绝对位置不变那叫没排序。<br>
+    第 03 题的另一半：<b>"顺序表上的排序算法在链表上也都可以实现"是错的</b>——<b>折半插入、希尔、快排、堆</b>这四个要"随机访问 / 跳着走"，链表上做不了。这四个名字本章会反复出现，<b>现在就记下来</b>。
+  </div>
+
+  <h2>8.2　插入排序</h2>
+  <p><b>基本思想</b>：每次将一个待排记录，按其关键字大小插入到前面<b>已排好序的子序列</b>中，直到全部插入完毕。由此引申出三种：直接插入排序、折半插入排序、希尔排序。</p>
+
+  <h3>8.2.1　直接插入排序</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=3">📄 p.333–334</a>
+  <p>某时刻的表状态：<span class="seq">有序序列 L[1…i−1] | L(i) | 无序序列 L[i+1…n]</span>。把 L(i) 插进去分三步：① 查找 L(i) 在 L[1…i−1] 中的插入位置 k；② 把 L[k…i−1] 依次<b>后移一位</b>；③ 把 L(i) 放到位置 k。从 L(2) 做到 L(n)，共 <b>n−1 趟</b>，<b>原地排序</b>。</p>
+  <pre class="code">void InsertSort(ElemType A[],int n){
+    int i,j;
+    for(i=2;i&lt;=n;i++)                  //依次将A[2]~A[n]插入前面已排序序列
+        if(A[i]&lt;A[i-1]){               //若A[i]关键码小于其前驱，将A[i]插入有序表
+            A[0]=A[i];                 //复制为哨兵，A[0]不存放元素
+            for(j=i-1;A[0]&lt;A[j];--j)   //从后往前查找待插入位置
+                A[j+1]=A[j];           //向后挪位
+            A[j+1]=A[0];               //复制到插入位置
+        }
+}</pre>
+  <div class="ov">
+  <table class="trace">
+    <tr><th>趟</th><th colspan="8">序列（括号内为已排好的有序区）</th></tr>
+    <tr><td class="lbl">初始</td><td>49</td><td>38</td><td>65</td><td>97</td><td>76</td><td>13</td><td>27</td><td>4̄9</td></tr>
+    <tr><td class="lbl">i=2 插 38</td><td class="done">38</td><td class="done">49</td><td>65</td><td>97</td><td>76</td><td>13</td><td>27</td><td>4̄9</td></tr>
+    <tr><td class="lbl">i=3 插 65</td><td class="done">38</td><td class="done">49</td><td class="done">65</td><td>97</td><td>76</td><td>13</td><td>27</td><td>4̄9</td></tr>
+    <tr><td class="lbl">i=4 插 97</td><td class="done">38</td><td class="done">49</td><td class="done">65</td><td class="done">97</td><td>76</td><td>13</td><td>27</td><td>4̄9</td></tr>
+    <tr><td class="lbl">i=5 插 76</td><td class="done">38</td><td class="done">49</td><td class="done">65</td><td class="done">76</td><td class="done">97</td><td>13</td><td>27</td><td>4̄9</td></tr>
+    <tr><td class="lbl">i=6 插 13</td><td class="done">13</td><td class="done">38</td><td class="done">49</td><td class="done">65</td><td class="done">76</td><td class="done">97</td><td>27</td><td>4̄9</td></tr>
+    <tr><td class="lbl">i=7 插 27</td><td class="done">13</td><td class="done">27</td><td class="done">38</td><td class="done">49</td><td class="done">65</td><td class="done">76</td><td class="done">97</td><td>4̄9</td></tr>
+    <tr><td class="lbl">i=8 插 4̄9</td><td class="done">13</td><td class="done">27</td><td class="done">38</td><td class="act">49</td><td class="act">4̄9</td><td class="done">65</td><td class="done">76</td><td class="done">97</td></tr>
+  </table>
+  </div>
+  <p style="font-size:.83rem;color:var(--muted)">（图 8.1 重排。绿色为有序区。<b>末趟 49 与 4̄9 的相对次序没变 ⟹ 稳定</b>。）</p>
+  <ul>
+    <li><b>空间</b> O(1)；<b>稳定</b>；<b>顺序、链式都能用</b>，<b>链式存储时无须移动元素</b>（只改指针）。</li>
+    <li><b>最好（已有序）</b>：每趟只比 1 次、不移动 ⟹ <b>O(n)</b>，<b>总比较 n−1 次</b>。</li>
+    <li><b>最坏（完全逆序）</b>：第 i 趟比 i−1 次、移 i−1 个 ⟹ 比较 <b>n(n−1)/2</b> 次 ⟹ <b>O(n²)</b>。</li>
+    <li><b>平均</b>：比较与移动均约 <b>n²/4</b> ⟹ O(n²)。</li>
+  </ul>
+  <div class="key"><span class="tag">必记结论 ★ · "后移次数 ≡ 逆序对数"</span>
+    直接插入排序<b>元素后移的总次数，恰好等于原序列的逆序对个数</b>（我用 6 个数的全部 720 种排列穷举验证过，无一例外）。<b>冒泡排序的交换次数也恰好等于逆序对数。</b><br>
+    这条一句话能秒杀两类题：问"某序列直接插入要移动多少次"⟹ 数逆序对；问"哪个序列比较次数最少"⟹ <b>越接近正序越少</b>（8.2 第 05 题：B 比 9 次、C 比 11 次）。
+  </div>
+
+  <h3>8.2.2　折半插入排序</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=4">📄 p.334–335</a>
+  <span class="exam">考点追踪：直接插入排序与折半插入排序的比较（2012）</span>
+  <p>思想：把"边比较边移动"<b>拆成两段</b>——先用折半查找定位置，再<b>统一后移</b>。</p>
+  <pre class="code">void BInsertSort(ElemType A[],int n){
+    int i,j,low,high,mid;
+    for(i=2;i&lt;=n;i++){
+        A[0]=A[i];                        //将A[i]暂存到A[0]
+        low=1;high=i-1;                   //设置折半查找的范围
+        while(low&lt;=high){                 //折半查找(默认递增有序)
+            mid=(low+high)/2;             //取中间点
+            if(A[mid]&gt;A[0]) high=mid-1;   //查找左半子表
+            else low=mid+1;               //查找右半子表
+        }
+        for(j=i-1;j&gt;=high+1;--j)
+            A[j+1]=A[j];                  //统一后移元素，空出插入位置
+        A[high+1]=A[0];                   //插入操作
+    }
+}</pre>
+  <div class="key"><span class="tag">必记结论 ★★ · 一个 <code>&gt;</code> 定稳定性（本章出现三次的同一考点）</span>
+    <code>if(A[mid]&gt;A[0]) high=mid-1;</code> ——<b>只有严格大于才往左走，相等时往右（low=mid+1）</b>，于是相同关键字被插到已有的那个<b>后面</b>，稳定性由此而来。<b>把 <code>&gt;</code> 改成 <code>&gt;=</code> 就立刻不稳定。</b><br>
+    同一个考点在本章还会出现两次：<b>8.5 归并里的 <code>if(B[i]&lt;=B[j])</code></b>、<b>2021 真题 cmpCountSort 里的 <code>a[i]&lt;=a[j]</code></b>（我实测：原版 3000 组数据里 2492 组不稳定，改成 <code>&lt;=</code> 后 0 组）。<b>三处同源，见到"某个比较符号"就要想稳定性。</b>
+  </div>
+  <ul>
+    <li><b>空间</b> O(1)；<b>稳定</b>；<b style="color:var(--red)">仅适用于顺序存储</b>（链表折不了半）。</li>
+    <li><b>比较次数降为 O(n log₂n) 且只取决于 n、与初态无关</b>；但<b>移动次数一点没少，仍依赖初态</b> ⟹ <b>时间复杂度仍是 O(n²)</b>。</li>
+  </ul>
+  <div class="trap"><span class="tag">陷阱 · 2012 真题的四个选项，三个都是"相同"</span>
+    <b>2012 真题</b>问折半插入与直接插入"<b>可能的不同之处</b>"，答案 <b>D（元素之间的比较次数）</b>。逐项：<b>总趟数</b>都是 n−1（只由 n 定）、<b>移动次数</b>都由初态定且相同、<b>辅助空间</b>都是 O(1)——<b>只有比较次数不同</b>。<br>
+    ⚠️ <b>我写题库时抓到的一个口径漏洞</b>：书说两者"移动次数相同"，指的是"<b>元素后移</b>"这个动作逐个相等；但若按两段代码<b>字面</b>统计，<code>InsertSort</code> 多了一道门卫 <code>if(A[i]&lt;A[i-1])</code>，有序时它直接跳过、连 <code>A[0]=A[i]</code> 都不做，而 <code>BInsertSort</code> 每趟都要暂存 + 回填。<b>考试按书上口径答"相同"，但心里知道差在哪。</b>
+  </div>
+
+  <h3>8.2.3　希尔排序</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=5">📄 p.335–336</a>
+  <span class="exam">考点追踪：希尔排序的特性与分析（2014、2015、2018、2025）</span>
+  <p><b>出发点</b>：直接插入排序在<b>基本有序</b>或<b>数据量小</b>时效率高（可到 O(n)）。希尔排序就是冲着这两个条件造的，也叫<b>缩小增量排序</b>：先取增量 d<sub>1</sub> &lt; n，把下标相隔 d<sub>1</sub> 的记录分成一组，<b>组内做直接插入排序</b>；再取 d<sub>2</sub> &lt; d<sub>1</sub>…直到 d<sub>t</sub> = 1，此时全表已高度有序，最后一趟完整的直接插入排序收尾。</p>
+  <pre class="code">void ShellSort(ElemType A[],int n){
+    //A[0]只是暂存单元，不是哨兵，当j&lt;=0时，插入位置已到
+    int dk,i,j;
+    for(dk=n/2;dk&gt;=1;dk=dk/2)             //增量变化（无统一规定）
+        for(i=dk+1;i&lt;=n;++i)
+            if(A[i]&lt;A[i-dk]){             //需将A[i]插入有序增量子表
+                A[0]=A[i];                //暂存在A[0]
+                for(j=i-dk;j&gt;0&amp;&amp;A[0]&lt;A[j];j-=dk)
+                    A[j+dk]=A[j];         //记录后移，查找插入的位置
+                A[j+dk]=A[0];             //插入
+            }
+}</pre>
+  <div class="ov">
+  <table class="trace">
+    <tr><th>趟</th><th colspan="10">序列（n = 10）</th><th>分组</th></tr>
+    <tr><td class="lbl">初始</td><td>49</td><td>38</td><td>65</td><td>97</td><td>76</td><td>13</td><td>27</td><td>4̄9</td><td>55</td><td>04</td><td class="lbl">—</td></tr>
+    <tr><td class="lbl">d₁=5 后</td><td>13</td><td>27</td><td>4̄9</td><td>55</td><td>04</td><td>49</td><td>38</td><td>65</td><td>97</td><td>76</td><td class="lbl">{49,13}{38,27}{65,4̄9}{97,55}{76,04}</td></tr>
+    <tr><td class="lbl">d₂=3 后</td><td>13</td><td>04</td><td>4̄9</td><td>38</td><td>27</td><td>49</td><td>55</td><td>65</td><td>97</td><td>76</td><td class="lbl">{13,55,38,76}{27,04,65}{4̄9,49,97}</td></tr>
+    <tr><td class="lbl">d₃=1 后</td><td class="done">04</td><td class="done">13</td><td class="done">27</td><td class="done">38</td><td class="act">4̄9</td><td class="act">49</td><td class="done">55</td><td class="done">65</td><td class="done">76</td><td class="done">97</td><td class="lbl">全表</td></tr>
+  </table>
+  </div>
+  <p style="font-size:.83rem;color:var(--muted)">（图 8.2 重排。<b>末行 4̄9 跑到了 49 前面</b>——这就是书上举的"希尔不稳定"的实例。）</p>
+  <ul>
+    <li><b>空间</b> O(1)；<b style="color:var(--red)">不稳定</b>；<b style="color:var(--red)">仅适用于顺序存储</b>。</li>
+    <li><b>时间依赖于增量序列</b>，n 在常见范围时约 <b>O(n<sup>1.3</sup>)</b>，<b>最坏退化为 O(n²)</b>。⚠️ <b>最优增量序列至今是数学上的未解难题</b>——所以表 8.1 里希尔那一行是空的，选择题出现"希尔排序的平均时间复杂度是 O(n log₂n)"一律错。</li>
+  </ul>
+  <div class="trap"><span class="tag">陷阱 · <code>A[0]</code> 在希尔里不是哨兵</span>
+    直接插入排序靠 <code>A[0]</code> 当哨兵，循环 <code>for(j=i-1;A[0]&lt;A[j];--j)</code> 不写下界也不会越界。<b>希尔里 <code>A[0]</code> 只是暂存单元</b>——子表的第一个元素下标是 1…dk，走到头时 j 会变成 ≤ 0 而不是 0，<b>所以必须显式写 <code>j&gt;0</code></b>。默写代码漏这个条件是本节最常见的失分点。
+  </div>
+  <div class="key"><span class="tag">必记结论 ★★ · 反推增量：只查"下标模 d 同余的那几个是不是各自有序"</span>
+    2014、2018、2025 三道真题都是同一个动作：<b>给你一趟（或两趟）的结果，问增量是多少</b>。打法固定——<b>对每个候选 d，把下标 1, 1+d, 1+2d… 拎出来看是不是递增；再看 2, 2+d…</b>。有一组不递增就否掉。<br>
+    <b>2018 真题</b>（初始 8,3,9,11,2,1,4,7,5,10,6）：第一趟 <b>d=5</b> 分成 {8,1,6}{3,4}{9,7}{11,5}{2,10}，第二趟 <b>d=3</b> 分成 {1,5,4,10}{3,2,9,8}{7,6,11} ⟹ 答案 <b>D（5, 3）</b>。<br>
+    ⚠️ <b style="color:var(--red)">2025 真题第 23 题：书上解析末句"符合增量缩小至 1 的结果"是错的。</b>d=1 会直接给出全局有序的 5,10,15,20,25,30,35,40,45，而题给的第 2 趟里 <b>25 在 20 前、40 在 35 前</b>。我逐 d 反推确认真实增量序列是 <b>3 → 2 → 1</b>（第 2 趟是 d=2 不是 d=1）。<b>答案 A 不受影响，但别把"第 2 趟 d=1"写进卷面。</b>
+  </div>
+
+  <h2>8.3　交换排序</h2>
+  <p><b>交换</b>：根据两个元素关键字的比较结果，互换它们的位置。本节讲<b>冒泡</b>与<b>快速</b>——冒泡实现简单、直接考得少，<b>快排效率高应用广，是本章考查重点</b>。</p>
+
+  <h3>8.3.1　冒泡排序</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=10">📄 p.340–341</a>
+  <p>依次比较<b>相邻</b>元素，逆序则交换。每一趟把当前未排序部分的<b>最小（或最大）元素放到最终位置</b>——最小者如气泡上浮。<b>最多 n−1 趟</b>；某趟没发生任何交换即表已有序，<b>提前终止</b>。</p>
+  <pre class="code">void BubbleSort(ElemType A[],int n){
+    for(int i=0;i&lt;n-1;i++){
+        bool flag=false;              //表示本趟冒泡是否发生交换的标志
+        for(int j=n-1;j&gt;i;j--)        //一趟冒泡过程
+            if(A[j-1]&gt;A[j]){          //若为逆序
+                swap(A[j-1],A[j]);    //交换
+                flag=true;
+            }
+        if(flag==false)
+            return;                   //本趟遍历后没有发生交换，说明表已经有序
+    }
+}</pre>
+  <figure>
+    <a href="图/图8-3_冒泡排序示例.png"><img src="图/图8-3_冒泡排序示例.png" alt="图8.3 冒泡排序示例" loading="lazy"></a>
+    <figcaption>图 8.3　冒泡排序示例（书 p.341）。<b>黑底方块 = 已经到达最终位置</b>，且它们从上往下逐趟增长——这正是"冒泡的有序子序列是<b>全局有序</b>"的可视化。第五趟后已全部有序，第六趟零交换、算法提前返回。</figcaption>
+  </figure>
+  <ul>
+    <li><b>空间</b> O(1)；<b>稳定</b>（相等不交换）；<b>顺序、链式都能用</b>。</li>
+    <li><b>最好（已有序）</b>：只做第一趟，<b>n−1 次比较、0 次移动</b> ⟹ <b>O(n)</b>。</li>
+    <li><b>最坏（完全逆序）</b>：比较 <b>n(n−1)/2</b> 次；<b>每次交换算 3 次移动</b> ⟹ 移动 <b>3n(n−1)/2</b> 次 ⟹ O(n²)。平均也 O(n²)。</li>
+  </ul>
+  <div class="key"><span class="tag">必记结论 ★★ · 冒泡 vs 直接插入：全局有序 vs 局部有序</span>
+    书上的【注意】原话：<b>冒泡排序每趟产生的有序子序列具有<u>全局有序性</u></b>——已排序部分的所有元素都小于（或大于）未排序部分的所有元素；<b>与直接插入排序的局部有序不同，冒泡每趟能把一个元素精确放到最终位置。</b><br>
+    这句话是 <b>8.2 第 04 题</b>（"{8,10,13,4,6,7,22,2,3} 只能是哪种排序两趟后的结果"）的钥匙：冒泡/选择两趟后应该有<b>两个最值坐在两端</b>，这里没有；而<b>前三个 8,10,13 自己有序</b> ⟹ 只能是<b>直接插入</b>。<br>
+    <b>每趟必定一个元素到位的四个</b>：<b>冒泡、简单选择、堆</b>（前三者形成全局有序子序列）、<b>快排</b>（只定枢轴，不全局有序）。<b>不一定的三个</b>：直接插入、希尔、归并。
+  </div>
+  <div class="trap"><span class="tag">陷阱 ⚠️ · 书上 8.3 第 08 题的答案字母印错了（我复核过三遍）</span>
+    题干：{8,9,10,4,5,6,20,1,2} 从后往前冒泡，"需要进行元素交换的趟数至少是（　）（<b>不考虑无元素交换的最后一趟</b>）"，选项 A.3　B.5　C.6　D.8。<br>
+    <b>书上答案栏印 C（6），但同一段解析的最后一句写的是"所以最少 5 趟即可"</b>，而且它列出的五趟中间结果与我程序逐趟实测<b>逐位一致</b>（第 1~5 趟分别交换 7/7/3/3/3 次，第 6 趟零交换）。⟹ <b>正确答案是 B（5）</b>，印错的是答案字母，不是解析。<br>
+    我按"先怀疑自己"的铁律，把题面页（书 344）与答案页（书 347）以 dpi=130 重渲逐字复核过，排除转录错误。<b>练习系统里这题标了 <code>verdict:'warn'</code>。该题非统考真题，不必纠结。</b>
+  </div>
+
+  <h3>8.3.2　快速排序</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=11">📄 p.341–343</a>
+  <span class="exam">考点追踪：快速排序的思想（2024）；中间过程的分析（2014、2019、2023）；递归次数的影响因素（2010）；适合的存储方式（2011）；（算法题）划分操作的应用（2016）</span>
+  <p><b>基本思想（分治）</b>：任取一个元素作<b>枢轴</b>（pivot，通常取首元素），一趟划分把表分成两个独立子表 L[1…k−1] 与 L[k+1…n]，使<b>左子表全 &lt; 枢轴、右子表全 ≥ 枢轴</b>，此时<b>枢轴已在最终位置 L(k)</b>；再对两个子表<b>递归</b>，直到子表只剩一个元素或为空。</p>
+  <pre class="code">int Partition(ElemType A[],int low,int high){    //一趟划分
+    ElemType pivot=A[low];                       //将当前表中第一个元素设为枢轴
+    while(low&lt;high){
+        while(low&lt;high&amp;&amp;A[high]&gt;=pivot) --high;
+        A[low]=A[high];                          //将比枢轴小的元素移动到左端
+        while(low&lt;high&amp;&amp;A[low]&lt;=pivot) ++low;
+        A[high]=A[low];                          //将比枢轴大的元素移动到右端
+    }
+    A[low]=pivot;                                //枢轴元素存放到最终位置
+    return low;                                  //返回存放枢轴的最终位置
+}
+void QuickSort(ElemType A[],int low,int high){
+    if(low&lt;high){                                //递归跳出的条件
+        int pivotpos=Partition(A,low,high);      //划分
+        QuickSort(A,low,pivotpos-1);             //依次对两个子表进行递归排序
+        QuickSort(A,pivotpos+1,high);
+    }
+}</pre>
+  <p><b>一趟划分的走法</b>（枢轴 49，序列 49 38 65 97 76 13 27 4̄9）：<b>先 j 从右往左</b>找第一个 &lt; 枢轴的 27 填到 i 处 → <b>再 i 从左往右</b>找第一个 &gt; 枢轴的 65 填到 j 处 → j 再找到 13 → i 再找到 97 → …… 直到 i == j，把枢轴放进去。</p>
+  <div class="ov">
+  <table class="trace">
+    <tr><td class="lbl">第一趟后</td><td>{27</td><td>38</td><td>13}</td><td class="done">49</td><td>{76</td><td>97</td><td>65</td><td>4̄9}</td></tr>
+    <tr><td class="lbl">第二趟后</td><td>{13}</td><td class="done">27</td><td>{38}</td><td class="done">49</td><td>{4̄9}</td><td class="done">65</td><td class="done">76</td><td>{97}</td></tr>
+    <tr><td class="lbl">第三趟后</td><td class="done">13</td><td class="done">27</td><td class="done">38</td><td class="done">49</td><td class="done">4̄9</td><td>{65}</td><td class="done">76</td><td class="done">97</td></tr>
+    <tr><td class="lbl">第四趟后</td><td class="done">13</td><td class="done">27</td><td class="done">38</td><td class="done">49</td><td class="done">4̄9</td><td class="done">65</td><td class="done">76</td><td class="done">97</td></tr>
+  </table>
+  </div>
+  <figure>
+    <a href="图/图8-4_快排递归执行过程.png"><img src="图/图8-4_快排递归执行过程.png" alt="图8.4 快速排序的递归执行过程" loading="lazy"></a>
+    <figcaption>图 8.4　快速排序的递归执行过程（书 p.342）。<b>这棵树就是"递归树"</b>——2010 真题问的"递归次数"数的正是<b>这棵树的结点个数</b>，它<b>只由初始排列决定</b>；而先处理左子表还是右子表<b>只影响栈深、不影响递归次数</b>。</figcaption>
+  </figure>
+  <ul>
+    <li><b>空间</b>：递归栈，<b>最好/平均 O(log₂n)，最坏 O(n)</b>（实测：已有序输入的栈深恰为 n）。</li>
+    <li><b>时间</b>：<b>最坏发生在初始序列基本有序或基本逆序时</b>（每趟只减少一个元素），比较约 n(n−1)/2 ⟹ <b>O(n²)</b>；最好（每次均分）<b>O(n log₂n)</b>。<b>快排的平均运行时间非常接近最优情况，是所有内部排序中平均性能最优的。</b></li>
+    <li><b>改善划分平衡性</b>：① <b>三数取中</b>（首、尾、中三者的中位数作枢轴）；② 随机选枢轴。</li>
+    <li><b style="color:var(--red)">不稳定</b>；<b style="color:var(--red)">仅适用于顺序存储</b>（要随机访问，2011 真题）。</li>
+    <li>【注意】<b>快排每趟划分后并不产生全局有序的子序列，但每趟都能把枢轴精确放到最终位置</b>——这是它高效的关键。</li>
+  </ul>
+  <div class="key"><span class="tag">必记结论 ★★★ · 比较次数只认"教材口径"（我在这上面栽过四次）</span>
+    <b>教材口径：每个非枢轴元素与枢轴恰比一次，长度 m 的子表花 m−1 次比较。</b>n=8 最好情况 = 7 + 3 + 3 = <b>13</b> 次。<br>
+    ⚠️ 如果你按上面那份 <code>Partition</code> <b>代码逐条数</b>，会在<b>双指针换向处对刚填进去的元素多比一次</b>，n=8 最好情况变成 16，8.3 第 10 题的"最快"选项会从 A 变成 C。<b>我第一遍就是这么算错的，书没错。</b><br>
+    同一个坑在 8.6 第 09 题（13 vs 17）和 8.6 综 03 又踩到两次。<b>凡是问"比较次数"，一律用教材口径。</b>
+  </div>
+  <div class="key"><span class="tag">必记结论 ★★ · 两道真题共用一把尺子：两趟之后至少定死几个</span>
+    <b>2014 第 17 题、2019 第 18 题</b>是同一个模型：<b>快排两趟（第一趟 + 对某个子表的一趟）之后，能确定最终位置的元素至少有几个？</b><br>
+    <b>① 第一趟的枢轴落在首或尾 ⟹ 至少 2 个，且至少 1 个在端点</b>（因为只剩一个非空子表，第二趟再定一个）；<b>② 枢轴不在首尾 ⟹ 至少 3 个</b>（左右两个子表各定一个 + 枢轴自己）。我用 7!/8! 全排列穷举独立证实过这两条。<br>
+    <b>2023 反推枢轴，两步走</b>：<b>第一步</b>把当前序列与最终有序序列逐位对照，取"位置相同"的元素作候选；<b>第二步</b>验证它"左边全小、右边全大"。<b>只做第一步会被骗</b>——位置碰巧相同但左右不满足的元素不是枢轴。
+  </div>
+  <div class="mine"><span class="tag">我的补讲 · 快排的四道算法题其实是同一个模板</span>
+    8.3 综 01（奇偶分区）、综 02（第 k 小元素）、综 03（荷兰国旗）、<b>2016 综 04（把集合等分成两半使差最大）</b>——看着是四道题，代码骨架只有一个：<b>Partition</b>。<br>
+    <b>① 只划分到目标下标就停 = quickselect</b>（第 k 小、2016 集合等分）：<code>if(pivotpos==k) return; else if(pivotpos&gt;k) 只递归左边; else 只递归右边;</code> ⟹ 平均 <b>O(n)</b>。<br>
+    <b>② 划分思想的变体</b>（奇偶分区、荷兰国旗）：双指针对撞，<b>O(n) 时间 / O(1) 空间</b>，一遍扫描。<br>
+    <b>③ 8.6 综 03</b>（把 K<sub>n</sub> 放到正确位置，要求比较次数不超过 n）是<b>枢轴取末尾</b>的 Partition ⟹ <b>扫描顺序必须反过来：先 i 从前往后，再 j 从后往前</b>，否则会覆盖掉还没保存的元素。比较次数恰为 n−1 &lt; n。<br>
+    ⚠️ 书上综 02 给的代码里，递归第三支<b>没把 k 减去 low</b>——因为它用的是<b>全局下标</b>口径，与思想描述里"第 k−m 小"的相对口径不同。<b>两种写法都对，但绝不能混用。</b>
+  </div>
+
+  <h2>8.4　选择排序</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=21">📄 p.351</a>
+  <p><b>基本思想</b>：第 i 趟在后面 n−i+1 个待排元素中选出关键字最小的，作为有序子序列的第 i 个元素。做到第 n−1 趟即完成。<b>选择排序中的堆排序是历年统考考查的重点。</b></p>
+
+  <h3>8.4.1　简单选择排序</h3>
+  <span class="exam">考点追踪：简单选择排序的性能分析（2025）</span>
+  <pre class="code">void SelectSort(ElemType A[],int n){
+    for(int i=0;i&lt;n-1;i++){                    //共进行 n-1 趟
+        int min=i;                             //记录最小元素位置
+        for(int j=i+1;j&lt;n;j++)                 //在A[i…n-1]中选择最小元素
+            if(A[j]&lt;A[min]) min=j;             //更新最小元素位置
+        if(min!=i) swap(A[i],A[min]);          //swap()函数共移动元素 3 次
+    }
+}</pre>
+  <div class="key"><span class="tag">必记结论 ★★★ · 简单选择的"双面性"，2020 与 2025 各考了一面</span>
+    <table class="cmp">
+      <tr><th>指标</th><th>简单选择排序</th><th>在八种算法里的地位</th></tr>
+      <tr><td><b>比较次数</b></td><td class="n">恒 n(n−1)/2，<b>与初态完全无关</b></td><td class="n"><b>全章最多</b></td></tr>
+      <tr><td><b>移动次数</b></td><td class="y">≤ 3(n−1)，最好为 0</td><td class="y"><b>全章最少</b></td></tr>
+    </table>
+    <b>由此得到书 8.6.2 的原话：当记录本身信息量较大时，宁可用简单选择排序而不用直接插入排序</b>——因为搬一次记录的代价远大于比一次关键字。<b>2025 真题问"最坏情况下移动次数最少的是谁"，答案就是简单选择。</b><br>
+    ⚠️ <b>比较次数与初态无关的只有两个：简单选择 + 折半插入</b>；<b>移动次数与初态无关的也只有两个：基数（恒 2dn）+ 归并（恒 2n⌈log₂n⌉）</b>。<b>这是两把不同的尺子，四个名字别串。</b>
+  </div>
+  <ul>
+    <li><b>空间</b> O(1)；<b>顺序、链式都能用</b>；<b style="color:var(--red)">不稳定</b>——反例 {2, <u>2</u>, 1} 一趟就变成 {1, <u>2</u>, 2}。<b>这是"简单方法都稳定"这条规律里唯一的例外。</b></li>
+  </ul>
+  <div class="mine"><span class="tag">我的补讲 · 链表版的简单选择<u>有机会</u>做到稳定（8.4 综 05 实测）</span>
+    书上综 05 给的单链表简单选择排序（<b>摘最大 + 头插</b>）我实测<b>不稳定</b>：3000 组含重复关键字的数据里，<b>2667 组</b>相同关键字的相对次序被颠倒。<br>
+    <b>但只要把 <code>p-&gt;data &gt; s-&gt;data</code> 的 <code>&gt;</code> 改成 <code>&gt;=</code></b>（记住<u>最后一个</u>最大值而不是第一个），<b>3000 组 0 颠倒 ⟹ 变稳定</b>。根因：头插会把摘取顺序<b>倒过来</b>，所以要反着摘。<br>
+    ⚠️ 这<b>不推翻</b>"简单选择排序不稳定"这条通用结论——<b>数组版的 swap 会跨越中间元素，改符号救不回来</b>。<b>考场上按书上代码写，被追问时答"本实现不稳定"。</b>
+  </div>
+
+  <h3>8.4.2　堆排序</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=21">📄 p.351–354</a>
+  <span class="exam">考点追踪：堆的性质与特点（2020）；初始建堆（2018、2021）；删除操作及调整（2015、2024）；插入操作及调整（2009、2011）；Top-K 应用及效率（2022）</span>
+  <p><b>堆的定义</b>：序列 L[1…n] 是堆，当且仅当对所有 1 ≤ i ≤ ⌊n/2⌋ 满足 ① L(i) ≥ L(2i) 且 L(i) ≥ L(2i+1)（<b>大根堆</b>），或 ② L(i) ≤ L(2i) 且 L(i) ≤ L(2i+1)（<b>小根堆</b>）。堆可视为一棵<b>完全二叉树</b>。</p>
+  <figure>
+    <a href="图/图8-5_一个大根堆.png"><img src="图/图8-5_一个大根堆.png" alt="图8.5 一个大根堆示意图" loading="lazy"></a>
+    <figcaption>图 8.5　一个大根堆（书 p.352）：树形与数组 <span class="seq">87 45 78 32 17 65 53 09</span> 是同一个东西。<b>堆一定要"树 ↔ 数组"两个视角同时在脑子里</b>——考题给数组问树、给树问数组，来回切换。</figcaption>
+  </figure>
+  <p>⚠️ <b>最新统考大纲新增了"堆的应用"考点</b>，主要包括<b>堆排序、Top-K 问题和优先队列</b>。</p>
+
+  <h4>① 建初始堆（自底向上）</h4>
+  <p>策略：<b>按自底向上的顺序（从最后一个分支结点到根），依次对每个分支结点执行自上而下的筛选</b>。含 n 个结点的完全二叉树，<b>最后一个分支结点的编号是 ⌊n/2⌋</b>，所以从 <b>i = ⌊n/2⌋</b> 处理到 <b>i = 1</b>。对结点 i：若它小于左右孩子中的<b>较大者</b>（大根堆），就与该较大孩子交换；交换可能破坏下层，<b>必须沿该路径继续向下调整</b>。</p>
+  <figure>
+    <a href="图/图8-6_自下往上建大根堆.png"><img src="图/图8-6_自下往上建大根堆.png" alt="图8.6 自下往上逐步调整为大根堆" loading="lazy"></a>
+    <figcaption>图 8.6　自下往上逐步调整为大根堆（书 p.352）。初始数组 <span class="seq">53 17 78 09 45 65 87 32</span>，n=8 ⟹ 从 i=⌊8/2⌋=4 开始。(d) 那一步最关键：<b>根 53 与 87 换过之后破坏了 L(3) 子树，必须对 L(3) 再调一次</b>（53 与 78 换）——<b>"换完要接着往下走"是建堆最常丢分的地方</b>。</figcaption>
+  </figure>
+
+  <h4>② 输出堆顶后的向下筛选</h4>
+  <p>把<b>堆底元素移到堆顶</b>，然后<b>自上而下</b>：与左右孩子中的<b>较大者</b>比，小于就交换，重复到恢复堆性质。</p>
+  <figure>
+    <a href="图/图8-7_输出堆顶后调整.png"><img src="图/图8-7_输出堆顶后调整.png" alt="图8.7 输出堆顶后再将剩余元素调整成新堆" loading="lazy"></a>
+    <figcaption>图 8.7　输出堆顶后再把剩余元素调整成新堆（书 p.353）：09 上来 → 与 78 换 → 与 65 换 ⟹ <span class="seq">78 45 65 32 17 09 53</span>。</figcaption>
+  </figure>
+  <pre class="code">void BuildMaxHeap(ElemType A[],int len){
+    for(int i=len/2;i&gt;0;i--)         //从最后一个分支结点到根结点
+        HeapAdjust(A,i,len);         //反复调整子树
+}
+void HeapAdjust(ElemType A[],int k,int len){
+    A[0]=A[k];                       //A[0]暂存子树的根结点
+    for(int i=2*k;i&lt;=len;i*=2){      //沿关键字较大的子结点向下筛选
+        if(i&lt;len&amp;&amp;A[i]&lt;A[i+1])
+            i++;                     //取关键字较大的子结点的下标
+        if(A[0]&gt;=A[i])  break;       //筛选结束
+        else{
+            A[k]=A[i];               //将较大结点上移
+            k=i;                     //修改 k 值，以便继续向下筛选
+        }
+    }
+    A[k]=A[0];                       //被筛选结点的值放入最终位置
+}
+void HeapSort(ElemType A[],int len){
+    BuildMaxHeap(A,len);             //初始建堆
+    for(int i=len;i&gt;1;i--){          //执行 n-1 趟排序
+        Swap(A[i],A[1]);             //输出堆顶元素（与堆底元素交换）
+        HeapAdjust(A,1,i-1);         //把剩余 i-1 个元素重新整理为堆
+    }
+}</pre>
+  <p>⚠️ 这份 <code>HeapAdjust</code> 用的是<b>"空位下移 + 最后一次性落位"</b>（像直接插入那样挪位），<b>不是每步真交换，所以移动次数少一半</b>；<code>A[0]</code> 是暂存单元。</p>
+
+  <h4>③ 堆的插入</h4>
+  <p>新元素放到<b>堆末端</b>，然后<b>自下而上</b>与父结点比：违反堆性质就交换，直到满足。</p>
+  <figure>
+    <a href="图/图8-8_大根堆的插入.png"><img src="图/图8-8_大根堆的插入.png" alt="图8.8 大根堆的插入操作示例" loading="lazy"></a>
+    <figcaption>图 8.8　大根堆的插入（书 p.354）：在 <span class="seq">87 45 78 32 17 65 53 09</span> 尾部插 63 → 63&gt;32 换 → 63&gt;45 换 → 完成 <span class="seq">87 63 78 45 17 65 53 09 32</span>。</figcaption>
+  </figure>
+  <div class="key"><span class="tag">必记结论 ★★★ · 堆的两套计数口径（8.4 反复考，三道题栽在同一处）</span>
+    <b>插入（向上调整）：每层只比 1 次</b>——一个结点只有一个父亲，没得选。<br>
+    <b>删除（向下调整）：每层"左右孩子先互比 1 次 + 再与父比 1 次" = 2 次；但<u>只有一个孩子</u>的那层只比 1 次。</b><br>
+    <b>第 13 题、2015 第 17 题、2024 第 21 题全栽在后半句</b>。防错动作只有一个：<b>每次删除前先在草稿上写"删完之后 n = ?"</b>——n 变了，谁还有右孩子就跟着变。<br>
+    另一条容易混的：<b>建堆是 O(n)（总比较次数不超过 4n），堆排序整体是 O(n log₂n)</b>。综 03、8.4 第 3 题、2022 真题的论证全靠这个区分。<b>"建堆的时间复杂度是 O(n log₂n)"是错的。</b>
+  </div>
+  <div class="trap"><span class="tag">陷阱 ★★ · "依次插入建堆" ≠ "整体自底向上建堆"</span>
+    <b>2021 真题</b>的干扰项 C 给的正是"把元素一个一个插进去"得到的堆，而题目要的是<b>整体建堆</b>（从 ⌊n/2⌋ 往前调）。<b>两种做法的结果通常不同</b>，读题必须看清是"依次插入"还是"建初始堆"。<br>
+    其他几条堆的零碎结论（都被单独考过）：<b>小根堆里最大元素的位置范围是 ⌊n/2⌋+1 ~ n</b>（一定是叶子）；<b>次大值一定在根的下一层</b>（2020 Ⅳ）；<b>n 为偶数时恰有一个单分支结点，编号 n/2</b>（写判堆算法必须单独处理，综 06）；<b>m 叉堆从 0 编号时父 = ⌊(k−1)/m⌋、第 i 个孩子 = mk+i</b>。
+  </div>
+  <div class="key"><span class="tag">必记结论 ★★ · Top-K：堆顶永远是"最容易被淘汰的那个"</span>
+    <b>求最大的 k 个 ⟹ 用小顶堆</b>（堆顶是这 k 个里最小的，新数比它大就替换）；<b>求最小的 k 个 ⟹ 用大顶堆</b>。<b>方向记反是这类题唯一的失分点。</b><br>
+    效率（2022 真题）：<b>时间 O(n log₂k)、空间 O(k)</b>；<b>k 为常数时就是 O(n) 与 O(1)</b>。<br>
+    ⚠️ <b>堆是排序结构，不是查找结构</b>（8.6 第 11 题）：在堆里查<b>任意</b>关键字只能顺序扫，<b>O(n)</b>——我实测 n=4095 时平均要比 2046 次，而折半 11 次、BST 14.3 次、AVL 12 次；<b>但查<u>最值</u>是 O(1)</b>。<b>"任意"和"最值"两个词一偷换，答案就反转。</b>
+  </div>
+
+  <h2>8.5　归并排序、基数排序和计数排序</h2>
+
+  <h3>8.5.1　归并排序</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=33">📄 p.363–364</a>
+  <span class="exam">考点追踪：2 路归并操作的功能（2022）；比较次数的分析（2024）；（算法题）归并思想的应用（2011）</span>
+  <p><b>核心思想是"归并"</b>：把两个或多个有序序列合并成一个更长的有序序列。n 个记录先看成 n 个长度为 1 的有序子表，<b>两两归并</b>得 ⌈n/2⌉ 个长度为 2 的子表，继续两两归并，直到合成一个长为 n 的有序表——这就是 <b>2 路归并排序</b>。</p>
+  <div class="ov">
+  <table class="trace">
+    <tr><td class="lbl">初始</td><td>[49]</td><td>[38]</td><td>[65]</td><td>[97]</td><td>[76]</td><td>[13]</td><td>[27]</td></tr>
+    <tr><td class="lbl">第一趟</td><td colspan="2">[38　49]</td><td colspan="2">[65　97]</td><td colspan="2">[13　76]</td><td>[27]</td></tr>
+    <tr><td class="lbl">第二趟</td><td colspan="4">[38　49　65　97]</td><td colspan="3">[13　27　76]</td></tr>
+    <tr><td class="lbl">第三趟</td><td colspan="7" class="done">[13　27　38　49　65　76　97]</td></tr>
+  </table>
+  </div>
+  <p style="font-size:.83rem;color:var(--muted)">（图 8.9 重排，n=7。注意<b>最后一个 [27] 单独成段</b>，不足两段时直接抬到下一趟。）</p>
+  <pre class="code">ElemType *B=(ElemType *)malloc((n+1)*sizeof(ElemType));  //辅助数组 B
+void Merge(ElemType A[],int low,int mid,int high){
+//A[low…mid]和A[mid+1…high]各自有序，将它们合并成一个有序表
+    int i,j,k;
+    for(k=low;k&lt;=high;k++)
+        B[k]=A[k];                       //将A中所有元素复制到B中
+    for(i=low,j=mid+1,k=i;i&lt;=mid&amp;&amp;j&lt;=high;k++){
+        if(B[i]&lt;=B[j])                   //比较B的两个段中的元素
+            A[k]=B[i++];                 //将较小值复制到A中
+        else
+            A[k]=B[j++];
+    }
+    while(i&lt;=mid)    A[k++]=B[i++];      //若第一个表未检测完，复制
+    while(j&lt;=high)   A[k++]=B[j++];      //若第二个表未检测完，复制
+}
+void MergeSort(ElemType A[],int low,int high){
+    if(low&lt;high){
+        int mid=(low+high)/2;            //从中间划分两个子序列
+        MergeSort(A,low,mid);            //对左侧子序列进行递归排序
+        MergeSort(A,mid+1,high);         //对右侧子序列进行递归排序
+        Merge(A,low,mid,high);           //归并
+    }
+}</pre>
+  <p>【注意】上面<b>最后两个 while 循环只有一个会执行</b>。非递归版本里，<b>一趟</b>是指把序列切成若干长为 h 的有序段再两两归并成 2h，<b>每趟调用 ⌈n/(2h)⌉ 次 Merge</b>，全程 <b>⌈log₂n⌉ 趟</b>。</p>
+  <ul>
+    <li><b>空间 O(n)——本章最大</b>（要一个与表等长的辅助数组）；<b>稳定</b>；<b>顺序、链式都能用</b>（只需顺序访问）。</li>
+    <li><b>时间恒 O(n log₂n)</b>：最好 = 最坏 = 平均，<b>与初态无关</b>（分割过程与数据无关）。<b>平均 O(n log₂n) 的算法里唯一稳定的就是它。</b></li>
+    <li>【注意】<b>k 路归并的趟数 m = ⌈log_k N⌉</b>——这条到 8.7 外部排序会原样再用一次。</li>
+  </ul>
+  <div class="key"><span class="tag">必记结论 ★★★ · 归并的"三个恒定 + 一个波动"（2024 真题的题眼）</span>
+    <b>恒定的三个</b>：<b>趟数 ⌈log₂n⌉ · 时间 O(n log₂n) · 移动次数 2n⌈log₂n⌉</b>。<br>
+    <b>会波动的一个：比较次数。</b>我实测 n=8 时在 <b>12 ~ 17</b> 之间跳，恰好卡在理论下界 (n/2)log₂n 与上界 n log₂n − n + 1 之间。<b>所以 8.5 第 4 题问的是"数量级"——读题要死盯这三个字。</b><br>
+    <b>一次 Merge 的比较次数：最少 min(m₁, m₂)，最多 m₁+m₂−1。</b>根因一句话：<b>一段走空后另一段直接搬、不计比较</b>。我穷举了 M,N ≤ 6 的全部交错方式，无反例。<b>8.5 第 8 题、2024 第 20 题数错，全栽在这一句上。</b>
+  </div>
+
+  <h3>8.5.2　基数排序</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=35">📄 p.365–366</a>
+  <span class="exam">考点追踪：基数排序的中间过程（2013、2021）；移动次数与初态无关的算法（2015）</span>
+  <p>基数排序<b>不依赖元素间的比较</b>，而是按<b>关键字各位的大小</b>排序。设每个关键字由 <b>d 个分量</b>组成，每个分量取值 0 ~ r−1。两种方向：<b>最高位优先 MSD</b> 与<b>最低位优先 LSD</b>（<b>考研主用 LSD</b>）。</p>
+  <p>LSD 用 <b>r 个队列</b> Q<sub>0</sub>…Q<sub>r−1</sub>，对 i = 0, 1, …, d−1 依次做：<b>① 分配</b>——扫描线性表，按当前位的值 k 把结点插入队列 Q<sub>k</sub> 的<b>队尾</b>；<b>② 收集</b>——按 Q<sub>0</sub> 到 Q<sub>r−1</sub> 的顺序，从<b>队头</b>依次串起来。<b>每一轮本质上就是一次稳定的排序。</b></p>
+  <div class="ov">
+  <table class="trace">
+    <tr><th>趟</th><th>分配结果（q[0] ~ q[9]，→ 表示同队列的先后）</th><th>收集后</th></tr>
+    <tr><td class="lbl">初始</td><td class="lbl">—</td><td>278 109 063 930 589 184 505 269 008 083</td></tr>
+    <tr><td class="lbl">① 按个位 K³</td><td class="lbl">q0:930　q3:063→083　q4:184　q5:505　q8:278→008　q9:109→589→269</td><td>930 063 083 184 505 278 008 109 589 269</td></tr>
+    <tr><td class="lbl">② 按十位 K²</td><td class="lbl">q0:505→008→109　q3:930　q6:063→269　q7:278　q8:083→184→589</td><td>505 008 109 930 063 269 278 083 184 589</td></tr>
+    <tr><td class="lbl">③ 按百位 K¹</td><td class="lbl">q0:008→063→083　q1:109→184　q2:269→278　q5:505→589　q9:930</td><td class="done">008 063 083 109 184 269 278 505 589 930</td></tr>
+  </table>
+  </div>
+  <p style="font-size:.83rem;color:var(--muted)">（图 8.10~8.12 三趟合并重排。<b>书上用的是链式基数排序</b>，r = 10、d = 3。）</p>
+  <ul>
+    <li><b>空间 O(r)</b>（r 个队头 + r 个队尾指针，各趟可复用）；<b>稳定</b>；<b>顺序、链式都能用，链式尤其适合</b>。</li>
+    <li><b>时间 O(d(n + r))，与序列初始状态无关</b>（2015 真题问"移动次数与初态无关的是谁"，答基数）。</li>
+  </ul>
+  <div class="key"><span class="tag">必记结论 ★★ · 四个数各司其职，r 与 d 千万别串</span>
+    <b>r 定队列个数（十进制恒为 10）· d 定趟数（几位数就几趟）· 时间 O(d(n+r)) · 空间 O(r)。</b><br>
+    <b>8.5 第 13 题</b>把"5 位数"和"十进制"同时摆在题干里，赌的就是你抓错哪个 ⟹ <b>趟数看位数 d=5，队列数看基数 r=10</b>。<br>
+    <b>★ LSD 的两个前提（第 11 题单独考）：① 必须先次位后主位；② 后一趟用的排序必须是稳定的。</b>稳定性来自<b>两个 FIFO</b>（分配入队尾、收集出队头）——我把队列换成栈实测，<b>既不有序，16 与 16* 的次序也毁了</b>。<b>"基数排序可以用栈实现"是错的。</b>
+  </div>
+
+  <h3>*8.5.3　计数排序</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=36">📄 p.366–367</a>
+  <span class="exam">考点追踪：（算法题）计数排序思想的应用（2013、2015、2018）；相关思想与代码分析（2021）</span>
+  <p>【注意】<b>计数排序不在统考大纲范围内，但它的思想在历年真题中多次出现</b>（尤其 2021 那道读代码题）。核心：对每个元素 x，<b>统计小于 x 的元素个数</b>，直接定位它在有序序列中的位置。</p>
+  <pre class="code">void CountSort(ElemType A[],ElemType B[],int n,int k){
+    int i,C[k];
+    for(i=0;i&lt;k;i++)
+        C[i]=0;                        //初始化计数数组
+    for(i=0;i&lt;n;i++)                   //遍历输入数组，统计每个元素出现的次数
+        C[A[i]]=C[A[i]]+1;             //C[A[i]]保存的是等于A[i]的元素个数
+    for(i=1;i&lt;k;i++)
+        C[i]=C[i]+C[i-1];              //C[x]保存的是小于或等于x的元素总数
+    for(i=n-1;i&gt;=0;i--){               //从后往前遍历输入数组
+        B[C[A[i]]-1]=A[i];             //将元素A[i]放置到输出数组B[]的正确位置
+        C[A[i]]=C[A[i]]-1;             //更新计数数组，确保相同元素的相对顺序
+    }
+}</pre>
+  <div class="key"><span class="tag">必记结论 · 第四个 for 为什么必须"从后往前"</span>
+    第三个 for 之后，<b>C[x] = 小于或等于 x 的元素总数 = x 在有序序列中<u>最后</u>可能出现的位置</b>（从 1 计数）。所以第四个 for 从后往前扫，<b>让原数组里靠后的相同元素先占据靠后的位置</b>，前面的自然排在前面 ⟹ <b>稳定</b>。<br>
+    <b>把"从后往前"改成"从前往后"，算法仍能排对序，但不再稳定</b>——2021 真题问的就是这个点。
+  </div>
+
+  <h2>8.6　各种内部排序算法的比较及应用</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=43">📄 p.373–374</a>
+  <span class="exam">考点追踪：各排序算法的特点与对比（2009、2010、2017、2020、2022、2025）；稳定性分析（2021、2023）；适用性（2017）；过程特征（2012）；选取算法时考虑的因素（2019）</span>
+  <div class="mine"><span class="tag">我的补讲 · 这一节 26 题里有 11 道真题，是全书真题最密的一节</span>
+    8.6 没有新算法，全部是"把前五节横过来看"。<b>所以它的复习方式只有一个：先默写下面这张表 8.1，再做题。</b>我写这 26 题时，几乎每一道的解题第一步都是"在草稿纸上把表 8.1 相关的两行列出来"。
+  </div>
+
+  <h3>★★ 表 8.1　各种排序算法的性质（全章最该背的一张表）</h3>
+  <div class="ov">
+  <table class="cmp">
+    <tr><th>算法</th><th>最好</th><th>平均</th><th>最坏</th><th>空间</th><th>稳定</th><th>存储要求</th></tr>
+    <tr><td><b>直接插入排序</b></td><td class="y">O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td class="y">是</td><td>顺序 / 链式</td></tr>
+    <tr><td><b>折半插入排序</b>*</td><td>O(n log₂n)*</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td class="y">是</td><td class="n">只能顺序</td></tr>
+    <tr><td><b>冒泡排序</b></td><td class="y">O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td class="y">是</td><td>顺序 / 链式</td></tr>
+    <tr><td><b>简单选择排序</b></td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td class="n">否</td><td>顺序 / 链式</td></tr>
+    <tr><td><b>希尔排序</b></td><td colspan="3" style="text-align:center">—（无精确表达式，约 O(n<sup>1.3</sup>)，最坏 O(n²)）</td><td>O(1)</td><td class="n">否</td><td class="n">只能顺序</td></tr>
+    <tr><td><b>快速排序</b></td><td>O(n log₂n)</td><td class="y">O(n log₂n)</td><td class="n">O(n²)</td><td>O(log₂n)<br>最坏 O(n)</td><td class="n">否</td><td class="n">只能顺序</td></tr>
+    <tr><td><b>堆排序</b></td><td>O(n log₂n)</td><td>O(n log₂n)</td><td class="y">O(n log₂n)</td><td>O(1)</td><td class="n">否</td><td class="n">只能顺序</td></tr>
+    <tr><td><b>2 路归并排序</b></td><td>O(n log₂n)</td><td>O(n log₂n)</td><td class="y">O(n log₂n)</td><td class="n">O(n)</td><td class="y">是</td><td>顺序 / 链式</td></tr>
+    <tr><td><b>基数排序</b></td><td>O(d(n+r))</td><td>O(d(n+r))</td><td>O(d(n+r))</td><td>O(r)</td><td class="y">是</td><td>顺序 / 链式</td></tr>
+  </table>
+  </div>
+  <p style="font-size:.83rem;color:var(--muted)">表注：<b>空间复杂度按平均情况列出</b>；希尔排序的时间依赖于所选增量序列，无法给出精确表达式。<br>
+  <b>* 两处是我补的，书上原表没有</b>：① <b>"存储要求"一列</b>按 8.6.1 的正文补；② <b>"折半插入排序"这一行</b>书上表 8.1 未单列（它被并进"直接插入"里）——补出来是因为它的<b>最好情况与直接插入不同</b>：初始有序时直接插入是 O(n)（每趟只比 1 次），而折半插入仍要做 ⌊log₂i⌋+1 次折半比较，<b>最好情况是 O(n log₂n)</b>；平均与最坏因移动次数没减少，仍是 O(n²)。<b>考试若只问"折半插入的时间复杂度"，答 O(n²)。</b></p>
+  <div class="key"><span class="tag">必记结论 ★★ · 这张表的六条"少数派"，考的全是它们</span>
+    <ol class="rule">
+      <li><b>空间不是 O(1) 的只有三个</b>：<b>快排 O(log₂n)（最坏 O(n)）· 归并 O(n)（本章最大）· 基数 O(r)</b>。题干出现"最坏情况下"才把快排改写成 O(n)。</li>
+      <li><b>只能顺序存储的四个</b>：<b>折半插入、希尔、快排、堆</b>（都要"随机访问 / 跳着走"：折半要算 mid、希尔要跳 dk、快排要两头夹、堆要算 2i）。</li>
+      <li><b>稳定的四个</b>：<b>直接插入（含折半插入）、冒泡、归并、基数</b>。口诀：<b>简单方法都稳定，唯一例外是简单选择；复杂方法都不稳定。</b></li>
+      <li><b>平均 O(n log₂n) 里唯一稳定的是归并。</b></li>
+      <li><b>最好能到 O(n) 的只有两个</b>：<b>直接插入、冒泡</b>（都是"初始有序时一趟带走"）。</li>
+      <li><b>最坏仍是 O(n log₂n) 的只有两个</b>：<b>堆、归并</b>（快排会退化到 O(n²)）。</li>
+    </ol>
+  </div>
+  <div class="key"><span class="tag">必记结论 ★★★ · 反推算法的六把尺子（第 13/14/23 题连着考）</span>
+    <b>给一个中间结果，问用的是哪种排序</b>——这是本章出现频率最高的题型。六把尺子按顺序试：
+    <table class="cmp">
+      <tr><th>你看到的现象</th><th>指向的算法</th></tr>
+      <tr><td><b>首尾坐着全局最大/最小的几个</b></td><td>冒泡 / 简单选择 / 堆</td></tr>
+      <tr><td><b>前缀自己有序，但不是全局最小的那几个</b></td><td>直接插入（<b>局部有序</b>）</td></tr>
+      <tr><td><b>长度 2ᵏ 的段内有序、段之间乱</b></td><td>归并</td></tr>
+      <tr><td><b>某个元素左边全小右边全大，而两侧仍乱</b></td><td>快排（那个元素是枢轴）</td></tr>
+      <tr><td><b>下标模 d 同余的那几个各自有序</b>（2025）</td><td>希尔</td></tr>
+      <tr><td><b>按个位/十位分组，且组内保持原相对顺序</b></td><td>基数</td></tr>
+    </table>
+    <b>配套的反例（只要 6 个数）</b>：说"每趟至少定一个元素的最终位置"只对<b>选择/交换家族</b>成立——<b>希尔 {1,0,3,2,5,4} 做 d=3 一趟纹丝不动；归并 {1,2,0,5,3,4} 做段长 2 一趟也纹丝不动</b>（我对 n=6 的全排列穷举：希尔 136 个反例、归并 312 个，其余算法 0 个）。
+  </div>
+
+  <h3>8.6.2　内部排序算法的应用</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=44">📄 p.374</a>
+  <p><b>选取排序算法要考虑的五点</b>：① 元素个数 n；② 初始状态（是否基本有序）；③ 关键字的结构与分布；④ 对稳定性的要求；⑤ 存储结构与辅助空间限制。</p>
+  <ol class="rule">
+    <li><b>n 较小</b>：直接插入或简单选择。<b>直接插入的移动次数通常多于简单选择，所以记录本身信息量大时选简单选择。</b></li>
+    <li><b>n 较大</b>：用 O(n log₂n) 的三个。关键字随机分布时<b>快排通常最高效</b>；<b>堆排序辅助空间比快排少且不会退化</b>，但两者都不稳定；<b>既要稳定又要 O(n log₂n)，只能选归并</b>。</li>
+    <li><b>初始基本有序</b>：<b>直接插入或冒泡</b>（最好情况 O(n)）。</li>
+    <li>基于比较的排序都可用<b>判定树</b>描述，由此可证：<b>任何基于比较的排序，最坏情况下至少需要 O(n log₂n) 时间</b>。</li>
+    <li><b>n 很大且关键字位数少、可分解</b>：<b>基数排序</b>，时间可接近线性。</li>
+    <li><b>记录本身信息量大</b>：用<b>链表</b>存储以避免搬运，此时<b>插入类或归并类</b>更有优势。</li>
+  </ol>
+  <div class="key"><span class="tag">必记结论 ★★ · 选型题的统一打法：列两列，逐行看谁赢</span>
+    <b>2016/2019/2020 三道真题是同一个模型</b>："因为某某原因所以选 A 而不选 B"，问哪些理由成立。<b>打法固定：把 A、B 的所有指标列成两列，逐行比，题干问"选 A 的理由"就答"A 赢的那几行"。</b><br>
+    <b>第 16 题</b>（归并 vs 直接插入）：只有时间归并赢 ⟹ <b>仅Ⅲ</b>。<b>第 19 题</b>（直接插入 vs 简单选择）：只有比较次数插入赢 ⟹ <b>仅Ⅰ</b>。<b>第 20 题</b>（直接插入 vs 快排）：四项全是插入赢 ⟹ <b>全选</b>。<br>
+    另外两条零碎但被单独考过的：<b>不能并行的两个 = 基数（趟间依赖）+ 冒泡（趟内依赖）</b>；<b>快排（左右区不相交）与堆（建堆时左右子树独立）可以并行</b>。我实测：基数强行用原序列做每趟 ⟹ 5000 组错 4834 组；冒泡趟内并行 ⟹ 错 4984 组；快排/堆并行 ⟹ 0 错。
+  </div>
+  <div class="trap"><span class="tag">陷阱 ⚠️ · 2025 第 22 题：书上"快排最坏 O(n²) 次移动"这句话偏松</span>
+    题目问"最坏情况下移动次数最少的算法"，答案 <b>D（简单选择）</b>。书的理由是"快排最坏要 O(n²) 次移动"。<br>
+    我用王道的<b>挖坑法</b> Partition 做爬山搜索，实测最坏移动次数：n = 8/16/32/64/128 时分别是 <b>24/57/134/304/664</b>——<b>增长明显慢于 n²，更接近 Θ(n log n)</b>，所以书上那句是个宽松的上界。<br>
+    <b>但结论不受影响</b>：每一个 n 上快排的最坏移动数都<b>多于</b>简单选择的 3(n−1) = 21/45/93/189/381 ⟹ <b>答案 D 与口径无关。</b>
+  </div>
+
+  <h2>8.7　外部排序</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=50">📄 p.380</a>
+  <div class="key"><span class="tag">必记结论 ★★★ · 整节只有一张地图，21 道题全在图上</span>
+    <div class="fml" style="font-size:.95rem">减 I/O　⟹　减趟数 <b>S = ⌈log<sub>k</sub> r⌉</b>　⟹　要么<b>增大 k</b>（内部选最小变慢 → 用<b>败者树</b>抵消），要么<b>减小 r</b>（用<b>置换-选择</b>）<br>⟹ 段长因此不等 ⟹ 用<b>最佳归并树</b>排归并顺序</div>
+    <b>读 8.7 之前先把这张图记住，后面每一小节都是在填这张图的一个格子。</b>书上 8.7 开头列的五条要点，就是这张图的五个节点。
+  </div>
+
+  <h3>8.7.1–8.7.2　基本概念与方法</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=51">📄 p.380–382</a>
+  <span class="exam">考点追踪：对大文件排序时使用的排序算法（2016）</span>
+  <p>文件以<b>块</b>为单位存在磁盘上。<b>磁盘读/写的机械动作耗时远大于内存运算</b>，所以<b>外部排序的时间代价主要取决于 I/O 次数</b>。外部排序一律采用<b>归并策略</b>，分两个阶段：</p>
+  <ol class="rule">
+    <li><b>生成初始归并段</b>：按内存工作区大小把文件切成若干子文件，逐个读入内存、用内部排序排好再写回外存，得到若干有序的<b>初始归并段（顺串）</b>。</li>
+    <li><b>多路归并</b>：对这些初始归并段逐趟归并，段数逐步减少，最终得到一个有序文件。</li>
+  </ol>
+  <p><b>书上的模板例子（必须会算）</b>：2000 个记录、每块装 125 个 ⟹ 内存一次装 250 个 ⟹ <b>8 次内部排序得 8 个初始归并段，每段 250 条</b>。内存工作区分成<b>两个输入缓冲区 + 一个输出缓冲区</b>做 2 路归并：</p>
+  <div class="ov">
+  <table class="cmp">
+    <tr><th>方案</th><th>归并趟数 S</th><th>每趟 I/O</th><th>初始建段 I/O</th><th>总 I/O</th></tr>
+    <tr><td><b>2 路归并</b></td><td>⌈log₂8⌉ = <b>3</b></td><td>16 读 + 16 写 = 32</td><td>32</td><td class="n">32×3 + 32 = <b>128</b></td></tr>
+    <tr><td><b>4 路归并</b></td><td>⌈log₄8⌉ = <b>2</b></td><td>32</td><td>32</td><td class="y">32×2 + 32 = <b>96</b></td></tr>
+  </table>
+  </div>
+  <p>⟹ <b>增大归并路数可有效减少归并趟数，从而显著降低总 I/O。</b>一般地，对 r 个初始归并段做 k 路归并，<b>归并趟数 S = ⌈log<sub>k</sub> r⌉ = 归并树的高度 − 1</b>。因此<b>增大 k 或减小 r 都能减少 S</b>。</p>
+  <div class="key"><span class="tag">必记结论 ★★ · 趟数题两步走，两个条件"绝不见面"</span>
+    <b>正向</b>（第 04 题）：<b>第一步 r = ⌈n / w⌉</b>（n 是记录总数、w 是内存工作区能装的记录数）⟹ <b>第二步 S = ⌈log<sub>k</sub> r⌉</b>。<br>
+    <b>反向</b>（第 06 题、综 01）：由 <b>k<sup>S</sup> ≥ r</b> 解出最小的 k。<br>
+    ⚠️ <b>工作区大小只在第一步用、路数只在第二步用，两者绝不见面</b>——把 w 塞进第二步是这类题最常见的错法。<br>
+    <b>缓冲区账：k 路归并 = k 个输入缓冲区 + 1 个输出缓冲区。</b>题干给"内存块数"或"可用文件总数不超过 m"，<b>第一反应是减 1 得路数</b>（综 01 的 15−1=14、综 02 的 6−1=5）。<br>
+    ⚠️ <b>综 02 的"内存可容纳 450 个记录"被用了两次</b>：定段长算出 r = 4500/450 = 10，定块数算出 k = 450/75 − 1 = 5。<b>一个条件两个用途，是该题的题眼。</b><br>
+    ⚠️ <b>书上第 04 题答案栏写的 S = ⌈log<sub>r</sub> r⌉ 是下标笔误</b>，底数应为<b>路数 k</b>（同一行后半句写的就是 ⌈log₅625⌉）。不影响答案。
+  </div>
+  <div class="trap"><span class="tag">陷阱 ★★ · 本节头号易混：多路归并减的是"趟数"，不是"段数"</span>
+    <b>第 03 题</b>问"多路平衡归并的作用"，干扰项 B 是"减少初始归并段的个数"——<b>错</b>。<b>r 在归并开工之前就被"文件大小 ÷ 工作区大小"定死了，归并本身改不了它。</b><br>
+    <b>减少 r 是置换-选择排序的活。</b>把这两件事的分工记牢：<b>k 归 k 的（减趟数），r 归 r 的（减段数）。</b>
+  </div>
+  <div class="mine"><span class="tag">我的补讲 · 2016 真题："10TB 数据排序用哪个"为什么只能是归并</span>
+    答案 <b>D（归并排序）</b>，理由课本只说了"外部排序用归并"。我做了个更硬的验证——用游标模型统计各算法访问下标的<b>平均跳跃距离</b>（n = 10 万）：<b>希尔 26563 · 堆 12453 · 快排 4943</b>，而<b>归并在每条输入流内部严格 +1</b>（30 万次采样无一例外）。<br>
+    <b>顺序 +1 的访问模式意味着零寻道</b>：交替读两条流由各自的缓冲区吸收，磁头几乎不回退。而希尔/堆/快排都要"跳着走"，在磁盘上就是每一步一次寻道。<b>这正好呼应 8.6 那条"只能顺序存储的四个 = 折半插入/希尔/快排/堆"——它们连内存里都要随机访问，何况磁盘。</b>
+  </div>
+
+  <h3>8.7.3　多路平衡归并与败者树</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=52">📄 p.382–383</a>
+  <span class="exam">考点追踪：败者树的实现原理（2024）</span>
+  <p><b>增大 k 的代价</b>：普通做法从 k 个元素里选最小要比 <b>k−1</b> 次，每趟归并 n 个元素共 (n−1)(k−1) 次，S 趟总计</p>
+  <div class="fml">S(n−1)(k−1) = ⌈log<sub>k</sub>r⌉(n−1)(k−1) = ⌈log₂r⌉(n−1)(k−1)/⌈log₂k⌉</div>
+  <p>式中 <b>(k−1)/⌈log₂k⌉ 随 k 增大而增大</b>，内部归并时间因此上升，抵消掉减少 I/O 的收益。<b>所以不能直接用普通的多路归并——要用败者树。</b></p>
+  <p><b>败者树</b>是树形选择排序的变体，可视为一棵<b>完全二叉树</b>：k 个叶结点存放 k 个归并段当前参与比较的元素，<b>内部结点记录左右子树比较中的"败者"（较大者）</b>，而<b>胜者（较小者）继续向上</b>参与比较，最终<b>胜者的段号存于 ls[0]</b>。</p>
+  <figure>
+    <a href="图/图8-17_5路归并的败者树.png"><img src="图/图8-17_5路归并的败者树.png" alt="图8.17 实现5路归并的败者树" loading="lazy"></a>
+    <figcaption>图 8.17　实现 5 路归并的败者树（书 p.382）。(a) b3=6 夺冠，<b>ls[0] 里写的是段号 3</b>；(b) 输出 6 之后从第 3 段读入 15，<b>只沿 b3 到根的那一条路径向上重调</b>，新冠军是段 1（关键字 9）。<b>注意每个内部结点旁标的 ls[i] 下标，考题常直接问"调整后 ls[2] 是多少"。</b></figcaption>
+  </figure>
+  <p>由于 k 路归并的<b>败者树深度为 ⌈log₂k⌉ + 1</b>，选出最小关键字<b>只需 ⌈log₂k⌉ 次比较</b>，总比较次数变成</p>
+  <div class="fml">S(n−1)⌈log₂k⌉ = ⌈log<sub>k</sub>r⌉(n−1)⌈log₂k⌉ = (n−1)⌈log₂r⌉</div>
+  <p>⟹ <b>用了败者树，内部归并的比较次数与归并路数 k 无关</b>，于是可以放心增大 k。</p>
+  <div class="trap"><span class="tag">陷阱 · k 并不是越大越好</span>
+    书 p.383 的原话：增大 k 需要更多输入缓冲区，<b>内存总量固定时每个缓冲区就变小，每趟归并的读/写次数反而增加</b>。<b>k 过大时归并趟数虽少，总 I/O 却可能不降反升。</b>选择题里"归并路数越大效率越高"一律错。
+  </div>
+  <div class="key"><span class="tag">必记结论 ★★★ · 败者树 vs 堆，分水岭是"能不能中途停"</span>
+    <table class="cmp">
+      <tr><th></th><th>败者树</th><th>堆（小顶堆）</th></tr>
+      <tr><td><b>方向</b></td><td>从下往上</td><td>从上往下</td></tr>
+      <tr><td><b>每层比较</b></td><td>1 次（只和该结点存的败者比）</td><td>2 次（左右孩子先互比，再与父比）</td></tr>
+      <tr><td><b>能否中途停</b></td><td class="n"><b>不能，必到根</b></td><td class="y"><b>能</b></td></tr>
+    </table>
+    <b>第 10 题的Ⅳ"堆的每次维护必定走到叶结点"就错在这里。</b>我实测过：n=15 的小顶堆替换堆顶后向下调整 20000 次，<b>50.3% 没走到叶就停了</b>（12.8% 甚至一层都没下沉）；而败者树 k=4/8/16 各调整 200 次，<b>无一次提前结束，比较次数恒为 ⌈log₂k⌉</b>。<br>
+    <b>★★ 2024 真题：冠军结点 ls[0] 存的是"最小关键字所在的<u>归并段号</u>"，不是关键字本身。</b>关键字只住在 b[] 数组里。<b>反证</b>：我另写了一版"冠军只存关键字、用时扫描反查段号"的实现，在 1000 组含重复首元素的数据里<b>错了 836 组</b>（最小反例：段 0 = [1,2]、段 1 = [1,2]，会丢元素）⟹ <b>存关键字不只是慢，是不正确。</b>
+  </div>
+
+  <h3>8.7.4　置换-选择排序（生成初始归并段）</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=53">📄 p.383</a>
+  <span class="exam">考点追踪：置换-选择排序生成初始归并段的实例（2023）</span>
+  <p>普通方法生成的初始归并段<b>长度固定等于内存工作区大小 w</b>，于是 r = ⌈n/w⌉ 被卡死。置换-选择算法要突破的就是这一条。设待排文件 <b>FI</b>、输出文件 <b>FO</b>、内存工作区 <b>WA</b>（可容纳 w 个记录）：</p>
+  <ol class="rule">
+    <li>从 FI 读入 w 个记录到 WA。</li>
+    <li>从 WA 中选出关键字最小的记录，记为 <b>MINIMAX</b>。</li>
+    <li>把 MINIMAX 写入 FO。</li>
+    <li>若 FI 非空，从 FI 读入下一个记录补进 WA。</li>
+    <li>从 WA 中<b>所有关键字不小于当前 MINIMAX</b> 的记录里，选出最小者作为新的 MINIMAX。</li>
+    <li>重复 3)~5)，直到 <b>WA 中不存在关键字不小于当前 MINIMAX 的记录</b>——此时一个初始归并段输出完毕。</li>
+    <li>重复 2)~6)，直到 FI 与 WA 都空。</li>
+  </ol>
+  <div class="ov">
+  <table class="trace">
+    <tr><th>输出文件 FO</th><th>工作区 WA（粗体 = 本步选出的 MINIMAX）</th><th>输入文件 FI</th></tr>
+    <tr><td>—</td><td>—</td><td>17, 21, 05, 44, 10, 12, 56, 32, 29</td></tr>
+    <tr><td>—</td><td>17　21　<b>05</b></td><td>44, 10, 12, 56, 32, 29</td></tr>
+    <tr><td>05</td><td><b>17</b>　21　44</td><td>10, 12, 56, 32, 29</td></tr>
+    <tr><td>05 17</td><td>10　<b>21</b>　44</td><td>12, 56, 32, 29</td></tr>
+    <tr><td>05 17 21</td><td>10　12　<b>44</b></td><td>56, 32, 29</td></tr>
+    <tr><td>05 17 21 44</td><td>10　12　<b>56</b></td><td>32, 29</td></tr>
+    <tr><td>05 17 21 44 56</td><td>10　12　32</td><td>29</td></tr>
+    <tr><td class="act">05 17 21 44 56 #</td><td><b>10</b>　12　32</td><td>29</td></tr>
+    <tr><td>10</td><td>29　<b>12</b>　32</td><td>—</td></tr>
+    <tr><td>10 12</td><td><b>29</b>　32</td><td>—</td></tr>
+    <tr><td>10 12 29</td><td><b>32</b></td><td>—</td></tr>
+    <tr><td>10 12 29 32</td><td>—</td><td>—</td></tr>
+    <tr><td class="act">10 12 29 32 #</td><td>—</td><td>—</td></tr>
+  </table>
+  </div>
+  <p style="font-size:.83rem;color:var(--muted)">（表 8.2 原样重排，FI = {17,21,05,44,10,12,56,32,29}，w = 3。<code>#</code> 表示一个归并段结束。<b>第 7 行 WA = {10,12,32} 全都小于当前 MINIMAX 56 ⟹ 本段封口</b>，10 成为新段的第一个 MINIMAX。最终两个段：<span class="seq">05 17 21 44 56</span> 与 <span class="seq">10 12 29 32</span>。<b>WA 中选 MINIMAX 的过程正是用败者树实现的。</b>）</p>
+  <div class="key"><span class="tag">必记结论 ★★ · 只需要懂一个字：冻结</span>
+    <b>补进 WA 的新记录若小于当前 MINIMAX，它就被"冻结"，只能等下一段；m 个格子全被冻结，本段封口。</b>整个算法就这一句话。<br>
+    <b>三条被直接考过的性质</b>：<b>① 段长不等（这正是它的优点，第 02 题干扰项 A"长度一定相等"错）；② 平均段长 ≈ 2w</b>（我实测 w = 4/8/16/32 得 7.98/15.93/31.73/62.90，稳定接近 2 倍）；<b>③ 第一段长度上界 n（输入升序时全在一段）、下界 w（初始 w 个恰好全大于剩下的记录）</b>——<b>2023 真题</b>问的就是这两个界，我用 n=7、w=3 的全部 5040 种排列穷举确认过。<br>
+    ⚠️ <b>段数 m 与 n 之间没有固定函数关系</b>（第 08 题）：同为 n=5、w=1，输入升序得 1 段、降序得 5 段 ⟹ <b>选项里的"成正比""m = log₂n""成反比"全错，选"以上都不对"。</b>
+  </div>
+
+  <h3>8.7.5　最佳归并树</h3>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=54">📄 p.384–385</a>
+  <span class="exam">考点追踪：构造三叉哈夫曼树及相关计算（2013）；实现最佳归并时需补充的虚段数量（2019）</span>
+  <p>置换-选择之后得到的是<b>长度不等</b>的初始归并段，此时"先归并谁"就会影响总 I/O。设 9 个初始归并段长度为 <b>9, 30, 12, 18, 3, 17, 2, 6, 24</b>：</p>
+  <div class="two">
+    <figure>
+      <a href="图/图8-18_3路平衡归并的归并树.png"><img src="图/图8-18_3路平衡归并的归并树.png" alt="图8.18 3路平衡归并的归并树" loading="lazy"></a>
+      <figcaption>图 8.18　一种普通方案：WPL = 242，<b>I/O = 2×WPL = 484</b>。</figcaption>
+    </figure>
+    <figure>
+      <a href="图/图8-19_3路平衡归并的最佳归并树.png"><img src="图/图8-19_3路平衡归并的最佳归并树.png" alt="图8.19 3路平衡归并的最佳归并树" loading="lazy"></a>
+      <figcaption>图 8.19　最佳方案（k 叉哈夫曼）：WPL = 223，<b>I/O = 446</b>。</figcaption>
+    </figure>
+  </div>
+  <p><b>读图规则</b>：叶结点 = 一个初始归并段，权 = 段长；<b>叶到根的路径长度 = 该段参与归并的趟数</b>；非叶结点 = 归并生成的新段；根 = 最终有序文件。<b>树的带权路径长度 WPL = 归并过程中读取的总记录数，总 I/O 次数 = 2 × WPL。</b></p>
+  <p>把哈夫曼编码的思想推广到 k 叉：<b>优先归并长度小的段、延后归并长度大的段</b>，即得最佳归并树。但当初始段数不足以构成<b>严格 k 叉树</b>（只有度为 k 和度为 0 的结点）时，某轮归并会不足 k 路而降低效率——此时要补<b>虚段</b>（长度为 0 的空归并段）。</p>
+  <figure>
+    <a href="图/图8-20_8个归并段的最佳归并树.png"><img src="图/图8-20_8个归并段的最佳归并树.png" alt="图8.20 8个归并段的最佳归并树" loading="lazy"></a>
+    <figcaption>图 8.20　8 个归并段（把上例中长度 30 的段删掉）补 1 个虚段后的最佳归并树：(0,2,3)→5，(5,6,9)→20，(12,17,18)→47，(20,24,47)→91。<b>WPL = 163，I/O = 326</b>——远优于"强行让最后一次归并降为 2 路"的 386。</figcaption>
+  </figure>
+  <h4>如何判定要补几个虚段</h4>
+  <p>设度为 0 的结点 n<sub>0</sub> 个、度为 k 的结点 n<sub>k</sub> 个，结点总数 n，则 <b>n = n<sub>k</sub> + n<sub>0</sub></b> 且 <b>n = k·n<sub>k</sub> + 1</b>，于是严格 k 叉树满足</p>
+  <div class="fml">n<sub>0</sub> = (k−1)n<sub>k</sub> + 1　⟹　<b>n<sub>k</sub> = (n<sub>0</sub> − 1)/(k − 1)</b></div>
+  <ul>
+    <li>若 <b>(n<sub>0</sub>−1) % (k−1) = 0</b>：这 n<sub>0</sub> 个段<b>正好</b>能构成严格 k 叉树，<b>不用补</b>。</li>
+    <li>若 <b>(n<sub>0</sub>−1) % (k−1) = u ≠ 0</b>：<b>补 k − u − 1 个虚段</b>。<br>（图 8.20：(8−1)%(3−1) = 1 ≠ 0 ⟹ 补 3−1−1 = <b>1</b> 个，叶数变 9，(9−1)%(3−1) = 0 ✓。<b>2019 真题</b>：120 段做 12 路，(120−1)%11 = 9 ⟹ 补 12−9−1 = <b>2</b> 个。）</li>
+  </ul>
+  <div class="key"><span class="tag">必记结论 ★★★ · 最佳归并树三步走 + WPL 秒算法</span>
+    <b>第一步判虚段</b>：u = (n<sub>0</sub>−1) % (k−1)，u ≠ 0 就补 <b>k−u−1</b> 个 0。<br>
+    <b>第二步 k 叉哈夫曼</b>：每次取 k 个最小的合并（<b>虚段权为 0，自然最先被取走</b>）。<br>
+    <b>第三步算 WPL = 把所有<u>内部结点</u>的权加起来</b>——<b>比"逐叶算深度乘权"快得多，而且不会数错层</b>。<b>2013 真题</b>：6 个叶权 2,3,4,5,6,7 做三叉，(6−1)%2 = 1 ⟹ 补 1 个虚段。叶集变成 {0,2,3,4,5,6,7}：取 0+2+3 = <b>5</b> → 集合成 {4,5,<u>5</u>,6,7}，取 4+5+5 = <b>14</b> → 集合成 {6,7,14}，取 6+7+14 = <b>27</b> ⟹ <b>WPL = 5+14+27 = 46，选 B</b>，考场上几秒钟。<br>
+    ⚠️ <b>内部结点数恒为 (n<sub>0</sub>−1)/(k−1)，与树形无关</b>（第 12 题）——我随机生成 10000 棵严格 k 叉树验证，0 例外。<b>总 I/O = 2 × WPL。</b>
+  </div>
+  <div class="mine"><span class="tag">我的补讲 ★★★ · 虚段的本质：把"不足 k 路的那次归并"挪到最深处</span>
+    书上只说"补虚段能让每趟都满路"，但没说<b>为什么这样就更优</b>。我把书上那个 8 段做 3 路的例子两种方案都跑了一遍：
+    <table class="cmp">
+      <tr><th>方案</th><th>那次 2 路归并放在哪</th><th>WPL</th><th>I/O</th></tr>
+      <tr><td>补虚段（图 8.20）</td><td class="y">最深处（<b>最先做</b>）</td><td>163</td><td class="y"><b>326</b></td></tr>
+      <tr><td>书上批评的方案</td><td class="n">最浅处（最后做）</td><td>193</td><td class="n"><b>386</b></td></tr>
+    </table>
+    <b>两个数与书上完全对上。</b>于是虚段的作用可以一句话说清：<b>权为 0 的叶不产生任何 I/O，把它塞进最深的那次归并，等价于让"第一次归并只并 k−1 个真段"</b>——而<b>越深的归并越该少并几个真段</b>，因为深处的记录要被反复读写更多趟。<br>
+    <b>副产品</b>：第 13 题（2013 真题）如果<b>不补虚段但把那次 2 路归并放在最前面</b>，WPL <b>同样是 46</b>——正是这条规律的直接体现。<b>所以"补虚段"与"把降路的那次归并放最前"是同一件事的两种说法。</b>
+  </div>
+
+  <h2>全章总纲 · 三张表定全章</h2>
+  <div class="key"><span class="tag">必记结论 ★★ · 表一：八种内部排序的"过程特征"（选择题主战场）</span>
+    <table class="cmp">
+      <tr><th>算法</th><th>趟数</th><th>每趟能否定死一个元素</th><th>有序区性质</th></tr>
+      <tr><td><b>直接插入</b></td><td>固定 n−1</td><td class="n">不一定</td><td>局部有序</td></tr>
+      <tr><td><b>折半插入</b></td><td>固定 n−1</td><td class="n">不一定</td><td>局部有序</td></tr>
+      <tr><td><b>希尔</b></td><td>由增量序列定</td><td class="n">不一定</td><td>下标模 d 同余的各自有序</td></tr>
+      <tr><td><b>冒泡</b></td><td>1 ~ n−1（与初态有关）</td><td class="y">能</td><td class="y"><b>全局有序</b></td></tr>
+      <tr><td><b>快排</b></td><td>log₂n ~ n−1（与初态有关）</td><td class="y">能（枢轴）</td><td class="n">不全局有序</td></tr>
+      <tr><td><b>简单选择</b></td><td>固定 n−1</td><td class="y">能</td><td class="y"><b>全局有序</b></td></tr>
+      <tr><td><b>堆排序</b></td><td>固定 n−1</td><td class="y">能</td><td class="y"><b>全局有序</b></td></tr>
+      <tr><td><b>2 路归并</b></td><td>固定 ⌈log₂n⌉</td><td class="n">不一定</td><td>段内有序</td></tr>
+      <tr><td><b>基数</b></td><td>固定 d</td><td class="n">不一定</td><td>低位有序</td></tr>
+    </table>
+  </div>
+  <div class="key"><span class="tag">必记结论 ★★ · 表二：外部排序的三件套各管什么</span>
+    <table class="cmp">
+      <tr><th>工具</th><th>解决的问题</th><th>核心公式 / 判据</th><th>易混点</th></tr>
+      <tr><td><b>多路平衡归并</b></td><td>减少<b>趟数</b></td><td>S = ⌈log<sub>k</sub>r⌉；k 路 = k 输入 + 1 输出缓冲区</td><td class="n">不是减少段数</td></tr>
+      <tr><td><b>败者树</b></td><td>让内部选最小的比较次数<b>与 k 无关</b></td><td>深度 ⌈log₂k⌉+1，选一次比 ⌈log₂k⌉ 次</td><td class="n">ls[] 存<b>段号</b>；必到根</td></tr>
+      <tr><td><b>置换-选择</b></td><td>减少<b>初始归并段数 r</b></td><td>平均段长 ≈ 2w；第一段 ∈ [w, n]</td><td class="n">段长<b>不等</b>是优点</td></tr>
+      <tr><td><b>最佳归并树</b></td><td>段长不等时排<b>归并顺序</b></td><td>补 k−u−1 个虚段；<b>WPL = 内部结点权之和</b>；I/O = 2·WPL</td><td class="n">内部结点数与树形无关</td></tr>
+    </table>
+  </div>
+  <div class="key"><span class="tag">必记结论 ★ · 表三：全章"只有 / 唯一"清单（背下来能直接答掉一批选择题）</span>
+    <ol class="rule">
+      <li><b>唯一不稳定的简单方法</b>：简单选择排序。</li>
+      <li><b>平均 O(n log₂n) 里唯一稳定的</b>：2 路归并排序。</li>
+      <li><b>空间最大的</b>：2 路归并 O(n)。<b>快排只有最坏才 O(n)</b>（希尔/堆/基数都是 O(1)/O(r)，不是 O(n)）。</li>
+      <li><b>比较次数与初态无关的两个</b>：简单选择、折半插入。</li>
+      <li><b>移动次数与初态无关的两个</b>：基数（2dn）、归并（2n⌈log₂n⌉）。</li>
+      <li><b>最坏移动次数最少的</b>：简单选择（≤ 3(n−1)）。<b>比较次数最多的也是它</b>（恒 n(n−1)/2）。</li>
+      <li><b>只能顺序存储的四个</b>：折半插入、希尔、快排、堆。</li>
+      <li><b>唯一的非比较排序</b>：基数排序（计数排序同族，但不在大纲内）。</li>
+      <li><b>不能并行的两个</b>：基数（趟间依赖）、冒泡（趟内依赖）。</li>
+      <li><b>大文件排序唯一可用的</b>：归并排序（顺序访问、不寻道）。</li>
+    </ol>
+  </div>
+
+  <h2>归纳总结</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=60">📄 p.390–391</a>
+  <ol class="rule">
+    <li><b>n 不大（n &lt; 10000）</b>：直接插入、冒泡、简单选择，平均都是 O(n²)，空间都是 O(1)。<b>直接插入在 n ≤ 25 时效率很高，最好情况仅需 n−1 次比较；冒泡最好情况只需 1 趟扫描、n−1 次比较；简单选择比较次数恒为 O(n²) 与初态无关，但移动次数最多 3(n−1) 次。</b>其中直接插入与冒泡<b>稳定</b>，简单选择<b>不稳定</b>。</li>
+    <li><b>中等规模（n ≤ 1000）</b>：<b>希尔排序</b>是很好的选择——前期跨度大、后期接近有序，显著减少比较与移动。空间 O(1)，但不稳定。</li>
+    <li><b>n 很大</b>：用 O(n log₂n) 的三个。<b>快排</b>最通用（平均最优，最坏 O(n²) 可用"三者取中"规避）；<b>堆排序</b>时间恒定不会退化且只要 O(1) 空间，但平均略逊于快排；<b>归并</b>时间恒定且稳定，代价是 O(n) 空间；<b>基数</b>线性但通用性弱。</li>
+    <li><b>混合策略</b>：实际系统常在<b>归并或快排的递归底层切换成直接插入排序</b>，减少函数调用开销、利用小数组上插入排序的高效。</li>
+  </ol>
+
+  <h2>思维拓展 · O(n) 时间、O(1) 空间给整数排序</h2>
+  <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第8章_排序.pdf#page=61">📄 p.391</a>
+  <p><b>题目</b>：对 n 个整数排序，要求时间复杂度 O(n)、空间复杂度 O(1)。</p>
+  <p><b>书上的解法</b>：设整数范围为 0 ~ 65535，开一个 <code>int count[65536]</code> 并清零——<b>它的大小与 n 无关，所以算 O(1)</b>。扫一遍待排序列做 <code>count[X[i]]++</code>（O(n)），再扫一遍 count[]，当 <code>count[i] &gt; 0</code> 时输出 count[i] 个 i（O(n)）⟹ 总时间 O(n)、空间 O(1)。若有负整数，<b>给所有数加一个偏移量</b>变成正整数即可。</p>
+  <div class="trap"><span class="tag">陷阱 · 这道题的"诡辩点"必须看穿，否则会在考场上被反向坑</span>
+    这个答案成立的<b>唯一理由</b>是：<b>值域被限定成了常数 65536</b>，于是那个大数组是"常数级"空间。<b>它的实质就是 8.5.3 的计数排序。</b><br>
+    ⚠️ <b>如果题目没有限定值域，这个答案不成立</b>——空间会变成 O(k)（k 为值域大小），而且"基于比较的排序最坏至少 O(n log₂n)"的下界仍然管用（计数排序能绕过下界，正因为它<b>不基于比较</b>）。<b>答这道题时把"值域有限"这个前提写出来，是判分点。</b>
+  </div>
+
+  <div class="outro">
+    <b>本章读完之后做什么：</b>
+    <ul>
+      <li>➤ <a href="../练习系统/第8章.html">练习系统 · 第 8 章（148 题，含 42 道统考真题）</a>——8.1 基本概念 3 题 / 8.2 插入 22 题 / 8.3 交换 24 题 / <b>8.4 选择 29 题</b> / 8.5 归并基数 23 题 / <b>8.6 比较与应用 26 题（11 道真题，全书最密）</b> / 8.7 外部排序 21 题。</li>
+      <li>➤ <a href="../模拟器_排序过程.html">排序过程模拟器</a>——八种内部排序单步回放（同步计数比较与移动，可直接印证表 8.1）+ 堆的建/插/删 + 快排 Partition 双指针 + 希尔增量可调 + <b>败者树 k 路归并</b> + <b>置换-选择 FO/WA/FI 三栏表</b> + <b>最佳归并树构造器</b>。</li>
+      <li>➤ <a href="../练习系统/套路库.html">套路库 · 第 8 章卡</a>——反推算法六把尺子 / 一个 <code>=</code> 定稳定性 / 后移次数 ≡ 逆序对数 / 堆的两套计数口径 / 快排两趟定几个 / 教材口径比较次数 / 外排两步走 / 虚段的本质 / WPL 秒算 / 败者树 vs 堆。</li>
+      <li>➤ <a href="../卡库_数据结构.html">卡库 · 数据结构易混辨析</a>（排序专题）　➤ <a href="../算法题_代码手册.html">算法题代码手册</a>（八种排序 + Partition 变体 + 归并模板）　➤ <a href="../知识串联_考纲主线.html">知识串联 · 考纲主线</a>。</li>
+    </ul>
+  </div>
+
+  <footer>精读版 · 数据结构第 8 章　·　源：王道《2027 数据结构考研复习指导》p.331–392（62 页）　·　插图 10 张裁自原书，排序过程一律用等宽表格重排</footer>
+</div>
+</body>
+</html>

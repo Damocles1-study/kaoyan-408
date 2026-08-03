@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>排序过程模拟器 · 冒泡/插入/选择/快排/堆排</title>
+<title>排序模拟器 · 内部排序九合一 + 外排三件套</title>
 <style>
   :root{
     --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
@@ -36,19 +36,29 @@
   header{margin:14px 0 20px}
   header h1{font-family:var(--serif);font-size:1.7rem}
   header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
-  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  header .sub a{color:var(--accent)}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:22px}
   h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:14px}
-  .ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
-  .ctrl label{font-size:.85rem;color:var(--muted)}
-  select,input[type=text]{font-family:var(--sans);font-size:.9rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:5px 10px}
-  input[type=text]{width:280px;max-width:100%}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:9px}
+  .hint{font-size:.82rem;color:var(--muted)}
+  select,input[type=text],input[type=number]{font-family:var(--sans);font-size:.88rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:5px 10px}
+  input[type=text]{width:300px;max-width:100%}
+  input[type=number]{width:74px}
   .btn{font-size:.85rem;border:1px solid var(--accent);background:none;color:var(--accent);border-radius:8px;padding:5px 14px;cursor:pointer}
   .btn:hover{background:var(--accent-soft)}
   .btn.primary{background:var(--accent);color:var(--card)}
   .btn:disabled{opacity:.4;cursor:default}
+  .preset{font-size:.78rem;border:1px dashed var(--line);background:none;color:var(--muted);border-radius:7px;padding:3px 10px;cursor:pointer}
+  .preset:hover{border-color:var(--accent);color:var(--accent)}
 
-  .arr{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0;min-height:60px}
-  .cell{width:52px;height:52px;border:2px solid var(--line);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:1.05rem;position:relative;background:var(--bg);transition:all .15s}
+  .algos{display:flex;gap:8px;flex-wrap:wrap}
+  .algos button{font-size:.85rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:6px 13px;cursor:pointer}
+  .algos button.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+  .cfgbox{display:none}
+  .cfgbox.on{display:block}
+
+  .arr{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0;min-height:56px}
+  .cell{width:50px;height:50px;border:2px solid var(--line);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:1rem;position:relative;background:var(--bg)}
   .cell .idx{font-size:.6rem;font-weight:400;color:var(--muted)}
   .cell.sorted{border-color:var(--green);background:var(--green-soft);color:var(--green)}
   .cell.cmp{border-color:var(--hl-border);background:var(--hl)}
@@ -56,6 +66,7 @@
   .cell.pivot{border-color:var(--purple);background:var(--purple-soft);color:var(--purple)}
   .cell.keyc{border-color:var(--blue);background:var(--blue-soft);color:var(--blue)}
   .cell.hole{border-style:dashed;color:var(--muted);font-weight:400}
+  .cell.dim{opacity:.42}
   .legend{font-size:.75rem;color:var(--muted)}
   .legend i{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin:0 3px 0 10px}
   .l-cmp{background:var(--hl);border:1px solid var(--hl-border)}
@@ -64,240 +75,859 @@
   .l-pivot{background:var(--purple-soft);border:1px solid var(--purple)}
   .l-key{background:var(--blue-soft);border:1px solid var(--blue)}
 
-  .expl{background:var(--accent-soft);border-radius:10px;padding:14px 16px;font-size:.92rem;min-height:70px}
+  .expl{background:var(--accent-soft);border-radius:10px;padding:13px 15px;font-size:.9rem;min-height:64px}
   .expl b{color:var(--accent)}
   .counters{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
-  .cnt{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 14px;font-size:.85rem}
-  .cnt b{font-family:var(--serif);font-size:1.1rem;color:var(--accent)}
+  .cnt{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:5px 13px;font-size:.84rem}
+  .cnt b{font-family:var(--serif);font-size:1.05rem;color:var(--accent)}
 
-  .notes{font-size:.88rem}
+  .panel{font-size:.84rem;overflow-x:auto;margin-top:10px}
+  .panel table{border-collapse:collapse;font-size:.79rem;margin:6px 0 8px}
+  .panel td,.panel th{border:1px solid var(--line);padding:3px 8px;text-align:center;font-family:var(--mono);white-space:nowrap}
+  .panel th{background:var(--accent-soft);color:var(--accent);font-weight:400}
+  .panel td.rowh{background:var(--accent-soft);color:var(--accent);font-family:var(--sans);text-align:left}
+  .panel td.up{background:var(--hl);font-weight:700}
+  .panel td.fin{background:var(--green-soft);color:var(--green);font-weight:700}
+  .panel td.bad{background:var(--red-soft);color:var(--red)}
+  .panel td.no{color:var(--muted)}
+  .panel h4{font-size:.8rem;color:var(--muted);margin:9px 0 2px;font-weight:600}
+  svg{max-width:100%;height:auto;display:block;margin:6px auto}
+  .nd{fill:var(--bg);stroke:var(--line);stroke-width:2}
+  .nd.on{fill:var(--hl);stroke:var(--hl-border)}
+  .nd.win{fill:var(--green-soft);stroke:var(--green)}
+  .nd.vir{fill:var(--red-soft);stroke:var(--red);stroke-dasharray:4 3}
+  .nt{font-family:var(--mono);font-size:12px;text-anchor:middle;fill:var(--ink)}
+  .nt.sm{font-size:10px;fill:var(--muted)}
+  .lk{stroke:var(--line);stroke-width:2;fill:none}
+  .lk.on{stroke:var(--blue);stroke-width:3}
+
+  .notes{font-size:.87rem}
   .notes li{margin:6px 0 6px 18px}
   .notes b{color:var(--accent)}
+  .notes a{color:var(--accent)}
   footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
+  <a class="back" href="index.html">← 返回 408 复盘中心</a>
   <header>
-    <h1>排序过程模拟器</h1>
-    <div class="sub">冒泡 · 直接插入 · 简单选择 · 快排（挖坑法）· 堆排序 —— 每一次比较/移动都可逐步回放</div>
+    <h1>排序模拟器 · 内部排序九合一 + 外排三件套</h1>
+    <div class="sub">九种内部排序逐步回放（同步计数<b>比较</b>与<b>移动</b>，可直接印证表 8.1）· 堆的建/插/删分开演示 · 败者树 k 路归并 · 置换-选择 FO/WA/FI 三栏表 · 最佳归并树构造器。
+      配套 <a href="练习系统/第8章.html">练习系统第 8 章（148 题）</a>、<a href="精读版/第8章.html">精读版第 8 章</a> 与 <a href="练习系统/套路库.html">套路库 T8-1~T8-14</a>。</div>
   </header>
 
   <section class="card">
-    <h2>设置</h2>
-    <div class="ctrl">
-      <label>算法</label>
-      <select id="algo">
-        <option value="bubble">冒泡排序</option>
-        <option value="insert">直接插入排序</option>
-        <option value="select">简单选择排序</option>
-        <option value="quick" selected>快速排序（挖坑法）</option>
-        <option value="heap">堆排序（大顶堆→升序）</option>
-      </select>
-      <label>序列</label>
-      <input type="text" id="seq" value="49,38,65,97,76,13,27,49">
-      <button class="btn primary" id="apply">应用</button>
-      <button class="btn" id="rnd">随机序列</button>
-    </div>
-    <p class="legend">默认是王道教材经典序列（含两个 49，正好观察稳定性）。图例：<i class="l-cmp"></i>比较 <i class="l-swap"></i>交换/移动 <i class="l-key"></i>暂存 key <i class="l-pivot"></i>枢轴 <i class="l-sorted"></i>已就位</p>
+    <h2>① 选模块</h2>
+    <div class="algos" id="mods"></div>
+    <div class="hint" id="modhint" style="margin-top:9px"></div>
   </section>
 
   <section class="card">
-    <h2>逐步演示</h2>
-    <div class="ctrl">
+    <h2>② 参数</h2>
+
+    <div class="cfgbox on" id="cfg-sort">
+      <div class="row">
+        <span class="hint">算法：</span>
+        <select id="s_algo">
+          <option value="insert">直接插入排序</option>
+          <option value="binsert">折半插入排序</option>
+          <option value="shell">希尔排序（增量可调）</option>
+          <option value="bubble">冒泡排序</option>
+          <option value="quick" selected>快速排序（挖坑法）</option>
+          <option value="select">简单选择排序</option>
+          <option value="heap">堆排序（大顶堆 → 升序）</option>
+          <option value="merge">2 路归并排序（非递归逐趟）</option>
+          <option value="radix">基数排序（LSD, r=10）</option>
+        </select>
+        <span class="hint">序列：</span><input type="text" id="s_seq" value="49,38,65,97,76,13,27,49">
+      </div>
+      <div class="row" id="s_extra">
+        <span class="hint">希尔增量序列：</span><input type="text" id="s_dk" value="5,3,1" style="width:130px">
+        <span class="hint">快排枢轴：</span>
+        <select id="s_piv"><option value="low">取首元素（王道标准）</option><option value="high">取末元素（8.6 综03）</option></select>
+      </div>
+      <div class="row"><span class="hint">预设：</span>
+        <button class="preset" data-sort="49,38,65,97,76,13,27,49|quick">王道经典八元素</button>
+        <button class="preset" data-sort="49,38,65,97,76,13,27,49,55,4|shell|5,3,1">图 8.2 希尔（d=5,3,1）</button>
+        <button class="preset" data-sort="8,3,9,11,2,1,4,7,5,10,6|shell|5,3,1">2018 真题（d=5,3）</button>
+        <button class="preset" data-sort="53,17,78,9,45,65,87,32|heap">图 8.6 建堆序列</button>
+        <button class="preset" data-sort="1,2,3,4,5,6,7,8|quick">已有序（快排最坏）</button>
+        <button class="preset" data-sort="278,109,63,930,589,184,505,269,8,83|radix">图 8.10 基数排序</button>
+      </div>
+      <div class="hint"><b>移动次数口径</b>：交换型（冒泡/简单选择/堆）<b>一次交换记 3 次移动</b>（与书上 3n(n−1)/2、3(n−1) 对得上）；挪位型（插入/希尔/快排挖坑）<b>每次后移记 1 次</b>，另加暂存与落位各 1 次；归并与基数<b>每个元素每趟进出各 1 次</b>（于是恰为 2n⌈log₂n⌉ 与 2dn）。<br>
+        <b>比较次数一律用教材口径</b>：快排中每个非枢轴元素与枢轴恰比 1 次。</div>
+    </div>
+
+    <div class="cfgbox" id="cfg-heap">
+      <div class="row">
+        <span class="hint">初始序列：</span><input type="text" id="h_seq" value="53,17,78,9,45,65,87,32">
+        <span class="hint">堆型：</span><select id="h_type"><option value="max">大根堆</option><option value="min">小根堆</option></select>
+      </div>
+      <div class="row">
+        <span class="hint">操作：</span>
+        <select id="h_op">
+          <option value="build">① 建初始堆（自底向上，从 ⌊n/2⌋ 倒着筛）</option>
+          <option value="insert">② 插入一个元素（向上调整）</option>
+          <option value="del">③ 删除堆顶（堆底上来，向下筛选）</option>
+          <option value="seqins">④ 依次插入建堆（对比 ①：结果通常不同）</option>
+        </select>
+        <span class="hint">插入值：</span><input type="number" id="h_val" value="63">
+        <span class="hint">连删几次：</span><input type="number" id="h_times" value="1" min="1" max="6">
+      </div>
+      <div class="row"><span class="hint">预设：</span>
+        <button class="preset" data-heap="53,17,78,9,45,65,87,32|build|max">图 8.6 建大根堆</button>
+        <button class="preset" data-heap="87,45,78,32,17,65,53,9|del|max">图 8.7 删堆顶</button>
+        <button class="preset" data-heap="87,45,78,32,17,65,53,9|insert|max|63">图 8.8 插入 63</button>
+        <button class="preset" data-heap="53,17,78,9,45,65,87,32|seqins|max">依次插入建堆（2021 干扰项）</button>
+      </div>
+      <div class="hint"><b>比较次数按教材口径</b>：向下筛选每层「左右孩子先互比 1 次 + 与父比 1 次」= 2 次，<b>但只有一个孩子的那层只比 1 次</b>；向上调整每层只比 1 次。<b>删除前先看清此时 n 是多少</b>——2015、2024 两道真题就栽在这。</div>
+    </div>
+
+    <div class="cfgbox" id="cfg-loser">
+      <div class="row">
+        <span class="hint">各归并段（用 <code>;</code> 分段，段内升序，用 <code>,</code> 分隔）：</span>
+      </div>
+      <div class="row">
+        <input type="text" id="l_segs" value="10,15,16; 9,18,20; 20,22,40; 6,15,25; 12,37,48" style="width:100%">
+      </div>
+      <div class="row"><span class="hint">预设：</span>
+        <button class="preset" data-loser="10,15,16; 9,18,20; 20,22,40; 6,15,25; 12,37,48">图 8.17（5 路，王道原例）</button>
+        <button class="preset" data-loser="10,15,31; 9,20; 22,34,37; 6,15,42; 12,37; 84,95">综 03（6 路，取最小 5 个）</button>
+        <button class="preset" data-loser="1,2; 1,2">重复首元素（存关键字就会错）</button>
+      </div>
+      <div class="hint">败者树 <b>ls[0] 存冠军的<u>段号</u></b>、<b>ls[1..k−1] 存各次比较的败者段号</b>；关键字只住在 b[] 里。每次输出冠军后<b>只沿它到根的那一条路径重调</b>，比较次数恒为 ⌈log₂k⌉。</div>
+    </div>
+
+    <div class="cfgbox" id="cfg-ps">
+      <div class="row">
+        <span class="hint">输入文件 FI：</span><input type="text" id="p_fi" value="17,21,5,44,10,12,56,32,29">
+        <span class="hint">工作区容量 w：</span><input type="number" id="p_w" value="3" min="1" max="8">
+      </div>
+      <div class="row"><span class="hint">预设：</span>
+        <button class="preset" data-ps="17,21,5,44,10,12,56,32,29|3">表 8.2（王道原例）</button>
+        <button class="preset" data-ps="1,2,3,4,5,6,7|3">输入升序 → 只有 1 段（上界 n）</button>
+        <button class="preset" data-ps="7,6,5,4,3,2,1|3">输入降序 → 段长恰为 w（下界）</button>
+        <button class="preset" data-ps="29,14,35,13,50,22,44,96,5,16,7,61|4">w=4，看平均段长 ≈ 2w</button>
+      </div>
+      <div class="hint">规则只有一句：<b>补进 WA 的新记录若小于当前 MINIMAX 就被「冻结」（图中标灰），只能等下一段；w 个格子全冻结则本段封口。</b></div>
+    </div>
+
+    <div class="cfgbox" id="cfg-mtree">
+      <div class="row">
+        <span class="hint">各初始归并段长度：</span><input type="text" id="m_segs" value="9,30,12,18,3,17,2,6,24">
+        <span class="hint">归并路数 k：</span><input type="number" id="m_k" value="3" min="2" max="9">
+      </div>
+      <div class="row"><span class="hint">预设：</span>
+        <button class="preset" data-mtree="9,30,12,18,3,17,2,6,24|3">图 8.19（9 段 3 路，无须补虚段）</button>
+        <button class="preset" data-mtree="9,12,18,3,17,2,6,24|3">图 8.20（8 段 3 路，补 1 个虚段）</button>
+        <button class="preset" data-mtree="2,3,4,5,6,7|3">2013 真题（6 叶三叉，WPL=46）</button>
+        <button class="preset" data-mtree="1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1|12">2019 真题（120 段 12 路 → 补 2）</button>
+      </div>
+      <div class="hint">三步走：<b>① 判虚段 u=(n₀−1)%(k−1)，u≠0 补 k−u−1 个 → ② k 叉哈夫曼 → ③ WPL = 所有内部结点权之和，总 I/O = 2×WPL。</b></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>③ 逐步演示</h2>
+    <div class="row">
       <button class="btn primary" id="next">下一步 ▶</button>
       <button class="btn" id="prev">◀ 上一步</button>
       <button class="btn" id="runall">一键到底 ⏩</button>
       <button class="btn" id="reset">重置 ↺</button>
-      <span style="font-size:.82rem;color:var(--muted)" id="prog"></span>
+      <span class="hint" id="prog"></span>
     </div>
     <div class="arr" id="arr"></div>
     <div class="expl" id="expl"></div>
+    <div class="panel" id="panel"></div>
     <div class="counters" id="counters"></div>
+    <p class="legend" style="margin-top:10px">图例：<i class="l-cmp"></i>比较 <i class="l-swap"></i>移动/交换 <i class="l-key"></i>暂存 key <i class="l-pivot"></i>枢轴 <i class="l-sorted"></i>已就位</p>
   </section>
 
   <section class="card">
-    <h2>考点速记</h2>
+    <h2>考点速记（第 8 章）</h2>
     <ul class="notes">
-      <li><b>「一趟之后谁一定在最终位置」</b>：冒泡、快排、简单选择、堆排——每趟至少一个元素归位；直接插入、希尔、归并<b>没有</b>这个性质（判断「一趟结果是哪种算法」的钥匙）。</li>
-      <li><b>快排</b>：每趟划分把枢轴放到最终位置；最坏 O(n²)（有序输入 + 取首为枢轴），空间是递归栈 O(log n)～O(n)。</li>
-      <li><b>堆排</b>：Floyd 自底向上建堆是 O(n)（从 ⌊n/2⌋ 号结点倒着下滤）；「建堆 O(n log n)」是经典错误。大顶堆配升序。</li>
-      <li><b>稳定性</b>：观察两个 49——插入/冒泡不会让它们易位；选择/快排/堆排可能易位（不稳定）。</li>
-      <li><b>直接插入</b>比较次数 ≈ 逆序对数，基本有序时最好 O(n)——模拟器输入一个接近有序的序列试试。</li>
+      <li><b>每趟能定死一个元素最终位置的 = 选择/交换家族</b>：冒泡、简单选择、堆（三者还形成<b>全局有序</b>子序列）、快排（只定枢轴，<b>不全局有序</b>）。直接插入、希尔、归并、基数<b>都不一定</b>——用模拟器把希尔 <code>1,0,3,2,5,4</code> 做 d=3 跑一遍，会看到一趟纹丝不动。</li>
+      <li><b>表 8.1 只背六条少数派</b>：空间非 O(1) 的三个（快排 O(log₂n)、归并 O(n)、基数 O(r)）· 只能顺序存储的四个（折半插入 / 希尔 / 快排 / 堆）· 稳定的四个 · 最好能到 O(n) 的两个（直接插入 / 冒泡）· 最坏仍 O(n log₂n) 的两个（堆 / 归并）· 没有精确表达式的一个（希尔）。</li>
+      <li><b>两把尺子别串</b>：<b>比较</b>次数与初态无关＝简单选择 + 折半插入；<b>移动</b>次数与初态无关＝基数（2dn）+ 归并（2n⌈log₂n⌉）。左边的计数器可以直接验：换任意序列，这四个数字不变。</li>
+      <li><b>堆的两套计数口径</b>：插入向上每层 1 次；删除向下每层 2 次，<b>但只有一个孩子的层只 1 次</b>。用「堆专项」模块连删两次，看清第二次时 n 已经变了。</li>
+      <li><b>建堆 O(n)（比较次数不超过 4n）≠ 堆排序 O(n log₂n)</b>；<b>「依次插入建堆」≠「整体自底向上建堆」</b>，结果通常不同（2021 真题的干扰项就是另一种建法）。两种建法在「堆专项」里可以直接对拍。</li>
+      <li><b>外排一张地图</b>：减 I/O ⟹ 减趟数 <b>S = ⌈log<sub>k</sub>r⌉</b> ⟹ 要么增大 k（<b>败者树</b>让内部比较次数与 k 无关），要么减小 r（<b>置换-选择</b>，平均段长 ≈ 2w）；段长不等时用<b>最佳归并树</b>排顺序。</li>
+      <li><b>虚段的本质</b>：把「不足 k 路的那次归并」挪到最深处（最先做）。用最佳归并树模块跑图 8.20 的 8 段 3 路，会看到<b>补虚段 I/O = 326</b>，而把降路归并放到最浅处是 <b>386</b>——正是书上批评的那个数。</li>
     </ul>
   </section>
 
-  <footer>排序过程模拟器 · 由 Claude 独立实现 · 算法写法与王道教材口径一致</footer>
+  <footer>排序模拟器 · 由 Claude 独立实现 · 算法写法与计数口径均与王道教材一致 · 配 <a href="精读版/第8章.html" style="color:var(--muted)">精读版第 8 章</a></footer>
 </div>
 
 <script>
-let steps=[], cur=0, base=[];
+const $=s=>document.querySelector(s);
+const MODS=[
+  ['sort','① 内部排序九合一','九种内部排序逐步回放，同步计数比较与移动——把同一个序列换着算法跑，表 8.1 的每一行都能当场验证。'],
+  ['heap','② 堆专项：建 / 插 / 删','把「建初始堆」「插入向上调整」「删除堆顶向下筛选」三种操作拆开演示，比较次数按教材口径逐层标注。'],
+  ['loser','③ 败者树 k 路归并','输出冠军 → 同段补位 → 沿路径向上重调。注意 ls[] 里存的全是<b>段号</b>，关键字只住在 b[] 里（2024 真题）。'],
+  ['ps','④ 置换-选择排序','FO / WA / FI 三栏表自动推进，被「冻结」的记录标灰。看第一段能有多长、平均段长是不是 ≈ 2w。'],
+  ['mtree','⑤ 最佳归并树构造器','自动判虚段 → k 叉哈夫曼 → 给出 WPL 与总 I/O，并与「把降路归并放最浅处」的方案对拍。']
+];
+let mod='sort', S=[], cur=0;
 
-function snap(a,marks,log,c,m){steps.push({a:a.slice(),marks:marks||{},log,cmp:c,mov:m})}
+/* ============ 通用 ============ */
+function mk(a,marks){
+  marks=marks||{};
+  return a.map((v,i)=>{
+    let cls='';
+    if((marks.sorted||[]).includes(i))cls+=' sorted';
+    if((marks.cmp||[]).includes(i))cls+=' cmp';
+    if((marks.swap||[]).includes(i))cls+=' swap';
+    if(marks.pivot===i)cls+=' pivot';
+    if(marks.key===i)cls+=' keyc';
+    if(marks.hole===i)cls+=' hole';
+    if((marks.dim||[]).includes(i))cls+=' dim';
+    return {v:marks.hole===i?'▢':v,cls:cls,idx:i};
+  });
+}
+function push(cells,panel,log,C,M){S.push({cells:cells||[],panel:panel||'',log:log,cmp:C,mov:M})}
+function parseSeq(s){return s.split(/[,，;；\s]+/).map(x=>parseInt(x)).filter(x=>!isNaN(x))}
 
-function gen(algo,arr){
-  steps=[];let a=arr.slice(),n=a.length,C=0,M=0;
-  const sorted=new Set();
-  const S=()=>[...sorted];
-  snap(a,{sorted:S()},`初始序列（${algo==='heap'?'先自底向上建大顶堆':'待排序'}）。`,C,M);
+/* ============ 模块① 内部排序 ============ */
+function genSort(){
+  const algo=$('#s_algo').value;
+  let a=parseSeq($('#s_seq').value);
+  if(a.length<2||a.length>14){alert('请输入 2~14 个整数');return}
+  const n=a.length;let C=0,M=0;
+  const sorted=new Set(), S_=()=>[...sorted];
+  push(mk(a,{sorted:S_()}),'',`初始序列 [${a.join(', ')}]，n = ${n}。`,C,M);
 
-  if(algo==='bubble'){
-    for(let i=0;i<n-1;i++){
-      let flag=false;
-      for(let j=0;j<n-1-i;j++){
-        C++;snap(a,{cmp:[j,j+1],sorted:S()},`第 ${i+1} 趟：比较 a[${j}]=${a[j]} 与 a[${j+1}]=${a[j+1]}${a[j]>a[j+1]?' → 逆序，交换':' → 已有序，不动'}。`,C,M);
-        if(a[j]>a[j+1]){[a[j],a[j+1]]=[a[j+1],a[j]];M++;flag=true;
-          snap(a,{swap:[j,j+1],sorted:S()},`交换完成。大的往后冒。`,C,M);}
-      }
-      sorted.add(n-1-i);
-      snap(a,{sorted:S()},`第 ${i+1} 趟结束：最大者 ${a[n-1-i]} 冒到位置 ${n-1-i}（最终位置✓）。`,C,M);
-      if(!flag){for(let k=0;k<n;k++)sorted.add(k);
-        snap(a,{sorted:S()},`本趟无交换 → 已全部有序，<b>提前终止</b>（冒泡最好 O(n) 的来源）。`,C,M);break;}
-    }
-    for(let k=0;k<n;k++)sorted.add(k);
-  }
-
-  else if(algo==='insert'){
+  if(algo==='insert'){
     sorted.add(0);
-    snap(a,{sorted:S()},`a[0] 自成有序区。`,C,M);
+    push(mk(a,{sorted:S_()}),'','a[1] 自成长度为 1 的有序子序列（下标从 1 记）。',C,M);
     for(let i=1;i<n;i++){
-      const key=a[i];
-      snap(a,{key:i,sorted:S()},`第 ${i} 趟：取 a[${i}]=${key} 存入哨兵/暂存，向左找插入位置。`,C,M);
+      const key=a[i];M++;
+      push(mk(a,{key:i,sorted:S_()}),'',`第 ${i} 趟：取 a[${i+1}]=${key} 暂存到哨兵 A[0]（<b>暂存记 1 次移动</b>），向左找插入位置。`,C,M);
       let j=i-1;
       while(j>=0){
         C++;
         if(a[j]>key){
-          snap(a,{cmp:[j],key:i,sorted:S()},`比较：a[${j}]=${a[j]} > ${key} → 右移一位。`,C,M);
-          a[j+1]=a[j];M++;
-          snap(a,{swap:[j+1],hole:j,sorted:S()},`a[${j}] 移到位置 ${j+1}，位置 ${j} 空出。`,C,M);
-          j--;
+          push(mk(a,{cmp:[j],key:i,sorted:S_()}),'',`比较 a[${j+1}]=${a[j]} &gt; ${key} → 后移一位。`,C,M);
+          a[j+1]=a[j];M++;j--;
+          push(mk(a,{swap:[j+2],hole:j+1,sorted:S_()}),'',`后移完成（<b>后移记 1 次移动</b>），空位左移到 ${j+2}。`,C,M);
         }else{
-          snap(a,{cmp:[j],sorted:S()},`比较：a[${j}]=${a[j]} ≤ ${key} → 停（相等不跨越 = 稳定的关键）。`,C,M);
+          push(mk(a,{cmp:[j],sorted:S_()}),'',`比较 a[${j+1}]=${a[j]} ≤ ${key} → 停。<b>相等时不再往左跨，这就是直接插入稳定的原因。</b>`,C,M);
           break;
         }
       }
       a[j+1]=key;M++;
       for(let k=0;k<=i;k++)sorted.add(k);
-      snap(a,{swap:[j+1],sorted:S()},`${key} 插入位置 ${j+1}。有序区扩大到 [0..${i}]（注意：有序区元素仍可能被后来者挤动，<b>不是最终位置</b>）。`,C,M);
+      push(mk(a,{swap:[j+1],sorted:S_()}),'',`${key} 落位到下标 ${j+2}（<b>落位记 1 次移动</b>）。有序区扩到前 ${i+1} 个——注意这只是<b>局部有序</b>，它们还可能被后来者挤动。`,C,M);
     }
+  }
+
+  else if(algo==='binsert'){
+    sorted.add(0);
+    push(mk(a,{sorted:S_()}),'','a[1] 自成有序区。折半插入 = 先折半查位置，再统一后移。',C,M);
+    for(let i=1;i<n;i++){
+      const key=a[i];M++;
+      let low=0,high=i-1,tr=[];
+      push(mk(a,{key:i,sorted:S_()}),'',`第 ${i} 趟：A[0]=${key}，在 [1..${i}] 中折半查找插入位置，low=1, high=${i}。`,C,M);
+      while(low<=high){
+        const mid=Math.floor((low+high)/2);C++;
+        const goLeft=a[mid]>key;
+        tr.push(`low=${low+1}, high=${high+1}, mid=${mid+1} → A[mid]=${a[mid]} ${goLeft?'&gt;':'≤'} ${key} ⟹ ${goLeft?'查左半 high=mid−1':'查右半 low=mid+1'}`);
+        push(mk(a,{cmp:[mid],key:i,sorted:S_()}),
+          '<h4>折半查找轨迹</h4>'+tr.map(t=>'<div>'+t+'</div>').join(''),
+          `比较 A[${mid+1}]=${a[mid]} 与 ${key}。<b>只有严格大于才往左，相等往右 ⟹ 相同关键字插到已有的后面 ⟹ 稳定。</b>`,C,M);
+        if(goLeft)high=mid-1;else low=mid+1;
+      }
+      let j=i-1;
+      while(j>=high+1){a[j+1]=a[j];M++;j--;}
+      a[high+1]=key;M++;
+      for(let k=0;k<=i;k++)sorted.add(k);
+      push(mk(a,{swap:[high+1],sorted:S_()}),'',`位置定为下标 ${high+2}，把它到 a[${i}] 统一后移，再落位。<b>比较次数降到 O(n log₂n) 且与初态无关，但移动次数一次没少 ⟹ 整体仍是 O(n²)。</b>`,C,M);
+    }
+  }
+
+  else if(algo==='shell'){
+    const dks=parseSeq($('#s_dk').value).filter(d=>d>=1);
+    if(!dks.length||dks[dks.length-1]!==1){alert('增量序列必须以 1 结尾，例如 5,3,1');S=[];return}
+    for(const dk of dks){
+      push(mk(a,{}),groupPanel(a,dk),`增量 d = ${dk}：下标相隔 ${dk} 的元素分成一组（共 ${dk} 组），<b>组内做直接插入排序</b>。`,C,M);
+      for(let i=dk;i<n;i++){
+        C++;
+        if(a[i]<a[i-dk]){
+          const key=a[i];M++;
+          let j=i-dk;
+          push(mk(a,{key:i,cmp:[i-dk],sorted:[]}),groupPanel(a,dk),`a[${i+1}]=${key} &lt; a[${i-dk+1}]=${a[i-dk]} ⟹ 需要插入本组有序区。`,C,M);
+          while(j>=0&&a[j]>key){a[j+dk]=a[j];M++;j-=dk;if(j>=0)C++;}
+          a[j+dk]=key;M++;
+          push(mk(a,{swap:[j+dk]}),groupPanel(a,dk),`组内后移并落位，${key} 到下标 ${j+dk+1}。`,C,M);
+        }else{
+          push(mk(a,{cmp:[i,i-dk]}),groupPanel(a,dk),`a[${i+1}]=${a[i]} ≥ a[${i-dk+1}]=${a[i-dk]} ⟹ 本组已序，不动。`,C,M);
+        }
+      }
+      push(mk(a,{}),groupPanel(a,dk),`<b>d = ${dk} 这一趟结束</b>：[${a.join(', ')}]。检验方法——<b>下标模 ${dk} 同余的那几个各自递增</b>（2014/2018/2025 真题的反推依据）。`,C,M);
+    }
+    for(let k=0;k<n;k++)sorted.add(k);
+  }
+
+  else if(algo==='bubble'){
+    for(let i=0;i<n-1;i++){
+      let flag=false;
+      for(let j=n-1;j>i;j--){
+        C++;
+        const bad=a[j-1]>a[j];
+        push(mk(a,{cmp:[j-1,j],sorted:S_()}),'',`第 ${i+1} 趟：比较 a[${j}]=${a[j-1]} 与 a[${j+1}]=${a[j]}${bad?' → 逆序，交换':' → 顺序，不动'}。`,C,M);
+        if(bad){const t=a[j-1];a[j-1]=a[j];a[j]=t;M+=3;flag=true;
+          push(mk(a,{swap:[j-1,j],sorted:S_()}),'',`交换完成（<b>一次交换记 3 次移动</b>，故最坏共 3n(n−1)/2 = ${3*n*(n-1)/2} 次）。`,C,M);}
+      }
+      sorted.add(i);
+      push(mk(a,{sorted:S_()}),'',`第 ${i+1} 趟结束：最小者 ${a[i]} 冒到下标 ${i+1}（<b>最终位置 ✓，且有序区是全局有序的</b>）。`,C,M);
+      if(!flag){for(let k=0;k<n;k++)sorted.add(k);
+        push(mk(a,{sorted:S_()}),'',`本趟<b>零交换</b> ⟹ 已全局有序，算法提前终止。<b>这正是冒泡最好情况 O(n) 的来源。</b>`,C,M);break;}
+    }
+    for(let k=0;k<n;k++)sorted.add(k);
   }
 
   else if(algo==='select'){
     for(let i=0;i<n-1;i++){
       let min=i;
-      snap(a,{key:i,sorted:S()},`第 ${i+1} 趟：在 [${i}..${n-1}] 中找最小者，暂定 a[${i}]=${a[i]}。`,C,M);
+      push(mk(a,{key:i,sorted:S_()}),'',`第 ${i+1} 趟：在 [${i+1}..${n}] 中选最小，暂定 a[${i+1}]=${a[i]}。`,C,M);
       for(let j=i+1;j<n;j++){
-        C++;
-        const better=a[j]<a[min];
-        snap(a,{cmp:[j,min],sorted:S()},`比较 a[${j}]=${a[j]} 与当前最小 a[${min}]=${a[min]}${better?' → 更小，更新最小指针':''}。`,C,M);
+        C++;const better=a[j]<a[min];
+        push(mk(a,{cmp:[j,min],sorted:S_()}),'',`比较 a[${j+1}]=${a[j]} 与当前最小 a[${min+1}]=${a[min]}${better?' → 更小，更新指针':''}。`,C,M);
         if(better)min=j;
       }
-      if(min!==i){[a[i],a[min]]=[a[min],a[i]];M++;
-        snap(a,{swap:[i,min],sorted:S()},`最小者 ${a[i]} 与 a[${i}] 交换——这一步是<b>不相邻交换</b>，可能跨越相等元素 → 不稳定的根源。`,C,M);}
+      if(min!==i){const t=a[i];a[i]=a[min];a[min]=t;M+=3;
+        push(mk(a,{swap:[i,min],sorted:S_()}),'',`交换 a[${i+1}] 与 a[${min+1}]（记 3 次移动）。<b>这是不相邻交换，会跨越相等元素 ⟹ 简单选择不稳定的根源</b>（反例 {2,<u>2</u>,1}）。`,C,M);}
+      else push(mk(a,{sorted:S_()}),'',`最小者本来就在位，不交换（<b>移动次数最好为 0</b>）。`,C,M);
       sorted.add(i);
-      snap(a,{sorted:S()},`位置 ${i} 就位（最终位置✓）。比较次数固定 C(n,2)，与初始序列无关 → 无最好情况。`,C,M);
+      push(mk(a,{sorted:S_()}),'',`下标 ${i+1} 就位 ✓。<b>比较次数恒为 n(n−1)/2 = ${n*(n-1)/2}，与初态无关；移动次数 ≤ 3(n−1) = ${3*(n-1)}，全章最少。</b>`,C,M);
     }
     sorted.add(n-1);
-    snap(a,{sorted:S()},`完成。`,C,M);
   }
 
   else if(algo==='quick'){
+    const pv=$('#s_piv').value;
     (function qs(lo,hi){
       if(lo>hi)return;
-      if(lo===hi){sorted.add(lo);snap(a,{sorted:S()},`子区间只剩 a[${lo}]=${a[lo]}，天然就位✓。`,C,M);return;}
-      const pivot=a[lo];let i=lo,j=hi;
-      snap(a,{pivot:lo,sorted:S()},`划分 [${lo}..${hi}]：取首元素 ${pivot} 为枢轴，挖出第一个坑（位置 ${lo}）。`,C,M);
-      while(i<j){
-        while(i<j){C++;
-          if(a[j]>=pivot){snap(a,{cmp:[j],hole:i,sorted:S()},`从右向左：a[${j}]=${a[j]} ≥ ${pivot}，跳过。`,C,M);j--;}
-          else break;}
-        if(i<j){a[i]=a[j];M++;
-          snap(a,{swap:[i],hole:j,sorted:S()},`a[${j}]=${a[i]} < ${pivot} → 填入左坑（位置 ${i}），坑移到 ${j}。`,C,M);i++;}
-        while(i<j){C++;
-          if(a[i]<=pivot){snap(a,{cmp:[i],hole:j,sorted:S()},`从左向右：a[${i}]=${a[i]} ≤ ${pivot}，跳过。`,C,M);i++;}
-          else break;}
-        if(i<j){a[j]=a[i];M++;
-          snap(a,{swap:[j],hole:i,sorted:S()},`a[${i}]=${a[j]} > ${pivot} → 填入右坑（位置 ${j}），坑移到 ${i}。`,C,M);j--;}
+      if(lo===hi){sorted.add(lo);push(mk(a,{sorted:S_()}),'',`子区间只剩 a[${lo+1}]=${a[lo]}，天然就位 ✓。`,C,M);return;}
+      let i=lo,j=hi,pivot;
+      if(pv==='low'){
+        pivot=a[lo];M++;
+        push(mk(a,{pivot:lo,sorted:S_()}),'',`划分 [${lo+1}..${hi+1}]：取<b>首</b>元素 ${pivot} 为枢轴，挖出第一个坑（下标 ${lo+1}）。<b>枢轴取首 ⟹ 必须先 j 从右往左扫。</b>`,C,M);
+        while(i<j){
+          while(i<j&&a[j]>=pivot){C++;push(mk(a,{cmp:[j],hole:i,sorted:S_()}),'',`从右往左：a[${j+1}]=${a[j]} ≥ ${pivot}，跳过。`,C,M);j--;}
+          if(i<j){C++;a[i]=a[j];M++;push(mk(a,{swap:[i],hole:j,sorted:S_()}),'',`a[${j+1}]=${a[i]} &lt; ${pivot} ⟹ 填入左坑（下标 ${i+1}），坑移到 ${j+1}。`,C,M);i++;}
+          while(i<j&&a[i]<=pivot){C++;push(mk(a,{cmp:[i],hole:j,sorted:S_()}),'',`从左往右：a[${i+1}]=${a[i]} ≤ ${pivot}，跳过。`,C,M);i++;}
+          if(i<j){C++;a[j]=a[i];M++;push(mk(a,{swap:[j],hole:i,sorted:S_()}),'',`a[${i+1}]=${a[j]} &gt; ${pivot} ⟹ 填入右坑（下标 ${j+1}），坑移到 ${i+1}。`,C,M);j--;}
+        }
+      }else{
+        pivot=a[hi];M++;
+        push(mk(a,{pivot:hi,sorted:S_()}),'',`划分 [${lo+1}..${hi+1}]：取<b>末</b>元素 ${pivot} 为枢轴。<b>枢轴取末 ⟹ 扫描顺序必须反过来：先 i 从前往后</b>，否则会覆盖掉还没保存的元素（8.6 综 03 的采分点）。`,C,M);
+        while(i<j){
+          while(i<j&&a[i]<=pivot){C++;push(mk(a,{cmp:[i],hole:j,sorted:S_()}),'',`从左往右：a[${i+1}]=${a[i]} ≤ ${pivot}，跳过。`,C,M);i++;}
+          if(i<j){C++;a[j]=a[i];M++;push(mk(a,{swap:[j],hole:i,sorted:S_()}),'',`a[${i+1}]=${a[j]} &gt; ${pivot} ⟹ 填到右坑（下标 ${j+1}）。`,C,M);j--;}
+          while(i<j&&a[j]>=pivot){C++;push(mk(a,{cmp:[j],hole:i,sorted:S_()}),'',`从右往左：a[${j+1}]=${a[j]} ≥ ${pivot}，跳过。`,C,M);j--;}
+          if(i<j){C++;a[i]=a[j];M++;push(mk(a,{swap:[i],hole:j,sorted:S_()}),'',`a[${j+1}]=${a[i]} &lt; ${pivot} ⟹ 填到左坑（下标 ${i+1}）。`,C,M);i++;}
+        }
       }
       a[i]=pivot;M++;sorted.add(i);
-      snap(a,{pivot:i,sorted:S()},`双指针相遇：枢轴 ${pivot} 填入位置 ${i} —— <b>本趟归位，最终位置✓</b>。左右子区间递归。`,C,M);
+      push(mk(a,{pivot:i,sorted:S_()}),'',`双指针相遇，枢轴 ${pivot} 落位到下标 ${i+1} —— <b>本趟归位 ✓</b>。但左右两段<b>各自还是乱的（不全局有序）</b>，这是快排与冒泡/选择的分水岭。`,C,M);
       qs(lo,i-1);qs(i+1,hi);
     })(0,n-1);
   }
 
   else if(algo==='heap'){
+    const type='max';
     function sift(root,end,tag){
       let i=root;
       while(2*i+1<=end){
         let c=2*i+1;
         if(c+1<=end){C++;
-          snap(a,{cmp:[c,c+1],sorted:S()},`${tag}：比较左右孩子 a[${c}]=${a[c]} 与 a[${c+1}]=${a[c+1]}，取大者。`,C,M);
-          if(a[c+1]>a[c])c++;}
+          push(mk(a,{cmp:[c,c+1],sorted:S_()}),heapPanel(a,end+1),`${tag}：左右孩子 a[${c+1}]=${a[c]} 与 a[${c+2}]=${a[c+1]} <b>先互比 1 次</b>，取较大者。`,C,M);
+          if(a[c+1]>a[c])c++;
+        }else{
+          push(mk(a,{cmp:[c],sorted:S_()}),heapPanel(a,end+1),`${tag}：结点 ${i+1} <b>只有左孩子</b>，无须互比 ⟹ <b>本层只比 1 次</b>（2015/2024 真题的落点）。`,C,M);
+        }
         C++;
-        if(a[i]>=a[c]){snap(a,{cmp:[i,c],sorted:S()},`${tag}：父 a[${i}]=${a[i]} ≥ 大孩子 a[${c}]=${a[c]}，堆序满足，下滤停止。`,C,M);break;}
-        snap(a,{cmp:[i,c],sorted:S()},`${tag}：父 a[${i}]=${a[i]} < 大孩子 a[${c}]=${a[c]} → 交换下滤。`,C,M);
-        [a[i],a[c]]=[a[c],a[i]];M++;
-        snap(a,{swap:[i,c],sorted:S()},`交换完成，继续向下检查。`,C,M);
-        i=c;
+        if(a[i]>=a[c]){push(mk(a,{cmp:[i,c],sorted:S_()}),heapPanel(a,end+1),`${tag}：父 a[${i+1}]=${a[i]} ≥ 大孩子 a[${c+1}]=${a[c]} ⟹ 堆序已满足，<b>下沉提前结束</b>（堆可以中途停，败者树不行）。`,C,M);break;}
+        push(mk(a,{cmp:[i,c],sorted:S_()}),heapPanel(a,end+1),`${tag}：父 a[${i+1}]=${a[i]} &lt; 大孩子 a[${c+1}]=${a[c]} ⟹ 交换下沉。`,C,M);
+        const t=a[i];a[i]=a[c];a[c]=t;M+=3;i=c;
+        push(mk(a,{swap:[i]},{}),heapPanel(a,end+1),`交换完成，<b>继续沿这条路径往下查</b>（换完不接着走是建堆最常见的错）。`,C,M);
       }
     }
     for(let i=Math.floor(n/2)-1;i>=0;i--){
-      snap(a,{key:i,sorted:S()},`建堆：从最后一个分支结点 ⌊n/2⌋−1=${Math.floor(n/2)-1} 号倒着来，现在对结点 ${i} 下滤（Floyd 建堆，总代价 O(n)）。`,C,M);
+      push(mk(a,{key:i,sorted:S_()}),heapPanel(a,n),`建堆：最后一个分支结点编号 ⌊n/2⌋ = ${Math.floor(n/2)}，从它<b>倒着</b>处理到根。现在调整结点 ${i+1}。`,C,M);
       sift(i,n-1,'建堆');
     }
-    snap(a,{sorted:S()},`大顶堆建成：a[0]=${a[0]} 是全局最大。开始排序：每趟「堆顶 ↔ 末尾 + 缩堆下滤」。`,C,M);
+    push(mk(a,{sorted:S_()}),heapPanel(a,n),`<b>大根堆建成</b>：[${a.join(', ')}]，堆顶 ${a[0]} 是全局最大。<b>建堆总比较次数不超过 4n，是 O(n)，不是 O(n log₂n)。</b>`,C,M);
     for(let end=n-1;end>=1;end--){
-      [a[0],a[end]]=[a[end],a[0]];M++;sorted.add(end);
-      snap(a,{swap:[0,end],sorted:S()},`堆顶最大者 ${a[end]} 与末尾交换 → 归位✓（不相邻交换 = 不稳定根源）。堆规模缩为 ${end}。`,C,M);
+      const t=a[0];a[0]=a[end];a[end]=t;M+=3;sorted.add(end);
+      push(mk(a,{swap:[0,end],sorted:S_()}),heapPanel(a,end),`堆顶 ${a[end]} 与堆底交换 ⟹ 归位 ✓，堆规模缩为 ${end}。<b>不相邻交换 ⟹ 堆排序不稳定。</b>`,C,M);
       if(end>1)sift(0,end-1,'排序');
     }
     sorted.add(0);
-    snap(a,{sorted:S()},`完成。全程最好=最坏=平均 O(n log n)，就地 O(1) 辅助。`,C,M);
   }
 
-  snap(a,{sorted:Array.from({length:n},(_,k)=>k)},`✅ 排序完成：${a.join(', ')}。共比较 ${C} 次、移动/交换 ${M} 次。`,C,M);
+  else if(algo==='merge'){
+    let h=1,pass=0;
+    while(h<n){
+      pass++;
+      let segs=[];
+      for(let lo=0;lo<n;lo+=2*h){
+        const mid=Math.min(lo+h-1,n-1), hi=Math.min(lo+2*h-1,n-1);
+        segs.push([lo,mid,hi]);
+        if(mid>=hi){M+=(hi-lo+1)*2;continue;}
+        const B=a.slice(lo,hi+1);
+        let i=0,j=mid-lo+1,k=lo,cnt=0;
+        while(i<=mid-lo&&j<=hi-lo){
+          C++;cnt++;
+          if(B[i]<=B[j])a[k++]=B[i++];else a[k++]=B[j++];
+        }
+        while(i<=mid-lo)a[k++]=B[i++];
+        while(j<=hi-lo)a[k++]=B[j++];
+        M+=(hi-lo+1)*2;
+        const m1=mid-lo+1,m2=hi-mid;
+        push(mk(a,{cmp:range(lo,hi)}),mergePanel(a,h,n),
+          `第 ${pass} 趟：归并 [${lo+1}..${mid+1}]（长 ${m1}）与 [${mid+2}..${hi+1}]（长 ${m2}）⟹ 本次实际比较 <b>${cnt}</b> 次。<b>区间是 [min(m₁,m₂), m₁+m₂−1] = [${Math.min(m1,m2)}, ${m1+m2-1}]</b>——一段走空后另一段直接搬、不计比较。`,C,M);
+      }
+      push(mk(a,{}),mergePanel(a,h*2,n),`<b>第 ${pass} 趟结束</b>（段长 ${h} → ${h*2}）：[${a.join(', ')}]。<b>归并的趟数恒为 ⌈log₂n⌉ = ${Math.ceil(Math.log2(n))}，移动次数恒为 2n⌈log₂n⌉ = ${2*n*Math.ceil(Math.log2(n))}，都与初态无关；只有比较次数会小幅波动。</b>`,C,M);
+      h*=2;
+    }
+    for(let k=0;k<n;k++)sorted.add(k);
+  }
+
+  else if(algo==='radix'){
+    const d=String(Math.max.apply(null,a)).length;
+    push(mk(a,{}),'',`最大关键字有 <b>d = ${d}</b> 位，基数 <b>r = 10</b> ⟹ <b>做 ${d} 趟分配与收集，用 10 个队列</b>。（r 定队列数、d 定趟数，别串。）`,C,M);
+    for(let p=0,pw=1;p<d;p++,pw*=10){
+      const q=Array.from({length:10},()=>[]);
+      a.forEach(v=>q[Math.floor(v/pw)%10].push(v));
+      M+=a.length;
+      push(mk(a,{}),queuePanel(q),`第 ${p+1} 趟<b>分配</b>（按${p===0?'个':p===1?'十':p===2?'百':'第'+(p+1)}位）：依次扫描序列，<b>从队尾入队</b>。`,C,M);
+      a=[].concat.apply([],q);M+=a.length;
+      push(mk(a,{}),queuePanel(q),`第 ${p+1} 趟<b>收集</b>：按 q[0] → q[9] 的顺序<b>从队头出队</b>串起来 ⟹ [${a.join(', ')}]。<b>两个 FIFO 正是基数排序稳定的原因——换成栈就既不有序、相同关键字次序也毁。</b>`,C,M);
+    }
+    for(let k=0;k<n;k++)sorted.add(k);
+    push(mk(a,{sorted:S_()}),'',`共 ${d} 趟，<b>时间 O(d(n+r))、空间 O(r)，与序列初态完全无关</b>（2015 真题问"移动次数与初态无关"答的就是它）。移动次数 = 2dn = ${2*d*n}。`,C,M);
+  }
+
+  for(let k=0;k<n;k++)sorted.add(k);
+  push(mk(a,{sorted:S_()}),'',`✅ 排序完成：[${a.join(', ')}]。<b>共比较 ${C} 次、移动 ${M} 次。</b>`,C,M);
+}
+function range(a,b){const r=[];for(let i=a;i<=b;i++)r.push(i);return r}
+function groupPanel(a,dk){
+  let h='<h4>d = '+dk+' 的分组（同组下标模 '+dk+' 同余）</h4><table>';
+  for(let g=0;g<dk;g++){
+    h+='<tr><td class="rowh">组 '+(g+1)+'</td>';
+    for(let i=g;i<a.length;i+=dk)h+='<td>'+a[i]+'</td>';
+    h+='</tr>';
+  }
+  return h+'</table>';
+}
+function mergePanel(a,h,n){
+  let s='<h4>当前有序段（段长 '+h+'）</h4><div style="font-family:var(--mono);font-size:.82rem">';
+  for(let lo=0;lo<n;lo+=h)s+='['+a.slice(lo,Math.min(lo+h,n)).join(' ')+'] ';
+  return s+'</div>';
+}
+function queuePanel(q){
+  let h='<h4>10 个队列（队头在左）</h4><table>';
+  for(let i=0;i<10;i++){
+    h+='<tr><td class="rowh">q['+i+']</td><td style="text-align:left">'+(q[i].length?q[i].join(' → '):'<span class="no">空</span>')+'</td></tr>';
+  }
+  return h+'</table>';
+}
+function heapPanel(a,len){
+  return '<h4>完全二叉树视图（前 '+len+' 个元素在堆内）</h4>'+treeSVG(a.slice(0,len),{});
+}
+/* 完全二叉树 SVG（1-indexed 布局） */
+function treeSVG(arr,marks){
+  const n=arr.length;if(!n)return '';
+  const H=Math.floor(Math.log2(n))+1;
+  const W=Math.min(760,Math.max(320,Math.pow(2,H-1)*66));
+  const rowH=62,R=17;
+  const pos=i=>{const L=Math.floor(Math.log2(i+1)),p=i+1-Math.pow(2,L);
+    return {x:(p+0.5)/Math.pow(2,L)*W, y:28+L*rowH};};
+  let s='<svg viewBox="0 0 '+W+' '+(28+H*rowH)+'" width="'+W+'">';
+  for(let i=1;i<n;i++){const a1=pos(Math.floor((i-1)/2)),b1=pos(i);
+    s+='<path class="lk" d="M'+a1.x+' '+a1.y+' L'+b1.x+' '+b1.y+'"/>';}
+  for(let i=0;i<n;i++){const p=pos(i);
+    let cls='nd';if((marks.on||[]).includes(i))cls+=' on';if((marks.win||[]).includes(i))cls+=' win';
+    s+='<circle class="'+cls+'" cx="'+p.x+'" cy="'+p.y+'" r="'+R+'"/>';
+    s+='<text class="nt" x="'+p.x+'" y="'+(p.y+4)+'">'+arr[i]+'</text>';
+    s+='<text class="nt sm" x="'+p.x+'" y="'+(p.y-R-3)+'">'+(i+1)+'</text>';
+  }
+  return s+'</svg>';
 }
 
+/* ============ 模块② 堆专项 ============ */
+function genHeap(){
+  let a=parseSeq($('#h_seq').value);
+  if(a.length<2||a.length>15){alert('请输入 2~15 个整数');return}
+  const big=$('#h_type').value==='max', op=$('#h_op').value;
+  const val=parseInt($('#h_val').value), times=parseInt($('#h_times').value)||1;
+  let C=0,M=0;
+  const better=(x,y)=>big?x>y:x<y;
+  const name=big?'大根堆':'小根堆', child=big?'较大':'较小';
+  function down(len,root,tag){
+    let i=root;
+    while(2*i+1<=len-1){
+      let c=2*i+1;
+      if(c+1<=len-1){C++;
+        push([],heapPanel2(a,len,[c,c+1]),`${tag}：结点 ${i+1} 的左右孩子 ${a[c]} 与 ${a[c+1]} <b>先互比 1 次</b>，取${child}者。`,C,M);
+        if(better(a[c+1],a[c]))c++;
+      }else{
+        push([],heapPanel2(a,len,[c]),`${tag}：结点 ${i+1} <b>只有一个孩子</b>（此时堆内 n = ${len}）⟹ <b>本层只比 1 次，不做孩子互比</b>。`,C,M);
+      }
+      C++;
+      if(!better(a[c],a[i])){push([],heapPanel2(a,len,[i,c]),`${tag}：父 ${a[i]} 与${child}孩子 ${a[c]} 比 1 次 ⟹ 已满足${name}，<b>下沉中途停止</b>。`,C,M);break;}
+      push([],heapPanel2(a,len,[i,c]),`${tag}：父 ${a[i]} 与${child}孩子 ${a[c]} 比 1 次 ⟹ 违反堆序，交换。`,C,M);
+      const t=a[i];a[i]=a[c];a[c]=t;M++;i=c;
+      push([],heapPanel2(a,len,[i]),`${tag}：交换完成，<b>沿这条路径继续往下</b>。`,C,M);
+    }
+  }
+  function up(idx,tag){
+    let i=idx;
+    while(i>0){
+      const p=Math.floor((i-1)/2);C++;
+      if(!better(a[i],a[p])){push([],heapPanel2(a,a.length,[i,p]),`${tag}：与父 ${a[p]} 比 1 次 ⟹ 不违反，停。<b>向上调整每层只比 1 次（只有一个父亲，没得选）。</b>`,C,M);break;}
+      push([],heapPanel2(a,a.length,[i,p]),`${tag}：${a[i]} 与父 ${a[p]} 比 1 次 ⟹ 违反，交换上浮。`,C,M);
+      const t=a[i];a[i]=a[p];a[p]=t;M++;i=p;
+    }
+  }
+
+  if(op==='build'){
+    push([],heapPanel2(a,a.length,[]),`初始序列 [${a.join(', ')}]，n = ${a.length}。<b>最后一个分支结点编号 ⌊n/2⌋ = ${Math.floor(a.length/2)}</b>，从它倒着筛到根。`,C,M);
+    for(let i=Math.floor(a.length/2)-1;i>=0;i--){
+      push([],heapPanel2(a,a.length,[i]),`i = ${i+1}：对以结点 ${i+1} 为根的子树做<b>自上而下的筛选</b>。`,C,M);
+      down(a.length,i,'建堆');
+    }
+    push([],heapPanel2(a,a.length,[]),`✅ ${name}建成：[${a.join(', ')}]。<b>共比较 ${C} 次（不超过 4n = ${4*a.length}），所以建堆是 O(n)，不是 O(n log₂n)。</b>`,C,M);
+  }
+  else if(op==='seqins'){
+    const src=a.slice();a=[];
+    push([],heapPanel2(a,0,[]),`<b>依次插入建堆</b>：从空堆开始，把 [${src.join(', ')}] 一个一个插到末尾再向上调整。<b>注意它与「整体自底向上建堆」的结果通常不同</b>——2021 真题的干扰项就是另一种。`,C,M);
+    for(const v of src){
+      a.push(v);M++;
+      push([],heapPanel2(a,a.length,[a.length-1]),`插入 ${v} 到末尾（下标 ${a.length}），开始向上调整。`,C,M);
+      up(a.length-1,'插入');
+    }
+    const b=src.slice();let c2=0;
+    (function(){const bt=(len,root)=>{let i=root;while(2*i+1<=len-1){let c=2*i+1;if(c+1<=len-1){c2++;if(better(b[c+1],b[c]))c++;}c2++;if(!better(b[c],b[i]))break;const t=b[i];b[i]=b[c];b[c]=t;i=c;}};
+      for(let i=Math.floor(b.length/2)-1;i>=0;i--)bt(b.length,i);})();
+    const same=a.join()===b.join();
+    push([],heapPanel2(a,a.length,[]),`✅ 依次插入的结果：[${a.join(', ')}]，共比较 ${C} 次。<br><b>对拍：整体自底向上建堆的结果是 [${b.join(', ')}]，比较 ${c2} 次 ⟹ 两者${same?'恰好相同（换个序列多半就不同了）':'<u>不同</u>'}。</b>`,C,M);
+  }
+  else if(op==='insert'){
+    push([],heapPanel2(a,a.length,[]),`当前${name}：[${a.join(', ')}]。准备插入 <b>${val}</b>。`,C,M);
+    a.push(val);M++;
+    push([],heapPanel2(a,a.length,[a.length-1]),`把 ${val} 放到<b>堆末端</b>（下标 ${a.length}），然后<b>自下而上</b>与父结点比。`,C,M);
+    up(a.length-1,'插入');
+    push([],heapPanel2(a,a.length,[]),`✅ 插入完成：[${a.join(', ')}]。<b>本次共比较 ${C} 次——向上调整每层只比 1 次，最多 ⌊log₂n⌋ 次。</b>`,C,M);
+  }
+  else{
+    push([],heapPanel2(a,a.length,[]),`当前${name}：[${a.join(', ')}]，n = ${a.length}。准备<b>连续删除堆顶 ${times} 次</b>。`,C,M);
+    for(let t=0;t<times&&a.length>1;t++){
+      const top=a[0], last=a.pop();
+      a[0]=last;M++;
+      push([],heapPanel2(a,a.length,[0]),`<b>第 ${t+1} 次删除</b>：输出堆顶 ${top}，把<b>堆底</b> ${last} 移到堆顶。<b>⚠️ 此时堆内 n 已经变成 ${a.length}</b>——先在草稿上写下这个数，再去数比较次数。`,C,M);
+      down(a.length,0,'删除');
+      push([],heapPanel2(a,a.length,[]),`第 ${t+1} 次删除完成：[${a.join(', ')}]，累计比较 ${C} 次。`,C,M);
+    }
+    push([],heapPanel2(a,a.length,[]),`✅ 结束。<b>删除的向下筛选每层比 2 次，但只有一个孩子的那层只比 1 次</b>——2015 与 2024 两道真题都栽在后半句。`,C,M);
+  }
+}
+function heapPanel2(a,len,on){
+  if(!a.length)return '<div class="hint">（空堆）</div>';
+  let h='<h4>数组视图</h4><table><tr>';
+  for(let i=0;i<a.length;i++)h+='<th>'+(i+1)+'</th>';
+  h+='</tr><tr>';
+  for(let i=0;i<a.length;i++)h+='<td class="'+((on||[]).includes(i)?'up':(i>=len?'no':''))+'">'+a[i]+'</td>';
+  h+='</tr></table>';
+  return h+treeSVG(a.slice(0,len),{on:on||[]});
+}
+
+/* ============ 模块③ 败者树 ============ */
+function genLoser(){
+  const raw=$('#l_segs').value.split(/[;；]/).map(s=>parseSeq(s)).filter(s=>s.length);
+  if(raw.length<2||raw.length>8){alert('请输入 2~8 个归并段');return}
+  const k=raw.length, INF=Infinity, MIN=-Infinity;
+  const segs=raw.map(s=>s.slice());
+  const b=new Array(k+1).fill(0), ls=new Array(k).fill(k);
+  const ptr=new Array(k).fill(0);
+  let C=0,M=0,out=[];
+  for(let i=0;i<k;i++)b[i]=segs[i][0];
+  b[k]=MIN;
+  function adjust(s){
+    let t=Math.floor((s+k)/2);
+    while(t>0){
+      C++;
+      if(b[s]>b[ls[t]]){const tmp=s;s=ls[t];ls[t]=tmp;}
+      t=Math.floor(t/2);
+    }
+    ls[0]=s;
+  }
+  push([],loserPanel(b,ls,segs,ptr,k,out,-1),`<b>建败者树</b>：k = ${k} 路。先令 b[k] = −∞、ls[i] 全指向 k，再从 b[${k-1}] 倒着调整到 b[0]。`,C,M);
+  for(let i=k-1;i>=0;i--){adjust(i);
+    push([],loserPanel(b,ls,segs,ptr,k,out,i),`调整 b[${i}]（当前值 ${fmt(b[i])}）：沿路径往上，<b>败者（较大者）的段号留在内部结点，胜者继续上行</b>。`,C,M);}
+  push([],loserPanel(b,ls,segs,ptr,k,out,-1),`✅ 败者树建成。<b>ls[0] = ${ls[0]} 是冠军<u>段号</u></b>，对应关键字 ${fmt(b[ls[0]])}。<b>ls[] 里存的全是段号，关键字只住在 b[] 里（2024 真题）。</b>`,C,M);
+  let guard=0;
+  while(b[ls[0]]!==INF&&guard++<60){
+    const s=ls[0], v=b[s];
+    out.push(v);M++;
+    ptr[s]++;
+    b[s]=ptr[s]<segs[s].length?segs[s][ptr[s]]:INF;
+    push([],loserPanel(b,ls,segs,ptr,k,out,s),`输出冠军 <b>${v}</b>（来自<b>段 ${s}</b>）→ 从<b>同一段</b>读入下一个关键字 ${fmt(b[s])} 填进 b[${s}]。<b>正因为 ls[0] 存的是段号，才能 O(1) 知道该补哪一段。</b>`,C,M);
+    const c0=C;adjust(s);
+    push([],loserPanel(b,ls,segs,ptr,k,out,ls[0]),`沿 b[${s}] 到根的<b>那一条路径</b>重调，本次比较 <b>${C-c0}</b> 次 = ⌈log₂k⌉ = ${Math.ceil(Math.log2(k))}。<b>败者树从下往上、每层比 1 次、必到根，不可能中途停</b>（这正是它与堆的分水岭）。新冠军来自段 ${ls[0]}。`,C,M);
+  }
+  push([],loserPanel(b,ls,segs,ptr,k,out,-1),`✅ 归并完成，输出序列：<b>${out.join(', ')}</b>。共比较 <b>${C}</b> 次。<b>用了败者树后，内部归并的比较次数与路数 k 无关（每选一个都恰好 ⌈log₂k⌉ 次）。</b>`,C,M);
+}
+function fmt(v){return v===Infinity?'∞':(v===-Infinity?'−∞':v)}
+function loserPanel(b,ls,segs,ptr,k,out,hi){
+  let h='<h4>b[]：各段当前参与比较的关键字</h4><table><tr>';
+  for(let i=0;i<k;i++)h+='<th>b['+i+']</th>';
+  h+='</tr><tr>';
+  for(let i=0;i<k;i++)h+='<td class="'+(i===hi?'up':'')+'">'+fmt(b[i])+'</td>';
+  h+='</tr></table>';
+  h+='<h4>ls[]：内部结点存「败者段号」，ls[0] 存「冠军段号」</h4><table><tr>';
+  for(let i=0;i<k;i++)h+='<th>ls['+i+']</th>';
+  h+='</tr><tr>';
+  for(let i=0;i<k;i++)h+='<td class="'+(i===0?'fin':'')+'">'+ls[i]+'</td>';
+  h+='</tr></table>';
+  h+=loserSVG(b,ls,k);
+  h+='<h4>各段剩余</h4><table>';
+  for(let i=0;i<k;i++){
+    h+='<tr><td class="rowh">段 '+i+'</td><td style="text-align:left">'+(segs[i].slice(ptr[i]).join(', ')||'<span class="no">已取空</span>')+'</td></tr>';
+  }
+  h+='</table>';
+  if(out.length)h+='<h4>已输出</h4><div style="font-family:var(--mono)">'+out.join(', ')+'</div>';
+  return h;
+}
+function loserSVG(b,ls,k){
+  const W=Math.min(760,Math.max(340,k*116)), rowH=58, R=15;
+  const depth=Math.ceil(Math.log2(k))+1;
+  const leafX=i=>(i+0.5)/k*W, leafY=28+depth*rowH;
+  const memo={};
+  function nodeX(t){ // t: 内部结点编号 1..k-1
+    if(memo[t]!==undefined)return memo[t];
+    const L=2*t<k?nodeX(2*t):leafX(2*t-k);
+    const R2=2*t+1<k?nodeX(2*t+1):leafX(2*t+1-k);
+    return memo[t]=(L+R2)/2;
+  }
+  function nodeY(t){return 28+Math.floor(Math.log2(t))*rowH+rowH;}
+  let s='<svg viewBox="0 0 '+W+' '+(leafY+40)+'" width="'+W+'">';
+  // 冠军结点 ls[0] 画在最上
+  const rootX=k>1?nodeX(1):leafX(0);
+  s+='<path class="lk" d="M'+rootX+' 28 L'+rootX+' '+nodeY(1)+'"/>';
+  for(let t=1;t<k;t++){
+    const px=nodeX(t),py=nodeY(t);
+    const kids=[2*t,2*t+1];
+    kids.forEach(c=>{
+      const cx=c<k?nodeX(c):leafX(c-k), cy=c<k?nodeY(c):leafY;
+      s+='<path class="lk" d="M'+px+' '+py+' L'+cx+' '+cy+'"/>';
+    });
+  }
+  s+='<circle class="nd win" cx="'+rootX+'" cy="28" r="'+R+'"/><text class="nt" x="'+rootX+'" y="32">'+ls[0]+'</text>';
+  s+='<text class="nt sm" x="'+(rootX+34)+'" y="32">ls[0] 冠军</text>';
+  for(let t=1;t<k;t++){
+    s+='<circle class="nd" cx="'+nodeX(t)+'" cy="'+nodeY(t)+'" r="'+R+'"/>';
+    s+='<text class="nt" x="'+nodeX(t)+'" y="'+(nodeY(t)+4)+'">'+ls[t]+'</text>';
+    s+='<text class="nt sm" x="'+nodeX(t)+'" y="'+(nodeY(t)-R-3)+'">ls['+t+']</text>';
+  }
+  for(let i=0;i<k;i++){
+    s+='<rect class="nd" x="'+(leafX(i)-20)+'" y="'+(leafY-14)+'" width="40" height="28" rx="6"/>';
+    s+='<text class="nt" x="'+leafX(i)+'" y="'+(leafY+4)+'">'+fmt(b[i])+'</text>';
+    s+='<text class="nt sm" x="'+leafX(i)+'" y="'+(leafY+28)+'">b'+i+'</text>';
+  }
+  return s+'</svg>';
+}
+
+/* ============ 模块④ 置换-选择 ============ */
+function genPS(){
+  const fi=parseSeq($('#p_fi').value), w=parseInt($('#p_w').value)||3;
+  if(fi.length<2||fi.length>20){alert('请输入 2~20 个整数');return}
+  let C=0,M=0;
+  const rows=[]; let wa=[], idx=0, runs=[], cur_=[];
+  let minimax=-Infinity;
+  rows.push({fo:'—',wa:'—',fi:fi.join(', '),pick:-1,frozen:[]});
+  push([],psPanel(rows,runs,w),`初始：FI = [${fi.join(', ')}]，工作区 WA 容量 <b>w = ${w}</b>，FO 与 WA 均空。`,C,M);
+  while(idx<fi.length&&wa.length<w){wa.push(fi[idx++]);}
+  let guard=0;
+  while((wa.length||idx<fi.length)&&guard++<300){
+    // 在 WA 中选出 ≥ minimax 的最小者
+    let pick=-1;
+    for(let i=0;i<wa.length;i++){
+      if(wa[i]>=minimax){C++;if(pick<0||wa[i]<wa[pick])pick=i;}
+    }
+    const frozen=wa.map((v,i)=>v<minimax?i:-1).filter(i=>i>=0);
+    if(pick<0){
+      // 全部冻结 ⟹ 封段
+      runs.push(cur_.slice());
+      rows.push({fo:cur_.join(' ')+' #',wa:wa.join('  '),fi:fi.slice(idx).join(', ')||'—',pick:-1,frozen:[]});
+      push([],psPanel(rows,runs,w),`<b>WA 里 ${wa.length} 个格子全被冻结（都小于当前 MINIMAX ${minimax}）⟹ 本段封口。</b>已生成第 ${runs.length} 段：[${cur_.join(', ')}]，长度 <b>${cur_.length}</b>。`,C,M);
+      cur_=[];minimax=-Infinity;
+      continue;
+    }
+    const v=wa[pick];
+    rows.push({fo:cur_.join(' ')||'—',wa:wa.join('  '),fi:fi.slice(idx).join(', ')||'—',pick:pick,frozen:frozen});
+    push([],psPanel(rows,runs,w),`在 WA 中选出<b>不小于当前 MINIMAX（${minimax===-Infinity?'−∞':minimax}）的最小者 = ${v}</b>${frozen.length?`；被<b>冻结</b>的有 ${frozen.map(i=>wa[i]).join(', ')}（它们小于 MINIMAX，只能等下一段）`:''}。`,C,M);
+    cur_.push(v);minimax=v;M++;
+    wa.splice(pick,1);
+    if(idx<fi.length){wa.push(fi[idx++]);}
+    if(!wa.length&&idx>=fi.length){
+      runs.push(cur_.slice());
+      rows.push({fo:cur_.join(' ')+' #',wa:'—',fi:'—',pick:-1,frozen:[]});
+      push([],psPanel(rows,runs,w),`FI 与 WA 都空 ⟹ 最后一段封口：[${cur_.join(', ')}]。`,C,M);
+      cur_=[];break;
+    }
+  }
+  const lens=runs.map(r=>r.length);
+  push([],psPanel(rows,runs,w),`✅ 共生成 <b>${runs.length}</b> 个初始归并段，长度依次为 <b>${lens.join(', ')}</b>，平均 <b>${(lens.reduce((x,y)=>x+y,0)/runs.length).toFixed(2)}</b>（理论上 ≈ 2w = ${2*w}）。<br><b>第一段长 ${lens[0]}</b>——上界是 n = ${fi.length}（输入升序时全在一段），下界是 w = ${w}（初始 w 个恰好全大于剩余记录）。<b>段长不等正是置换-选择的优点</b>（第 02 题干扰项 A 说"一定相等"是错的）。`,C,M);
+}
+function psPanel(rows,runs,w){
+  let h='<h4>置换-选择过程（粗体 = 本步选出的 MINIMAX，灰色 = 被冻结）</h4>'
+    +'<table><tr><th>输出文件 FO</th><th>工作区 WA（w='+w+'）</th><th>输入文件 FI</th></tr>';
+  rows.forEach(r=>{
+    let waCell=r.wa;
+    if(r.pick>=0){
+      const parts=r.wa.split(/\s+/);
+      waCell=parts.map((p,i)=>i===r.pick?'<b>'+p+'</b>':(r.frozen.includes(i)?'<span class="no">'+p+'</span>':p)).join('  ');
+    }
+    h+='<tr><td style="text-align:left">'+r.fo+'</td><td>'+waCell+'</td><td style="text-align:left">'+r.fi+'</td></tr>';
+  });
+  h+='</table>';
+  if(runs.length)h+='<h4>已生成的初始归并段</h4><table>'+runs.map((r,i)=>'<tr><td class="rowh">段 '+(i+1)+'（长 '+r.length+'）</td><td style="text-align:left">'+r.join(', ')+'</td></tr>').join('')+'</table>';
+  return h;
+}
+
+/* ============ 模块⑤ 最佳归并树 ============ */
+function genMTree(){
+  const segs=parseSeq($('#m_segs').value), k=parseInt($('#m_k').value)||3;
+  if(segs.length<2||k<2){alert('至少 2 个段、路数 ≥ 2');return}
+  let C=0,M=0;
+  const n0=segs.length, u=(n0-1)%(k-1), add=u===0?0:(k-u-1);
+  push([],'','<h4>第一步 · 判虚段</h4><div>n₀ = '+n0+'，k = '+k+' ⟹ (n₀−1) % (k−1) = ('+(n0-1)+') % '+(k-1)+' = <b>'+u+'</b>'
+    +(u===0?' = 0 ⟹ <b>正好能构成严格 '+k+' 叉树，不用补虚段</b>。':' ≠ 0 ⟹ <b>补 k − u − 1 = '+k+' − '+u+' − 1 = '+add+' 个虚段</b>（权为 0）。')
+    +'<br>补后叶数 n₀′ = '+(n0+add)+'，(n₀′−1) % (k−1) = '+((n0+add-1)%(k-1))+' ✓<br>'
+    +'内部结点数恒为 (n₀′−1)/(k−1) = <b>'+((n0+add-1)/(k-1))+'</b>，<b>与树形无关</b>。</div>',
+    `判虚段：u = (n₀−1) % (k−1) = ${u} ⟹ ${u===0?'不用补':'补 '+add+' 个虚段'}。`,C,M);
+
+  // k 叉哈夫曼
+  let nodes=segs.map(v=>({w:v,kids:null,vir:false})).concat(Array.from({length:add},()=>({w:0,kids:null,vir:true})));
+  const inner=[];let stepList=[];
+  while(nodes.length>1){
+    nodes.sort((x,y)=>x.w-y.w);
+    const take=nodes.splice(0,Math.min(k,nodes.length));
+    const nd={w:take.reduce((s,x)=>s+x.w,0),kids:take,vir:false};
+    inner.push(nd.w);nodes.push(nd);
+    stepList.push('取最小的 '+take.length+' 个：'+take.map(x=>x.vir?'<span class="bad">0(虚)</span>':x.w).join(' + ')+' = <b>'+nd.w+'</b>');
+    push([],'<h4>第二步 · '+k+' 叉哈夫曼（优先归并短段）</h4>'+stepList.map(s=>'<div>'+s+'</div>').join('')
+      +'<div style="margin-top:6px">当前待合并：'+nodes.map(x=>x.w).sort((a,b)=>a-b).join(', ')+'</div>'
+      +mtreeSVG(nodes.length===1?nodes[0]:null),
+      `每次取 <b>k = ${k} 个最小</b>的合并（虚段权为 0，自然最先被取走，于是被安排在最深处）。`,C,M);
+  }
+  const root=nodes[0];
+  const wpl=inner.reduce((s,x)=>s+x,0);
+  // 对照方案：把降路归并放最浅处（不补虚段、最后一次归并降路）
+  let alt=null;
+  if(add>0){
+    let ns=segs.slice(), innerAlt=[];
+    // 不补虚段：每次都做满 k 路，剩不足 k 个时最后一次降路 ⟹ 降路归并落在最浅处
+    while(ns.length>1){
+      ns.sort((a,b)=>a-b);
+      const take=ns.splice(0,Math.min(k,ns.length));
+      const s=take.reduce((x,y)=>x+y,0);innerAlt.push(s);ns.push(s);
+    }
+    alt=innerAlt.reduce((x,y)=>x+y,0);
+  }
+  push([],'<h4>第三步 · WPL 与总 I/O</h4>'
+    +'<div>内部结点权依次为：'+inner.slice().sort((a,b)=>a-b).join(', ')+'</div>'
+    +'<div style="margin-top:4px"><b>WPL = 所有内部结点权之和 = '+inner.slice().sort((a,b)=>b-a).join(' + ')+' = '+wpl+'</b></div>'
+    +'<div><b>总 I/O 次数 = 2 × WPL = '+(2*wpl)+'</b></div>'
+    +(alt!==null?'<div style="margin-top:8px" class="hint">对照：如果<b>不补虚段、把不足 '+k+' 路的那次归并放在最浅处（最后做）</b>，WPL = <b>'+alt+'</b>、I/O = <b>'+(2*alt)+'</b>。<br><b>补虚段的本质就是把这次"降路归并"挪到最深处（最先做）</b>——权为 0 的叶不产生 I/O，等价于让第一次归并只并 k−1 个真段。</div>':'')
+    +mtreeSVG(root),
+    `✅ WPL = <b>${wpl}</b>，总 I/O = 2 × WPL = <b>${2*wpl}</b>。<b>考场上不要逐叶算"权 × 深度"，直接把所有内部结点的权加起来。</b>`,C,M);
+}
+function mtreeSVG(root){
+  if(!root)return '';
+  let leaves=[];
+  (function collect(nd){if(!nd.kids){leaves.push(nd);return}nd.kids.forEach(collect)})(root);
+  if(leaves.length>26)return '<div class="hint">（叶结点过多，树图省略；上面的 WPL 与 I/O 仍然准确）</div>';
+  const W=Math.min(780,Math.max(340,leaves.length*54));
+  let depth=0;
+  (function dep(nd,d){depth=Math.max(depth,d);if(nd.kids)nd.kids.forEach(c=>dep(c,d+1))})(root,0);
+  const rowH=Math.max(46,Math.min(64,300/(depth+1)));
+  let li=0;
+  (function lay(nd,d){
+    nd.y=24+d*rowH;
+    if(!nd.kids){nd.x=(li+0.5)/leaves.length*W;li++;return}
+    nd.kids.forEach(c=>lay(c,d+1));
+    nd.x=nd.kids.reduce((s,c)=>s+c.x,0)/nd.kids.length;
+  })(root,0);
+  let s='<svg viewBox="0 0 '+W+' '+(24+(depth+1)*rowH)+'" width="'+W+'">';
+  (function edge(nd){if(!nd.kids)return;nd.kids.forEach(c=>{s+='<path class="lk" d="M'+nd.x+' '+nd.y+' L'+c.x+' '+c.y+'"/>';edge(c)})})(root);
+  (function draw(nd){
+    if(nd.kids){
+      s+='<rect class="nd" x="'+(nd.x-21)+'" y="'+(nd.y-13)+'" width="42" height="26" rx="5"/>';
+      s+='<text class="nt" x="'+nd.x+'" y="'+(nd.y+4)+'">'+nd.w+'</text>';
+      nd.kids.forEach(draw);
+    }else{
+      s+='<circle class="nd'+(nd.vir?' vir':'')+'" cx="'+nd.x+'" cy="'+nd.y+'" r="15"/>';
+      s+='<text class="nt" x="'+nd.x+'" y="'+(nd.y+4)+'">'+nd.w+'</text>';
+    }
+  })(root);
+  return s+'</svg>';
+}
+
+/* ============ 渲染与交互 ============ */
 function render(){
-  const st=steps[cur]||steps[steps.length-1];
-  const m=st.marks;
-  document.getElementById('arr').innerHTML=st.a.map((v,i)=>{
-    let cls='cell';
-    if((m.sorted||[]).includes(i))cls+=' sorted';
-    if((m.cmp||[]).includes(i))cls+=' cmp';
-    if((m.swap||[]).includes(i))cls+=' swap';
-    if(m.pivot===i)cls+=' pivot';
-    if(m.key===i)cls+=' keyc';
-    if(m.hole===i)cls+=' hole';
-    return `<div class="${cls}">${m.hole===i?'▢':v}<span class="idx">${i}</span></div>`;
-  }).join('');
-  document.getElementById('expl').innerHTML=`<b>第 ${cur+1}/${steps.length} 步</b> · ${st.log}`;
-  document.getElementById('counters').innerHTML=
-    `<div class="cnt"><b>${st.cmp}</b> 次比较</div><div class="cnt"><b>${st.mov}</b> 次移动/交换</div>`;
-  document.getElementById('prog').textContent='';
-  document.getElementById('next').disabled=cur>=steps.length-1;
-  document.getElementById('prev').disabled=cur<=0;
+  if(!S.length){$('#arr').innerHTML='';$('#expl').innerHTML='<span class="hint">请先设置参数。</span>';$('#panel').innerHTML='';$('#counters').innerHTML='';return}
+  const st=S[Math.min(cur,S.length-1)];
+  $('#arr').innerHTML=st.cells.map(c=>`<div class="cell${c.cls}">${c.v}<span class="idx">${c.idx}</span></div>`).join('');
+  $('#expl').innerHTML=`<b>第 ${cur+1}/${S.length} 步</b> · ${st.log}`;
+  $('#panel').innerHTML=st.panel||'';
+  $('#counters').innerHTML=(mod==='sort'||mod==='heap'||mod==='loser')
+    ?`<div class="cnt"><b>${st.cmp}</b> 次比较</div><div class="cnt"><b>${st.mov}</b> 次移动</div>`:'';
+  $('#next').disabled=cur>=S.length-1;
+  $('#prev').disabled=cur<=0;
+  $('#prog').textContent=`共 ${S.length} 步`;
 }
-
-function apply(){
-  const s=document.getElementById('seq').value.split(/[,，\s]+/).map(x=>parseInt(x)).filter(x=>!isNaN(x));
-  if(s.length<2||s.length>12){alert('请输入 2~12 个整数（太多格子摆不下）');return}
-  base=s;cur=0;
-  gen(document.getElementById('algo').value,base);
+function build(){
+  S=[];cur=0;
+  try{
+    if(mod==='sort')genSort();
+    else if(mod==='heap')genHeap();
+    else if(mod==='loser')genLoser();
+    else if(mod==='ps')genPS();
+    else genMTree();
+  }catch(e){S=[{cells:[],panel:'',log:'输入有误：'+e.message,cmp:0,mov:0}]}
   render();
 }
-document.getElementById('apply').addEventListener('click',apply);
-document.getElementById('algo').addEventListener('change',apply);
-document.getElementById('next').addEventListener('click',()=>{if(cur<steps.length-1){cur++;render()}});
-document.getElementById('prev').addEventListener('click',()=>{if(cur>0){cur--;render()}});
-document.getElementById('runall').addEventListener('click',()=>{cur=steps.length-1;render()});
-document.getElementById('reset').addEventListener('click',()=>{cur=0;render()});
-document.getElementById('rnd').addEventListener('click',()=>{
-  const n=8;document.getElementById('seq').value=Array.from({length:n},()=>Math.floor(Math.random()*90)+10).join(',');
-  apply();
-});
-apply();
+function setMod(m){
+  mod=m;
+  document.querySelectorAll('#mods button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  document.querySelectorAll('.cfgbox').forEach(c=>c.classList.toggle('on',c.id==='cfg-'+m));
+  $('#modhint').innerHTML=(MODS.find(x=>x[0]===m)||['','',''])[2];
+  build();
+}
+$('#mods').innerHTML=MODS.map(m=>`<button data-m="${m[0]}">${m[1]}</button>`).join('');
+document.querySelectorAll('#mods button').forEach(b=>b.addEventListener('click',()=>setMod(b.dataset.m)));
+['s_algo','s_seq','s_dk','s_piv','h_seq','h_type','h_op','h_val','h_times','l_segs','p_fi','p_w','m_segs','m_k']
+  .forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',build)});
+document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>{
+  const d=b.dataset;
+  if(d.sort){const p=d.sort.split('|');$('#s_seq').value=p[0];$('#s_algo').value=p[1];if(p[2])$('#s_dk').value=p[2];}
+  if(d.heap){const p=d.heap.split('|');$('#h_seq').value=p[0];$('#h_op').value=p[1];$('#h_type').value=p[2];if(p[3])$('#h_val').value=p[3];}
+  if(d.loser)$('#l_segs').value=d.loser;
+  if(d.ps){const p=d.ps.split('|');$('#p_fi').value=p[0];$('#p_w').value=p[1];}
+  if(d.mtree){const p=d.mtree.split('|');$('#m_segs').value=p[0];$('#m_k').value=p[1];}
+  build();
+}));
+$('#next').addEventListener('click',()=>{if(cur<S.length-1){cur++;render()}});
+$('#prev').addEventListener('click',()=>{if(cur>0){cur--;render()}});
+$('#runall').addEventListener('click',()=>{cur=S.length-1;render()});
+$('#reset').addEventListener('click',()=>{cur=0;render()});
+setMod('sort');
 </script>
 </body>
 </html>
