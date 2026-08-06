@@ -46,26 +46,66 @@
   .strategy b{color:var(--accent)}
   .strategy .em{color:var(--red);font-weight:700}
 
-  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  /* ——— 图例表 ——— */
+  .tabwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table.lg{width:100%;min-width:540px;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+  table.lg th,table.lg td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  table.lg th{background:var(--accent-soft);color:var(--accent);font-size:.75rem;letter-spacing:.04em;white-space:nowrap}
+  table.lg td.lvc{white-space:nowrap;font-weight:700}
+  .note{font-size:.82rem;color:var(--muted);margin-top:10px}
+  .note b{color:var(--red)}
+
+  /* ——— 默写清单总览 ——— */
+  table.ov{width:100%;min-width:520px;border-collapse:collapse;font-size:.82rem}
+  table.ov th,table.ov td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+  table.ov th{color:var(--muted);font-size:.74rem;font-weight:400;letter-spacing:.04em}
+  table.ov td.n{text-align:right;white-space:nowrap}
+  .ovname{cursor:pointer;color:var(--accent);text-decoration:underline dotted}
+  .ovname:hover{color:var(--red)}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .s-none{background:var(--muted)} .s-ok{background:var(--green)}
+  .s-warn{background:var(--hl-border)} .s-bad{background:var(--red)}
+  .ovsum{font-size:.82rem;color:var(--muted);margin-bottom:10px}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+  .filters .flabel{font-size:.74rem;color:var(--muted);margin-right:2px;letter-spacing:.05em}
   .fbtn{font-size:.8rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:4px 14px;cursor:pointer}
   .fbtn.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
 
-  .algo{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
+  .algo{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;scroll-margin-top:16px}
   .algo .head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;flex-wrap:wrap}
   .algo .head:hover{background:var(--accent-soft)}
   .algo .head .nm{font-weight:700}
   .algo .head .arrow{margin-left:auto;color:var(--muted);transition:transform .2s}
   .algo.open .head .arrow{transform:rotate(90deg)}
   .tagc{font-size:.68rem;padding:1px 8px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
-  .tagm{font-size:.68rem;padding:1px 8px;border-radius:999px;background:var(--red-soft);color:var(--red)}
+  .tagl{font-size:.68rem;padding:1px 8px;border-radius:999px;font-weight:700;white-space:nowrap}
+  .lv1{background:var(--red-soft);color:var(--red)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:var(--blue-soft);color:var(--blue)}
+  .hstat{font-size:.7rem;color:var(--muted);white-space:nowrap}
   .algo .body{display:none;padding:0 16px 16px;border-top:1px dashed var(--line)}
   .algo.open .body{display:block}
   .blk{margin-top:12px;font-size:.88rem;padding:10px 12px;border-radius:8px}
-  .blk b{font-size:.72rem;display:block;margin-bottom:3px;letter-spacing:.06em}
-  .b-q{background:var(--blue-soft)} .b-q b{color:var(--blue)}
-  .b-idea{background:var(--green-soft)} .b-idea b{color:var(--green)}
-  .b-trap{background:var(--red-soft)} .b-trap b{color:var(--red)}
+  .blk b.h{font-size:.72rem;display:block;margin-bottom:3px;letter-spacing:.06em}
+  .blk ol{margin:2px 0 0 20px}
+  .blk li{margin:4px 0}
+  .b-q{background:var(--blue-soft)} .b-q b.h{color:var(--blue)}
+  .b-idea{background:var(--green-soft)} .b-idea b.h{color:var(--green)}
+  .b-trap{background:var(--red-soft)} .b-trap b.h{color:var(--red)}
+  .b-mem{background:var(--hl);border-left:3px solid var(--hl-border)} .b-mem b.h{color:var(--hl-border)}
+  .b-und{background:var(--green-soft);border-left:3px solid var(--green)} .b-und b.h{color:var(--green)}
+  .b-chk{background:var(--purple-soft);border-left:3px solid var(--purple)} .b-chk b.h{color:var(--purple)}
   .b-src{font-size:.76rem;color:var(--muted);margin-top:10px}
+
+  .drill{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;
+         padding:8px 12px;border:1px dashed var(--line);border-radius:8px}
+  .dbtn{font-size:.78rem;border:1px solid var(--accent);background:var(--accent);color:var(--card);
+        border-radius:8px;padding:4px 12px;cursor:pointer}
+  .dbtn:hover{filter:brightness(1.1)}
+  .dstat{font-size:.78rem;color:var(--muted)}
+  .undo{font-size:.72rem;color:var(--muted);background:none;border:none;cursor:pointer;
+        text-decoration:underline;margin-left:auto;padding:0}
 
   .codewrap{margin-top:12px;border-radius:10px;overflow:hidden}
   .codebar{display:flex;align-items:center;gap:10px;background:var(--code-bg);padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -98,8 +138,8 @@
 <div class="wrap">
   <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
   <header>
-    <h1>算法题训练场（28 个模板）</h1>
-    <div class="sub">408 算法设计题（通常为第 41 题）的 C 语言弹药库 · 提炼自 826 代码默写手册，已转 408/王道 C 口径 · 结合王道教材逐章校订、补入真题实战套路 · 第7章（查找）新增 3 个：BST 三件套 / 平衡二叉树判定 / 有序矩阵阶梯查找 · <b>第8章（排序）新增 5 个：快速选择（第 k 小 / 2016 集合等分）/ 枢轴取末尾的 Partition / 三向划分（荷兰国旗 · 奇偶分区）/ 计数排序（2021 读代码）/ 非递归 2 路归并</b> · 每个模板可开「默写模式」逐行自测</div>
+    <h1>算法题训练场（36 个模板）</h1>
+    <div class="sub">408 算法设计题（通常为第 41 题）的 C 语言弹药库 · 以王道教材与统考真题为准逐章校订 · <b>每张卡都标了三维掌握度：🔴🟡🔵 等级 + 📌该背什么 + 🧠该懂什么 + ✍️怎么算过关</b> · 可开「默写模式」逐行自测，并给每张卡打默写卡记录遗忘曲线</div>
   </header>
 
   <section class="card">
@@ -107,25 +147,70 @@
     <ul class="strategy">
       <li><b>三段式作答，三段都给分</b>：① 算法思想（文字说清套路）② 代码（C / C++，规范伪代码通常也可）③ 时空复杂度。<span class="em">复杂度是白给的分，永远别忘写。</span></li>
       <li><b>暴力保底</b>：想不出最优解就写 O(n²) 暴力——408 评分通常仍给大部分分数；<span class="em">空着才是 0 分</span>。先写个暴力占住分，有时间再优化。</li>
-      <li><b>先声明再动手</b>：结点/结构体定义、变量含义、边界假设先写清，阅卷人看得懂才有分。</li>
-      <li><b>套路优先</b>：408 算法题 80% 落在下面 28 个模板的变形上——反转、双指针（含间隔k/尾对齐）、归并、划分、树递归、层次队列、建树与森林转换、哈夫曼、标记数组空间换时间、<b>图的遍历 / 拓扑排序 / 邻接矩阵扫行列</b>、<b>快速选择与三向划分</b>。先认出套路，再改模板。</li>
-      <li><b>默写训练法</b>：点开模板 → 读懂思路 → 开「默写模式」→ 在纸上写 → 逐行点击核对。合上书能写出【默】级模板，才算过关。</li>
+      <li><b>先声明再动手</b>：结点/结构体定义、变量含义、边界假设先写清，阅卷人看得懂才有分。<span class="em">凡涉及下标的题，第一行先声明「下标从 0 起 / 从 1 起」。</span></li>
+      <li><b>套路优先</b>：408 算法题 80% 落在下面 36 个模板的变形上——反转、双指针（含间隔 k / 尾对齐）、归并、划分、树递归、层次队列、<b>非递归栈（祖先类）</b>、<b>顺序存储下标法</b>、建树与森林转换、哈夫曼、标记数组空间换时间、<b>图的遍历 / 回溯 / 拓扑排序 / 邻接矩阵扫行列</b>、<b>五大基础排序</b>、快速选择与三向划分。先认出套路，再改模板。</li>
+      <li><b>默写训练法</b>：点开模板 → 读懂思路 → 看 📌背 / 🧠懂 两栏 → 开「默写模式」→ 在纸上写 → 逐行点击核对 → 对照 ✍️检查点逐条打勾 → 点「✅ 记一次默写」。<span class="em">🔴 默级卡要在两个不同日期各过一次才算真过。</span></li>
     </ul>
   </section>
 
   <section class="card">
+    <h2>怎么用这份手册：三个掌握等级 × 卡内三分区</h2>
+    <div class="tabwrap">
+    <table class="lg">
+      <tr><th>等级</th><th>含义</th><th>达标标准（硬判据，不含糊）</th><th>张数</th></tr>
+      <tr><td class="lvc"><span class="tagl lv1">🔴 默</span></td>
+          <td>闭卷在白纸上写出<b>可直接提交给阅卷人的完整 C 代码</b>：含结构体假设、边界判断、返回值、末尾复杂度说明</td>
+          <td>限时内一次写对，与本卡代码<b>逐行比对零差错</b>；且<b>在两个不同日期各过一次</b>才算真过</td>
+          <td class="n" id="cnt1">—</td></tr>
+      <tr><td class="lvc"><span class="tagl lv2">🟡 改</span></td>
+          <td>骨架能背，细节允许现场推导；重点是<b>认出变形、说出改哪几行</b></td>
+          <td>给一道变形题，<b>3 分钟内口述改动点</b>，再写出来比对：主干正确、细节最多 1 处小错</td>
+          <td class="n" id="cnt2">—</td></tr>
+      <tr><td class="lvc"><span class="tagl lv3">🔵 读</span></td>
+          <td>不要求默写。要求看懂给定代码、能填空、能指出 bug、能答复杂度</td>
+          <td>给一段挖 3 个空的代码：<b>全填对 + 说出时空复杂度 + 指出一处边界隐患</b></td>
+          <td class="n" id="cnt3">—</td></tr>
+    </table>
+    </div>
+    <div class="note">判级依据：<b>真题原型 + 万能零件 ⟹ 默</b>（三步反转、快慢指针、层次遍历、Partition、后序栈、五大基础排序…）；<b>教材综合题主力、考法多变 ⟹ 改</b>（栈队列、链表零件、图回溯、平衡判定…）；<b>408 只考读代码或只考手算 ⟹ 读</b>（KMP next、哈夫曼、计数排序）。</div>
+    <div class="tabwrap" style="margin-top:16px">
+    <table class="lg">
+      <tr><th>卡内分区</th><th>放什么</th><th>达标标准</th></tr>
+      <tr><td class="lvc">📌 <b>背</b></td>
+          <td>不需要理解、必须条件反射的：边界写法、公式、常数、口诀、「哪个位置标记」这类硬规定</td>
+          <td><b>看到关键词 3 秒内说出</b>，说不出即没背</td></tr>
+      <tr><td class="lvc">🧠 <b>懂</b></td>
+          <td>必须讲得出「为什么」的：为什么这样写才对、不这样写会错在哪</td>
+          <td><b>能对着白纸讲给别人听，或当场举出反例</b>；只会背结论不算过</td></tr>
+      <tr><td class="lvc">✍️ <b>写</b></td>
+          <td>落到笔尖的代码与步骤</td>
+          <td>见每张卡的 <b>✍️ 达标检查点</b>：限时 + 逐条打勾，<b>任一条错即未过</b></td></tr>
+    </table>
+    </div>
+    <div class="note">📌 与 🧠 的每一条都写成了<b>可以当场问自己「是/否」的句子</b>——没有「熟练掌握」「深入理解」这种自欺的话。答不出就是没过，别自己放水。</div>
+  </section>
+
+  <section class="card">
+    <h2>🔴 默写清单总览（最久没练的排在最上）</h2>
+    <div class="ovsum" id="ovsum">—</div>
+    <div class="tabwrap"><table class="ov" id="ovtab"></table></div>
+    <div class="note">状态灯：<span class="dot s-none"></span>灰＝从没默写过　<span class="dot s-ok"></span>绿＝7 天内练过　<span class="dot s-warn"></span>黄＝超过 7 天　<span class="dot s-bad"></span>红＝超过 14 天。记录只存在本机浏览器（localStorage），换设备不同步。</div>
+  </section>
+
+  <section class="card">
     <h2>模板列表（点标题展开）</h2>
-    <div class="filters" id="filters"></div>
+    <div class="filters" id="filtT"><span class="flabel">按类型</span></div>
+    <div class="filters" id="filtL"><span class="flabel">按等级</span></div>
     <div id="list"></div>
   </section>
 
-  <footer>408 算法题训练场 · 由 Claude 生成并独立校核（826 代码手册提炼 + 408 C 口径改写）</footer>
+  <footer>408 算法题训练场 · 由 Claude 生成并独立校核（王道 C 口径 + 统考真题，新增 8 张卡的代码均已 gcc 编译对拍）</footer>
 </div>
-
 <script>
-const TAGS={arr:"顺序表·数组",list:"链表",tree:"二叉树",graph:"图",ss:"查找·排序",str:"串"};
+const TAGS={arr:"顺序表·数组",list:"链表",stack:"栈·队列",tree:"二叉树",graph:"图",ss:"查找·排序",str:"串"};
+const LVS={"默":{cls:"lv1",icon:"🔴",label:"默写级"},"改":{cls:"lv2",icon:"🟡",label:"改造级"},"读":{cls:"lv3",icon:"🔵",label:"识读级"}};
 const A=[
-{tag:"arr",must:1,name:"三步反转法（循环左移）",
+{tag:"arr",lv:"默",name:"三步反转法（循环左移）",
  q:"将数组 A[0..n-1] 循环左移 p 位，要求时间 O(n)、空间 O(1)。（408-2010 原题套路）",
  idea:"记数组为 ab（a 是前 p 个）。目标是 ba。三步：先各自反转得 aᴿbᴿ，再整体反转得 (aᴿbᴿ)ᴿ = ba。写一个 Reverse 辅助函数复用三次。",
  code:`void Reverse(int A[], int l, int r){      // 反转 A[l..r]
@@ -138,11 +223,19 @@ void LeftShift(int A[], int n, int p){    // 循环左移 p 位
     Reverse(A, p, n-1);                   // ② 反转后 n-p 个
     Reverse(A, 0, n-1);                   // ③ 整体反转
 }                                         // 时间 O(n) 空间 O(1)`,
+ mem:["三步的顺序与区间：<code>(0,p-1)</code> → <code>(p,n-1)</code> → <code>(0,n-1)</code>，一个数都不能记错",
+      "Reverse 的循环条件是 <code>i&lt;j</code>（不是 <code>i&lt;=j</code>），中点自己不用换",
+      "循环<b>右</b>移 k 位 = 循环左移 n−k 位；卷面上先写这一句换算，再套同一个模板",
+      "复杂度：时间 O(n)、空间 O(1)——三次 Reverse 共扫 2n 次元素"],
+ und:["能用 ab→aᴿbᴿ→(aᴿbᴿ)ᴿ=ba 三行推导讲清为什么整体反转就能把两段换位（不是背下来的，是能推的）",
+      "能说出为什么辅助数组法（开 p 个空间搬移）只能拿部分分：时间同为 O(n) 但空间 O(p)，题目点名要 O(1)",
+      "能说出 p&gt;n 或 p=0 时要先做 <code>p%=n</code>，否则区间越界"],
+ chk:"闭卷 4 分钟写出 Reverse + LeftShift。检查点：① 三次调用的区间参数全对 ② Reverse 循环条件是 i&lt;j ③ 函数外写了 p%=n 的防护 ④ 末行写了时间 O(n)/空间 O(1) ⑤ 设计思想里有 ab→ba 那句推导。任一条错即未过。",
  trap:"暴力逐位移动是 O(n·p)，只能拿部分分；辅助数组法 O(n)/O(n) 分数也略低——三步反转才是满分解。答题时把「为什么三步反转正确」用 ab→ba 一行话写出来。",
- src:"826 第2章向量（unshift 思想）→ 408-2010 真题经典解法"},
+ src:"408-2010 统考真题 · 练习系统 2.2-综10"},
 
-{tag:"arr",must:1,name:"最大连续子序列和（Kadane）",
- q:"求整数数组中和最大的连续子序列之和，要求 O(n)。（826-2018 算法题满分版）",
+{tag:"arr",lv:"改",name:"最大连续子序列和（Kadane）",
+ q:"求整数数组中和最大的连续子序列之和，要求 O(n)。",
  idea:"一路扫过去维护两个量：cur = 以当前元素结尾的最大和；best = 全局最大。关键决策一句话：前面攒下的 cur 若为正就带着走，为负就果断丢掉从头再来。",
  code:`int MaxSub(int A[], int n){               // 非空子序列版
     int best=A[0], cur=A[0];
@@ -152,10 +245,17 @@ void LeftShift(int A[], int n, int p){    // 循环左移 p 位
     }
     return best;
 }                                         // 时间 O(n) 空间 O(1)`,
- trap:"「允许空序列」时 best 初值取 0；「必须非空」时初值取 A[0]（全负数组答案是最大的那个负数，初值 0 会答错）。这是 826 判断题也钉过的坑。",
- src:"826 第1章 gs_LS【默】级 → 改写为 C"},
+ mem:["两个变量的定义要背死：<b>cur = 必须以 A[k] 结尾的最大和</b>、<b>best = 到目前为止的全局最大</b>。说不清 cur 的定义就写不对递推",
+      "「允许空序列」⟹ best 初值 0；「必须非空」⟹ best 与 cur 初值都取 A[0] 且从 k=1 开始",
+      "要同时输出<b>起止下标</b>时：cur 被重置成 A[k] 的那一刻记 <code>s=k</code>；best 被刷新时记 <code>L=s, R=k</code>"],
+ und:["能举出反例说明 best 初值取 0 为什么会答错：数组全负（如 [−3,−1,−5]）时正确答案是 −1，初值 0 会输出 0",
+      "能讲清「cur 为负就丢掉」为什么不会漏掉更优解：负前缀接在任何后续段前面只会让和更小，所以丢掉一定不亏",
+      "能说出它和「分治求最大子段和 O(n log n)」的关系：分治也对、也给分，但 Kadane 才是本题的最优解"],
+ chk:"闭卷 4 分钟写出 MaxSub，并现场改造成「同时返回起止下标」的版本。检查点：① cur 的递推式一次写对 ② 初值按「非空」口径取 A[0] ③ 改造版里 s 的更新点在 cur 被重置的那一支里 ④ 能立刻说出全负数组的答案。任一条错即未过。",
+ trap:"「允许空序列」时 best 初值取 0；「必须非空」时初值取 A[0]（全负数组答案是最大的那个负数，初值 0 会答错）。408 尚未直接考过，但它是「一趟扫描 + 维护两个量」这类题的母模板。",
+ src:"826 第1章 gs_LS → 改写为 408 C 口径"},
 
-{tag:"arr",must:0,name:"双指针原地去重 / 按条件搬移",
+{tag:"arr",lv:"改",name:"双指针原地去重 / 按条件搬移",
  q:"有序数组原地删除重复元素，返回新长度；或把所有奇数移到偶数前面。",
  idea:"快慢双指针：快指针 j 一路扫描负责「看」，慢指针 i 停在已处理区末尾负责「放」。满足条件的元素才搬到 i 的位置。整个数组每个元素只被看一次。",
  code:`int Uniquify(int A[], int n){             // 有序数组去重
@@ -165,10 +265,17 @@ void LeftShift(int A[], int n, int p){    // 循环左移 p 位
             A[++i] = A[j];                // 收进前缀
     return i+1;                           // 新长度
 }                                         // 时间 O(n) 空间 O(1)`,
+ mem:["写代码前先在卷面上写死<b>不变式</b>：「A[0..i] 是已处理好的结果区，A[j..n−1] 是待看区」——阅卷人看这一句给分",
+      "返回值是 <b>i+1</b>（下标转长度），不是 i。这一格是本模板最常见的错",
+      "「删除所有值为 x 的元素」变形：把条件换成 <code>A[j]!=x</code> 时 <code>A[i++]=A[j]</code>，此时 i 是<b>长度</b>不是下标，返回 i 而非 i+1——两种写法的 i 语义不同，别混"],
+ und:["能说出为什么这个模板要求数组<b>有序</b>才能去重：无序数组的重复元素不相邻，双指针看不到；无序去重没有 O(n)/O(1) 通用解（要么先排序，要么用散列换空间）",
+      "能说出为什么两指针「每个元素只被看一次」⟹ 时间 O(n)：j 单调递增且永不回退",
+      "能区分本模板（快慢同向）与「对撞双指针」（i 从左、j 从右，用于奇偶分区/回文判定）的适用场景"],
+ chk:"闭卷 5 分钟写出 Uniquify，并改写成「删除所有值为 x 的元素」。检查点：① 卷面第一行写了不变式 ② 去重版返回 i+1、删除版返回 i，两者没混 ③ n=0 与 n=1 时不越界 ④ 写了 O(n)/O(1)。任一条错即未过。",
  trap:"逆命题注意：无序数组去重没有 O(n)/O(1) 通用解（要么先排序，要么用散列换空间）。「已处理区间的含义」写进注释是采分点。",
- src:"826 第2章 uniquify 双指针【默】级"},
+ src:"王道 2.2 综合题（删除/去重系列）· 练习系统 2.2-综1/综3/综5"},
 
-{tag:"list",must:1,name:"单链表反转（三指针迭代）",
+{tag:"list",lv:"默",name:"单链表反转（三指针迭代）",
  q:"原地反转单链表，返回新表头。几乎所有链表大题的零件。",
  idea:"三个指针滚动前进：pre（已反转段头）、p（当前）、nxt（先存好的后继）。每步只做一件事——把 p 的箭头掉头指向 pre，然后三人整体右移一格。",
  code:`LNode* Reverse(LNode *head){              // 不带头结点
@@ -180,10 +287,18 @@ void LeftShift(int A[], int n, int p){    // 循环左移 p 位
     }
     return pre;                          // 新表头 = 原表尾
 }                                         // 时间 O(n) 空间 O(1)`,
- trap:"顺序不能乱：不先存 nxt 就掉头，后半条链直接丢失。带头结点版本：对 head->next 段做同样操作后重挂到头结点。",
- src:"826 第3章列表操作思想 → 408 高频零件"},
+ mem:["循环体内三句的<b>顺序不可换</b>：存后继 → 掉头 → 右移。倒过来写就是断链",
+      "pre 初值必须是 <b>NULL</b>（它将成为新表尾的 next），返回的是 <b>pre</b> 不是 p（循环结束时 p 已经是 NULL）",
+      "带头结点版的等价写法是「摘下来逐个<b>头插</b>」：<code>L->next=NULL;</code> 然后 <code>r=p->next; p->next=L->next; L->next=p; p=r;</code>——王道 2.3-综3 用的就是这版",
+      "复杂度 O(n)/O(1)；「就地/原地」这个词在题干里出现，就是在要 O(1) 空间"],
+ und:["能画图讲清不存 nxt 就掉头为什么会丢掉后半条链（p->next 被覆盖后再没有指针指向后继）",
+      "能说出「三指针迭代」和「头插法逆置」是同一件事的两种记法，并知道带头结点时头插法更短、不带头结点时三指针更直观",
+      "能说出为什么递归版虽然也对，但空间是 O(n)（递归栈），题目要 O(1) 时不能用"],
+ chk:"闭卷 3 分钟写出不带头结点版 + 带头结点头插版两个函数。检查点：① 三句顺序对 ② pre 初值 NULL、返回 pre ③ 带头结点版第一句是 L->next=NULL ④ 空表与单结点表都能正常返回 ⑤ 写了 O(n)/O(1)。任一条错即未过。",
+ trap:"顺序不能乱：不先存 nxt 就掉头，后半条链直接丢失。带头结点版本：对 head->next 段做同样操作后重挂到头结点。408-2019 重排题的第二步就是它。",
+ src:"王道 2.3 综合题 3 · 练习系统 2.3-综3 · 408-2019 真题零件"},
 
-{tag:"list",must:1,name:"快慢指针：找中点 / 判环",
+{tag:"list",lv:"默",name:"快慢指针：找中点 / 判环",
  q:"一趟扫描找单链表中点；或判断链表是否有环。（408-2019 重排题的第一步就是找中点）",
  idea:"快指针一次走两步、慢指针一次走一步：快的到尾，慢的恰在中点；若有环，两者必在环内相遇（追及问题）。",
  code:`LNode* Middle(LNode *head){               // 快2慢1找中点
@@ -202,10 +317,18 @@ int HasCycle(LNode *head){                // 判环:相遇则有环
     }
     return 0;
 }`,
+ mem:["循环条件恒为 <code>fast && fast->next</code>，<b>两个都要判</b>——少判一个就是空指针崩溃",
+      "偶数个结点时本写法的 slow 停在<b>前半段最后一个</b>（n=4 停在第 2 个）。408-2019 要的正是这个口径：前半 L1..Lk 稍长或等长",
+      "判环的相遇是<b>指针相等</b> <code>slow==fast</code>，不是 data 相等",
+      "求环入口：相遇后把一个指针放回表头，两指针改为<b>同速各走一步</b>，再次相遇处即入口（这一条是选择题考点）"],
+ und:["能说出为什么有环时快慢指针一定会相遇：进环后快指针每步相对慢指针逼近 1 个位置，环长有限所以必然追上；而如果步长取 3，相对速度是 2，可能跨过去而不相遇",
+      "能讲出 408-2019 重排题（L1→Ln→L2→Ln−1…）为什么正好是三个模板拼装：<b>找中点 → 反转后半 → 交替合并</b>，并能说出三步各自的复杂度合起来仍是 O(n)",
+      "能说出把初值改成 <code>slow=head, fast=head->next</code> 会让偶数长时停在后半段第一个——所以初值也是口径的一部分，不能随手改"],
+ chk:"闭卷 6 分钟写出 Middle + HasCycle，再口述 408-2019 的三步拼装。检查点：① 循环条件两个判断都在 ② 能立刻说出 n=4 时 slow 停在第几个 ③ 判环用指针相等 ④ 能补出「求环入口」的做法 ⑤ 三步拼装每步都能点名对应哪张卡。任一条错即未过。",
  trap:"while 条件必须同时查 fast 与 fast->next（否则空指针）。408-2019 真题（L1→Ln→L2→Ln-1…重排）= 找中点 + 反转后半 + 交替合并，三个模板拼装。",
- src:"826 链表专题 → 408-2019 真题拆解"},
+ src:"408-2019 统考真题拆解 · 练习系统 2.3 链表专题"},
 
-{tag:"list",must:1,name:"合并两个有序链表 / 数组",
+{tag:"list",lv:"默",name:"合并两个有序链表 / 数组",
  q:"把两个递增链表合并为一个递增链表（或两个有序数组归并到 C）。归并排序的核心零件。",
  idea:"双指针各指一条链，谁小取谁挂到结果尾部；一条取完后把另一条整段接上。链表用哑结点（dummy）省去头部特判。",
  code:`LNode* Merge(LNode *a, LNode *b){
@@ -221,10 +344,19 @@ int HasCycle(LNode *head){                // 判环:相遇则有环
     tail->next = a ? a : b;               // 接上剩余整段
     return dummy.next;
 }                                         // 时间 O(m+n)`,
- trap:"取 ≤ 而非 < 才稳定（相等时先取前者）。数组版是同一套双指针，尾部两个 while 收残段。「合并 + 反转」「合并 + 去重」都是它的变形。",
- src:"826 第2/3章 merge【默】级"},
+ mem:["判断符必须是 <b>&lt;=</b> 不是 &lt;：相等时先取前者才稳定。整个第 8 章的稳定性都挂在这一个符号上",
+      "收尾一句 <code>tail->next = a ? a : b;</code> 是<b>整段接上</b>，不是逐个搬——链表版的便宜就占在这里",
+      "哑结点是<b>栈上的结构体变量</b>（<code>LNode dummy;</code>），返回 <code>dummy.next</code>；写成指针 <code>LNode *dummy;</code> 而不 malloc 就是野指针",
+      "数组版的收尾要写<b>两个</b> while 收残段（只会执行其中一个），别只写一个",
+      "合并成<b>递减</b>表的变形：改成边比边<b>头插</b>，不要先合并再整体逆置（多扫一趟）"],
+ und:["能说出哑结点解决的到底是什么问题：结果链的第一个结点不知道来自 a 还是 b，没有哑结点就要写一段头部特判",
+      "能说出为什么链表归并的空间是 O(1) 而数组归并是 O(m+n)：链表只改指针不搬数据",
+      "能说出「合并 + 去重」只需在取值前多比一句 <code>tail->data != 取到的值</code>，而「合并两个有序<b>集合</b>取交集」是同一双指针的另一种分支处理"],
+ chk:"闭卷 5 分钟写出链表版 Merge + 数组版归并。检查点：① 用了 &lt;= ② 链表版有哑结点且返回 dummy.next ③ 链表版收尾是整段接、数组版收尾是两个 while ④ 能当场说出改成递减表怎么改 ⑤ 写了时间 O(m+n)、链表空间 O(1) / 数组空间 O(m+n)。任一条错即未过。",
+ trap:"取 ≤ 而非 &lt; 才稳定（相等时先取前者）。数组版是同一套双指针，尾部两个 while 收残段。「合并 + 反转」「合并 + 去重」都是它的变形。",
+ src:"王道 2.2/2.3 归并综合题 · 练习系统 2.2-综6、2.3-综7"},
 
-{tag:"ss",must:1,name:"二分查找（标准闭区间版）",
+{tag:"ss",lv:"默",name:"二分查找（标准闭区间版）",
  q:"有序数组查找 x；变形：找第一个 ≥ x 的位置、找插入位置。",
  idea:"闭区间 [lo, hi] 不变式：答案若存在必在区间内。三分支：命中返回；A[mid] 偏小舍左半；偏大舍右半。区间为空（lo>hi）即不存在。",
  code:`int BinSearch(int A[], int n, int x){
@@ -237,10 +369,19 @@ int HasCycle(LNode *head){                // 判环:相遇则有环
     }
     return -1;
 }                                         // 时间 O(log n)`,
- trap:"写法必须配套：闭区间 ⇒ lo<=hi ⇒ mid±1，三处错一处就死循环/漏元素。408-2011（两序列中位数）、2013（主元素）都可用二分/分治思想升级拿满分。",
- src:"826 第2章 binSearch 版本C【默】级"},
+ mem:["<b>三处必须配套</b>：闭区间 [lo,hi] ⟹ 循环条件 <code>lo&lt;=hi</code> ⟹ 更新 <code>mid±1</code>。错一处就死循环或漏元素",
+      "查找<b>失败</b>时循环退出的瞬间恒有 <b>hi = lo−1</b>，此时 <b>lo（= hi+1）就是插入位置</b>——折半插入排序、B 树插入位置全靠这一条",
+      "<code>mid = lo + (hi-lo)/2</code> 是防溢出写法；408 手算题一律用 <b>⌊(lo+hi)/2⌋</b>（向下取整）",
+      "判定树高度 = ⌈log₂(n+1)⌉，<b>ASL_成功 = (n+1)/n·log₂(n+1) − 1</b>，与顺序表折半判定树是同一棵——手算题直接用",
+      "折半查找<b>只能用于顺序存储的有序表</b>，链表上做不了（无法 O(1) 取中）"],
+ und:["能说出为什么写成 <code>lo&lt;hi</code> + <code>hi=mid</code> 也对但属于另一套（半开区间）写法，而两套<b>混用</b>必错——能当场指出混用后是死循环还是漏元素",
+      "能推出「找第一个 ≥ x 的位置」怎么改：命中时不返回而是 <code>hi=mid-1</code> 继续往左压，最后返回 lo",
+      "能说出 408-2011（两个等长有序序列求中位数）用的是同一个「每轮各砍一半」的思想，只是砍的是两个序列而非一个"],
+ chk:"闭卷 5 分钟写出 BinSearch，再改写成「返回第一个 ≥ x 的下标」。检查点：① lo&lt;=hi 与 mid±1 配套 ② 能立刻答出查找失败时 lo、hi 的关系 ③ 改写版最后返回 lo 而不是 −1 ④ 能画出 n=11 的判定树并数出各层查找次数 ⑤ 写了 O(log₂n)。任一条错即未过。",
+ trap:"写法必须配套：闭区间 ⇒ lo&lt;=hi ⇒ mid±1，三处错一处就死循环/漏元素。408-2011（两序列中位数）、2013（主元素）都可用二分/分治思想升级拿满分。",
+ src:"王道 7.2 折半查找 · 练习系统 7.2 全节 · 408-2011 真题基础"},
 
-{tag:"ss",must:1,name:"快排划分 Partition（挖坑法）",
+{tag:"ss",lv:"默",name:"快排划分 Partition（挖坑法）",
  q:"一趟划分：小于枢轴的放左边、大于的放右边，枢轴归位。快排、第 k 小、荷兰国旗类题的核心。",
  idea:"取首元素为枢轴挖出第一个坑；右指针从右向左找小者填左坑，左指针从左向右找大者填右坑，交替进行；指针相遇处填回枢轴——它已在最终位置。",
  code:`int Partition(int A[], int lo, int hi){
@@ -254,10 +395,20 @@ int HasCycle(LNode *head){                // 判环:相遇则有环
     A[lo] = pivot;                        // 枢轴归位
     return lo;                            // 最终位置
 }`,
- trap:"内层 while 必须带 lo<hi 防越界。求「第 k 小」：对 Partition 返回值与 k 比较，只递归一侧，平均 O(n)——比全排序 O(n log n) 高一档，是常见的满分/部分分分水岭。",
- src:"826 速查表 + 排序模拟器同款挖坑法"},
+ mem:["<b>枢轴取首 ⟹ 必须先从右往左找</b>（第一个坑在左端，得先取右边的元素来填）。这条方向规矩背死，卡25 的取尾版正好相反",
+      "两个内层 while <b>都要带 <code>lo&lt;hi</code></b>，否则指针冲出数组",
+      "内层条件带等号（<code>&gt;=</code> / <code>&lt;=</code>）：等于枢轴的元素直接跳过，否则遇到大片相等元素会原地打转",
+      "一趟划分后枢轴<b>已在最终位置</b>，这是快排唯一「不需要后续再动」的元素——快排「一趟之后的中间结果」题就靠这句话判",
+      "快排：平均 O(n log₂n)、<b>最坏 O(n²)（初始基本有序或基本逆序时）</b>、空间 = 递归栈 O(log₂n)~O(n)、<b>不稳定</b>"],
+ und:["能讲清「挖坑」的物理含义：pivot 存出来之后 A[lo] 这个格子是空的，任何一次赋值都在填一个已经腾空的格子，所以不需要三次交换",
+      "能举例说明为什么快排在「初始有序」时最坏：每次划分只切下一个元素，递归深度 n",
+      "能说出为什么快排不稳定而归并稳定（划分时的跨越式赋值会把相等元素的相对次序打乱）",
+      "能说出「三数取中」「随机取枢轴」是怎么把最坏情形的概率压下去的"],
+ chk:"闭卷 5 分钟写出 Partition，并在纸上对 [49,38,65,97,76,13,27,49] 手动跑完一趟。检查点：① 先右后左 ② 两个内层 while 都带 lo&lt;hi ③ 内层条件带等号 ④ 手算结果与程序一致、返回值是枢轴下标 ⑤ 能立刻背出快排四项指标（平均/最坏/空间/稳定性）。任一条错即未过。",
+ trap:"内层 while 必须带 lo&lt;hi 防越界。求「第 k 小」：对 Partition 返回值与 k 比较，只递归一侧，平均 O(n)——比全排序 O(n log n) 高一档，是常见的满分/部分分分水岭。",
+ src:"王道 8.3 快速排序 · 练习系统 8.3 全节 · 模拟器_排序 同款挖坑法"},
 
-{tag:"ss",must:1,name:"堆：下滤 + Floyd 建堆",
+{tag:"ss",lv:"默",name:"堆：下滤 + Floyd 建堆",
  q:"数组建大顶堆；输出前 k 大；堆排序。",
  idea:"下滤：结点与较大孩子比，小则交换下沉，直到堆序满足。建堆：从最后一个分支结点 n/2-1 倒着逐个下滤——代价 O(n) 不是 O(n log n)。",
  code:`void SiftDown(int A[], int i, int n){     // 大顶堆,0 起编号
@@ -273,10 +424,20 @@ void BuildHeap(int A[], int n){           // Floyd 建堆 O(n)
     for(int i=n/2-1; i>=0; i--)
         SiftDown(A, i, n);
 }`,
+ mem:["<b>0 起编号</b>：左 2i+1、右 2i+2、父 ⌊(i−1)/2⌋、最后一个分支结点 <b>n/2−1</b>；<b>1 起编号</b>：左 2i、右 2i+1、父 ⌊i/2⌋、最后一个分支结点 <b>⌊n/2⌋</b>。<b>动笔前先声明用哪套</b>",
+      "建堆是<b>从最后一个分支结点倒着往前</b>逐个下滤，不是从根开始",
+      "<b>建堆 O(n)</b>（不是 O(n log n)）、堆排序总时间 O(n log₂n)、空间 O(1)、<b>不稳定</b>",
+      "堆排序每趟：<b>堆顶与末元素交换 → 堆规模减 1 → 对新堆顶下滤一次</b>，共 n−1 趟",
+      "「前 k 大」用<b>容量 k 的小顶堆</b>扫全表：比堆顶大就换掉堆顶再下滤，O(n log₂k)；别写成建大顶堆弹 k 次（O(n+k log n)，k 大时更差且要动原数组）"],
+ und:["能说出建堆为什么是 O(n)：越深的结点越多但下滤代价越小，∑(层数×该层结点数) 收敛到 O(n)——不必会严格推导，但要能说出这个「深的多、滤得浅」的直觉",
+      "能说出为什么必须<b>先取较大的那个孩子</b>再比：跟小孩子换会破坏另一支的堆序",
+      "能说出上滤（插入用）与下滤（删除/建堆用）分别用在哪：插入是挂到末尾再上滤，删除是末元素补到堆顶再下滤",
+      "能说出为什么堆不稳定：堆顶与末元素的交换是跨越式的"],
+ chk:"闭卷 6 分钟写出 SiftDown + BuildHeap，并手动把 [53,17,78,9,45,65,87,23] 建成大顶堆。检查点：① 第一行注明 0 起还是 1 起，且全篇一致 ② 建堆起点是 n/2−1（0 起）③ 取大孩子那一句在比较之前 ④ 手算结果与程序一致 ⑤ 能立刻背出建堆 O(n)、堆排 O(n log₂n)、不稳定。任一条错即未过。",
  trap:"0 起编号孩子是 2i+1/2i+2；若题目 1 起编号则是 2i/2i+1，别混。「前 k 大」用 k 容量小顶堆扫全表 O(n log k)——比全排序优，采分点。",
- src:"826 第10章 percolateDown/heapify【默】级 → 0起C版"},
+ src:"王道 8.4.2 堆排序 · 练习系统 8.4 全节 · 模拟器_排序"},
 
-{tag:"tree",must:1,name:"二叉树递归模板（遍历/高度/计数）",
+{tag:"tree",lv:"默",name:"二叉树递归模板（遍历/高度/计数）",
  q:"遍历、求高度、数叶子、判相等、求 WPL……一切「对每个结点做点事」的树题。",
  idea:"树题递归三问：① 递归出口（空树返回什么）② 左右子树各自给我什么 ③ 本层怎么合并。想清三问，代码就是填空。",
  code:`void InOrder(BiTree T){                   // 遍历模板
@@ -296,10 +457,19 @@ int CountLeaf(BiTree T){                  // 数叶子
     if(!T->lchild && !T->rchild) return 1;
     return CountLeaf(T->lchild) + CountLeaf(T->rchild);
 }`,
+ mem:["<b>递归三问</b>的顺序背死：出口写什么 → 左右各要什么 → 本层怎么合。三问答完代码就是填空",
+      "<b>空树高度记 0、叶结点记 1</b>（不要写成 −1 再去比较）",
+      "带<b>下传参数</b>的变形（求 WPL 传深度 <code>wpl(T->lchild, d+1)</code>；求某层结点数传层号）是 408-2014 的原型：<b>下传的量写在参数里、上报的量写在返回值里</b>",
+      "需要同时上报<b>多个量</b>（如高度 + 是否平衡）时，用<b>指针参数</b>带出来，不要分两次递归",
+      "先/中/后序的差别只在 <code>visit(T)</code> 那一行的位置；三种遍历的时间都是 O(n)、空间是递归栈 O(h)"],
+ und:["能说出为什么递归函数<b>必须先写出口</b>：漏判空树是本模板最高频的丢分，且空指针会直接崩",
+      "能讲出 408-2014 求 WPL 的两种解法（递归下传深度 / 层次遍历按层累加）各自的复杂度，并说出为什么两种都给满分",
+      "能说出「求二叉树高度」的非递归解法为什么要用<b>层次遍历</b>而不是栈（栈版要额外记深度，层次版天然按层，见卡30 的对照）"],
+ chk:"闭卷 6 分钟写出 InOrder / Height / CountLeaf 三个函数，再当场把 Height 改成「求 WPL」。检查点：① 三个函数都先写出口 ② 空树高度返回 0 ③ WPL 版把深度写成参数下传、把和写成返回值 ④ 能立刻说出三种遍历只差 visit 的位置 ⑤ 写了 O(n) 时间、O(h) 空间。任一条错即未过。",
  trap:"带下传参数的变形（如 WPL 传深度：wpl(T->lchild, d+1)）是 408-2014 真题套路。递归函数一定先写出口，空树漏判是最常见丢分。",
- src:"826 第5章递归四序【默】级"},
+ src:"王道 5.3 遍历与综合题 · 练习系统 5.3 全节 · 408-2014 真题"},
 
-{tag:"tree",must:1,name:"层次遍历模板（树题万金油）",
+{tag:"tree",lv:"默",name:"层次遍历模板（树题万金油）",
  q:"层次遍历；求树宽度；求某层结点数；判完全二叉树——凡「按层」都用它。",
  idea:"根入队；循环：出队访问，左右孩子依次入队。数组模拟队列时 front/rear 天然记录了访问历史，求宽度可按层计数（记录每层末尾）。",
  code:`void LevelOrder(BiTree T){
@@ -311,11 +481,32 @@ int CountLeaf(BiTree T){                  // 数叶子
         if(p->lchild) Q[r++] = p->lchild;
         if(p->rchild) Q[r++] = p->rchild;
     }
+}
+int Btdepth(BiTree T){                    // 非递归求高度：last 记本层最右
+    if(!T) return 0;
+    BiTree Q[MAX]; int f=0, r=0, last=0, level=0;
+    Q[r++] = T;
+    while(f < r){
+        BiTree p = Q[f++];
+        if(p->lchild) Q[r++] = p->lchild;
+        if(p->rchild) Q[r++] = p->rchild;
+        if(f == last){ level++; last = r; }   // 本层处理完，last 指向下层最右
+    }
+    return level;
 }`,
+ mem:["<b>「按层」二字一出现就用它</b>：求高度、求宽度、求某层结点数、判完全二叉树、自下而上从右到左遍历（把结果压栈再倒出来）",
+      "<b>分层的唯一机关是 last</b>：last 记当前层最后一个结点在队列中的下标；<code>f == last</code> 时本层处理完，<code>level++</code> 且 <code>last = r</code>",
+      "<b>判完全二叉树</b>：空孩子<b>也要入队</b>；出队遇到第一个 NULL 后，若队里还能出到非空结点 ⟹ 不完全",
+      "队列容量按<b>最大层宽</b>估，不是按 n/2；写卷面时直接写 <code>BiTree Q[MaxSize]</code> 并声明「MaxSize 足够大」",
+      "时间 O(n)、空间 O(最大层宽) —— 完全二叉树时是 O(n)"],
+ und:["能说出为什么层次遍历必须用<b>队列</b>而不能用栈：栈会把同层的兄弟顺序颠倒并且深度优先",
+      "能讲清 last/level 那两行是怎么把「一维队列」切成「一层一层」的，并当场改造成「求树的最大宽度」（把 <code>level++</code> 换成 <code>width=max(width, 本层结点数)</code>）",
+      "能说出判完全二叉树为什么必须让空孩子入队：不入队就看不出「中间有洞」"],
+ chk:"闭卷 7 分钟写出 LevelOrder + Btdepth，再当场改造成「求最大宽度」和「判完全二叉树」。检查点：① last 的初值与两处更新都对 ② 判完全版让 NULL 也入队 ③ 宽度版的本层结点数是怎么算出来的能说清 ④ 空树都单独判了 ⑤ 写了 O(n) 时间、O(最大层宽) 空间。任一条错即未过。",
  trap:"判完全二叉树：空孩子也入队，出队遇到第一个 NULL 后若还能出队到非空结点 → 不完全。求宽度：变量记录当前层结点数逐层推进。这两个变形都是 408 真题级考法。",
- src:"826 第5章 levelorder【默】级"},
+ src:"王道 5.3 综合题 3（非递归求高度）· 练习系统 5.3-综3、5.3-综4"},
 
-{tag:"tree",must:1,name:"由遍历序列重建二叉树 + 二叉树↔森林",
+{tag:"tree",lv:"改",name:"由遍历序列重建二叉树 + 二叉树↔森林",
  q:"给「先序+中序」或「后序+中序」重建二叉树（5.3/5.4 真题基石）；二叉树转森林数树数。",
  idea:"重建三步：① 先序首/后序尾 = 根；② 在中序里定位根，左边是左子树、右边是右子树；③ 对两段递归。关键是算准「左子树结点数 llen」来切先序/后序区间。必须含中序才能唯一重建（先序+后序不行）。",
  code:`BiTree buildPreIn(ElemType pre[], int pl, int pr,
@@ -330,10 +521,20 @@ int CountLeaf(BiTree T){                  // 数叶子
     root->rchild = buildPreIn(pre, pl+llen+1, pr,      in, k+1, ir);
     return root;                          // ③ 递归两段
 }`,
+ mem:["<b>必须含中序</b>才能唯一重建：先序+后序<b>不行</b>（无法区分只有一个孩子时是左还是右）",
+      "四个区间参数一个都不能错：左子树先序 <code>[pl+1, pl+llen]</code>、右子树先序 <code>[pl+llen+1, pr]</code>；<code>llen = k − il</code>",
+      "后序版只改两处：根取 <code>post[pr]</code>，左子树后序区间为 <code>[bl, bl+llen-1]</code>",
+      "<b>森林↔二叉树（左孩子右兄弟）三条硬结论</b>：森林中<b>树的棵数 = 二叉树从根沿右指针链的结点数</b>；<b>森林的叶结点数 = 二叉树中<u>左指针为空</u>的结点数</b>（≠ 二叉树的叶数！）；<b>树的后根遍历 ≡ 对应二叉树的中序遍历</b>、树的先根遍历 ≡ 二叉树的先序遍历",
+      "树（非二叉）的结点数与度的关系：<b>n = 1 + ∑(每个结点的度)</b>，别套二叉树的 n₀=n₂+1"],
+ und:["能说出为什么先序+后序不能唯一重建，并当场举出一个反例（根 + 单个左孩子 vs 根 + 单个右孩子，两者先序后序都相同）",
+      "能讲清 llen 为什么是 <code>k − il</code> 而不是 k：中序区间不一定从 0 开始",
+      "能说出「森林叶数 = 二叉树中左指针为空的结点数」的道理：左孩子指针在左孩子右兄弟表示里代表「第一个孩子」，没有第一个孩子就是叶",
+      "能说出 while 找根那一步为什么让最坏复杂度到 O(n²)，以及用散列表记录中序位置可以降到 O(n)"],
+ chk:"闭卷 8 分钟写出 buildPreIn，并口述后序版的两处改动。检查点：① 出口写的是 pl&gt;pr ② 四个区间参数全对 ③ llen 用的是 k−il ④ 能立刻背出森林↔二叉树三条结论 ⑤ 能举出先序+后序不唯一的反例。任一条错即未过。",
  trap:"后序+中序版把「pre[pl]=根」换成「post[pr]=根」、区间相应改。二叉树↔森林靠「左孩子右兄弟」：森林树数 = 二叉树从根一路沿右指针链的结点数；森林叶数 = 二叉树中左指针为空的结点数（≠二叉树叶数！）；树后根遍历 = 对应二叉树中序。这几条 5.4 真题反复考。",
- src:"王道第5章 5.3/5.4 建树与森林转换【默】级"},
+ src:"王道 5.3/5.4 建树与森林转换 · 练习系统 5.3-综12、5.4 全节"},
 
-{tag:"tree",must:0,name:"哈夫曼树构造与 WPL",
+{tag:"tree",lv:"读",name:"哈夫曼树构造与 WPL",
  q:"给 n 个权值构造哈夫曼树、求最小 WPL / 各字符编码长度（5.5 及 2014/2021/2023/2025 真题）。",
  idea:"贪心：每次取当前权值最小的两棵树合并，新根权 = 两子权之和，放回集合再比，共 n−1 次。用大小 2n−1 的数组存（前 n 个是叶，后 n−1 个是合并出的内部结点）。WPL 捷径 = 所有内部结点权值之和，不必数深度。",
  code:`typedef struct{ int weight, parent, lchild, rchild; } HTNode;
@@ -349,10 +550,19 @@ void CreateHuffman(HTNode HT[], int w[], int n){
         HT[i].weight = HT[s1].weight + HT[s2].weight;  // 新权 = 子权和
     }
 }`,
+ mem:["<b>WPL 捷径 = 所有<u>内部结点</u>权值之和</b>，不必逐个数深度乘权。手算题一律用这条，快且不会错",
+      "哈夫曼树<b>只有度 0 和度 2，没有度 1</b>；n 个叶 ⟹ 共 <b>2n−1</b> 个结点、做 <b>n−1</b> 次合并",
+      "<b>形态不唯一（左右子树可交换、等权时选谁不定），但 WPL 唯一</b>——判断题常拿「哈夫曼树唯一」来钓鱼",
+      "编码长度 = 该叶的深度：<b>权越小埋得越深、码越长</b>；<b>前缀码 ⟺ 所有字符都在叶结点</b>",
+      "<b>2012 真题「多路归并最少比较次数」也是哈夫曼</b>：每次合并当前最短的两个段"],
+ und:["能说出为什么「每次并最小的两个」就一定全局最优（贪心正确性的直觉：权大的必须离根近，否则交换后 WPL 变小）",
+      "能说出「哈夫曼树中权值最小的两个结点一定是兄弟且在最深层」为什么成立，并用它秒杀选择题",
+      "能解释为什么 <b>k 叉</b>哈夫曼树可能要<b>补虚结点</b>（权 0）才能凑成每次并满 k 个"],
+ chk:"识读级：给一段 CreateHuffman 代码挖 3 个空（清零上界 2n−1 / 合并循环起点 n+1 / 新权 = 两子权和），限时 4 分钟。检查点：① 三个空全填对 ② 说出时间复杂度 O(n²)（Select 每次扫一遍）③ 指出一处边界隐患（Select 必须只在 parent==0 的结点里挑）④ 能手算 {7,5,2,4} 的 WPL 并说出是 35。任一条错即未过。",
  trap:"哈夫曼树只有度 0 和 2（无度 1），n 个叶共 2n−1 个结点。形态不唯一但 WPL 唯一。编码长度 = 该叶的深度：权越小埋得越深、码越长。前缀码 ⟺ 字符只在叶结点。多路归并「最小比较次数」（2012 真题）也是哈夫曼思想：每次并最短两个表。",
- src:"王道第5章 5.5 哈夫曼【默】级"},
+ src:"王道 5.5 哈夫曼 · 练习系统 5.5 全节 · 408 只考手算与选择题"},
 
-{tag:"graph",must:1,name:"图 BFS / DFS 邻接表模板",
+{tag:"graph",lv:"默",name:"图 BFS / DFS 邻接表模板",
  q:"连通性、最短路径（无权图）、求距离顶点 v 最远的结点、判断路径存在。",
  idea:"BFS 用队列层层推进（无权图最短路）；DFS 递归一路到底。visited 数组防重复。邻接表遍历邻居：for(p=G.vex[u].first; p; p=p->next)。",
  code:`void BFS(Graph G, int v, int visited[]){
@@ -374,12 +584,22 @@ void DFS(Graph G, int v, int visited[]){
         if(!visited[p->adj])
             DFS(G, p->adj, visited);
 }`,
+ mem:["<b>BFS 的标记必须在<u>入队时</u></b>，不是出队时——出队时标记会让同一顶点被重复入队",
+      "<b>非连通图要在外面套一层</b> <code>for(i=0;i&lt;n;i++) if(!visited[i]) BFS/DFS(G,i);</code>；<b>连通分量数 = 这层外循环真正调用的次数</b>",
+      "「距 v 最远的顶点」= <b>BFS 最后一个出队的顶点</b>；无权图单源最短路径 = BFS 的层数",
+      "复杂度：<b>邻接表 O(|V|+|E|)、邻接矩阵 O(|V|²)</b>；空间都是 O(|V|)",
+      "遍历序列不唯一：<b>取决于邻接表中边的插入次序</b>；同一个图换存储方式，DFS/BFS 序列就变"],
+ und:["能举出反例说明 BFS 出队时才标记为什么错（菱形图 A→B、A→C、B→D、C→D，D 会被入队两次）",
+      "能说出为什么 DFS 是「访问时标记」而 BFS 是「入队时标记」——DFS 的访问与入栈是同一时刻，BFS 不是",
+      "能说出「求两点间是否有路径」（练习系统 6.3-综4）为什么只需从 vᵢ 起一次遍历、而且<b>不能</b>加非连通图那层外循环（语义会变）",
+      "能说出 DFS 的递归栈深度最坏是 O(|V|)，所以顶点极多时要改成显式栈"],
+ chk:"闭卷 7 分钟写出邻接表 BFS + DFS，再当场补出「求连通分量个数」和「判 vᵢ 到 vⱼ 有无路径」。检查点：① BFS 在入队处标记 ② 外层循环版能写对且能说出连通分量计数点在哪 ③ 判路径版没有加外层循环 ④ 能立刻说出「距 v 最远顶点」怎么取 ⑤ 写了邻接表 O(|V|+|E|) / 邻接矩阵 O(|V|²)。任一条错即未过。",
  trap:"BFS 的标记必须在入队时（出队时标记会重复入队）。「距 v 最远的顶点」= BFS 最后一个出队者。非连通图要外层循环对每个未访问顶点再调一次。",
- src:"826 第6章 BFS/DFS【懂】级 → C 邻接表版"},
+ src:"王道 6.3 图的遍历 · 练习系统 6.3-综1/综4 · 模拟器_图算法"},
 
-{tag:"graph",must:1,name:"拓扑排序模板（+ 判环 + 判唯一）",
+{tag:"graph",lv:"默",name:"拓扑排序模板（+ 判环 + 判唯一）",
  q:"2024 统考算法题原型。还能一题多用：判有向图是否有环、判拓扑序列是否唯一、AOV 网排先后、按拓扑序重编号使邻接矩阵成上三角。",
- idea:"三步：① 统计入度（邻接表扫一遍所有边的 adjvex，或邻接矩阵按列求和）；② 把入度为 0 的顶点入栈/入队；③ 反复弹出一个、输出、把它的所有后继入度减 1，减到 0 就入栈。输出个数 count < n ⟹ 有环。判唯一：每轮弹之前若「入度为 0 的顶点多于一个」，序列就不唯一。",
+ idea:"三步：① 统计入度（邻接表扫一遍所有边的 adjvex，或邻接矩阵按列求和）；② 把入度为 0 的顶点入栈/入队；③ 反复弹出一个、输出、把它的所有后继入度减 1，减到 0 就入栈。输出个数 count &lt; n ⟹ 有环。判唯一：每轮弹之前若「入度为 0 的顶点多于一个」，序列就不唯一。",
  code:`bool TopoSort(ALGraph G, int print[]){
     int indeg[MAXV]={0}, S[MAXV], top=-1, count=0;
     for(int i=0;i<G.vexnum;i++)                    // ① 统计入度
@@ -399,10 +619,20 @@ void DFS(Graph G, int v, int visited[]){
 // 每轮若找到的入度0顶点 ≥ 2 个 ⟹ 不唯一，直接 return 0。
 // 2024 真题技巧：用一个 in0 变量兼做标志——初值 -1；
 //   扫到第一个入度0顶点记下它的编号，再扫到第二个就置 -2（表示"多于一个"）。`,
+ mem:["<b>返回值 <code>count == vexnum</code> 就是判环</b>——这一句是采分点，忘写等于白做",
+      "<b>有向图入度看<u>列</u>、出度看<u>行</u></b>（邻接矩阵）；邻接表统计入度要扫遍所有边表结点的 adjvex",
+      "<b>拓扑序列唯一 ⟺ 每一轮入度为 0 的顶点<u>恰好一个</u></b>（等价说法：该图存在一条经过全部顶点的有向路径 / 哈密顿路径）",
+      "<b>拓扑序存在 ⟺ 有向无环图（DAG）</b>；<b>按拓扑序重新编号，邻接矩阵一定是上三角</b>（反过来也成立，选择题常考）",
+      "用<b>栈</b>还是<b>队列</b>都对，但给出的合法序列不同——题目指定了存储结构或输出样例时必须照它的顺序走",
+      "复杂度：邻接表 <b>O(|V|+|E|)</b>、邻接矩阵 <b>O(|V|²)</b>"],
+ und:["能说出为什么「入度减到 0 才入栈」而不是「减一次就入栈」：一个顶点可能有多个前驱，所有前驱都出队了它才真正可选",
+      "能说出逆拓扑排序的两种做法（把出度当入度做 / 对 DFS 的<b>退栈</b>顺序取逆序），并说出 DFS 版为什么天然给出逆拓扑序",
+      "能说出 AOE 网求关键路径为什么要先做一次拓扑排序（求 ve 必须按拓扑序、求 vl 必须按逆拓扑序）"],
+ chk:"闭卷 8 分钟写出 TopoSort，再当场改成「判断拓扑序列是否唯一」。检查点：① 入度统计的双重循环没写反 ② 减到 0 才入栈 ③ 返回 count==vexnum ④ 判唯一版的「≥2 个入度 0」判断点在每轮弹出<b>之前</b> ⑤ 写了 O(|V|+|E|)。任一条错即未过。",
  trap:"① 别忘了返回值/count 判环，这是采分点；② 入度统计不要漏掉「有向图入度看列、出度看行」；③ 用栈还是队列都对，但会给出不同的合法序列——题目给了具体存储结构时必须按它的顺序走；④ 复杂度：邻接表 O(|V|+|E|)、邻接矩阵 O(|V|²)，写完顺手答上。",
- src:"王道第6章 6.4.4（2024 统考算法题）"},
+ src:"王道 6.4.4（408-2024 统考算法题）· 练习系统 6.4 全节 · 模拟器_图算法"},
 
-{tag:"graph",must:1,name:"邻接矩阵「扫行扫列」模板（近年真题主力）",
+{tag:"graph",lv:"改",name:"邻接矩阵「扫行扫列」模板（近年真题主力）",
  q:"2021 判 EL（欧拉）路径、2023 找出度大于入度的 K 顶点——统考连续出题的套路：题干把判据直接告诉你，你只需按行/列统计度。",
  idea:"一句话：行求出度、列求入度、无向图行列同值即度。双重 for 扫矩阵即可，别自作聪明去发明图论算法。带权图记得排除 0 和 ∞ 两种「非边」。",
  code:`// 【2021】无向图：度为奇数的顶点数为 0 或 2 ⟹ 存在 EL 路径
@@ -424,13 +654,22 @@ int printVertices(MGraph G){
         for(int m=0;m<G.numVertices;m++) outd += G.Edge[k][m];   // 行 = 出度
         for(int m=0;m<G.numVertices;m++) ind  += G.Edge[m][k];   // 列 = 入度
         if(outd>ind){ printf("%c", G.VerticesList[k]); count++; }
-    }
+        }
     return count;
 }`,
- trap:"① 这两题都是「题干送思想」的送分题，先把题干那句判据抄进设计思想里再写码；② 时间复杂度一律 O(n²)、空间 O(1)，写完必答；③ 带权图不能直接 += ，要先判 (0 < w && w < INF)；④ 无向图别把度算成两倍。",
- src:"王道第6章 6.2.6（2021、2023 统考算法题）"},
+ mem:["<b>行 = 出度、列 = 入度</b>；无向图矩阵对称，<b>扫一行即为该顶点的度</b>",
+      "<b>带权图不能直接 <code>+=</code></b>，要先判 <code>0 &lt; w && w &lt; INF</code> 两种「非边」都排除",
+      "无向图<b>邻接矩阵元素之和 = 2|E|</b>；有向图元素之和 = |E|",
+      "复杂度一律 <b>时间 O(n²)、空间 O(1)</b>，写完必答",
+      "这类题的解题第一步是<b>把题干那句判据原样抄进「算法基本设计思想」</b>——它就是送分"],
+ und:["能说出为什么这两年的题「不需要图论算法」：题干已经把判据（欧拉路径的度数条件 / K 顶点的定义）给出来了，你只要会统计",
+      "能说出无向图为什么不能把「扫一行」的结果再乘 2 或除以 2：一行本身就是该顶点的度，重复计算是常见错",
+      "能说出邻接矩阵与邻接表在这类题上的取舍：统计入度时邻接矩阵扫一列 O(n)，邻接表必须扫遍所有边表 O(|E|)"],
+ chk:"闭卷 6 分钟写出 IsExistEL + printVertices 两个函数。检查点：① 行列没写反 ② 带权图版本能当场补出 0&lt;w&lt;INF 的判断 ③ 无向图的度没有多乘或少除 ④ 卷面上抄了题干判据 ⑤ 写了 O(n²)/O(1)。任一条错即未过。",
+ trap:"① 这两题都是「题干送思想」的送分题，先把题干那句判据抄进设计思想里再写码；② 时间复杂度一律 O(n²)、空间 O(1)，写完必答；③ 带权图不能直接 += ，要先判 (0 &lt; w && w &lt; INF)；④ 无向图别把度算成两倍。",
+ src:"王道 6.2.6（408-2021、408-2023 统考算法题）· 练习系统 6.2 全节"},
 
-{tag:"ss",must:1,name:"BST 三件套：判定 BST / 求最值 / 求层次",
+{tag:"ss",lv:"默",name:"BST 三件套：判定 BST / 求最值 / 求层次",
  q:"「判断给定二叉树是否为二叉排序树」「求 BST 中最大与最小关键字」「求某关键字所在层次」——王道第7章综合题 5、6、8 与历年真题的固定三问。",
  idea:"BST 的一切都从<b>中序即升序</b>与<b>左小右大</b>两句话长出来：判定用「中序遍历时与前驱比较」（一次遍历、O(n)、不需要额外数组）；求最值不必遍历，<b>顺着一条边走到底</b>即可（最小一路向左、最大一路向右，O(h)）；求层次用<b>非递归下降计数</b>，走一步加一层。",
  code:`KeyType pre = -32767;                    /* 全局：保存中序前驱 */
@@ -458,10 +697,20 @@ int Level(BiTree T, KeyType k){          /* 求 k 所在层次，根为第 1 层
     }
     return 0;
 }`,
+ mem:["<b>BST ⟺ 中序序列严格递增</b>。这一句是第 7 章半数题目的总钥匙",
+      "判定用 <b>&lt;=</b> 判失败（BST 不允许相等关键字）；全局 pre 初值取一个足够小的数，<b>多组数据前必须复位</b>",
+      "求最值只走<b>一条边</b>：最小一路向左、最大一路向右，<b>O(h)</b>——写成遍历全树虽然答案对，但丢掉「利用 BST 性质」这个采分点",
+      "求层次/查找都是<b>单向下降</b>，比较次数 = 该结点层数；<b>查找失败</b>时走到空指针，比较次数 = 树高",
+      "BST 删除三种情形：叶直接删；<b>只有一棵子树</b>就让子树顶上；<b>左右都有</b>就用<b>中序前驱（左子树最右）或中序后继（右子树最左）</b>顶替再删那个替身"],
+ und:["能举出反例说明「只比父与左右孩子」为什么不够：根 40 的右子树里挂一个 35（35 &lt; 40），每对父子都合法但整棵树不是 BST——<b>本手册卡31 用程序验过这个反例</b>",
+      "能说出中序前驱法与「区间夹逼 (min,max) 下传」两种正解各自的写法，并说出它们为什么等价",
+      "能说出为什么 BST 的查找效率取决于<b>树高</b>而非结点数：最坏退化成单链 O(n)，这正是要引入 AVL 的原因",
+      "能说出把全局 pre 改成指针参数或引用参数的好处（可重入、多组数据不用手动复位）"],
+ chk:"闭卷 8 分钟写出 JudgeBST + MinKey/MaxKey + Level 四个函数。检查点：① 判定用中序前驱且判失败用 &lt;= ② 求最值是 while 单向走到底、不是递归遍历 ③ Level 的层号从 1 起、找不到返回 0 ④ 能当场举出「只比父子」的反例 ⑤ 写了判定 O(n)、最值与层次 O(h)。任一条错即未过。",
  trap:"① 判定 BST <b>不能只比「父与左右孩子」</b>——那只保证局部有序，左子树里可能藏着比根还大的结点；必须用中序前驱法或「带 (min,max) 区间下传」的递归。② 中序比较要用 <b>&lt;=</b> 判失败（BST 通常不允许相等关键字）。③ 全局变量 pre 在一次调用后要复位，多组数据时最好改成传引用参数。④ 求最值只走一条边即可，写成遍历整棵树虽然答案对，但<b>丢掉了「利用 BST 性质」这个采分点</b>。",
- src:"王道7.3 综合题5/6/8 · 练习系统 7.3-综5/综6/综8"},
+ src:"王道 7.3 综合题 5/6/8 · 练习系统 7.3-综5/综6/综8 · 模拟器_查找"},
 
-{tag:"ss",must:0,name:"平衡二叉树判定（一次后序遍历带回高度）",
+{tag:"ss",lv:"改",name:"平衡二叉树判定（一次后序遍历带回高度）",
  q:"「判断给定二叉树是否为平衡二叉树（AVL）」——王道第7章综合题 7，与「求高度」是同一个递归的两个出口。",
  idea:"朴素写法对每个结点都调一次 Height()，退化成 O(n²)。<b>正解是一次后序遍历同时带回「高度」与「是否平衡」两个信息</b>：左右子树先各自报告，本层再判 |hl−hr| ≤ 1。这是「递归返回值携带多个量」的通用套路，408 大题反复用。",
  code:`void Judge_AVL(BiTree T, int *balance, int *h){
@@ -477,10 +726,20 @@ int Level(BiTree T, KeyType k){          /* 求 k 所在层次，根为第 1 层
         else                 *balance = 0;
     }
 }`,
+ mem:["<b>平衡 = |hl−hr| ≤ 1 <u>且</u> bl <u>且</u> br</b>，三个条件缺一不可——漏掉 <code>bl && br</code> 会把「根平衡但子树失衡」判成 AVL",
+      "空树高 <b>0</b>、叶结点高 <b>1</b>；平衡因子 = 左高 − 右高，取值只能是 <b>−1/0/1</b>",
+      "高度与平衡两个量<b>同时</b>用指针带出来，分两次递归就退化成 O(n²)",
+      "<b>AVL 的最少结点数递推 N(h)=N(h−1)+N(h−2)+1，序列 1,2,4,7,12,20,33,54,88</b>（h=1 起）——选择题直接背",
+      "四种调整：<b>LL 右单旋、RR 左单旋、LR 先左后右、RL 先右后左</b>；旋转后<b>子树高度恢复到插入前</b>，所以只需调整<b>最小不平衡子树</b>"],
+ und:["能说出为什么朴素写法是 O(n²)：每个结点都独立调一次 Height，高度信息被反复重算",
+      "能画出一棵「根的平衡因子合格但左子树失衡」的树，说明为什么必须 <code>bl && br</code>",
+      "能说出这个「递归返回多个量」的套路还能用在哪：判 BST 带回 (min,max)、求树的直径带回 (高度, 直径)、判完全二叉树带回 (是否满, 高度)",
+      "能说出为什么 AVL 查找是 O(log₂n) 而普通 BST 最坏 O(n)"],
+ chk:"闭卷 6 分钟写出 Judge_AVL。检查点：① 空树/叶结点两个出口分开写且高度值正确 ② 判平衡那一行带了 bl && br ③ 用指针同时带出高度与平衡 ④ 能立刻背出 AVL 最少结点数前 7 项 ⑤ 能说出四种旋转分别对应什么插入位置。任一条错即未过。",
  trap:"① <b>「本结点的平衡因子合格」不等于「整棵树平衡」</b>——必须 <code>bl &amp;&amp; br</code> 一起带上，漏掉就把「根平衡但子树失衡」的树判成 AVL。② 高度与平衡两个量要<b>同时</b>返回（用指针或引用），分两次递归就是 O(n²)。③ 空树高度记 0、叶结点记 1，别把空树写成 −1 后又去比较。④ AVL 的最少结点数 1,2,4,7,12,20,33 是选择题配套考点（套路卡 T7-5）。",
- src:"王道7.3 综合题7 · 练习系统 7.3-综7"},
+ src:"王道 7.3 综合题 7 · 练习系统 7.3-综7 · 模拟器_查找"},
 
-{tag:"ss",must:0,name:"有序矩阵右上角阶梯查找",
+{tag:"ss",lv:"改",name:"有序矩阵右上角阶梯查找",
  q:"「每行从左到右递增、每列从上到下递增的矩阵中查找 x」——王道第7章综合题（7.2-综6），也是大厂笔试常客。",
  idea:"从<b>右上角</b>出发：当前值比 x 大就<b>左移一列</b>（这一列以下全更大，整列排除）、比 x 小就<b>下移一行</b>（这一行左边全更小，整行排除）。每一步砍掉一整行或一整列，<b>O(m+n)</b> 完成，比逐行折半的 O(m log n) 更优。",
  code:`int SearchMatrix(int A[][N], int m, int n, int x, int *r, int *c){
@@ -492,10 +751,18 @@ int Level(BiTree T, KeyType k){          /* 求 k 所在层次，根为第 1 层
     }
     return 0;                             /* 走出边界即查找失败 */
 }`,
+ mem:["<b>起点只能选右上角或左下角</b>，这是本题唯一的题眼",
+      "右上角出发：<b>太大就左移（j--）、太小就下移（i++）</b>；左下角出发则相反（太大上移、太小右移）",
+      "循环条件 <code>i &lt; m && j &gt;= 0</code> <b>两个边界都要查</b>",
+      "复杂度 <b>O(m+n)</b>，并要在卷面写明理由「每步排除一整行或一整列」"],
+ und:["能说出为什么左上角和右下角不行：这两个角上，两个可走方向的值<b>同增或同减</b>，无法根据比较结果排除任何一整行/列",
+      "能比较三种解法：暴力 O(mn)、逐行折半 O(m log₂n)、阶梯查找 O(m+n)，并说出 m、n 相近时阶梯最优",
+      "能说出这题为什么不能直接把矩阵看成一维有序数组做二分（行末与下一行行首没有大小关系）"],
+ chk:"闭卷 5 分钟写出 SearchMatrix，并口述左下角版的两处改动。检查点：① 起点是右上角且注释写明了 ② 两个移动方向没反 ③ 循环条件两个边界都在 ④ 能当场说清左上角为什么不可行 ⑤ 写了 O(m+n) 并给了「每步排除一整行/列」的理由。任一条错即未过。",
  trap:"① <b>起点必须选右上角或左下角</b>——左上角/右下角两个方向同增同减，无法判断该往哪走，是本题唯一的题眼。② 循环条件 <code>i &lt; m &amp;&amp; j &gt;= 0</code> 两个边界都要查。③ 复杂度要答 O(m+n) 并说明「每步排除一整行或一整列」，只写代码不给复杂度分析会丢分。",
- src:"王道7.2 综合题6 · 练习系统 7.2-综6"},
+ src:"王道 7.2 综合题 6 · 练习系统 7.2-综6"},
 
-{tag:"str",must:0,name:"KMP：next 数组求法",
+{tag:"str",lv:"读",name:"KMP：next 数组求法",
  q:"手算 next/nextval 数组（几乎必考选择题）+ 读懂求 next 的代码。",
  idea:"next[j] = 模式串前 j-1 个字符中最长相等前后缀长度+1（王道 1 起口径）。代码即「自己和自己匹配」：匹配上 i、j 同进并记录；失配则 j 回退到 next[j]。",
  code:`void GetNext(char S[], int n, int next[]){
@@ -508,11 +775,20 @@ int Level(BiTree T, KeyType k){          /* 求 k 所在层次，根为第 1 层
             j = next[j];                  // 失配:回退
     }
 }                                         // O(m)`,
+ mem:["王道 1 起口径：<b>next[1] = 0，next[2] = 1</b> 恒成立；next[j] = 前 j−1 个字符的<b>最长相等前后缀长度 + 1</b>",
+      "<b>手算捷径</b>：先算出每个位置的「最长相等前后缀长度」，<b>整体右移一位、首位填 0，再全体 +1</b>",
+      "<b>nextval</b>：在 next 基础上，若 <code>S[j] == S[next[j]]</code> 则 <code>nextval[j] = nextval[next[j]]</code>，否则 <code>= next[j]</code>",
+      "复杂度：<b>求 next O(m)、匹配 O(n)、总 O(m+n)</b>；朴素模式匹配最坏 O(nm)",
+      "<b>不同教材 0 起/1 起差 1</b>，考场以题目给的样例对齐——先用题目给的串验一位再往下写"],
+ und:["能说出 next 数组的物理含义：主串指针 i <b>永不回退</b>，失配时模式串滑到「已匹配部分的最长相等前后缀」对齐处，这就是 KMP 比朴素快的全部原因",
+      "能说出为什么 <code>j = next[j]</code> 这一句是「自己和自己匹配」：求 next 的过程就是拿模式串的前缀去匹配它自己",
+      "能说出 nextval 优化的动机：若滑过去的那个字符和当前失配字符相同，那次比较必然还是失配，直接跳过"],
+ chk:"识读级：给 GetNext 挖 3 个空（next[1] 初值 / 匹配分支的 ++i ++j / 失配分支的 j=next[j]），限时 5 分钟；再手算 <code>ababaaa</code> 的 next 与 nextval。检查点：① 三个空全填对 ② 手算 next = 0 1 1 2 3 4 2，nextval = 0 1 0 1 0 4 2（与程序对拍一致）③ 说出 O(m+n) ④ 指出一处边界隐患（j 回退时若 next 写错会死循环）。任一条错即未过。",
  trap:"手算比代码更常考：next 全体右看一位、首位填 0（1 起口径）。不同教材 0 起/1 起差 1，考场以题目给的样例对齐。nextval 在 next 基础上把「回退后字符仍相同」的再往前引。",
- src:"卡库·串 KMP 卡的代码面"},
+ src:"王道第4章 4.2 KMP · 练习系统 4.2 全节 · 模拟器_KMP"},
 
-{tag:"ss",must:0,name:"分治思想题两例（中位数 / 主元素）",
- q:"408-2011：两个等长有序序列求合并后中位数；408-2013：找出现次数 > n/2 的主元素。",
+{tag:"ss",lv:"默",name:"分治思想题两例（中位数 / 主元素）",
+ q:"408-2011：两个等长有序序列求合并后中位数；408-2013：找出现次数 &gt; n/2 的主元素。",
  idea:"中位数：比较两序列各自中位数，每轮各舍一半，O(log n)（暴力归并数到第 n 个是 O(n)，也有大部分分）。主元素：摩尔投票——候选计数，相同 +1 不同 −1，归零换候选；最后再验证一遍，O(n)/O(1)。",
  code:`int Majority(int A[], int n){             // 摩尔投票 O(n)/O(1)
     int cand = A[0], cnt = 1;
@@ -527,9 +803,20 @@ int Level(BiTree T, KeyType k){          /* 求 k 所在层次，根为第 1 层
         if(A[i]==cand) cnt++;
     return (cnt > n/2) ? cand : -1;       // -1=无主元素
 }`,
+ mem:["<b>摩尔投票必须复核第二遍</b>——候选未必真过半，不复核就是错的。这是本题最大的采分点",
+      "2011 中位数的舍弃规则：设 a = A 的中位数、b = B 的中位数。<b>a = b ⟹ 即答案；a &lt; b ⟹ 舍 A 的前半、舍 B 的后半；a &gt; b ⟹ 反之</b>。<b>每轮两边舍掉的个数必须相同</b>，才能保持「中位数不变」这个不变式",
+      "2011 舍弃时的<b>奇偶处理</b>：元素个数为奇数时中间那个要<b>保留</b>（舍前半时保留中位数本身），否则会把答案舍掉",
+      "2011 的答案定义：两个长为 n 的升序序列合起来第 <b>n</b> 个（1 起）为中位数",
+      "复杂度：中位数 <b>O(log₂n)/O(1)</b>；主元素 <b>O(n)/O(1)</b>"],
+ und:["能说出摩尔投票为什么成立：主元素出现次数 &gt; n/2，把它与其他每个元素两两抵消后必然还剩下它自己",
+      "能举反例说明不复核会错：[1,2,3] 最后候选是 3 但没有主元素",
+      "能说出 2011 每轮为什么必须两边各舍同样多：舍掉的部分中「比中位数小的」与「比中位数大的」个数相等，中位数的位置才不动",
+      "能说出这两题的共同启示：排序 O(n log₂n) / 计数数组 O(n) 空间的次优解都有分，先保底再冲最优"],
+ chk:"闭卷 8 分钟写出 Majority 全部两趟，并口述 2011 的完整舍弃规则（含奇偶处理）。检查点：① 第二趟复核写全了 ② 无主元素时返回值有明确约定 ③ 2011 的三种大小情形都能说清舍哪半 ④ 能说出奇数个时保留中间元素 ⑤ 两题的复杂度都写了。任一条错即未过。",
  trap:"摩尔投票最后不复核是错的（候选未必真过半）。这两道真题的共同启示：排序 O(n log n) / 计数 O(n) 空间的次优解都有分——先保底再冲最优。",
- src:"408-2011 / 408-2013 真题复盘"},
-{tag:"list",must:1,name:"双指针·间隔 k / 尾对齐",
+ src:"408-2011 / 408-2013 统考真题 · 练习系统 2.2-综11、2.2-综12"},
+
+{tag:"list",lv:"默",name:"双指针·间隔 k / 尾对齐",
  q:"一趟找单链表倒数第 k 个结点（408-2009）；找两链表公共后缀起点（408-2012）。",
  idea:"让两个指针始终保持固定间隔：前指针先走 k 步，再两指针同步前进，前指针到尾时后指针恰在倒数第 k 个——一趟 O(n) 完成，胜过「先求长再走 n−k」的两趟。尾对齐（2012）同理：先让较长的链走完长度差，两链就「右端齐平」，再同步走到第一个相同（地址）结点即公共后缀起点。",
  code:`int Search_k(LNode *L, int k){            // 带头结点,找倒数第k个 (408-2009)
@@ -545,11 +832,21 @@ int Level(BiTree T, KeyType k){          /* 求 k 所在层次，根为第 1 层
 }
 // 尾对齐找公共后缀起点(408-2012): 先算两链长la、lb,
 // 长的先走|la-lb|步 → 再同步走, 第一个 p==q(地址相同)即答案`,
+ mem:["<b>判「公共结点」用地址相同 <code>p==q</code>，不是 data 相等</b>——2012 的题眼",
+      "2009 的失败出口 <code>cnt &lt; k</code> 必须写：链表长度不足 k 时返回 0",
+      "2009 的「一趟」是题眼：<b>先求长度再走 n−k 是两趟</b>，能过但拿不到「高效」那档分",
+      "2012 的两链共享后缀 ⟹ 它们的形状是 <b>Y 型不是 X 型</b>：一旦相交，后面全部重合",
+      "两题复杂度都是<b>时间 O(len₁+len₂)、空间 O(1)</b>"],
+ und:["能说出为什么「先走 k 步再同步」等价于「倒数第 k 个」：两指针间距恒为 k，前指针落在 NULL 时后指针距尾正好 k−1 个结点",
+      "能说出 2012 为什么不能用「逐对比较两链结点」的 O(mn) 暴力拿高分，以及为什么「用散列表记下一条链的所有地址」虽是 O(m+n) 但空间 O(m)、不如尾对齐",
+      "能说出为什么两链相交后不可能再分叉（单链表每个结点只有一个 next）"],
+ chk:"闭卷 6 分钟写出 Search_k，并完整写出 2012 的尾对齐版（含求长度两个循环）。检查点：① 2009 的失败出口在 ② 一趟完成、没有先求长度 ③ 2012 比较用的是指针相等 ④ 2012 的长度差是取绝对值后让<b>长的</b>先走 ⑤ 两题都写了 O(n)/O(1)。任一条错即未过。",
  trap:"比较公共结点用「地址相同」p==q，不是 data 值相等。间隔 k 双指针=链表题一趟解的通用套路，比两趟法更「高效」（真题题眼）。",
- src:"408-2009 / 408-2012 真题复盘"},
-{tag:"arr",must:1,name:"标记数组·空间换时间",
+ src:"408-2009 / 408-2012 统考真题 · 练习系统 2.3 链表真题组"},
+
+{tag:"arr",lv:"改",name:"标记数组·空间换时间",
  q:"找未出现的最小正整数（408-2018）；删链表中绝对值重复的结点（408-2015）。",
- idea:"当取值范围有界（如 0<data≤n 或 |data|≤n），就开一个大小 O(n) 的标记数组：一趟扫描按值打标记、一趟按需查询，把「两两比较 O(n²)」直接压到 O(n)。这是「以空间换时间」在数组/链表题里最常见的落地方式，题目里的值域约束就是暗示。",
+ idea:"当取值范围有界（如 0&lt;data≤n 或 |data|≤n），就开一个大小 O(n) 的标记数组：一趟扫描按值打标记、一趟按需查询，把「两两比较 O(n²)」直接压到 O(n)。这是「以空间换时间」在数组/链表题里最常见的落地方式，题目里的值域约束就是暗示。",
  code:`int MinMissing(int A[], int n){           // 未出现的最小正整数 (408-2018)
     int *B = (int*)calloc(n+1, sizeof(int)); // B[1..n] 标记
     for(int i=0;i<n;i++)
@@ -560,10 +857,20 @@ int Level(BiTree T, KeyType k){          /* 求 k 所在层次，根为第 1 层
     return i;                             // 1~n 全出现则答案 n+1
 }
 // 408-2015 删绝对值重复: flag[|data|] 标记,首次出现留、再现即删`,
+ mem:["<b>先想清「答案 / 取值的上界」才能定标记数组大小</b>：2018 的缺失最小正整数必在 <b>[1, n+1]</b>，所以开 n+1 个；2015 的 |data| ≤ n，所以开 n+1 个",
+      "标记数组必须用 <b>calloc</b>（或显式清零）——王道原文特别强调「用 calloc 申请并初始化为 0」",
+      "2018 只标记<b>落在 [1,n] 内</b>的值：负数、0 和超过 n 的值一律忽略，因为它们不可能是答案",
+      "2015 是<b>带头结点</b>的单链表删除，删除时必须有 <b>pre</b> 指针，且删完要 free 掉被删结点",
+      "两题都要在卷面点明<b>空间 O(n) 是时间最优的代价</b>——题目说「时间上尽可能高效」就是在授权你用空间"],
+ und:["能说出 2018 的答案为什么一定在 [1, n+1]：n 个数最多占掉 1..n 这 n 个坑，全占满时答案就是 n+1",
+      "能说出为什么不能先排序再扫（O(n log₂n) 慢于 O(n)，题目要「时间上尽可能高效」）",
+      "能说出这个套路和第 7 章散列表、第 3 章「用数组下标当键」是同一个思想：<b>值域有界 ⟹ 值可以直接当下标</b>",
+      "能说出 2015 里为什么标记的是 <b>|data|</b> 而不是 data（题目要删的是绝对值重复）"],
+ chk:"闭卷 7 分钟写出 MinMissing 与 2015 的删除函数。检查点：① 标记数组大小与初始化都对 ② 2018 里过滤了 [1,n] 外的值 ③ 2015 的删除有 pre 且 free 了结点 ④ 能立刻说出 2018 答案的上界是 n+1 及理由 ⑤ 两题都写了时间 O(n)、空间 O(n)。任一条错即未过。",
  trap:"关键是先想清「答案/取值的上界」才能定标记数组大小：缺失最小正整数必在 [1,n+1]；|data|≤n 决定 flag 开 n+1。空间 O(n) 是「时间最优」的代价，题目只要求时间高效时就该用。",
- src:"408-2018 / 408-2015 真题复盘"},
+ src:"408-2018 / 408-2015 统考真题 · 练习系统 2.2-综13、2.3 链表真题组"},
 
-{tag:"ss",must:1,name:"快速选择 quickselect（第 k 小 / 集合等分）",
+{tag:"ss",lv:"默",name:"快速选择 quickselect（第 k 小 / 集合等分）",
  q:"在无序表中找第 k 小的元素，要求平均 O(n)（王道 8.3 综02）；把集合分成元素个数尽量相等、元素和之差最大的两个子集（408-2016 真题）。",
  idea:"Partition 之后枢轴的下标就是它的最终排名——所以<b>只需要递归目标下标所在的那一侧</b>，另一侧直接丢掉。平均代价 n + n/2 + n/4 + … = O(n)，比先排序的 O(n log n) 高一档。2016 那题要的正是「找中位数」：把前 ⌊n/2⌋ 小的分一组，剩下的一组，和之差自然最大。",
  code:`int Partition(int A[], int low, int high){   // 挖坑法，枢轴取首
@@ -585,12 +892,22 @@ int KthSmallest(int A[], int low, int high, int k){  // 第 k 小 (k 用全局�
 }
 // 408-2016：令 k=(n-1)/2 跑一次，A[0..k] 与 A[k+1..n-1] 即为所求两集合
 // 时间平均 O(n)、最坏 O(n^2)；空间 O(1)（尾递归可改循环）`,
+ mem:["<b>下标口径二选一，卷面先声明</b>：本卡用<b>全局下标</b>（递归右侧时 k <b>不减</b> low）；若用<b>相对下标</b>则右侧要传 <code>k - (pos-low+1)</code>。<b>两套都对，绝不能混</b>",
+      "<b>只递归一侧</b>是快速选择的全部要害，递归两侧就退化成快排 O(n log₂n)",
+      "复杂度：<b>平均 O(n)、最坏 O(n²)、空间 O(1)</b>（尾递归可改 while 循环）",
+      "2016 的划分点是 <b>k = (n−1)/2</b>（0 起下标），A₁ = A[0..k]、A₂ = A[k+1..n−1]",
+      "2016 卷面必须点明：<b>不能真的排序</b>（O(n log₂n) 拿不到满分），且要答「平均 O(n)、最坏 O(n²)」"],
+ und:["能推出 n + n/2 + n/4 + … = 2n = O(n) 这条等比数列，讲清「只递归一侧」为什么把 log 因子消掉了",
+      "能说出为什么划分点取中位数就能让「元素个数尽量相等且和之差最大」：个数固定的前提下，把最小的一半全给 A₁ 才能让差最大",
+      "能说出「用容量 k 的堆求第 k 小」O(n log₂k) 与快速选择 O(n) 的取舍：k 很小时堆更好，k ≈ n/2 时快速选择更好",
+      "能说出最坏 O(n²) 的触发条件（每次划分都极不均衡）以及三数取中怎么缓解"],
+ chk:"闭卷 8 分钟写出 Partition + KthSmallest，并写出 2016 的完整答题框架（思想 + k 取值 + 复杂度）。检查点：① 卷面第一行声明了下标口径 ② 只递归一侧 ③ 递归的三个分支（==、&gt;、&lt;）都在 ④ 2016 的 k=(n−1)/2 与两个子集区间写对 ⑤ 写了平均 O(n)/最坏 O(n²)/空间 O(1)。任一条错即未过。",
  trap:"⚠️ <b>书上给的代码用的是「全局下标」口径，递归第三支<u>没有</u>把 k 减去 low</b>——与思想描述里「在右半找第 k−m 小」的相对下标口径是两套写法，<b>都对，但绝不能混用</b>。答卷上先写明你用哪套。另：2016 那题<b>不要真的排序</b>（O(n log n) 会被扣分），也不要忘了说明「平均 O(n)、最坏 O(n²)」。",
- src:"王道 8.3 综02 + 408-2016 真题（第8章 148 题实做）"},
+ src:"王道 8.3 综02 + 408-2016 统考真题 · 练习系统 8.3 全节"},
 
-{tag:"ss",must:1,name:"枢轴取末尾的 Partition（比较次数 ≤ n）",
+{tag:"ss",lv:"改",name:"枢轴取末尾的 Partition（比较次数 ≤ n）",
  q:"给定 K[1..n]，把 Kₙ 放到它排序后应在的位置上，要求关键字比较次数不超过 n（王道 8.6 综03）。",
- idea:"就是一次 Partition，只是<b>枢轴取的是最后一个元素</b>。这一改动带来一条硬规矩：<b>扫描顺序必须反过来——先 i 从前往后找比枢轴大的，再 j 从后往前找比枢轴小的</b>。因为第一个坑在右端，必须先把左边的大元素搬过去填它。比较次数恰为 n−1 < n。",
+ idea:"就是一次 Partition，只是<b>枢轴取的是最后一个元素</b>。这一改动带来一条硬规矩：<b>扫描顺序必须反过来——先 i 从前往后找比枢轴大的，再 j 从后往前找比枢轴小的</b>。因为第一个坑在右端，必须先把左边的大元素搬过去填它。比较次数恰为 n−1 &lt; n。",
  code:`int Partition2(int K[], int n){        // 枢轴取末尾 K[n]
     int i = 1, j = n;
     int pivot = K[j];                  // 第一个坑在右端
@@ -604,10 +921,18 @@ int KthSmallest(int A[], int low, int high, int k){  // 第 k 小 (k 用全局�
     return i;
 }
 // 每个非枢轴元素与枢轴恰比一次 ⟹ 比较 n-1 次 < n，满足题目要求`,
+ mem:["<b>方向铁律：枢轴取<u>首</u>必须先 j 后 i；枢轴取<u>尾</u>必须先 i 后 j。</b>记法——<b>坑在哪边，就从另一边开始找</b>",
+      "顺序搞反 = 直接覆盖掉还没保存的元素，是本题<b>唯一</b>的扣分点",
+      "<b>比较次数恰为 n−1</b>（每个非枢轴元素与枢轴恰比一次），卷面末尾要补一句「n−1 ≤ n，满足题目要求」把题干扣回去",
+      "两个内层 while 之后各有一句 <code>if(i&lt;j)</code> 才赋值——省掉它在指针相遇时会写坏数据"],
+ und:["能画图讲清「坑」的移动：pivot 取出后右端空一格，i 找到的大元素填进去，此时 i 处空出来，j 找到的小元素再填回 i——坑在左右之间来回跳",
+      "能说出为什么比较次数恰是 n−1 而不是更多：两个 while 的指针 i 与 j 加起来只走 n−1 步，每步一次比较",
+      "能说出这题和卡 8（枢轴取首）为什么不是同一张卡：改一个枢轴位置就要改整套扫描方向，属于「认出变形、说出改哪几行」的典型"],
+ chk:"闭卷 5 分钟写出 Partition2，再当场口述「若枢轴取中间元素该怎么办」（答：先与首或尾交换，转化为已有的两种之一）。检查点：① 先 i 后 j ② 两句 if(i&lt;j) 都在 ③ 末行 K[i]=pivot 并返回 i ④ 补了「比较 n−1 ≤ n」那句 ⑤ 能立刻说出取首版的方向。任一条错即未过。",
  trap:"<b>顺序搞反 = 直接覆盖掉还没保存的元素</b>，是本题唯一的扣分点：<b>枢轴取首必须先 j 后 i，枢轴取尾必须先 i 后 j</b>。写完在卷面上补一句「比较次数 n−1 ≤ n」把题目要求扣回去。",
- src:"王道 8.6 综03（第8章实做）"},
+ src:"王道 8.6 综03 · 练习系统 8.6-综3"},
 
-{tag:"ss",must:0,name:"三向划分：荷兰国旗 / 奇偶分区",
+{tag:"ss",lv:"改",name:"三向划分：荷兰国旗 / 奇偶分区",
  q:"把只含 0/1/2 的数组原地排好（荷兰国旗）；把数组里的奇数全部移到偶数前面（王道 8.3 综01/综03）。要求 O(n) 时间、O(1) 空间、只扫一遍。",
  idea:"都是「划分」思想的变体，不需要真的排序。<b>奇偶分区 = 双指针对撞</b>：左指针找到偶数、右指针找到奇数就交换。<b>荷兰国旗 = 三指针</b>：low 之前全 0、high 之后全 2、[low, i) 全 1，i 扫过去分三种情况处理——只有换到 2 时 i 不前进（因为换过来的值还没检查过）。",
  code:`void OddEven(int A[], int n){            // 奇数在前、偶数在后
@@ -626,10 +951,19 @@ void DutchFlag(int A[], int n){          // 0/1/2 三色排序
         else { int t=A[high];A[high]=A[i];A[i]=t; high--; }  // 换到 2：i 不动！
     }
 }                                        // 均 O(n) 时间 / O(1) 空间，只扫一遍`,
+ mem:["<b>荷兰国旗里换到 2 的那一支 <u>i 绝对不能 ++</u></b>——从 high 换过来的元素还没被检查过",
+      "荷兰国旗的<b>不变式</b>写在卷面上就是采分点：<code>[0,low)</code> 全 0、<code>[low,i)</code> 全 1、<code>(high,n−1]</code> 全 2、<code>[i,high]</code> 待定",
+      "荷兰国旗循环条件是 <code>i &lt;= high</code>（带等号），写成 &lt; 会漏掉最后一个",
+      "奇偶分区<b>交换后两个指针都要动</b>（i++ 且 j--），否则死循环",
+      "两题都要在卷面写明「<b>原地、一遍扫描、O(1) 空间</b>」，这是给分点"],
+ und:["能说出为什么换到 0 的那一支 i 可以 ++ 而换到 2 的不行：与 low 交换换过来的元素来自 [low,i) 区间，已知是 1，无需再查；与 high 交换换过来的元素来自未检查区",
+      "能说出荷兰国旗和快排 Partition 的关系：Partition 是二向划分，荷兰国旗是三向划分，后者能一次处理掉全部等于枢轴的元素（这正是「三向快排」处理大量重复元素的办法）",
+      "能说出这两个算法都<b>不稳定</b>，以及题目若要求「保持原有相对顺序」时为什么必须换成 O(n) 额外空间的做法"],
+ chk:"闭卷 6 分钟写出 OddEven + DutchFlag。检查点：① 换到 2 那支没有 i++ ② 卷面写了三区间不变式 ③ 荷兰国旗循环条件带等号 ④ 奇偶分区交换后两指针都动了 ⑤ 写了 O(n)/O(1) 与「只扫一遍」。任一条错即未过。",
  trap:"荷兰国旗里<b>换到 2 的那一支 i 绝对不能 ++</b>——从 high 换过来的元素还没被检查过，i 前进就漏了它。奇偶分区要注意<b>交换后两个指针都要动</b>，否则死循环。两题都要在卷面写明「原地、一遍扫描、O(1) 空间」，这是给分点。",
- src:"王道 8.3 综01 / 综03（第8章实做）"},
+ src:"王道 8.3 综01 / 综03 · 练习系统 8.3-综1、8.3-综3"},
 
-{tag:"ss",must:1,name:"计数排序（比较计数法 · 2021 真题读代码）",
+{tag:"ss",lv:"读",name:"计数排序（比较计数法 · 2021 真题读代码）",
  q:"不通过关键字比较，统计每个元素前面有多少个比它小的元素，从而直接定位（408-2021 真题给的 cmpCountSort）。",
  idea:"两种写法都要会。<b>比较计数法</b>：对每个元素数一遍「比它小的有几个」，那个数就是它的下标。<b>标准计数排序</b>：先统计各值的出现次数，再前缀和求出「≤x 的元素总数」，最后<b>从后往前</b>回填保证稳定。核心都是「用统计代替比较」，代价是空间 O(k)（k 为值域）。",
  code:`void CountSort(int A[], int B[], int n, int k){  // 标准计数排序，值域 [0,k)
@@ -650,10 +984,20 @@ void cmpCountSort(int a[], int b[], int n){      // 408-2021 比较计数法
     for(i=0;i<n;i++) b[cnt[i]] = a[i];
     free(cnt);
 }                                                // O(n^2) 时间 / O(n) 空间`,
+ mem:["<b>稳定性全落在一个方向上</b>：标准计数排序的第三个循环必须<b>从后往前</b>（<code>i=n−1; i&gt;=0; i--</code>），改成从前往后就不稳定",
+      "三个循环的含义：<b>计数 → 前缀和（C[x] 变成「≤ x 的个数」）→ 回填</b>；回填时下标是 <b>C[A[i]]−1</b> 然后 <code>C[A[i]]--</code>",
+      "复杂度：标准计数排序 <b>O(n+k) 时间 / O(n+k) 空间</b>；2021 的比较计数法 <b>O(n²) 时间 / O(n) 空间</b>",
+      "<b>计数排序不在 408 统考大纲内</b>，但它的思想在 2013 / 2015 / 2018 / 2021 四年真题里都出现过——考的是「读懂并分析」，不是默写",
+      "2021 原版 <code>a[j] &lt; a[i]</code> 对<b>重复关键字不稳定</b>；改成 <code>a[j] &lt; a[i] || (a[j] == a[i] && j &lt; i)</code> 即变稳定"],
+ und:["能说出前缀和那一步为什么能直接给出元素的最终位置：C[x] 表示「≤ x 的元素有几个」，所以值为 x 的最后一个元素应放在下标 C[x]−1",
+      "能说出为什么从前往后回填会破坏稳定性：相同关键字的元素会被倒序放置",
+      "能说出计数排序为什么<b>不是</b>基于比较的排序，因而不受 O(n log₂n) 下界约束，代价是要求关键字是有界整数",
+      "能说出 2021 原版不稳定的具体后果（本站实测：3000 组含重复关键字数据中 <b>2492 组</b>发生相对次序颠倒，改判据后 0 组）"],
+ chk:"识读级：给 CountSort 挖 3 个空（前缀和那行 / 回填循环方向 / 回填下标 C[A[i]]−1），限时 5 分钟。检查点：① 三个空全填对 ② 说出 O(n+k)/O(n+k) ③ 指出一处边界隐患（值域 k 估小则 C[] 越界；负数关键字要整体偏移）④ 能说出把回填改成正序后哪一组数据会出错。任一条错即未过。",
  trap:"⚠️ <b>稳定性全落在一个符号上</b>：标准计数排序的「<b>从后往前</b>」回填、cmpCountSort 里判重复时要写成 <code>a[j]&lt;a[i] || (a[j]==a[i] &amp;&amp; j&lt;i)</code>（等价于把 <code>&lt;</code> 放宽成 <code>&lt;=</code> 的效果）。我实测原版在 3000 组含重复关键字数据里 <b>2492 组不稳定</b>，改后 0 组。<b>计数排序不在统考大纲内，但它的思想在 2013/2015/2018/2021 四年真题里都出现过。</b>",
- src:"王道 8.5.3 + 408-2021 真题（第8章实做）"},
+ src:"王道 8.5.3 + 408-2021 统考真题 · 练习系统 8.5 全节"},
 
-{tag:"ss",must:0,name:"非递归 2 路归并（逐趟倍增）",
+{tag:"ss",lv:"改",name:"非递归 2 路归并（逐趟倍增）",
  q:"不使用递归实现 2 路归并排序；或题目问「一趟归并之后的中间结果」。",
  idea:"把递归版翻过来写：段长 h 从 1 开始倍增，每趟把相邻的两段合并成 2h。<b>每趟调用 ⌈n/(2h)⌉ 次 Merge，全程 ⌈log₂n⌉ 趟</b>——「一趟」这个词在归并里指的就是这个，考中间结果的题必须按这个口径推。",
  code:`void Merge(int A[], int B[], int low, int mid, int high){
@@ -674,17 +1018,596 @@ void MergeSort2(int A[], int n){              // 非递归：段长 h 倍增
         }
     free(B);
 }                                             // O(n log n) 时间 / O(n) 空间`,
+ mem:["内层循环条件写 <code>low &lt; n-h</code>（<b>不是</b> <code>low &lt; n</code>）——剩下不足一段时直接抬到下一趟，不能去 Merge 一个空的右半段",
+      "high 要取 <code>min(low+2h−1, n−1)</code> 封顶，防越界",
+      "<b>「一趟」的口径</b>：段长 h 的这一整轮叫一趟，共 <b>⌈log₂n⌉ 趟</b>；问「一趟归并后的中间结果」必须按这个口径推",
+      "<b>一次 Merge 的比较次数区间是 [min(m₁,m₂), m₁+m₂−1]</b>（一段走空后另一段直接搬、不计比较）——2024 真题数总比较次数栽的就是这个上界",
+      "归并排序：<b>时间恒为 O(n log₂n)（与初态无关）、空间 O(n)、稳定</b>"],
+ und:["能说出为什么归并的时间与初始序列无关（每趟都必须扫完全部 n 个元素），而快排会因初态退化",
+      "能说出 <code>&lt;=</code> 那个符号为什么是稳定性的来源，改成 &lt; 会怎样",
+      "能说出递归版与非递归版趟数相同、复杂度相同，非递归版胜在<b>省掉递归栈</b>（空间从 O(n+log n) 变 O(n)）",
+      "能说出为什么「链表归并排序」不需要辅助数组（只改指针），空间可降到 O(1)（见卡 36）"],
+ chk:"闭卷 8 分钟写出 Merge + MergeSort2，再手动跑一遍 n=7 的段长序列并写出每趟合并了哪些区间。检查点：① 内层条件是 low&lt;n−h ② high 有 min 封顶 ③ Merge 用 &lt;= 且收尾两个 while 都在 ④ 能说出 n=7 时共 3 趟、每趟的区间划分 ⑤ 写了 O(n log₂n)/O(n)/稳定。任一条错即未过。",
  trap:"内层循环条件写 <code>low &lt; n-h</code>（不是 <code>low &lt; n</code>）——剩下不足一段时<b>直接抬到下一趟</b>，不能去 Merge 一个空的右半段。<b>一次 Merge 的比较次数在 [min(m₁,m₂), m₁+m₂−1] 之间</b>（一段走空后另一段直接搬、不计比较），2024 真题数总比较次数栽的就是这个上界。",
- src:"王道 8.5.1（第8章实做 + 2024 真题）"}
+ src:"王道 8.5.1 + 408-2024 统考真题 · 练习系统 8.5 全节 · 模拟器_排序"},
+
+/* ===================== 2026-08-06 新增 8 张卡（代码均已 gcc 编译对拍） ===================== */
+
+{tag:"ss",lv:"默",name:"五大基础排序合卡（插入 / 折半插入 / 希尔 / 冒泡 / 简单选择）",
+ q:"写出直接插入排序、折半插入排序、希尔排序、冒泡排序、简单选择排序；给出各自的比较/移动次数与稳定性。（表 8.1 的代码面）",
+ idea:"这五个是第 8 章的地基，选择题背表 8.1 只够答「多少复杂度」，答不了「写出代码」和「一趟之后长什么样」。<b>三个插入类共用一套骨架</b>：A[0] 当哨兵、外层 i 从 2 起、内层往前挪位；<b>冒泡与选择用 0 起下标</b>（王道原文如此），分别靠 flag 提前退出与 min 下标记忆。写之前先声明下标从几起。",
+ code:`/* ① 直接插入排序：A[0] 作哨兵，数据存 A[1..n] */
+void InsertSort(int A[], int n){
+    int i, j;
+    for(i=2; i<=n; i++)
+        if(A[i] < A[i-1]){                // 只有比前驱小才需要插
+            A[0] = A[i];                  // 哨兵：暂存待插元素
+            for(j=i-1; A[j] > A[0]; j--)  // 靠哨兵挡住下界，不必写 j>=1
+                A[j+1] = A[j];            // 逐个后移
+            A[j+1] = A[0];                // 落位
+        }
+}
+/* ② 折半插入排序：查找用折半，移动仍是逐个后移 */
+void BinInsertSort(int A[], int n){
+    int i, j, low, high, mid;
+    for(i=2; i<=n; i++){
+        A[0] = A[i];
+        low = 1; high = i-1;
+        while(low <= high){               // 在有序区 A[1..i-1] 中折半
+            mid = (low+high)/2;
+            if(A[mid] > A[0]) high = mid-1;   // 只有 > 才往左，= 时往右保稳定
+            else              low  = mid+1;
+        }
+        for(j=i-1; j>=high+1; j--) A[j+1] = A[j];
+        A[high+1] = A[0];                 // 插入位置恒为 high+1
+    }
+}
+/* ③ 希尔排序：增量 d 从 n/2 起逐次减半 */
+void ShellSort(int A[], int n){
+    int d, i, j;
+    for(d = n/2; d >= 1; d = d/2)         // 增量序列
+        for(i = d+1; i <= n; i++)
+            if(A[i] < A[i-d]){
+                A[0] = A[i];              // 此处 A[0] 只是暂存，不再是哨兵
+                for(j = i-d; j > 0 && A[j] > A[0]; j -= d)
+                    A[j+d] = A[j];        // 组内后移一个增量
+                A[j+d] = A[0];
+            }
+}
+/* ④ 冒泡排序：0 起下标，从后往前起泡，带 flag 提前退出 */
+void BubbleSort(int A[], int n){
+    int i, j, t, flag;
+    for(i = 0; i < n-1; i++){
+        flag = 0;                         // 本趟是否发生过交换
+        for(j = n-1; j > i; j--)
+            if(A[j-1] > A[j]){
+                t=A[j-1]; A[j-1]=A[j]; A[j]=t;
+                flag = 1;
+            }
+        if(flag == 0) return;             // 一趟没换 ⟹ 已有序，提前结束
+    }
+}
+/* ⑤ 简单选择排序：0 起下标 */
+void SelectSort(int A[], int n){
+    int i, j, min, t;
+    for(i = 0; i < n-1; i++){
+        min = i;                          // min 记当前最小元素的下标
+        for(j = i+1; j < n; j++)
+            if(A[j] < A[min]) min = j;
+        if(min != i){ t=A[i]; A[i]=A[min]; A[min]=t; }
+    }
+}`,
+ mem:["<b>哨兵 A[0] 的三重身份</b>：① 暂存待插元素（A[i] 马上被覆盖）② 当监视哨挡住 j 的下界（内层<u>不必</u>写 <code>j&gt;=1</code>）③ 因此插入类代码的数据必须<b>从下标 1 开始存</b>",
+      "⚠️ <b>折半插入的「最好情况」也是 O(n log₂n) 不是 O(n)</b>：折半查找的比较次数与初始序列无关，<b>但移动次数仍是 O(n²)，一点没降</b>——表 8.1 上最容易记漏的一行",
+      "<b>折半插入的插入位置恒为 <code>high+1</code></b>（循环退出瞬间 high = low−1）",
+      "<b>冒泡加 flag ⟹ 最好 O(n)</b>（已有序时一趟就退）；<b>最坏（逆序）交换次数 3n(n−1)/2</b>（每次交换 3 次移动）、比较次数 n(n−1)/2",
+      "<b>简单选择的比较次数恒为 n(n−1)/2，与初始序列完全无关</b>；移动次数 ≤ 3(n−1)",
+      "<b>希尔排序：不稳定；只能用于顺序表，不能用于链表</b>（要按下标跳跃取元素）；增量为 1 的最后一趟就是一次直接插入排序",
+      "稳定性一句话：<b>直接插入 稳定 · 折半插入 稳定 · 希尔 不稳定 · 冒泡 稳定 · 简单选择 不稳定</b>",
+      "⚠️ <b>三个插入类用 1 起下标（有哨兵），冒泡与选择用 0 起下标</b>——王道原文就是混着来的，同一张卷子里写混会被扣分，动笔前先声明"],
+ und:["能说出为什么直接插入排序<b>稳定</b>而简单选择排序<b>不稳定</b>：插入是逐格后移、相等时停在后面；选择用的是<b>跨越式交换</b>，会把中间的相等元素甩到前面去（反例 [2ₐ, 2ᵦ, 1]：选择排序后变成 [1, 2ᵦ, 2ₐ]）",
+      "能说出折半插入为什么<b>省了比较却省不了移动</b>：折半只加速了「找位置」，找到之后仍要把后面的元素逐个往后挪一格",
+      "能说出希尔排序的分组预处理为什么能提速：<b>逐趟把序列变得「基本有序」，逆序对数快速下降</b>（本站实测 10 元素样例：26 → 16 → 10 → 0），最后一趟 d=1 的插入排序几乎不用挪",
+      "能说出冒泡的 flag 为什么只影响最好情况而不影响最坏：逆序时每趟都有交换，flag 永远为 1",
+      "能说出为什么「已经基本有序」时直接插入优于快排：插入的移动次数正比于<b>逆序对数</b>，而快排在有序输入上反而退化"],
+ chk:"闭卷 12 分钟五个函数全写出。检查点：① 三个插入类的哨兵位置与两层循环边界全对，且冒泡/选择的 0 起下标没和插入类混 ② 折半插入终止后的插入位置写的是 high+1 ③ 冒泡 flag 的置位在交换里、检查在内层循环之后 ④ 选择排序 min 初值是 i、交换在内层循环之后且有 min!=i 的判断 ⑤ 五个都能立刻报出「最好/最坏/平均时间 + 空间 + 稳定性」，且折半插入的最好情况答的是 O(n log₂n)。任一条错即未过。",
+ trap:"⚠️ <b>三处高频翻车</b>：① 把折半插入的最好情况答成 O(n)（错，是 O(n log₂n)：比较降了、移动没降）；② 希尔排序里把 A[0] 当哨兵用——<b>它在希尔里只是暂存</b>，内层必须显式写 <code>j &gt; 0</code> 的边界判断，否则会写穿数组；③ 简单选择排序在内层循环里就交换（应当只记 min 下标，出了内层再交换一次），写成边找边换会把比较次数与移动次数全算错。<br>另：本站实测折半插入的<b>精确</b>比较次数会因 mid 向下取整而略有出入（n=8 时已升序 17 次、已降序 13 次），但<b>量级与初态无关</b>这条结论不变——考场按王道口径答「与初始序列无关，O(n log₂n)」即可。",
+ src:"王道 8.2 / 8.4.1 + 表 8.1 · 练习系统 8.2-综1（插入过程）、8.2-综2（希尔过程）、8.4-综5、8.6-综2 · 本卡代码 gcc 实测 3000 组随机数据（含重复与负数）全部与 qsort 一致，五个函数 0 反例"},
+
+{tag:"tree",lv:"默",name:"二叉树非递归栈遍历（祖先 / 最近公共祖先 / 根到结点路径）",
+ q:"用非递归方式中序、后序遍历二叉树；打印值为 x 的结点的<b>所有祖先</b>；求两个结点 p、q 的<b>最近公共祖先</b>。（王道 5.3 综合题 9、10）",
+ idea:"这一类题的<b>唯一钥匙只有一句话</b>：<b>做后序非递归遍历、访问到某结点的那一刻，栈里剩下的恰好是它的全部祖先</b>。所以「祖先」「路径」「LCA」三类题都不用另想算法——把后序非递归写出来，在访问点上做文章即可。后序非递归的机关是<b>辅助指针 r</b>：栈顶结点的右子树到底访问过没有，全靠 r 记住「上一个被访问的结点」来判断。",
+ code:`/* ① 中序非递归：一路向左压栈 → 弹出访问 → 转右 */
+void InOrder2(BiTree T){
+    BiTree S[MaxSize], p = T; int top = -1;
+    while(p || top != -1){
+        if(p){ S[++top] = p; p = p->lchild; }     // ① 一路向左
+        else { p = S[top--]; visit(p);            // ② 弹栈访问
+               p = p->rchild; }                   // ③ 转向右子树
+    }
+}
+/* ② 后序非递归：辅助指针 r 记住上一个被访问的结点 */
+void PostOrder2(BiTree T){
+    BiTree S[MaxSize], p = T, r = NULL; int top = -1;
+    while(p || top != -1){
+        if(p){ S[++top] = p; p = p->lchild; }
+        else{
+            p = S[top];                            // 取栈顶但不弹出
+            if(p->rchild && p->rchild != r)        // 右子树存在且未访问过
+                p = p->rchild;                     // 转向右子树
+            else{ p = S[top--]; visit(p);          // 否则弹出并访问
+                  r = p; p = NULL; }               // r 记住它；p 置空防止再走左
+        }
+    }
+}
+/* ③ 打印值为 x 的结点的所有祖先（王道 5.3 综09） */
+int PrintAncestors(BiTree T, ElemType x){
+    BiTree S[MaxSize], p = T, r = NULL; int top = -1, i;
+    while(p || top != -1){
+        if(p){ S[++top] = p; p = p->lchild; }
+        else{
+            p = S[top];
+            if(p->rchild && p->rchild != r) p = p->rchild;
+            else{
+                if(p->data == x){                  // 此刻 S[0..top-1] 就是全部祖先
+                    for(i = 0; i < top; i++)       // 从栈底到栈顶 = 从根到父
+                        printf("%d ", S[i]->data);
+                    return 1;
+                }
+                p = S[top--]; r = p; p = NULL;
+            }
+        }
+    }
+    return 0;                                      // 树中无值为 x 的结点
+}
+/* ④ 最近公共祖先 ANCESTOR(ROOT,p,q)（王道 5.3 综10 的对称加固版） */
+BiTree Ancestor(BiTree T, BiTNode *p1, BiTNode *q1){
+    BiTree S[MaxSize], S1[MaxSize], p = T, r = NULL;
+    int top = -1, top1 = -1, i, j;
+    while(p || top != -1){
+        if(p){ S[++top] = p; p = p->lchild; }
+        else{
+            p = S[top];
+            if(p->rchild && p->rchild != r) p = p->rchild;
+            else{
+                if(p == p1 || p == q1){
+                    if(top1 == -1){                // 先到者：把祖先栈整份复制走
+                        for(i = 0; i <= top; i++) S1[i] = S[i];
+                        top1 = top;
+                    }else                          // 后到者：自栈顶起逐个去 S1 里配
+                        for(i = top; i >= 0; i--)
+                            for(j = top1; j >= 0; j--)
+                                if(S1[j] == S[i]) return S[i];   // 第一个配上的即 LCA
+                }
+                p = S[top--]; r = p; p = NULL;
+            }
+        }
+    }
+    return NULL;
+}`,
+ mem:["<b>后序非递归时，栈中恰好是当前结点的全部祖先</b>——这一句是所有「祖先类」题的唯一钥匙，背死",
+      "<b>后序非递归的机关是辅助指针 r</b>：<code>p->rchild && p->rchild != r</code> 才转右；访问完必须 <code>r = p; p = NULL;</code> 两句都写，<b>漏掉 p=NULL 会重新去走左子树，死循环</b>",
+      "<b>后序取栈顶时用 <code>p = S[top]</code>（不弹出），只有真正访问时才 <code>top--</code></b>",
+      "中序非递归三步骨架：<b>一路向左压栈 → 弹出访问 → 转右</b>",
+      "打印祖先要<b>从栈底到栈顶</b>（<code>for(i=0; i&lt;top; i++)</code>），即从根到父，<b>顺序别写反</b>；上界是 <code>i &lt; top</code> 不是 <code>&lt;= top</code>（栈顶是 x 自己，不算祖先）",
+      "LCA 的做法：<b>先到者复制一份祖先栈，后到者自栈顶起逐个匹配，第一个相同者即 LCA</b>",
+      "复杂度：四个函数都是<b>时间 O(n)</b>；<b>空间 O(h)</b>（栈深 = 树高），LCA 因为多一份辅助栈仍是 O(h)"],
+ und:["能说出为什么<b>先序和中序的非递归不能用来求祖先</b>：先序压栈时右子树还没走完就把根弹了、中序访问根时左子树已出栈，两者栈里都不是完整的祖先链；只有后序「根最后访问」，访问根的那一刻整条祖先链还压在栈里",
+      "能说出辅助指针 r 到底在回答什么问题：<b>「栈顶这个结点的右子树，我是刚从里面回来的吗？」</b> 是则该访问它自己，否则该进右子树",
+      "能说出 LCA 为什么要「自栈顶向下」匹配：栈顶离结点最近，第一个配上的自然是<b>最近</b>的公共祖先；若从栈底找起，第一个配上的会是根（最远的公共祖先）",
+      "⚠️ 能说出<b>王道原版的隐含前提</b>：书上写成「遇到 p 就复制、遇到 q 才匹配」，这要求 <b>p 在后序序列中先于 q 被访问</b>（书上原话「不失一般性，设 p 在 q 的左边」）。<b>本站实测：15 结点树上 132 个有序对里恰有 66 对（正好一半）会返回 NULL</b>——把它改成「先到者复制、后到者匹配」的对称写法后，132 对全部与暴力递归 LCA 一致、0 反例",
+      "能说出 5.3-综3「非递归求高度」为什么用<b>层次遍历</b>而不是这里的栈：求高度要按层，栈是深度优先的（见卡 11）"],
+ chk:"闭卷 10 分钟写出 PostOrder2 + PrintAncestors 两个完整函数。检查点：① r 指针的两处使用（判断条件里、访问后赋值）都在，且访问后写了 p=NULL ② 取栈顶用 S[top]、访问时才 top-- ③ 找到 x 后从栈底到栈顶打印，上界是 i&lt;top ④ 栈空判断 <code>p || top!=-1</code> 与栈的初值 top=−1 一致 ⑤ 能口述 LCA 的完整做法并说出书上原版的前提限制。任一条错即未过。",
+ trap:"⚠️ 三个最常翻车的点：① <b>后序非递归访问完必须写 <code>p = NULL</code></b>，否则下一轮又从这个结点往左走，直接死循环；② <b>打印祖先的循环上界是 <code>i &lt; top</code></b>，写成 <code>&lt;= top</code> 会把 x 自己也当成祖先打出来；③ <b>王道 5.3-综9 原版用的是「带 tag 的栈」</b>（tag=0 左已访问、tag=1 右已访问），与本卡的 r 指针版是<b>两套等价写法</b>——考场任选一套写完，<b>但绝不能一半 tag 一半 r</b>。",
+ src:"王道 5.3 综合题 9 / 10 · 练习系统 5.3-综3/综9/综10 · 本卡代码 gcc 实测：中序 8 4 2 5 1 6 3 7、后序 8 4 5 2 6 7 3 1，祖先与 LCA 对 15 结点树的 132 个有序对全部与暴力递归一致（0 反例）"},
+
+{tag:"tree",lv:"默",name:"顺序存储二叉树的下标法（408-2022 判 BST / 求 LCA）",
+ q:"【2022 统考真题】非空二叉树 T 采用顺序存储，结点值均为正整数，不存在的结点用 −1 表示，设计尽可能高效的算法判定它是否为二叉搜索树。<br>另：顺序存储下求编号 i 与 j 两结点的最近公共祖先（王道 5.2 综合题 5）。",
+ idea:"顺序存储的树题<b>不需要指针、不需要建树</b>——父子关系全在下标算术里。判 BST 仍是「<b>中序遍历必严格递增</b>」这把老钥匙，只是把 <code>T->lchild</code> 换成 <code>2k+1</code>；求 LCA 更省事：<b>谁的编号大谁就在更深的层，让它先除以 2 往上爬，两个编号相等时就是最近公共祖先</b>。",
+ code:`/* 【408-2022】顺序存储二叉树判 BST —— 中序遍历须严格递增（0 起下标） */
+#define false 0
+#define true  1
+typedef int bool;
+typedef struct{ int SqBiTNode[MAX_SIZE]; int ElemNum; } SqBiTree;
+
+bool judgeInOrderBST(SqBiTree bt, int k, int *val){
+    if(k < bt.ElemNum && bt.SqBiTNode[k] != -1){          // 两个终止条件缺一不可
+        if(!judgeInOrderBST(bt, 2*k+1, val)) return false;  // ① 先中序遍历左子树
+        if(bt.SqBiTNode[k] <= *val) return false;           // ② 当前值须大于已遍历最大值
+        *val = bt.SqBiTNode[k];                             //    更新最大值
+        if(!judgeInOrderBST(bt, 2*k+2, val)) return false;  // ③ 再中序遍历右子树
+    }
+    return true;                                            // 空子树/越界都算合格
+}
+bool JudgeBST(SqBiTree bt){
+    int val = -1;                    // 结点值均为正整数，故初值取 -1 即可
+    return judgeInOrderBST(bt, 0, &val);
+}
+/* 解法二：区间夹逼（把 (lo,hi) 一路传下去），同样 O(n) */
+bool judgeRange(SqBiTree bt, int k, int lo, int hi){
+    if(k >= bt.ElemNum || bt.SqBiTNode[k] == -1) return true;
+    int v = bt.SqBiTNode[k];
+    if(v <= lo || v >= hi) return false;                  // 越界即失败
+    return judgeRange(bt, 2*k+1, lo, v)                   // 左子树上界收紧为 v
+        && judgeRange(bt, 2*k+2, v, hi);                  // 右子树下界抬高为 v
+}
+/* 【王道 5.2 综05】顺序存储求最近公共祖先（1 起下标，'#' 表示结点不存在） */
+ElemType Comm_Ancestor(SqTree T, int i, int j){
+    if(T[i] != '#' && T[j] != '#'){       // 两个结点都存在
+        while(i != j){                    // 编号不同就继续往上爬
+            if(i > j) i = i / 2;          // i 更深，i 向上找双亲
+            else      j = j / 2;          // 否则 j 向上找双亲
+        }
+        return T[i];                      // 此时 i == j，即最近公共祖先
+    }
+}`,
+ mem:["<b>两套下标口径，动笔第一行先声明用哪套</b>：<b>1 起</b> ⟹ 左 <code>2i</code>、右 <code>2i+1</code>、父 <code>⌊i/2⌋</code>；<b>0 起</b> ⟹ 左 <code>2i+1</code>、右 <code>2i+2</code>、父 <code>⌊(i−1)/2⌋</code>。<b>2022 真题用的是 0 起，王道 5.2-综5 用的是 1 起——两道题差一格</b>",
+      "结点 i 所在层号（根为第 1 层）= <b>⌊log₂i⌋+1</b>（1 起下标）",
+      "2022 的<b>两个终止条件缺一不可</b>：<code>k &lt; bt.ElemNum</code>（下标越界）与 <code>bt.SqBiTNode[k] != -1</code>（该结点不存在）",
+      "2022 的 val 初值：题干说「结点值均为<b>正整数</b>」，所以取 −1 就够；若没这句话必须取足够小的负数",
+      "顺序存储求 LCA 只需 <b>while(i != j) 谁大谁 /= 2</b>，<b>O(log₂n)</b>，不需要任何辅助栈——比指针版（卡 30）简单一个数量级",
+      "顺序存储对<b>非完全二叉树</b>浪费严重：最坏（单支树）n 个结点要开 <b>2ⁿ−1</b> 个单元"],
+ und:["⚠️ 能举出反例说明<b>判 BST 不能只逐点比「左 &lt; 根 &lt; 右」</b>：根 40、右孩子 60、60 的左孩子 55、<b>55 的左孩子 35</b>——每对父子都合法，但 35 在根的右子树里却比 40 小，整棵树不是 BST。<b>本站程序实测：错误写法把这棵树判成 true，中序法与区间夹逼法都正确判成 false</b>",
+      "能说出中序前驱法与区间夹逼法为什么等价：前者用「已遍历的最大值」当动态下界，后者把上下界显式传下去，本质都是<b>把约束从祖先传到后代</b>——<b>这就是第 7 章反复用的「区间夹逼」，在这里换了个存储结构又出现一次</b>",
+      "能说出顺序存储求 LCA 为什么「谁大谁先除」是对的：编号大 ⟹ 层号不小于对方，先把深的那个提上来，两者才有可能在同一层相遇",
+      "能说出为什么 2022 这题「尽可能高效」的答案就是 O(n)：每个结点最多访问一次，不可能更快"],
+ chk:"闭卷 8 分钟写出 2022 真题解（judgeInOrderBST + JudgeBST），并口述 Comm_Ancestor。检查点：① 第一行声明了 0 起下标，且左右孩子写的是 2k+1 / 2k+2 ② 越界与 −1 两个终止条件都写了 ③ 用的是中序递增（或区间夹逼），<b>不是</b>逐点比较父子 ④ 返回值的合并方式对（左子树、当前、右子树三处任一失败就立即 return false）⑤ 能当场画出「逐点比较会漏判」的那个反例 ⑥ 写了时间 O(n)、空间 O(h)。任一条错即未过。",
+ trap:"⚠️ ① <b>下标起点是本卡最大的坑</b>：2022 真题 0 起（2k+1 / 2k+2）、王道 5.2-综5 是 1 起（2i / 2i+1），同一场考试里两种都可能出现，<b>照抄题干给的结构定义，别凭记忆写</b>。② <b>−1 与下标越界是两个独立的终止条件</b>，只判其中一个会越界读或漏判。③ 顺序存储里「结点不存在」在 2022 用 <b>−1</b> 表示、在王道 5.2 用 <b>'#'</b> 表示——用题干给的那个符号。④ 递归判 BST 时<b>不能</b>写成 <code>return judge(左) && judge(右)</code> 就完事，中间那句「当前值 &gt; 已遍历最大值」必须夹在两次递归之间，位置错了就不是中序。",
+ src:"408-2022 统考真题 + 王道 5.2 综合题 5 · 练习系统 5.3-综17、5.2-综5 · 本卡代码 gcc 实测：2022 原题样例判 true、构造反例判 false，中序法与区间夹逼法结论一致；顺序存储 LCA 在 15 结点完全二叉树上 LCA(8,5)=2、LCA(8,15)=1、LCA(4,9)=4 全部正确"},
+
+{tag:"stack",lv:"改",name:"栈与队列模板卡（括号匹配 / 两栈模拟队列 / 循环队列三法）",
+ q:"判别表达式中三种括号是否配对（王道 3.3 综01）；用两个栈模拟一个队列（3.2 综03）；不牺牲存储单元的循环队列判空判满（3.2 综01）；判单链表字符是否中心对称（3.1 综04）。",
+ idea:"第 3 章的算法题都是<b>「用数据结构的性质本身去解题」</b>，不是算法技巧题。<b>栈的唯一本事是「把顺序反过来」</b>——括号匹配靠它做后进先出的配对、中心对称靠它反转前半段、两栈模拟队列靠「反两次等于没反」。<b>循环队列的全部难点只有一个</b>：front==rear 时到底是空还是满，三种解法就是三种给它加信息的方式。",
+ code:`/* ① 括号匹配（三种括号）——王道 3.3 综01 */
+bool BracketsCheck(char *str){
+    InitStack(S);
+    int i = 0;  char e;
+    while(str[i] != '\\0'){
+        switch(str[i]){
+            case '(': case '[': case '{':
+                Push(S, str[i]); break;                 // 左括号一律入栈
+            case ')':
+                if(StackEmpty(S)) return false;         // 失败出口①：栈空
+                Pop(S, e); if(e != '(') return false; break;
+            case ']':
+                if(StackEmpty(S)) return false;
+                Pop(S, e); if(e != '[') return false; break;
+            case '}':
+                if(StackEmpty(S)) return false;
+                Pop(S, e); if(e != '{') return false; break;
+            default: break;                             // 非括号字符跳过
+        }
+        i++;
+    }
+    return StackEmpty(S);                               // 失败出口②：扫完栈非空
+}
+/* ② 两栈模拟队列 —— S1 入口栈, S2 出口栈（王道 3.2 综03） */
+void EnQueue(Stack &S1, Stack &S2, ElemType e){
+    Push(S1, e);                                        // 入队永远压 S1
+}
+int DeQueue(Stack &S1, Stack &S2, ElemType &x){
+    ElemType t;
+    if(!StackEmpty(S2)){ Pop(S2, x); return 1; }        // S2 非空：栈顶即队首
+    if(StackEmpty(S1))  return 0;                       // 两栈都空 = 队空
+    while(!StackEmpty(S1)){ Pop(S1, t); Push(S2, t); }  // ⚠️ 必须全部倒空
+    Pop(S2, x); return 1;
+}
+int QueueEmpty(Stack S1, Stack S2){
+    return StackEmpty(S1) && StackEmpty(S2);            // 两栈皆空才算空
+}
+/* ③ 循环队列·tag 法：不牺牲存储单元（王道 3.2 综01） */
+// 约定 初始 front = rear = 0, tag = 0；入队后置 tag=1，出队后置 tag=0
+int EnQueue3(SqQueue &Q, ElemType x){
+    if(Q.front == Q.rear && Q.tag == 1) return 0;       // 队满
+    Q.data[Q.rear] = x;
+    Q.rear = (Q.rear + 1) % MaxSize;
+    Q.tag = 1;                                          // 只有入队可能致满
+    return 1;
+}
+int DeQueue3(SqQueue &Q, ElemType &x){
+    if(Q.front == Q.rear && Q.tag == 0) return 0;       // 队空
+    x = Q.data[Q.front];
+    Q.front = (Q.front + 1) % MaxSize;
+    Q.tag = 0;                                          // 只有出队可能致空
+    return 1;
+}
+/* ④ 判单链表字符中心对称：前一半入栈，后一半逐个比对（王道 3.1 综04） */
+int Symmetry(LinkList L, int n){
+    char S[MaxSize]; int top = -1, i;
+    LNode *p = L->next;
+    for(i = 0; i < n/2; i++){ S[++top] = p->data; p = p->next; }  // 前一半入栈
+    if(n % 2 == 1) p = p->next;                                   // 奇数：跳过正中
+    while(p){
+        if(p->data != S[top--]) return 0;                         // 一处不等即失败
+        p = p->next;
+    }
+    return 1;
+}`,
+ mem:["<b>括号匹配有<u>两个</u>失败出口，都要写</b>：① 右括号来时栈已空 ② 扫描结束时栈非空。只写一个是本题最常见的失分",
+      "<b>两栈模拟队列的出队规则背死：S2 非空就直接弹 S2；S2 空时才把 S1 <u>全部</u>倒进 S2</b>。倒一半就错",
+      "<b>队空判据是「两栈都空」</b>，不是「S1 空」",
+      "<b>循环队列三法</b>：① <b>牺牲一个单元</b>：满 <code>(rear+1)%M == front</code>、空 <code>front == rear</code>；② <b>另设 size</b>：满 <code>size == M</code>、空 <code>size == 0</code>；③ <b>另设 tag</b>：<code>front==rear && tag==1</code> 为满、<code>front==rear && tag==0</code> 为空",
+      "<b>循环队列长度恒为 <code>(rear − front + MaxSize) % MaxSize</code></b>——选择题直接套",
+      "「只有入队可能致满、只有出队可能致空」——tag 法的全部道理就这一句",
+      "中心对称：<b>前一半入栈，n 为奇数时跳过正中结点</b>；时间 O(n)、空间 O(n/2)",
+      "【2019 真题·空间只增不减的队列】答案是<b>带 front/rear 的单向<u>循环</u>链表</b>：<b>队空 front==rear、队满 front==rear->next</b>；出队<b>不释放结点</b>，留作复用；队满时在 rear 后插一个新结点扩容。入队出队均 O(1)"],
+ und:["能说出栈在这三道题里各自扮演什么：括号匹配用的是<b>后进先出恰好匹配嵌套结构</b>；中心对称用的是<b>栈能把序列反过来</b>；两栈模拟队列用的是<b>反两次等于没反</b>",
+      "能说出为什么 S1 必须<b>全部</b>倒空才能弹——<b>本站实测反例</b>：入队 1,2,3 后只把 S1 倒 2 个进 S2，再入队 4，出队序列变成 <b>2, 3, 1, 4</b>（正确应为 1, 2, 3, 4）。倒一半会让新旧元素在 S2 里错位",
+      "能说出为什么「牺牲一个存储单元」是最省事的判满法（不改结构体、不加变量），以及 tag 法为什么能不牺牲单元（用 1 bit 记住上一次操作的方向，把 front==rear 的二义性消掉）",
+      "能说出 2019 真题为什么必须选<b>链式</b>存储：题目要求「空间只增不减、出队空间可复用、且入队可扩容」，顺序存储的数组一旦开好就没法在中间长出新格子",
+      "能说出中心对称为什么只需入栈<b>前一半</b>：后一半逐个与栈顶比即可，全部入栈是 O(n) 空间的浪费"],
+ chk:"闭卷 10 分钟写出 BracketsCheck + 两栈模拟队列的 DeQueue，并当场默出循环队列三种判满写法。检查点：① 括号匹配的两个失败出口都在 ② 出队时「S2 空才倒栈」且是全部倒空 ③ 队空判据是两栈都空 ④ 三种判满能当场写出并说出各自代价（少一个单元 / 多一个 int / 多一个 tag）⑤ 循环队列长度公式能立刻写出 ⑥ 能口述 2019 真题的判空判满条件。任一条错即未过。",
+ trap:"⚠️ ① <b>括号匹配漏写「右括号来时栈空」这个出口</b>，输入 <code>\")(\"</code> 会误判为匹配（Pop 空栈还可能崩）。② <b>两栈模拟队列若「S2 还有货」就去倒 S1</b>，顺序立刻乱——必须 S2 空才倒。③ <b>循环队列三法不能混着写</b>：用了 tag 就不要再牺牲单元，两个都用会白白少存一个。④ 中心对称题里 <b>n 为奇数时必须跳过正中结点</b>，不跳就永远返回 false。⑤ 2019 真题问的是<b>设计</b>，1)~4) 四问都要答（选存储结构 + 判空判满 + 画状态图 + 写操作过程），只写代码不答前三问是丢一半分。",
+ src:"王道第3章 3.1/3.2/3.3 综合题 · 练习系统 3.1-综4/综5、3.2-综1/综2/综3、3.2-综4（408-2019）、3.3-综1 · 本卡代码 gcc 实测：括号匹配 8 组用例（含 <code>\"([)]\"</code> <code>\"(()\"</code> <code>\"())\"</code> <code>\")(\"</code> 空串）全对；两栈模拟队列 200 步随机入出队与真队列对拍 0 不一致；MaxSize=8 时牺牲一单元最多入队 7 个、tag 法 8 个"},
+
+{tag:"tree",lv:"默",name:"表达式树 → 中缀表达式（408-2017 真题）",
+ q:"【2017 统考真题】把给定的表达式树（二叉树）转换为等价的中缀表达式并输出，用括号反映运算次序。例如两棵树应分别输出 <code>(a+b)*(c*(-d))</code> 与 <code>(a*b)+(-(c-d))</code>。",
+ idea:"<b>表达式树的中序序列 + 必要的括号 = 中缀表达式</b>，所以主体就是一个中序遍历。全部难点只在「哪些结点要加括号」：<b>根不加</b>（最外层多余）、<b>叶不加</b>（操作数），<b>其余分支结点都要加</b>。怎么知道自己是不是根？<b>递归时把深度 deep 传下去</b>，deep&gt;1 就不是根。",
+ code:`typedef struct node{
+    char data[10];
+    struct node *left, *right;
+} BTree;
+
+void BtreeToExp(BTree *root, int deep){
+    if(root == NULL) return;                       // 空结点直接返回
+    else if(root->left == NULL && root->right == NULL)
+        printf("%s", root->data);                  // 叶结点（操作数）：不加括号
+    else{
+        if(deep > 1) printf("(");                  // 非根分支结点：左括号
+        BtreeToExp(root->left,  deep+1);           // 中序：先左
+        printf("%s", root->data);                  //       再根（操作符）
+        BtreeToExp(root->right, deep+1);           //       后右
+        if(deep > 1) printf(")");                  // 非根分支结点：右括号
+    }
+}
+void BtreeToE(BTree *root){
+    BtreeToExp(root, 1);                           // 根的深度约定为 1
+}`,
+ mem:["<b>加括号规则一句话：除<u>根结点</u>和<u>叶结点</u>外，每个子表达式都套一层括号</b>",
+      "靠 <b>deep</b> 参数判根：<b>初次调用传 1</b>，左右子树都传 <b>deep+1</b>，<b><code>deep &gt; 1</code> 才输出括号</b>",
+      "<b>左括号在递归左子树<u>之前</u>，右括号在递归右子树<u>之后</u></b>——位置错了括号就套错地方",
+      "分支结点的处理顺序严格按中序：<b>「(」→ 左 → 操作符 → 右 → 「)」</b>",
+      "一元运算符（如取负 <code>-d</code>）在表达式树里表现为<b>左子树为空、右子树非空</b>的分支结点；本代码对它天然正确（左子树递归遇 NULL 直接返回，什么都不打）",
+      "复杂度：<b>时间 O(n)、空间 O(h)</b>（递归栈）"],
+ und:["能说出为什么「每个非叶结点都加括号」是<b>错的</b>：根也是非叶，加了就多出最外层一对多余括号，与题目给的样例不符",
+      "能说出为什么<b>中序遍历天然产出中缀式</b>：表达式树里操作符在根、两个操作数在左右子树，中序恰好是「左操作数 操作符 右操作数」",
+      "能说出如果不加括号会错在哪：<code>(a+b)*c</code> 的树若不加括号会输出 <code>a+b*c</code>，运算次序完全变了——<b>括号是在补回「树结构里有、线性串里丢掉」的优先级信息</b>",
+      "能说出用 <b>deep</b> 判根比「传一个 isRoot 标志」好在哪：deep 顺带还能用来做缩进打印、算表达式嵌套深度",
+      "能说出<b>先序遍历给前缀式、后序遍历给后缀式，且这两者都不需要括号</b>——因为前缀/后缀式本身无歧义。这是本题的姊妹考点"],
+ chk:"闭卷 8 分钟写出 BtreeToExp + BtreeToE，并用题目给的两棵树在纸上手动跑一遍。检查点：① 左右子树递归都传 deep+1 ② 左括号在递归左子树之前、右括号在递归右子树之后 ③ 叶结点那一支直接输出、不加括号 ④ 初次调用传 deep=1 ⑤ 手跑结果与 <code>(a+b)*(c*(-d))</code>、<code>(a*b)+(-(c-d))</code> 逐字符相同 ⑥ 能立刻说出先序/后序分别对应前缀/后缀式。任一条错即未过。",
+ trap:"⚠️ ① <b>忘了 <code>deep &gt; 1</code> 这个条件</b>，结果最外层多一对括号——与题目样例不符，直接扣分。② <b>把括号写在 <code>printf(\"%s\", root->data)</code> 两侧</b>（变成 <code>a(+)b</code>），位置必须是「整个子表达式」的两侧。③ 一元负号结点的左子树为空，<b>不能</b>因为「有一个孩子是空」就把它当叶结点处理。④ 本题第 1 问「算法的基本设计思想」要写清<b>中序 + 加括号规则</b>两件事，只写代码丢分。",
+ src:"408-2017 统考真题 · 练习系统 5.3-综16 · 本卡代码 gcc 实测：两棵原题表达式树的输出与题目要求的 <code>(a+b)*(c*(-d))</code>、<code>(a*b)+(-(c-d))</code> 逐字符完全一致"},
+
+{tag:"graph",lv:"改",name:"图的 DFS 回溯（所有简单路径 / 二分图染色 / 判树）",
+ q:"输出从 Vᵢ 到 Vⱼ 的<b>所有简单路径</b>（王道 6.3 综05）；判断连通无向图能否被二分（6.3 综02）；判断无向图 G 是否为一棵树（6.3 综03）。",
+ idea:"这三道题共用一个骨架 DFS，但<b>对 visited 的处理完全不同</b>，这正是本卡的价值。<b>求「所有路径」必须回溯</b>——递归返回前把 <code>visited[u]</code> 复位，否则一个顶点只能出现在一条路径上；<b>求「是否连通 / 能否二分」绝不能复位</b>，复位会让复杂度爆炸。判树则是「一次 DFS 顺手数两个量」的典型。",
+ code:`/* ① 输出 u → v 的全部简单路径（王道 6.3 综05）—— 回溯 */
+void FindPath(AGraph *G, int u, int v, int path[], int d){
+    ArcNode *p;  int w;
+    d++;                                  // 路径长度 +1（首次调用传 d = -1）
+    path[d] = u;                          // 当前顶点入路径
+    visited[u] = 1;                       // 置访问标记
+    if(u == v) print(path, d);            // 到达终点：输出 path[0..d]
+    p = G->adjlist[u].firstarc;
+    while(p != NULL){
+        w = p->adjvex;
+        if(visited[w] == 0)
+            FindPath(G, w, v, path, d);   // 递归探下一个
+        p = p->nextarc;
+    }
+    visited[u] = 0;                       // ⚠️ 回溯：恢复环境，让别的路径还能用它
+}
+/* ② 二分图染色（BFS 版）—— 不回溯 */
+int Bipartite(AGraph *G, int s, int color[]){
+    int Q[MAXV], f = 0, r = 0, u, w;  ArcNode *p;
+    color[s] = 0;  Q[r++] = s;                     // 起点染红(0)
+    while(f < r){
+        u = Q[f++];
+        for(p = G->adjlist[u].firstarc; p; p = p->nextarc){
+            w = p->adjvex;
+            if(color[w] == -1){                    // 未染色：染成相反色
+                color[w] = 1 - color[u];
+                Q[r++] = w;
+            }else if(color[w] == color[u])
+                return 0;                          // 相邻同色 ⟹ 不能二分
+        }
+    }
+    return 1;
+}
+/* ③ 判断无向图是否为树（王道 6.3 综03）—— 一次 DFS 数两个量 */
+void DFS_T(Graph &G, int v, int &Vnum, int &Enum, int visited[]){
+    visited[v] = TRUE;  Vnum++;                    // 访问到一个新顶点
+    int w = FirstNeighbor(G, v);
+    while(w != -1){
+        Enum++;                                    // ⚠️ 看到一条边就数，不管对端是否已访问
+        if(!visited[w]) DFS_T(G, w, Vnum, Enum, visited);
+        w = NextNeighbor(G, v, w);
+    }
+}
+bool isTree(Graph &G){
+    for(int i = 0; i < G.vexnum; i++) visited[i] = FALSE;
+    int Vnum = 0, Enum = 0;
+    DFS_T(G, 0, Vnum, Enum, visited);
+    return (Vnum == G.vexnum && Enum == 2*(G.vexnum - 1));   // 连通 且 恰好 n-1 条边
+}`,
+ mem:["<b>回溯的唯一标志：递归返回前把 <code>visited[v]</code> 复位为 0</b>。复位语句写在 while/for 循环体<b>之外</b>、函数返回之前",
+      "FindPath 的 d <b>初次调用传 −1</b>（函数一进来先 d++），输出的是 <code>path[0..d]</code>",
+      "<b>判树两条件</b>：一次 DFS 能访问全部顶点（<b>连通</b>）<b>且</b> <code>Enum == 2(n−1)</code>。<b>⚠️ 是 2(n−1) 不是 n−1</b>：无向图邻接表里一条边挂两处，被数两遍",
+      "<b>判树的 Enum++ 要写在 <code>if(!visited[w])</code> <u>之外</u></b>——看到边就数，不管对端访问过没有",
+      "<b>二分图 ⟺ 可 2 染色 ⟺ 图中无奇圈</b>；DFS、BFS 版都对，复杂度都是 O(n+e)、空间 O(n)",
+      "三题复杂度：FindPath 最坏 <b>O(n!)</b>（路径条数本身就可能是阶乘级）；二分图与判树都是 <b>O(n+e)</b>"],
+ und:["能说出为什么求「所有路径」必须复位而求「是否连通」不能复位：不复位则每个顶点只能被一条路径用掉，会漏路径；而求连通性时复位会让同一顶点被反复展开，复杂度从 O(n+e) 爆到指数级",
+      "<b>本站实测</b>：在 5 顶点图（0-1、0-2、1-3、2-3、3-4）上求 0→4 的全部简单路径，正确输出 <b>0-1-3-4</b> 与 <b>0-2-3-4</b> 两条；<b>把复位那一行删掉后只输出 1 条</b>——能当场复述这个对照实验",
+      "能说出判树为什么两个条件缺一不可：只判 Enum 不行（三角形+孤立点，n=4、边数 3 = n−1，但不连通还有环）；只判 Vnum 不行（任何连通图都满足，有环的连通图边数 &gt; n−1）",
+      "能说出「连通 + 恰好 n−1 条边 ⟹ 必无环 ⟹ 是树」这条等价刻画可以直接引用、不必再证",
+      "能说出另一种判树写法（DFS 中遇到<b>已访问且非父结点</b>的邻接点即有环）为什么更容易写错：要多传 parent 参数来避开「刚走过来的那条边」"],
+ chk:"闭卷 8 分钟写出 FindPath 与 isTree。检查点：① path[] 与 d 的维护对（d 初值 −1、进函数先 d++）② 复位语句在 while 循环之后、函数返回之前 ③ 判树的 Enum++ 在 if 之外 ④ 判据写的是 2(n−1) 且能说出为什么乘 2 ⑤ 能当场说出「删掉复位会输出几条路径」⑥ 三题的复杂度都答了。任一条错即未过。",
+ trap:"⚠️ ① <b>复位语句放错位置</b>：放进 while 循环体内（每探一个邻居就复位）会让路径重复输出；放在 <code>if(u==v)</code> 之后 return 掉则后面的路径全丢。正确位置是<b>函数体最后、循环之外</b>。② <b>判树的边数判据写成 n−1</b>，任何一棵树都会被判成 false——这是「思路全对、常数写错满盘皆输」的典型。③ 二分图题若图<b>非连通</b>，要对每个未染色顶点各起一次 BFS；题干说「连通无向图」时才可以只起一次。④ FindPath 的复杂度不能答 O(n+e)——它要枚举所有路径，最坏是阶乘级。",
+ src:"王道 6.3 综合题 2 / 3 / 5 · 练习系统 6.3-综2/综3/综5 · 本卡代码 gcc 实测：0→4 全部简单路径 2 条（删掉复位后退化为 1 条）；4 元环判二分=真、三角形=假；5 点 4 边树 Vnum=5/Enum=8 判真，带环图与「三角形+孤立点」均判假"},
+
+{tag:"list",lv:"改",name:"链表零件包（头插 / 尾插 / 就地拆分 / 循环右移）",
+ q:"头插法与尾插法建立单链表；把 C={a₁,b₁,a₂,b₂,…} 就地拆成 A={a₁,…,aₘ} 与 B={bₘ,…,b₁}（王道 2.3 综06）；把不带头结点的单链表循环右移 k 位（2.3 综14）。",
+ idea:"链表大题拼的是<b>零件熟练度</b>，不是算法。四个零件里最值钱的一句是：<b>头插必逆序、尾插必正序</b>——认准这一条，很多题目里「要求逆序输出」的那一半工作量直接消失（王道 2.3-综6 的 B 表就是白送的）。循环右移则是「首尾成环再断开」的定式。",
+ code:`/* ① 头插法建表（带头结点）：结果与输入次序相反 */
+LinkList HeadInsert(ElemType a[], int n){
+    LinkList L = (LinkList)malloc(sizeof(LNode));
+    L->next = NULL;                        // ⚠️ 头结点必须先置空
+    for(int i = 0; i < n; i++){
+        LNode *s = (LNode*)malloc(sizeof(LNode));
+        s->data = a[i];
+        s->next = L->next;                 // ⚠️ 先接后继
+        L->next = s;                       //    再改头指针，顺序不能反
+    }
+    return L;
+}
+/* ② 尾插法建表：结果与输入次序相同，需维护尾指针 r */
+LinkList TailInsert(ElemType a[], int n){
+    LinkList L = (LinkList)malloc(sizeof(LNode));
+    LNode *r = L;                          // r 始终指向表尾
+    for(int i = 0; i < n; i++){
+        LNode *s = (LNode*)malloc(sizeof(LNode));
+        s->data = a[i];
+        r->next = s;  r = s;
+    }
+    r->next = NULL;                        // ⚠️ 循环结束必须收尾
+    return L;
+}
+/* ③ 就地拆分 C → A（保序，尾插）+ B（逆序，头插）——王道 2.3 综06 */
+LinkList split(LinkList C, LinkList *B){
+    LinkList A = C;                        // A 直接复用 C 的头结点
+    *B = (LinkList)malloc(sizeof(LNode));
+    (*B)->next = NULL;
+    LNode *ra = A, *p = C->next;           // ra 为 A 的尾指针
+    while(p){
+        ra->next = p;  ra = p;  p = p->next;      // a 元素尾插到 A
+        if(p){
+            LNode *q = p->next;            // ⚠️ 先存后继再改指针
+            p->next = (*B)->next;  (*B)->next = p;   // b 元素头插到 B（自动逆序）
+            p = q;
+        }
+    }
+    ra->next = NULL;                       // A 的尾必须置空
+    return A;
+}
+/* ④ 循环右移 k 位（不带头结点，0 < k < n）——王道 2.3 综14 */
+LinkList right_rotate(LinkList L, int k){
+    LNode *p = L;  int n = 1;
+    while(p->next){ p = p->next; n++; }    // p 走到表尾，同时数出长度 n
+    k %= n;  if(k == 0) return L;
+    LNode *tail = p;
+    p = L;
+    for(int i = 1; i < n-k; i++) p = p->next;   // p 停在第 n-k 个结点（新表尾）
+    LNode *newhead = p->next;              // 后 k 个的首结点 = 新表头
+    p->next = NULL;                        // 断开
+    tail->next = L;                        // 原尾接原头
+    return newhead;
+}`,
+ mem:["<b>头插必逆序、尾插必正序</b>。要逆序输出？用头插，一分钱额外代码都不用写",
+      "头插的两句<b>顺序不能反</b>：<code>s->next = L->next;</code> 再 <code>L->next = s;</code>；反了就把整条链丢掉",
+      "<b>尾插必须维护尾指针 r，且循环结束后必须写 <code>r->next = NULL</code></b>——漏掉这句就是野指针",
+      "<b>带头结点的删除必须有 pre 指针</b>；单链表无法从结点反查前驱，只能在扫描时顺手记",
+      "凡是「改指针」的循环，<b>先存后继再改</b>（<code>q = p->next;</code> 写在最前面）——这是链表题的通用防断链手法",
+      "<b>循环右移 k 位 = 找到第 n−k 个结点断开 + 原尾接原头</b>；<b>右移 k ≡ 左移 n−k</b>；开头要写 <code>k %= n</code>",
+      "复杂度：四个零件全是<b>时间 O(n)、空间 O(1)</b>（就地）"],
+ und:["能说出王道 2.3-综6 里 B 表为什么<b>一行额外代码都不用写</b>就满足题目要的「bₘ,…,b₂,b₁ 逆序」：头插法本身就是逆序器",
+      "能说出「就地」二字在题干里意味着什么：<b>辅助空间 O(1)</b>，只能改指针、不能开新数组、不能新建结点（拆分题里 B 的头结点是唯一允许 malloc 的）",
+      "能说出为什么循环右移不需要真的搬 k 次：把链首尾相接成环后，「右移」只是换一个断点，本质是 O(n) 找断点 + O(1) 断开",
+      "能说出带头结点与不带头结点的代码差在哪：带头结点时首元结点的插入/删除与其他位置完全一样，不需要特判——这就是设头结点的全部意义",
+      "能说出「就地逆置」（2.3-综3）为什么等价于「把结点摘下来逐个头插到头结点之后」"],
+ chk:"闭卷 8 分钟写出头插 + 尾插 + split 三个函数，并口述 right_rotate 的四步。检查点：① 头插时 s->next 与 L->next 的赋值顺序对 ② 尾插循环后写了 r->next = NULL ③ split 里改指针前先存了 p->next，且 A 的尾置了 NULL ④ 能立刻说出 B 表用头插是「白送的逆序」⑤ right_rotate 的断点是第 n−k 个结点、且开头有 k%=n ⑥ 四个零件都写了 O(n)/O(1)。任一条错即未过。",
+ trap:"⚠️ ① <b>头插法忘了先给头结点 <code>L->next = NULL</code></b>，第一个结点的 next 会挂到野指针上。② <b>尾插法忘了收尾 <code>r->next = NULL</code></b>，遍历时会一路跑飞——这是链表题最常见的运行时错误。③ <b>split 里 <code>p = p->next</code> 之后 p 可能已为 NULL</b>，取 b 元素前必须 <code>if(p)</code> 判一次（元素个数为奇数时）。④ <b>right_rotate 的循环写成 <code>i &lt;= n-k</code></b> 会多走一格，断点错位。⑤ 题干说「不带头结点」时，所有对 L 的操作都要往前挪一格，<b>别照抄带头结点的模板</b>。",
+ src:"王道 2.3 综合题 3 / 6 / 14 · 练习系统 2.3-综3、2.3-综6、2.3-综14 · 本卡代码 gcc 实测：[1..6] 头插得 6 5 4 3 2 1、尾插得 1 2 3 4 5 6、拆分得 A=1 3 5 与 B=6 4 2；循环右移 k=1..6 六种结果全部正确（k=6 时还原）"},
+
+{tag:"ss",lv:"改",name:"链表排序 + 两段有序表原地合并（时空互换的样板题）",
+ q:"在单链表上实现简单选择排序（王道 8.4 综05）；数组 A[1..m+n] 的前 m 个与后 n 个各自递增，用一个算法使整表有序，并分析时空复杂度（8.6 综02）。",
+ idea:"两道题合在一张卡里，因为它们回答的是同一个问题：<b>存储结构和限制条件如何决定算法选择</b>。链表不能随机访问 ⟹ 折半、快排、堆排全部出局，只剩选择/插入/归并；而 8.6-综2 的价值全在第 3 问——<b>同一个问题两种解法，一个省空间费时间、一个费空间省时间，这就是「时空互换」的教科书样例</b>。",
+ code:`/* ① 单链表上的简单选择排序：摘最大 + 头插（王道 8.4 综05，不带表头结点） */
+void selectSort(LinkedList &L){
+    LinkNode *h = L, *p, *q, *r, *s;
+    L = NULL;                                 // L 改作结果链，初始为空
+    while(h != NULL){                         // 持续扫描原链表
+        p = s = h;  q = r = NULL;
+        // s 记最大结点、r 记 s 的前驱；p 为工作指针、q 为 p 的前驱
+        while(p != NULL){
+            if(p->data > s->data){ s = p; r = q; }   // 找到更大的，连它的前驱一起记
+            q = p;  p = p->link;
+        }
+        if(s == h)  h = h->link;              // ⚠️ 最大结点就是表头：它没有前驱
+        else        r->link = s->link;        //    最大结点在表内：靠前驱摘除
+        s->link = L;  L = s;                  // 摘下的结点头插到结果链前端
+    }
+}
+/* ② 两段有序表合并·解法一：插入法（王道 8.6 综02，O(mn) 时间 / O(1) 空间） */
+void Insert_Sort(ElemType A[], int m, int n){
+    int i, j;
+    for(i = m+1; i <= m+n; i++){              // 视作「插入排序已做完前 m 趟」
+        A[0] = A[i];                          // 哨兵：暂存待插元素
+        for(j = i-1; A[j] > A[0]; j--)        // 靠哨兵挡住下界
+            A[j+1] = A[j];
+        A[j+1] = A[0];
+    }
+}
+/* ② 两段有序表合并·解法二：归并法（O(m+n) 时间 / O(m+n) 空间） */
+// A[1..m] 与 A[m+1..m+n] 恰好构成 Merge 所需的两个有序子表，
+// 直接调用 8.5 的 Merge：low = 1, mid = m, high = m+n
+//     Merge(A, 1, m, m+n);`,
+ mem:["<b>链表能用什么排序</b>：<b>能</b>用插入、选择、归并、冒泡；<b>不能</b>用折半插入、希尔、快排、堆排（都要随机访问或按下标跳跃）",
+      "<b>链表选择排序为什么摘「最大」</b>：因为结果链用<b>头插</b>——头插会把顺序倒过来，摘最大才能得到最终的非递减序",
+      "<b>四个指针的分工</b>：p 工作指针 / q 是 p 的前驱 / s 当前最大 / r 是 s 的前驱。<b>r 存在的唯一理由：摘除 s 时要改 <code>r->link</code></b>",
+      "<b><code>if(s == h)</code> 这一支不能省</b>：最大结点恰在表头时 r 仍为 NULL，执行 <code>r->link</code> 直接空指针崩溃（<b>第一趟必走这一支</b>，因为初值 s = h）",
+      "链表选择排序：<b>时间 O(n²)（与初态无关）、空间 O(1)</b>",
+      "<b>8.6-综2 的关键洞察一句话</b>：「前 m 个已有序」= 「插入排序的前 m 趟已经替我做完了」⟹ 代码只需把 <code>InsertSort</code> 的循环起点从 <code>i=2</code> 改成 <code>i=m+1</code>，<b>一个字都不用新写</b>",
+      "<b>8.6-综2 第 3 问的完整答案</b>：插入法 <b>时间 O(mn)、空间 O(1)</b>；归并法 <b>时间 O(m+n)、空间 O(m+n)</b>。<b>两种都要写，只写一种丢分</b>"],
+ und:["能说出链表版为什么必须记前驱：数组版一句 <code>swap(A[i], A[min])</code> 就完事；链表要「摘除」结点必须改<b>前驱</b>的 link 域，而单链表无法从结点反查前驱 ⟹ 只能扫描时顺手记。<b>这是所有单链表删除类算法的通用套路</b>",
+      "能说出为什么插入法最坏是 O(mn) 而不是 O((m+n)²)：后 n 个元素<b>本身已有序</b>，每个新元素最多挪过「前 m 个 + 已插入的那部分」。<b>本站实测 m=n=200 且后段整体小于前段（最坏情形）：比较 40 200 次、移动 40 000 次 ≈ mn = 40 000</b>",
+      "能说出题目加不同限制时该选哪种：加「<b>不得使用额外空间</b>」⟹ 只能插入法；加「<b>时间尽可能少</b>」⟹ 必须归并法。<b>没有「哪个更好」，只有「限制条件是什么」</b>",
+      "能说出王道这份链表选择排序代码是<b>不稳定</b>的，但把 <code>if(p->data &gt; s->data)</code> 的 <code>&gt;</code> 改成 <code>&gt;=</code> 就变稳定（s 改记最后一个最大值，相同关键字里后面的先被摘、被挤到后面）——<b>这不推翻「简单选择排序不稳定」的通用结论</b>（数组版的跨越式交换改符号救不回来），只说明链表版因为是「摘 + 头插」而有机会做到稳定。考场按书上写法写，被追问时答「本实现不稳定」",
+      "能说出哨兵 A[0] 的三个作用（暂存 / 挡下界 / 省一次判断），并说出这就是插入类代码数据从下标 1 开始存的原因"],
+ chk:"闭卷 8 分钟写出 selectSort，并写出 8.6-综2 的完整三问答案。检查点：① 四个指针的分工能一一说清 ② <code>if(s == h)</code> 分支写了，并能说出「第一趟必走这一支」③ 结果链是头插且摘的是最大 ④ Insert_Sort 的循环起点是 m+1、哨兵在 A[0] ⑤ 第 3 问把<b>两种</b>解法的时间与空间四个复杂度全写了 ⑥ 能当场说出「链表能用/不能用哪些排序」。任一条错即未过。",
+ trap:"⚠️ ① <b>省掉 <code>if(s == h)</code> 分支</b>：第一趟就崩（初值 s = h、r = NULL）。② <b>链表选择排序写成「摘最小 + 头插」</b>，得到的是<b>降序</b>链表——想升序要么「摘最大 + 头插」，要么「摘最小 + <b>尾插</b>」（但要多维护一个尾指针）。③ <b>8.6-综2 只答一种解法</b>：书上答案特意把归并解法的复杂度也列出来了，说明命题人要看到「对比」，只写插入法丢第 3 问的分。④ 题干说「<b>不带表头结点</b>」，函数开头 <code>L = NULL</code> 是把结果链清空、<code>h = L</code> 先接管原链；改成带头结点时所有 h 的操作都要往后挪一格。⑤ 数据存在 <b>A[1..m+n]</b>（下标 1 起，A[0] 留给哨兵），别按 0 起写。",
+ src:"王道 8.4 综05 / 8.6 综02 · 练习系统 8.4-综5、8.6-综2 · 本卡代码 gcc 实测：链表选择排序 3000 组随机数据（含空表、单结点、全部关键字相等、最大值在表头/表尾）0 反例；插入法在 m=n=200 最坏情形下比较 40 200、移动 40 000（= mn）"}
 ];
+
+/* ===== 默写打卡（localStorage） ===== */
+const DKEY='algo_drill_v1';
+function loadD(){ try{ return JSON.parse(localStorage.getItem(DKEY))||{}; }catch(e){ return {}; } }
+function saveD(d){ try{ localStorage.setItem(DKEY,JSON.stringify(d)); }catch(e){} }
+function ymd(t){ return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0'); }
+function today(){ return ymd(new Date()); }
+function gapDays(s){
+  if(!s) return null;
+  const a=new Date(s+'T00:00:00'), b=new Date(today()+'T00:00:00');
+  return Math.round((b-a)/86400000);
+}
+/* 返回 {cls, days, txt}；days=null 表示从没打过卡 */
+function statusOf(name){
+  const rec=loadD()[name];
+  if(!rec||!rec.last) return {cls:'s-none',days:null,n:0,txt:'未开始'};
+  const d=gapDays(rec.last);
+  const when = d<=0 ? '今天' : (d+' 天前');
+  const cls = d>14 ? 's-bad' : (d>7 ? 's-warn' : 's-ok');
+  return {cls:cls, days:d, n:rec.n, txt:'上次默写 '+when+' · 累计 '+rec.n+' 次'};
+}
+function markDrill(name){
+  const d=loadD();
+  const rec=d[name]||{n:0,last:''};
+  if(rec.last===today()){ rec.n=rec.n; }   // 同一天重复点击不重复计数
+  else rec.n=rec.n+1;
+  rec.last=today();
+  d[name]=rec; saveD(d);
+}
+function clearDrill(name){ const d=loadD(); delete d[name]; saveD(d); }
 
 /* ===== 渲染 ===== */
 const list=document.getElementById('list');
-let curF='all';
+let curT='all', curL='all';
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 /* ---- C 语法着色 ---- */
 const KW=new Set('if else while for return switch case break continue do goto default sizeof'.split(' '));
-const TY=new Set('int char void float double long short unsigned signed struct typedef union enum const bool LNode LinkList LinkNode ElemType SqStack LiStack Stack Queue SqQueue LinkQueue BiTree BiTNode NODE stk elemtp size_t'.split(' '));
+const TY=new Set(('int char void float double long short unsigned signed struct typedef union enum const bool '+
+  'LNode LinkList LinkNode LinkedList ElemType KeyType SqStack LiStack Stack Queue SqQueue LinkQueue '+
+  'BiTree BiTNode BTree SqBiTree SqTree HTNode NODE stk elemtp size_t '+
+  'Graph MGraph ALGraph AGraph ArcNode').split(' '));
 function hlCode(seg){
   const re=/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\d+(?:\.\d+)?)|([A-Za-z_]\w*)|(\s+)|([^\s\w])/g;
   const toks=[]; let m;
@@ -728,20 +1651,35 @@ function codeHTML(code){
     return `<span class="cl" data-l="${i}"><span class="no">${i+1}</span><span class="src">${body||' '}</span></span>`;
   }).join('');
 }
+function ulHTML(arr){ return '<ol>'+arr.map(x=>'<li>'+x+'</li>').join('')+'</ol>'; }
+function cardId(i){ return 'algo'+i; }
+
 function render(){
   list.innerHTML='';
   A.forEach((d,idx)=>{
-    if(curF!=='all'&&d.tag!==curF)return;
-    const div=document.createElement('div');div.className='algo';
+    if(curT!=='all'&&d.tag!==curT)return;
+    if(curL!=='all'&&d.lv!==curL)return;
+    const L=LVS[d.lv], st=statusOf(d.name);
+    const div=document.createElement('div');div.className='algo';div.id=cardId(idx);
     div.innerHTML=`<div class="head"><span class="nm">${d.name}</span>
-      <span class="tagc">${TAGS[d.tag]}</span>${d.must?'<span class="tagm">【默】必默写</span>':'<span class="tagc" style="background:var(--purple-soft);color:var(--purple)">【懂】能讲思路</span>'}
+      <span class="tagc">${TAGS[d.tag]}</span>
+      <span class="tagl ${L.cls}">${L.icon} ${L.label}</span>
+      <span class="hstat"><span class="dot ${st.cls}"></span>${st.txt}</span>
       <span class="arrow">▶</span></div>
     <div class="body">
-      <div class="blk b-q"><b>典型设问</b>${d.q}</div>
-      <div class="blk b-idea"><b>思路（先想清再写码）</b>${d.idea}</div>
+      <div class="blk b-q"><b class="h">典型设问</b>${d.q}</div>
+      <div class="blk b-idea"><b class="h">思路（先想清再写码）</b>${d.idea}</div>
+      <div class="blk b-mem"><b class="h">📌 背 —— 看到关键词 3 秒内要能说出来</b>${ulHTML(d.mem)}</div>
+      <div class="blk b-und"><b class="h">🧠 懂 —— 要能对着白纸讲出「为什么」，或当场举反例</b>${ulHTML(d.und)}</div>
       <div class="codewrap"><div class="codebar"><span class="t">C</span><button class="mwbtn" data-i="${idx}">🙈 默写模式</button></div>
       <pre class="code">${codeHTML(d.code)}</pre></div>
-      <div class="blk b-trap"><b>坑与采分点</b>${d.trap}</div>
+      <div class="blk b-chk"><b class="h">✍️ 写 —— 达标检查点（限时 + 逐条打勾）</b>${d.chk}</div>
+      <div class="blk b-trap"><b class="h">坑与采分点</b>${d.trap}</div>
+      <div class="drill">
+        <button class="dbtn">✅ 记一次默写</button>
+        <span class="dstat"><span class="dot ${st.cls}"></span>${st.txt}</span>
+        <button class="undo">清除本卡记录</button>
+      </div>
       <div class="b-src">📦 ${d.src}</div>
     </div>`;
     div.querySelector('.head').addEventListener('click',()=>div.classList.toggle('open'));
@@ -754,17 +1692,79 @@ function render(){
       btn.dataset.on=on?'0':'1';
       btn.textContent=on?'🙈 默写模式':'👁 显示全部';
     });
+    div.querySelector('.dbtn').addEventListener('click',e=>{
+      e.stopPropagation(); markDrill(d.name); refreshStat(div,d.name); renderOv();
+    });
+    div.querySelector('.undo').addEventListener('click',e=>{
+      e.stopPropagation(); clearDrill(d.name); refreshStat(div,d.name); renderOv();
+    });
     div.querySelectorAll('.cl').forEach(cl=>cl.addEventListener('click',()=>cl.classList.remove('masked')));
     list.appendChild(div);
   });
 }
-const fdiv=document.getElementById('filters');
-const counts={};A.forEach(d=>counts[d.tag]=(counts[d.tag]||0)+1);
-[['all','全部 '+A.length]].concat(Object.keys(TAGS).map(k=>[k,TAGS[k]+' '+counts[k]])).forEach(([k,label],j)=>{
+function refreshStat(div,name){
+  const st=statusOf(name);
+  div.querySelectorAll('.hstat,.dstat').forEach(el=>{
+    el.innerHTML=`<span class="dot ${st.cls}"></span>${st.txt}`;
+  });
+}
+
+/* ===== 默写清单总览：只列【默】级，最久没练的置顶 ===== */
+function renderOv(){
+  const rows=[];
+  A.forEach((d,idx)=>{ if(d.lv==='默') rows.push({d:d,idx:idx,st:statusOf(d.name)}); });
+  rows.sort((a,b)=>{
+    const da=a.st.days===null?1e9:a.st.days, db=b.st.days===null?1e9:b.st.days;
+    if(da!==db) return db-da;                 // 天数多的在前，从没练过的最前
+    return a.idx-b.idx;
+  });
+  const tab=document.getElementById('ovtab');
+  tab.innerHTML='<tr><th>状态</th><th>模板</th><th>上次默写</th><th>累计</th></tr>'+
+    rows.map(r=>{
+      const hot=(r.st.days===null||r.st.days>7)?' class="hot"':'';
+      const when=r.st.days===null?'—':(r.st.days<=0?'今天':r.st.days+' 天前');
+      return `<tr${hot}><td><span class="dot ${r.st.cls}"></span></td>`+
+             `<td><span class="ovname" data-go="${r.idx}">${r.d.name}</span></td>`+
+             `<td>${when}</td><td class="n">${r.st.n} 次</td></tr>`;
+    }).join('');
+  tab.querySelectorAll('.ovname').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const i=+el.dataset.go;
+      curT='all'; curL='all';
+      document.querySelectorAll('#filtT .fbtn').forEach((b,j)=>b.classList.toggle('on',j===0));
+      document.querySelectorAll('#filtL .fbtn').forEach((b,j)=>b.classList.toggle('on',j===0));
+      render();
+      const el2=document.getElementById(cardId(i));
+      if(el2){ el2.classList.add('open'); el2.scrollIntoView({behavior:'smooth',block:'start'}); }
+    });
+  });
+  const never=rows.filter(r=>r.st.days===null).length;
+  const stale=rows.filter(r=>r.st.days!==null&&r.st.days>7).length;
+  document.getElementById('ovsum').innerHTML=
+    `共 <b>${rows.length}</b> 张【默】级卡：<b>${never}</b> 张从没默写过、<b>${stale}</b> 张超过 7 天没练、`+
+    `<b>${rows.length-never-stale}</b> 张状态良好。点模板名可直接跳到该卡。`;
+}
+
+/* ===== 两行筛选器 ===== */
+const cntT={}; A.forEach(d=>cntT[d.tag]=(cntT[d.tag]||0)+1);
+const cntL={}; A.forEach(d=>cntL[d.lv]=(cntL[d.lv]||0)+1);
+const fT=document.getElementById('filtT');
+[['all','全部 '+A.length]].concat(Object.keys(TAGS).map(k=>[k,TAGS[k]+' '+(cntT[k]||0)])).forEach(([k,label],j)=>{
   const b=document.createElement('button');b.className='fbtn'+(j===0?' on':'');b.textContent=label;
-  b.addEventListener('click',()=>{document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');curF=k;render()});
-  fdiv.appendChild(b);
+  b.addEventListener('click',()=>{fT.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');curT=k;render()});
+  fT.appendChild(b);
 });
+const fL=document.getElementById('filtL');
+[['all','全部 '+A.length]].concat(Object.keys(LVS).map(k=>[k,LVS[k].icon+' '+LVS[k].label+' '+(cntL[k]||0)])).forEach(([k,label],j)=>{
+  const b=document.createElement('button');b.className='fbtn'+(j===0?' on':'');b.textContent=label;
+  b.addEventListener('click',()=>{fL.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');curL=k;render()});
+  fL.appendChild(b);
+});
+document.getElementById('cnt1').textContent=(cntL['默']||0)+' 张';
+document.getElementById('cnt2').textContent=(cntL['改']||0)+' 张';
+document.getElementById('cnt3').textContent=(cntL['读']||0)+' 张';
+
+renderOv();
 render();
 </script>
 </body>
