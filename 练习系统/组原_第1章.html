@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>练习 · 组成原理 第1章 计算机系统概述</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="组原_index.html">← 组原练习系统首页</a>
+  <header>
+    <h1>计算机组成原理 · 第1章　计算机系统概述</h1>
+    <div class="sub">题源：27 王道《计算机组成原理》第 1 章章节习题 · 每题「📕书答案 × 🤖Python 复算核对」交叉验证 ·
+      <a href="../精读版/组原_第1章.html" style="color:var(--accent)">📖 本章精读版</a> ·
+      <a href="../计算题_公式模板手册.html" style="color:var(--accent)">🧮 计算模板手册</a> ·
+      <a href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第1章_计算机系统概述.pdf" style="color:var(--accent)">📄 打开本章电子书</a></div>
+  </header>
+  <div id="root"></div>
+  <footer>本章 36 题（1.2 层次结构 14 + 1.3 性能指标 20 + 综合应用 2）· 含 <b>13 道统考真题</b>（2010–2023）·
+  本章全部计算题均由 Claude 用 Python <b>独立复算</b>后再与书答比对，逐项吻合 ✅<br>
+  🔍 复算中发现一处书上印刷舍入误差：综合 02 表中 LOAD 比例 0.1149 应为 0.1148（精确值 41/357），不影响最终答案 —— 已在该题核对栏标注。</footer>
+</div>
+<script src="data_co.js"></script>
+<script src="engine.js"></script>
+<script>
+SubjApp.mount({root:'#root', scope:{type:'chapter',ch:1}, scopeLabel:'组原第1章',
+  mode:'practice', allowModeToggle:true, groupBySec:true});
+</script>
+</body>
+</html>

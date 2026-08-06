@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>计算机组成原理 · 教材练习系统</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>计算机组成原理 · 教材练习系统</h1>
+    <div class="sub">题源 = 王道《计算机组成原理》章节习题 · 练习/考试双模式 · <b>书答 × Python 复算核对</b> · 自动错题本 + 统计 · 数据存本地浏览器</div>
+  </header>
+
+  <div class="stats" id="quick"></div>
+
+  <div class="card">
+    <h2>练习入口</h2>
+    <div class="grid" id="tools"></div>
+  </div>
+
+  <div class="card">
+    <h2>按章练习</h2>
+    <div class="grid" id="chaps"></div>
+  </div>
+
+  <div class="card">
+    <h2>组原和数据结构有什么不一样</h2>
+    <div style="font-size:.88rem;line-height:1.9">
+      <b>①「🤖 运行核对」这一栏在组原 = Python 独立复算。</b>数构那边是跑 C 程序对拍，组原这边是
+      把每道计算题（位模式、平均 CPI、命中率、周期数、带宽、时延）用 Python <b>不看书答先自己算一遍</b>，再和书比对——
+      不一致时第一反应是自己抄错，放大到 dpi ≥ 400 逐字符复核题面。<br>
+      <b>② 错因标签换成了组原一套。</b>「指针代码写错」对组原毫无意义，取而代之的是
+      <b>进制位数拆错 / 补码符号处理错 / 公式套错 / 单位换算错 / 时序周期数错 / 硬件部件功能记混 / 读图表错</b>。<br>
+      <b>③ 记录与数构完全分家。</b>两科的做题记录、错题本、统计各存各的（localStorage 键 <code>co_*</code> vs <code>ds_*</code>），
+      互不覆盖；备份文件也分开导出，导错科目会被拦下。<br>
+      <b>④ 组原最大的失分源不是不会公式，是单位和位数拆错</b>（B vs b、K 是 10³ 还是 2¹⁰、ns vs μs）。
+      刷题时错在这上面，请老实勾「单位换算错」标签——统计页会把它顶到最前面。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>怎么用</h2>
+    <div style="font-size:.88rem;line-height:1.9">
+      <b>① 第一遍闭卷刷：</b>进某章或真题场，切「📝 考试模式」，做完点<b>交卷</b>→ 出正确率 + 错误知识点归因，自动记一次。<br>
+      <b>② 开卷精修：</b>「📖 练习模式」即点即判、随时展开「📕书答 × 🤖复算核对」双栏。<br>
+      <b>③ 消化错题：</b>错的自动进<b>错题本</b>，专项重刷到做对即移出。<br>
+      <b>④ 让我分析：</b>错题多了，错题本点「导出报告」复制发我 → 我按你薄弱点补讲解/技巧，再更新页面你上传。<br>
+      <b>⑤ 看长进：</b>「我的统计」看正确率趋势与弱项；换设备前先导出备份。
+    </div>
+  </div>
+  <footer><b>第 1 章已就绪：36 题</b>（1.2 计算机系统层次结构 14 + 1.3 计算机的性能指标 20 + 综合应用题 2），含 <b>13 道统考真题</b>（2010–2023）。<br>
+  下一步按<b>失分密度</b>而非书序铺开：<b>ch2 数据的表示和运算 → ch3 存储系统 → ch5 中央处理器 → ch4 指令系统 → ch7 I/O → ch6 总线</b>。</footer>
+</div>
+<script src="data_co.js"></script>
+<script src="engine.js"></script>
+<script>
+// 快速统计
+(function(){
+  const arr=SubjApp.attempts(), w=SubjApp.wrongBook();
+  const closed=arr.filter(a=>a.mode==='闭卷');
+  const avg=closed.length?Math.round(closed.reduce((s,a)=>s+a.acc,0)/closed.length):'–';
+  const unres=Object.values(w).filter(e=>!e.res).length;
+  document.getElementById('quick').innerHTML=
+    '<div class="stat"><div class="v">'+arr.length+'</div><div class="k">累计结算</div></div>'
+   +'<div class="stat"><div class="v">'+avg+(avg==='–'?'':'%')+'</div><div class="k">闭卷平均正确率</div></div>'
+   +'<div class="stat"><div class="v">'+unres+'</div><div class="k">待消化错题</div></div>';
+})();
+// 中央入口
+document.getElementById('tools').innerHTML=
+  '<a class="tile" href="../计算题_公式模板手册.html"><h3>🧮 计算模板手册</h3><p>组原版的「算法手册」· 背列式不背结果 · 每条带单位陷阱 + 真题算例 · 默写打卡</p></a>'
+ +'<a class="tile" href="组原_套路库.html"><h3>🧠 解题套路库</h3><p>看到什么字眼→用什么套路 · 刷完课后题提炼 · 每张卡链回原题</p></a>'
+ +'<a class="tile" href="组原_真题场.html"><h3>🎯 真题场</h3><p>各章统考真题自动汇集 · 随机抽题闭卷模拟</p></a>'
+ +'<a class="tile" href="组原_错题本.html"><h3>📕 错题本</h3><p>错题自动收集 · 专项重刷 · 导出报告发我分析</p></a>'
+ +'<a class="tile" href="组原_我的统计.html"><h3>📈 我的统计</h3><p>正确率趋势 · 知识点弱项 · 错因归因分布 · 数据备份</p></a>';
+// 章节
+let h='';
+SubjApp.chapters().forEach(c=>{
+  const n=CO_DATA.filter(q=>q.ch===c.id).length;
+  if(c.ready) h+='<a class="tile" href="组原_第'+c.id+'章.html"><h3>第'+c.id+'章 '+c.name+'<span class="badge '+(c.wip?'off':'on')+'">'+(c.wip?'建设中 '+n+'题':'已就绪 '+n+'题')+'</span></h3><p>'+(c.wip||'点击进入 · 练习/考试双模式')+'</p></a>';
+  else h+='<div class="tile dim"><h3>第'+c.id+'章 '+c.name+'<span class="badge off">待铺开</span></h3><p>按同格式生成</p></div>';
+});
+document.getElementById('chaps').innerHTML=h;
+</script>
+</body>
+</html>

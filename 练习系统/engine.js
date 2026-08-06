@@ -1,17 +1,29 @@
-/* 数据结构练习引擎 —— 依赖 data_ds.js（window.DS_DATA / window.DS_META）
+/* 408 练习引擎（科目无关）—— 依赖同目录的 data_<科目>.js
+   数据接口：题库文件末尾把自己挂成 window.SUBJ_DATA / window.SUBJ_META
+   （data_ds.js 仍保留 DS_DATA / DS_META 原名，此处向后兼容读它）。
    全站共用：练习/考试双模式、判分、localStorage 记录、错题本、随机抽题、导出报告、统计。
-   localStorage 键（v1）：
-     ds_attempts_v1  完整刷记录数组 [{ts,scope,mode,total,correct,acc,wrongIds,kp:{}}]
-     ds_wrong_v1     错题本 {qid:{n:错次, res:是否已消化, ts:最近}}
+
+   ⚠️ localStorage 键按科目分家（META.key：ds / co / os / net），否则四科记录互相覆盖：
+     <key>_attempts_v1  完整刷记录数组 [{ts,scope,mode,total,correct,acc,wrongIds,kp:{}}]
+     <key>_wrong_v1     错题本 {qid:{n:错次, res:是否已消化, ts:最近}}
+     <key>_codeveil_v1  参考代码遮罩开关     <key>_attr_v1  错因归因标签
+   数据结构的键沿用 ds_*，历史做题记录与错题本原样保留。
 */
 (function(){
-const LS_A='ds_attempts_v1', LS_W='ds_wrong_v1', LS_CV='ds_codeveil_v1', LS_AT='ds_attr_v1';
+const DATA = window.SUBJ_DATA || window.DS_DATA;
+const META = window.SUBJ_META || window.DS_META;
+const KEY  = META.key || 'ds';
+/* 各科页面同放一个目录，靠文件名前缀分家：数构无前缀，组原＝「组原_」，OS/网络同理。
+   引擎里生成的跨页链接（错题本/我的统计）都要带上它，否则组原会跳回数构的页面。 */
+const PFX  = META.pagePrefix || '';
+const LS_A=KEY+'_attempts_v1', LS_W=KEY+'_wrong_v1', LS_CV=KEY+'_codeveil_v1', LS_AT=KEY+'_attr_v1';
 const $=(s,r)=>(r||document).querySelector(s);
-const byId=id=>DS_DATA.find(q=>q.id===id);
+const byId=id=>DATA.find(q=>q.id===id);
 
-/* 错因归因标签（借鉴数学错题页）：对照答案后勾一下「错在哪」，统计页汇成分布条。 */
-const ATTR_TAGS=['概念记混','性质公式用错','边界特例漏','数据结构选错','指针代码写错','复杂度算错','读题看图错'];
-const ATTR_PAL=['#b04a3a','#a5732a','#3e7a4e','#3d6a8a','#6d5a8e','#8b5e34','#8a8578'];
+/* 错因归因标签（借鉴数学错题页）：对照答案后勾一下「错在哪」，统计页汇成分布条。
+   ⚠️ 每科一套，放在各自 data_*.js 的 META.attrTags 里——「指针代码写错」对组原毫无意义。 */
+const ATTR_TAGS=META.attrTags||['概念记混','性质公式用错','边界特例漏','数据结构选错','指针代码写错','复杂度算错','读题看图错'];
+const ATTR_PAL=['#b04a3a','#a5732a','#3e7a4e','#3d6a8a','#6d5a8e','#8b5e34','#8a8578','#4a6b6b'];
 
 function load(k,def){try{return JSON.parse(localStorage.getItem(k))??def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -45,12 +57,12 @@ function setVeil(v){save(LS_CV,!!v);}
 
 /* ---------- 题池 ---------- */
 function pool(scope){
-  if(!scope)return DS_DATA.slice();
-  if(scope.type==='chapter')return DS_DATA.filter(q=>q.ch===scope.ch);
-  if(scope.type==='exam')return DS_DATA.filter(q=>q.exam!=null);
-  if(scope.type==='wrong'){const w=wrongBook();return DS_DATA.filter(q=>w[q.id]&&!w[q.id].res);}
-  if(scope.type==='all')return DS_DATA.slice();
-  return DS_DATA.slice();
+  if(!scope)return DATA.slice();
+  if(scope.type==='chapter')return DATA.filter(q=>q.ch===scope.ch);
+  if(scope.type==='exam')return DATA.filter(q=>q.exam!=null);
+  if(scope.type==='wrong'){const w=wrongBook();return DATA.filter(q=>w[q.id]&&!w[q.id].res);}
+  if(scope.type==='all')return DATA.slice();
+  return DATA.slice();
 }
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -88,11 +100,12 @@ function qHtml(q,idx){
   h+='<div class="track book"><h4>📕 王道书答案</h4>'+(q.type==='choice'?'<div class="final">'+q.ans+'</div>':'')+'<div>'+q.book+'</div>'
     +(q.figA?'<figure class="qfig"><a href="'+q.figA+'" target="_blank" rel="noopener" title="点击看大图（新标签页打开原图）"><img src="'+q.figA+'" alt="答案图" loading="lazy"></a>'
       +(q.figAcap?'<figcaption>'+q.figAcap+'</figcaption>':'')+'</figure>':'')+'</div>';
-  h+='<div class="track claude"><h4>🤖 Claude 运行核对</h4><div>'+q.claude+'</div>'+(q.run?'<div class="run">▸ '+q.run+'</div>':'')+'</div>';
+  /* 右栏标题各科不同：数构=跑 C 程序对拍，组原=Python 复算位模式/周期数，OS=穷举交错序列，网络=复算子网与窗口 */
+  h+='<div class="track claude"><h4>'+(META.checkTitle||'🤖 Claude 运行核对')+'</h4><div>'+q.claude+'</div>'+(q.run?'<div class="run">▸ '+q.run+'</div>':'')+'</div>';
   h+='</div>';
   /* 参考实现：默认打码，点一下才看——先在纸上写完再对，才有练算法大题的意义 */
   if(isAnsCode(q))
-    h+='<div class="codeans"><h4>💻 参考实现（C · Claude 写并实测）</h4>'
+    h+='<div class="codeans"><h4>'+(META.codeAnsTitle||'💻 参考实现（C · Claude 写并实测）')+'</h4>'
       +'<div class="codewrap'+(veilOn()?' veiled':'')+'"><pre class="code">'+escCode(q.code)+'</pre>'
       +'<button class="codepeek">✍️ 建议先自己默写 —— 点这里显示参考代码</button></div></div>';
   const vc=q.verdict==='warn'?'warn':'ok';
@@ -292,12 +305,12 @@ function mount(cfg){
       h+='<div style="font-size:.86rem;color:var(--muted);margin:4px 0 8px">错误集中的知识点：</div><div class="kpbars">';
       kps.forEach(([k,v])=>{h+='<div class="kpbar"><span class="lab">'+k+'</span><span class="bar"><i style="width:'+(v/mx*100)+'%"></i></span><span>'+v+'</span></div>';});
       h+='</div>';
-      h+='<div style="font-size:.84rem;margin-top:12px">👉 去 <a href="错题本.html" style="color:var(--accent)">错题本</a> 专练这些错题，或点错题本里「导出报告」发我，让我按你的薄弱点补讲解与技巧。</div>';
+      h+='<div style="font-size:.84rem;margin-top:12px">👉 去 <a href="'+PFX+'错题本.html" style="color:var(--accent)">错题本</a> 专练这些错题，或点错题本里「导出报告」发我，让我按你的薄弱点补讲解与技巧。</div>';
     }else{
       h+='<div style="font-size:.9rem;color:var(--green)">🎉 全对！这组没有留下错题。</div>';
     }
     h+='<div style="margin-top:14px"><button class="tbtn" id="btnRedo">↻ 再刷一遍这组</button> '
-      +'<a class="tbtn" href="我的统计.html" style="text-decoration:none">📈 看我的统计</a></div>';
+      +'<a class="tbtn" href="'+PFX+'我的统计.html" style="text-decoration:none">📈 看我的统计</a></div>';
     h+='</div>';
     $('#resultSlot').innerHTML=h;
     $('#btnRedo').onclick=()=>{state.answers={};state.submitted=false;buildItems();render();window.scrollTo({top:0,behavior:'smooth'});};
@@ -334,7 +347,7 @@ function renderStats(sel){
     +'<div class="stat"><div class="v">'+closed.length+'</div><div class="k">其中闭卷</div></div>'
     +'<div class="stat"><div class="v">'+avg+'%</div><div class="k">闭卷平均正确率</div></div>'
     +'<div class="stat"><div class="v">'+wrongUnres.length+'</div><div class="k">未消化错题</div></div>'
-    +'<div class="stat"><div class="v">'+DS_DATA.length+'</div><div class="k">题库题数（第'+DS_META.chapters.filter(c=>c.ready).map(c=>c.id).join('/')+'章）</div></div>'
+    +'<div class="stat"><div class="v">'+DATA.length+'</div><div class="k">题库题数（第'+META.chapters.filter(c=>c.ready).map(c=>c.id).join('/')+'章）</div></div>'
     +'</div>';
 
   // 正确率趋势
@@ -387,11 +400,17 @@ function renderStats(sel){
     +'</div></div>';
 
   root.innerHTML=h;
-  $('#expJson').onclick=()=>{const data={ds_attempts_v1:arr,ds_wrong_v1:w,exportedAt:new Date().toISOString()};
+  /* 备份文件里按本科目的真实键名存（ds_/co_/os_/net_），并带 subject 便于人眼分辨；
+     导入时兼容老备份（数据结构的旧文件里就是 ds_attempts_v1）。 */
+  $('#expJson').onclick=()=>{const data={subject:META.subject,key:KEY,exportedAt:new Date().toISOString()};
+    data[LS_A]=arr; data[LS_W]=w; data[LS_AT]=attrBook();
     const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='数据结构练习备份_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);toast('已导出备份');};
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=META.subject+'练习备份_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);toast('已导出备份');};
   $('#impJson').onclick=()=>$('#impFile').click();
-  $('#impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.ds_attempts_v1)save(LS_A,d.ds_attempts_v1);if(d.ds_wrong_v1)save(LS_W,d.ds_wrong_v1);toast('导入成功');setTimeout(()=>location.reload(),600);}catch(err){toast('导入失败：文件格式不对');}};r.readAsText(f);};
+  $('#impFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);
+      const A=d[LS_A]||d.ds_attempts_v1, W=d[LS_W]||d.ds_wrong_v1;
+      if(d.key&&d.key!==KEY){toast('这是「'+(d.subject||d.key)+'」的备份，别导进'+META.subject);return;}
+      if(A)save(LS_A,A);if(W)save(LS_W,W);if(d[LS_AT])save(LS_AT,d[LS_AT]);toast('导入成功');setTimeout(()=>location.reload(),600);}catch(err){toast('导入失败：文件格式不对');}};r.readAsText(f);};
   $('#clr').onclick=()=>{if(confirm('确定清空所有做题记录和错题本？此操作不可撤销（建议先导出备份）。')){localStorage.removeItem(LS_A);localStorage.removeItem(LS_W);toast('已清空');setTimeout(()=>location.reload(),600);}};
 }
 
@@ -401,7 +420,7 @@ function buildReport(){
   const unres=Object.entries(w).filter(([id,e])=>!e.res).map(([id,e])=>({q:byId(id),e})).filter(x=>x.q);
   const closed=arr.filter(a=>a.mode==='闭卷');
   const avg=closed.length?Math.round(closed.reduce((s,a)=>s+a.acc,0)/closed.length):'—';
-  let r='# 我的数据结构错题报告（'+new Date().toLocaleString()+'）\n\n';
+  let r='# 我的'+META.subject+'错题报告（'+new Date().toLocaleString()+'）\n\n';
   r+='- 累计结算 '+arr.length+' 次（闭卷 '+closed.length+' 次），闭卷平均正确率 '+avg+'%\n';
   r+='- 当前未消化错题 '+unres.length+' 道\n\n';
   const kpc={};unres.forEach(x=>{const k=(x.q.kp&&x.q.kp[0])||'未分类';kpc[k]=(kpc[k]||0)+1;});
@@ -419,6 +438,7 @@ function buildReport(){
 
 function toast(msg){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t);}t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
 
-window.DSApp={mount,renderStats,buildReport,pool,attempts,wrongBook,attrBook,toast,
-  chapters:()=>DS_META.chapters, byId};
+/* 对外仍叫 DSApp（数构八章的页面都在调它，不改），SubjApp 是科目无关的新名字，组原/OS/网络新页面用它。 */
+window.SubjApp = window.DSApp = {mount,renderStats,buildReport,pool,attempts,wrongBook,attrBook,toast,
+  meta:()=>META, chapters:()=>META.chapters, byId};
 })();

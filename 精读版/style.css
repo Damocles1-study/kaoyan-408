@@ -60,6 +60,24 @@ em{font-style:normal;background:var(--amber-soft);color:var(--amber);border-radi
   padding:12px 16px;margin:16px 0;clear:both}
 .trap .tag{display:block;font-size:.74rem;color:var(--red);letter-spacing:.08em;font-weight:700;margin-bottom:5px}
 
+/* ===== 「筛 → 挖 → 串」三层批注的另外两个（2026-08-06 新增，见项目根 CLAUDE.md 铁律）=====
+   原来的三色（.key/.mine/.trap）分的是**来源**：书上的 / 我的补讲 / 陷阱。
+   下面两个补的是正交的**功能**维度：
+     .bg   🟡筛 —— 明确灰化「这段是铺垫，考试不碰」。不许整章全是重点，全是重点＝没有重点。
+     .link 🔵串 —— 就地标出与前面章节 / 其他三科的连接，尤其是 408 的跨科枢纽。 */
+.bg{background:transparent;border-left:3px dashed var(--line);border-radius:0;
+  padding:8px 16px;margin:14px 0;clear:both;color:var(--muted);font-size:.92rem}
+.bg .tag{display:block;font-size:.72rem;color:var(--muted);letter-spacing:.08em;font-weight:700;margin-bottom:4px}
+.bg b{color:var(--muted);font-weight:600}
+
+.link{background:var(--green-soft);border-left:4px solid var(--green);border-radius:0 10px 10px 0;
+  padding:12px 16px;margin:16px 0;clear:both}
+.link .tag{display:block;font-size:.74rem;color:var(--green);letter-spacing:.08em;font-weight:700;margin-bottom:5px}
+.link code{background:var(--card)}
+/* 跨科枢纽：链到别科时给个更醒目的角标 */
+.link .hub{display:inline-block;font-size:.72rem;color:var(--green);border:1px solid var(--green);
+  border-radius:5px;padding:0 6px;margin-right:6px;font-weight:700}
+
 figure{margin:20px 0;text-align:center;clear:both}
 figure img{max-width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px}
 figcaption{font-size:.82rem;color:var(--muted);margin-top:7px;line-height:1.7}

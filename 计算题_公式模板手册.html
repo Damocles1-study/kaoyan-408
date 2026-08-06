@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>408 组原计算题训练场 · 公式模板与默写</title>
+<style>
+  :root{
+    --bg:#faf9f6; --card:#ffffff; --ink:#2b2b2b; --muted:#8a8578;
+    --accent:#8b5e34; --accent-soft:#f3e9dd; --line:#e8e3d8;
+    --hl:#fdf3d8; --hl-border:#e0b84d;
+    --green:#3e7a4e; --green-soft:#e8f2ea;
+    --red:#b04a3a; --red-soft:#f9e9e6;
+    --blue:#3d6a8a; --blue-soft:#e7eff5;
+    --purple:#6d5a8e; --purple-soft:#eeeaf5;
+    --code-bg:#2b2925; --code-ink:#e8e4dc; --code-cmt:#9a8f7a;
+    --serif:"Georgia","Songti SC",serif;
+    --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    --mono:"SF Mono","Menlo",Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1c1a17; --card:#26231f; --ink:#e8e4dc; --muted:#9a948a;
+      --accent:#d0a06a; --accent-soft:#3a3127; --line:#3a362f;
+      --hl:#3d3520; --hl-border:#b08c3a;
+      --green:#7fb98d; --green-soft:#26362b;
+      --red:#d98876; --red-soft:#3d2a26;
+      --blue:#8ab3d0; --blue-soft:#26323d;
+      --purple:#a996c8; --purple-soft:#302a3d;
+      --code-bg:#171512; --code-ink:#e8e4dc; --code-cmt:#8a8070;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;padding-bottom:60px}
+  .wrap{max-width:900px;margin:0 auto;padding:24px 20px}
+  .back{font-size:.85rem;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--accent)}
+  header{margin:14px 0 20px}
+  header h1{font-family:var(--serif);font-size:1.7rem}
+  header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
+  header .sub a{color:var(--accent)}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:14px}
+
+  .strategy{font-size:.9rem}
+  .strategy li{margin:6px 0 6px 18px}
+  .strategy b{color:var(--accent)}
+  .strategy .em{color:var(--red);font-weight:700}
+
+  .tabwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table.lg{width:100%;min-width:540px;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+  table.lg th,table.lg td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  table.lg th{background:var(--accent-soft);color:var(--accent);font-size:.75rem;letter-spacing:.04em;white-space:nowrap}
+  table.lg td.lvc{white-space:nowrap;font-weight:700}
+  .note{font-size:.82rem;color:var(--muted);margin-top:10px}
+  .note b{color:var(--red)}
+
+  table.ov{width:100%;min-width:520px;border-collapse:collapse;font-size:.82rem}
+  table.ov th,table.ov td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+  table.ov th{color:var(--muted);font-size:.74rem;font-weight:400;letter-spacing:.04em}
+  table.ov td.n{text-align:right;white-space:nowrap}
+  .ovname{cursor:pointer;color:var(--accent);text-decoration:underline dotted}
+  .ovname:hover{color:var(--red)}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .s-none{background:var(--muted)} .s-ok{background:var(--green)}
+  .s-warn{background:var(--hl-border)} .s-bad{background:var(--red)}
+  .ovsum{font-size:.82rem;color:var(--muted);margin-bottom:10px}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+  .filters .flabel{font-size:.74rem;color:var(--muted);margin-right:2px;letter-spacing:.05em}
+  .fbtn{font-size:.8rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:999px;padding:4px 14px;cursor:pointer}
+  .fbtn.on{background:var(--accent);color:var(--card);border-color:var(--accent)}
+
+  .algo{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;scroll-margin-top:16px}
+  .algo .head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;flex-wrap:wrap}
+  .algo .head:hover{background:var(--accent-soft)}
+  .algo .head .nm{font-weight:700}
+  .algo .head .arrow{margin-left:auto;color:var(--muted);transition:transform .2s}
+  .algo.open .head .arrow{transform:rotate(90deg)}
+  .tagc{font-size:.68rem;padding:1px 8px;border-radius:999px;background:var(--blue-soft);color:var(--blue)}
+  .tagl{font-size:.68rem;padding:1px 8px;border-radius:999px;font-weight:700;white-space:nowrap}
+  .lv1{background:var(--red-soft);color:var(--red)}
+  .lv2{background:var(--accent-soft);color:var(--accent)}
+  .lv3{background:var(--blue-soft);color:var(--blue)}
+  .hstat{font-size:.7rem;color:var(--muted);white-space:nowrap}
+  .algo .body{display:none;padding:0 16px 16px;border-top:1px dashed var(--line)}
+  .algo.open .body{display:block}
+  .blk{margin-top:12px;font-size:.88rem;padding:10px 12px;border-radius:8px}
+  .blk b.h{font-size:.72rem;display:block;margin-bottom:3px;letter-spacing:.06em}
+  .blk ol,.blk ul{margin:2px 0 0 20px}
+  .blk li{margin:4px 0}
+  .b-q{background:var(--blue-soft)} .b-q b.h{color:var(--blue)}
+  .b-idea{background:var(--green-soft)} .b-idea b.h{color:var(--green)}
+  .b-trap{background:var(--red-soft)} .b-trap b.h{color:var(--red)}
+  .b-mem{background:var(--hl);border-left:3px solid var(--hl-border)} .b-mem b.h{color:var(--hl-border)}
+  .b-und{background:var(--green-soft);border-left:3px solid var(--green)} .b-und b.h{color:var(--green)}
+  .b-chk{background:var(--purple-soft);border-left:3px solid var(--purple)} .b-chk b.h{color:var(--purple)}
+  .b-src{font-size:.76rem;color:var(--muted);margin-top:10px}
+  .b-src a{color:var(--accent)}
+
+  .drill{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;
+         padding:8px 12px;border:1px dashed var(--line);border-radius:8px}
+  .dbtn{font-size:.78rem;border:1px solid var(--accent);background:var(--accent);color:var(--card);
+        border-radius:8px;padding:4px 12px;cursor:pointer}
+  .dbtn:hover{filter:brightness(1.1)}
+  .dstat{font-size:.78rem;color:var(--muted)}
+  .undo{font-size:.72rem;color:var(--muted);background:none;border:none;cursor:pointer;
+        text-decoration:underline;margin-left:auto;padding:0}
+
+  /* ——— 公式块（组原版的“代码块”）——— */
+  .fmlwrap{margin-top:12px;border-radius:10px;overflow:hidden}
+  .fmlbar{display:flex;align-items:center;gap:10px;background:var(--code-bg);padding:8px 14px;
+          border-bottom:1px solid rgba(255,255,255,.08)}
+  .fmlbar .t{color:var(--code-cmt);font-size:.75rem;font-family:var(--mono)}
+  .mwbtn{margin-left:auto;font-size:.75rem;border:1px solid var(--code-cmt);background:none;
+         color:var(--code-ink);border-radius:6px;padding:2px 10px;cursor:pointer}
+  .mwbtn:hover{border-color:#fff}
+  pre.fml{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:.85rem;
+          line-height:1.75;padding:12px 0;overflow-x:auto;margin:0}
+  .fl{display:block;padding:0 14px;white-space:pre}
+  .fl .no{display:inline-block;width:24px;color:var(--code-cmt);user-select:none;font-size:.72rem}
+  .fl .cmt{color:var(--code-cmt);font-style:italic}
+  /* 默写模式：把列式行糊掉，只留注释行与行号做提示——
+     刻意用 blur 而不是整块盖住，是为了保留「有几行、每行多长」的结构线索，
+     这正是默写时需要的脚手架（与算法题代码手册的做法一致）。 */
+  pre.fml.masked .fl.hide{filter:blur(6px);user-select:none;pointer-events:none}
+  pre.fml.masked .fl.hide::selection{background:transparent}
+
+  .exam{display:inline-block;font-size:.72rem;color:var(--purple);background:var(--purple-soft);
+        border-radius:5px;padding:0 7px;margin-right:5px}
+  code{font-family:var(--mono);font-size:.87em;background:var(--accent-soft);color:var(--accent);
+       border-radius:4px;padding:1px 5px}
+  .blk code{background:var(--card)}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:30px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>组原计算题训练场 · 公式模板与默写</h1>
+    <div class="sub">组原版的「算法题代码手册」。<b>背的是列式，不是结果</b>；每条模板带<b>单位陷阱</b>与<b>真题级算例</b>。
+      配 <a href="练习系统/组原_index.html">组原练习系统</a> 与 <a href="精读版/组原_第1章.html">精读版</a> 使用 ·
+      掌握状态存本地浏览器（<code>co_fdrill_v1</code>）</div>
+  </header>
+
+  <section class="card">
+    <h2>⚠️ 先读这一段：组原计算题的失分源不是「不会公式」</h2>
+    <ul class="strategy">
+      <li><b>组原最大的失分源是<span class="em">单位和位数拆错</span></b>——B 与 b 差 8 倍、K 是 10³ 还是 2¹⁰ 差 2.4%、ns 与 μs 差 1000 倍。
+        <b>所以本手册每一条模板的「📌 背」里，都强制有一条是单位/位数相关的。</b></li>
+      <li><b>背列式，不背结果。</b>🔴【默】级的达标判据是「闭卷写出<u>完整列式与单位换算</u>」，不是记住某个数。
+        考场上题目换个数字，列式不变。</li>
+      <li><b>每条都配一个真题级算例带数字走一遍</b>——公式记住了但代不进数字，等于没记住。</li>
+      <li><b>量纲自查是组原的通用杀招</b>：算完先看单位对不对。
+        <code>周期/秒 ÷ 周期/条 = 条/秒</code> ✔，反过来除就错——<span class="em">这一招能救回很多分</span>。</li>
+    </ul>
+
+    <div class="tabwrap">
+      <table class="lg">
+        <tr><th style="width:96px">掌握等级</th><th>组原版的含义</th><th>达标判据（自己对照，别放水）</th></tr>
+        <tr><td class="lvc"><span class="tagl lv1">🔴 默</span></td>
+            <td><b>闭卷写出完整列式与单位换算</b></td>
+            <td>盖住公式块，在纸上写出<b>列式 + 每个量的单位</b>，再把算例的数字代进去算对。<b>只背住结论数字不算过。</b></td></tr>
+        <tr><td class="lvc"><span class="tagl lv2">🟡 改</span></td>
+            <td><b>认出题型、说出该套哪个公式、能处理变形</b></td>
+            <td>看到题干能立刻说出「这是 ×× 型，用 ×× 公式」，并能应付「反着问」（给时间求主频、给 MIPS 求 CPI）。</td></tr>
+        <tr><td class="lvc"><span class="tagl lv3">🔵 读</span></td>
+            <td><b>看懂图表，能答「这一步在干什么」</b></td>
+            <td>面对电路图 / 时序图 / 数据通路图 / 地址划分表，能逐步复述含义。<b>不要求默写。</b></td></tr>
+      </table>
+    </div>
+    <div class="note">三个附加标记：<b>📌 背</b>＝必须死记的那一两句（每条必含一条单位/位数）；<b>🧠 懂</b>＝理解了就不会记反的原理；
+      <b>✍️ 检查点</b>＝限时自测的达标线。点每张卡片下方的「✍️ 今天默过」记录打卡，卡片头部会显示<b>距上次默写的天数</b>（遗忘曲线）。</div>
+  </section>
+
+  <section class="card">
+    <h2>📋 默写清单总览</h2>
+    <div class="ovsum" id="ovsum"></div>
+    <div class="tabwrap"><table class="ov" id="ovtab"></table></div>
+    <div class="note">点名称跳到对应模板。圆点：<span class="dot s-none"></span>没默过　<span class="dot s-ok"></span>7 天内默过
+      <span class="dot s-warn"></span>7–21 天　<span class="dot s-bad"></span>超过 21 天（该复习了）。</div>
+  </section>
+
+  <section class="card">
+    <h2>🧮 公式模板</h2>
+    <div class="filters" id="filters"></div>
+    <div id="list"></div>
+  </section>
+
+  <footer>
+    组原计算模板手册 · 第 1 章 7 条已就绪（ch2–ch7 随各章铺开陆续补齐）<br>
+    每条列式均与 <a href="练习系统/组原_第1章.html" style="color:var(--accent)">练习系统题库</a> 的 Python 复算结果对齐 · 掌握状态与默写打卡存本地浏览器
+  </footer>
+</div>
+
+<script>
+/* ============ 数据：一条模板一个对象 ============
+   lv: 1=🔴默 2=🟡改 3=🔵读
+   fml: 公式块，每行 [文本, 是否在默写模式下遮住]
+   mem/und/chk: 📌背 / 🧠懂 / ✍️检查点
+   ex: 真题级算例（带数字走一遍）
+*/
+const T = [
+{id:'co1-1', ch:'ch1', lv:1, name:'CPU 执行时间 · 三要素公式', tag:'全书主线',
+ q:'求程序的执行时间 / 已知时间反求主频、CPI、指令条数 / 比较两台机器的快慢。',
+ fml:[
+  ['CPU 执行时间 = CPU 时钟周期数 ÷ 主频', 1],
+  ['             = (指令条数 × CPI) ÷ 主频', 1],
+  ['', 0],
+  ['其中：CPU 时钟周期数 = 指令条数 × CPI', 1],
+  ['     时钟周期 = 1 ÷ 主频', 1],
+  ['', 0],
+  ['// 三个要素：指令条数、CPI、主频，三者互相制约', 0],
+  ['// CISC：指令条数↓ 但 CPI↑、主频↑难', 0],
+  ['// RISC：指令条数↑ 但 CPI↓、主频易提高', 0]
+ ],
+ ex:'【2017 真题】M1、M2 同 ISA，主频 1.5GHz 与 1.2GHz，平均 CPI 为 2 与 1，求 P 在两机运行时间之比。<br>'+
+    '<b>解</b>：ISA 相同 ⟹ 指令条数 I 相同，可约掉。<br>'+
+    't₁ = I×2÷1.5G，t₂ = I×1÷1.2G ⟹ t₁/t₂ = (2/1.5)÷(1/1.2) = <b>1.6</b>。<br>'+
+    '⚠️ 注意 M1 主频更高反而更慢（CPI 是 2 倍）——<b>主频高 ≠ 性能好</b>。',
+ mem:['<b>单位</b>：主频 GHz = 10⁹Hz（速率用 <b>10 的幂</b>，不是 2¹⁰）；<b>1GHz ⟹ 时钟周期 1ns</b>，2GHz ⟹ 0.5ns，500MHz ⟹ 2ns。',
+      '<b>「相同 ISA / 相同指令集」＝ 指令条数相同，求比值时可约掉</b>——这句话是钥匙，不是背景。',
+      '题干出现「<b>高级语言</b>程序相同」时，<b>指令条数是未知量</b>（要过各自的编译器），常常只能答"无法确定"。'],
+ und:['时间正比于「指令条数 × CPI」、反比于主频。<b>同一台机器（主频不变）时，各因子的倍数直接连乘</b>——不必设未知数。<br>'+
+      '例：指令数降到 70%、CPI 升到 1.2 倍 ⟹ 新时间 = 旧时间 × 0.7 × 1.2 = 0.84 倍（<b>2014 真题</b>）。'],
+ chk:['闭卷 60 秒内写出两种写法的完整列式；再用「同机比例缩放」口算 2014 真题（20s × 0.7 × 1.2 = 16.8s）。'],
+ src:'王道 p.12　·　练习系统 <a href="练习系统/组原_第1章.html#Q_1.3-17">1.3-17</a> / <a href="练习系统/组原_第1章.html#Q_1.3-16">1.3-16</a> / <a href="练习系统/组原_第1章.html#Q_1.3-03">1.3-03</a>'},
+
+{id:'co1-2', ch:'ch1', lv:1, name:'平均 CPI · 加权平均（数学期望）', tag:'高频',
+ q:'给各类指令的 CPI 与「所占比例」或「指令条数」，求该程序/该机的平均 CPI。',
+ fml:[
+  ['给比例：平均 CPI = Σ (CPIᵢ × 比例ᵢ)', 1],
+  ['给条数：平均 CPI = Σ (CPIᵢ × 条数ᵢ) ÷ 总条数', 1],
+  ['', 0],
+  ['// 本质就是数学期望 E(X) = Σ xᵢ pᵢ', 0],
+  ['', 0],
+  ['算总时间时更省事的走法（绕开 CPI）：', 0],
+  ['总时钟周期数 = Σ (CPIᵢ × 条数ᵢ)', 1],
+  ['执行时间     = 总时钟周期数 × 时钟周期', 1]
+ ],
+ ex:'【2022 真题】主频 1GHz，共 10000 条指令，80% 需 1 个时钟周期、20% 需 10 个，求平均 CPI 与执行时间。<br>'+
+    '<b>解</b>：CPI = 0.8×1 + 0.2×10 = <b>2.8</b>；<br>'+
+    '总周期数 = 10000 × 2.8 = 28000 ⟹ 1GHz ⟹ 1 周期 = 1ns ⟹ 时间 = 28000ns = <b>28μs</b>。<br>'+
+    '⚠️ 错项 28（CPI）和 28ms（时间）分别是"忘乘比例"和"量级差三个数量级"。',
+ mem:['<b>单位</b>：算完时间先看量级——10⁻³ 是 ms、10⁻⁶ 是 μs、10⁻⁹ 是 ns。<b>2.8×10⁻⁵s = 28μs</b>（不是 28ms）。',
+      '<b>比例之和必须 = 100%</b>，算之前先加一遍；<b>指令总数变了就要用新的总数重新归一</b>（综合题 02 的最大坑：STORE 条数没变但比例从 0.12 涨到 0.1345）。'],
+ und:['<b>加权平均的结果必落在最小 CPI 与最大 CPI 之间</b>——这是最快的自查手段。<br>'+
+      '2022 真题里 CPI 只可能在 1 与 10 之间，<b>算出 28 立刻知道错，连往下算都不用</b>。'],
+ chk:['闭卷写出两种写法；用「落在 min 与 max 之间」当场否掉一个错项；<b>综合题必做一步：五类新比例加起来是不是 1</b>。'],
+ src:'王道 p.11、p.15　·　练习系统 <a href="练习系统/组原_第1章.html#Q_1.3-19">1.3-19</a> / <a href="练习系统/组原_第1章.html#Q_1.3-10">1.3-10</a> / <a href="练习系统/组原_第1章.html#Q_1.3-综02">1.3-综02</a>'},
+
+{id:'co1-3', ch:'ch1', lv:1, name:'IPS / MIPS / GIPS · 指令执行速度', tag:'高频',
+ q:'求每秒执行多少条指令；或给 MIPS 反求 CPI、主频。',
+ fml:[
+  ['第一步（永远先算这个）：', 0],
+  ['IPS = 主频 ÷ 平均 CPI            // 单位：条/秒', 1],
+  ['', 0],
+  ['第二步（只是换单位前缀）：', 0],
+  ['MIPS = IPS ÷ 10⁶                // 百万条/秒', 1],
+  ['GIPS = IPS ÷ 10⁹                // 十亿条/秒', 1],
+  ['', 0],
+  ['等价写法：MIPS = 指令条数 ÷ (执行时间 × 10⁶)', 1]
+ ],
+ ex:'【2023 真题】主频 1.5GHz，指令条数 5×10⁵，平均 CPI 1.2，求指令执行速度与用户 CPU 时间。<br>'+
+    '<b>解</b>：IPS = 1.5×10⁹ ÷ 1.2 = 1.25×10⁹ 条/秒 = <b>1.25 GIPS</b>；<br>'+
+    'CPU 时间 = 5×10⁵×1.2 ÷ 1.5×10⁹ = 4×10⁻⁴s = <b>0.4ms</b>。<br>'+
+    '交叉验证：时间 = 指令条数 ÷ IPS = 5×10⁵ ÷ 1.25×10⁹ = 4×10⁻⁴s ✔ 同一答案。',
+ mem:['<b>单位</b>：MIPS 里的 M＝10⁶、GIPS 里的 G＝10⁹（<b>速率一律 10 的幂</b>）。<b>0.4ms 与 0.4μs 差三个量级</b>，别写反。',
+      '<b>是「主频 ÷ CPI」不是「CPI ÷ 主频」</b>——2023 真题的错项 0.8GIPS 正是做反的结果（1.2÷1.5）。'],
+ und:['<b>用量纲防做反</b>：<code>周期/秒 ÷ 周期/条 = 条/秒</code> ✔。反过来除得到的是"秒/条的倒数的倒数"，量纲根本对不上。<br>'+
+      '<b>MIPS 不能跨机器比性能</b>：不同 ISA 的一条指令功能强度不同（M1 的一条 = M2 的多条）。'],
+ chk:['闭卷写出「先算 IPS 再换前缀」两步；用量纲当场判断公式方向；30 秒内做完 2023 真题两问并交叉验证。'],
+ src:'王道 p.12　·　练习系统 <a href="练习系统/组原_第1章.html#Q_1.3-20">1.3-20</a> / <a href="练习系统/组原_第1章.html#Q_1.3-15">1.3-15</a> / <a href="练习系统/组原_第1章.html#Q_1.3-09">1.3-09</a>'},
+
+{id:'co1-4', ch:'ch1', lv:1, name:'Amdahl · 只加速一部分时的总时间', tag:'易错',
+ q:'只提升某一部分（CPU / 某段程序）的速度，求总时间或系统加速比。',
+ fml:[
+  ['新时间 = 不可加速部分 + 可加速部分 ÷ 加速倍数', 1],
+  ['', 0],
+  ['系统加速比 = 旧时间 ÷ 新时间', 1],
+  ['', 0],
+  ['加速比上限 = 旧时间 ÷ 不可加速部分', 1],
+  ['            // 加速倍数→∞ 时的极限', 0],
+  ['', 0],
+  ['// ⚠️ 速度 ×k  ⟹  时间 ÷k   （不是时间 −k%）', 0]
+ ],
+ ex:'【2012 真题】程序 A 运行 100s，其中 90s 为 CPU 时间、其余为 I/O。CPU 速度提高 50%，I/O 不变，求总时间。<br>'+
+    '<b>解</b>：I/O = 100−90 = 10s（不受影响，原样留着）；<br>'+
+    '新 CPU 时间 = 90 ÷ 1.5 = 60s ⟹ 总时间 = 60 + 10 = <b>70s</b>。<br>'+
+    '系统加速比 = 100/70 ≈ 1.43（<b>远小于 CPU 的 1.5 倍</b>）；加速比上限 = 100/10 = <b>10 倍</b>。',
+ mem:['<b>单位/口径</b>：「速度提高 50%」＝速度 ×1.5 ⟹ <b>时间 ÷1.5</b>；<b>不是</b>时间减少 50%（那会算成 55s，正是书上「误区」框点名的错法）。',
+      '<b>先把"不动的那部分"抠出来放一边</b>，只对"动的部分"做除法，最后加回去。漏加回去就得 60s（另一个错项）。'],
+ und:['<b>木桶效应</b>：只要有一段没被加速，整体加速比就被它卡住上限。即使 CPU 快到无穷，本题也降不到 10s 以下。<br>'+
+      '这条主线贯穿全书：<b>Cache 命中率、流水线瓶颈段、I/O 与 CPU 的速度差</b>，讲的都是同一件事。'],
+ chk:['闭卷写出三条列式（新时间 / 加速比 / 上限）；口算 2012 真题得 70s，并说出 55s 和 60s 两个错项各错在哪。'],
+ src:'王道 p.14、p.16　·　练习系统 <a href="练习系统/组原_第1章.html#Q_1.3-14">1.3-14</a>'},
+
+{id:'co1-5', ch:'ch1', lv:1, name:'三个「周期」的换算 · 时钟/指令周期与 CPI', tag:'综合题必用',
+ q:'主频、时钟周期、指令周期、CPI、MIPS 之间的互相反求（综合应用题第一问的常客）。',
+ fml:[
+  ['时钟周期 = 1 ÷ 主频              // 时间，CPU 最小时间单位', 1],
+  ['指令周期 = CPI × 时钟周期        // 时间，执行一条指令的平均耗时', 1],
+  ['CPI      = 指令周期 ÷ 时钟周期   // 无量纲，几个周期', 1],
+  ['', 0],
+  ['指令周期 与 IPS 互为倒数：', 0],
+  ['指令周期 = 1 ÷ IPS = 1 ÷ (MIPS × 10⁶)', 1],
+  ['', 0],
+  ['IPC = 1 ÷ CPI                    // 每周期执行几条指令', 1]
+ ],
+ ex:'【综合题 01】微机 A 主频 8MHz、平均指令执行速度 0.4MIPS；微机 B 主频 12MHz，<b>片内逻辑电路与 A 完全相同</b>。求 B 的平均指令执行速度。<br>'+
+    '<b>解</b>：T_A = 1÷8MHz = 0.125μs；指令周期_A = 1÷0.4MIPS = 2.5μs；<br>'+
+    'CPI = 2.5 ÷ 0.125 = <b>20</b>（← 这就是不变量）；<br>'+
+    '「片内逻辑电路相同」⟹ B 的 CPI 也是 20 ⟹ 指令周期_B = 20 × (1/12)μs = 5/3 μs ⟹ 速度 = <b>0.6MIPS</b>。<br>'+
+    '<b>另解</b>：CPI 相同时速度正比于主频 ⟹ 0.4 × 12/8 = 0.6MIPS ✔ 两法互验。',
+ mem:['<b>单位</b>：0.4MIPS = 0.4×10⁶ 条/秒 ⟹ 每条 2.5×10⁻⁶s = <b>2.5μs</b>。<b>直接写 1/0.4 = 2.5 得到的是 μs 不是 s</b>，单位不写清最容易丢分。',
+      '<b>三个"周期"别混</b>：时钟周期与指令周期都是<b>时间</b>，CPI 是<b>无量纲</b>的个数。混一个整题崩。'],
+ und:['<b>「片内逻辑电路完全相同」＝ 平均 CPI 相等</b>——组原综合题的第一步永远是<b>把这句中文翻译成公式里的量</b>，否则无从下手。'],
+ chk:['闭卷写出三者关系并说出各自量纲；完整做完综合题 01 三问，且第 3 问写出"因电路相同故 CPI 相同"这句依据（<b>这是采分点，跳过会扣过程分</b>）。'],
+ src:'王道 p.15、p.17　·　练习系统 <a href="练习系统/组原_第1章.html#Q_1.3-综01">1.3-综01</a>'},
+
+{id:'co1-6', ch:'ch1', lv:2, name:'FLOPS 家族 · 量级与中文数词换算', tag:'易错',
+ q:'给出 ×× PFLOPS / TFLOPS，问每秒完成多少次浮点运算（常以中文数词作选项）。',
+ fml:[
+  ['MFLOPS = 10⁶   百万次/秒', 1],
+  ['GFLOPS = 10⁹   十亿次/秒', 1],
+  ['TFLOPS = 10¹²  万亿次/秒', 1],
+  ['PFLOPS = 10¹⁵  千万亿次/秒', 1],
+  ['EFLOPS = 10¹⁸  百亿亿次/秒', 1],
+  ['ZFLOPS = 10²¹  十万亿亿次/秒', 1],
+  ['', 0],
+  ['// 从 M=10⁶ 起，每上一级 ×10³', 0],
+  ['中文数词：万=10⁴ 亿=10⁸ 万亿=10¹² 千万亿=10¹⁵ 亿亿=10¹⁶', 1]
+ ],
+ ex:'【2021 真题】“神威·太湖之光”浮点速度 93.0146 PFLOPS，每秒完成的浮点操作次数约为？<br>'+
+    '<b>解</b>：93.0146 × 10¹⁵ = 9.30146 × 10¹⁶ ≈ 9.3×10¹⁶ 次/秒 = <b>9.3 亿亿次</b>。<br>'+
+    '⚠️ 错项「9.3×10¹⁵」与「9.3 千万亿次」其实是同一个数，<b>都错在把 93 写成 9.3 时忘了给指数 +1</b>。',
+ mem:['<b>单位</b>：FLOPS 家族的 M/G/T/P 全部是 <b>10 的幂</b>（速率），不是 2 的幂。',
+      '<b>亿亿 = 10¹⁶，千万亿 = 10¹⁵</b>，差一个量级——这道题真正考的是中文数词。',
+      '科学计数法把系数化到 1~10 时，<b>指数要跟着调</b>：93 = 9.3×10¹。'],
+ und:['<b>认准 FL 两个字母</b>：只有 FLOPS 家族数的是<b>浮点运算</b>，MIPS/CPI/IPC 数的都是"指令/周期"，与浮点无关。<br>'+
+      '<b>MIPS 衡量标量机、MFLOPS 衡量向量机</b>（王道原文措辞，可能被直接考）。'],
+ chk:['闭卷默出六级前缀与量级；把 93.0146 PFLOPS 换成中文数词并说出两个错项的来历。'],
+ src:'王道 p.12　·　练习系统 <a href="练习系统/组原_第1章.html#Q_1.3-18">1.3-18</a> / <a href="练习系统/组原_第1章.html#Q_1.3-13">1.3-13</a>'},
+
+{id:'co1-7', ch:'ch1', lv:1, name:'⚠️ 单位陷阱总表 · K/M/G 与 B/b（全书通用）', tag:'头号失分源',
+ q:'凡是出现 K、M、G、T、B、b 的题——容量、带宽、传输速率、地址位数，全部先过这张表。',
+ fml:[
+  ['【容量】主存/Cache/磁盘/文件 → 2 的幂', 1],
+  ['   1KB = 2¹⁰B = 1024B', 1],
+  ['   1MB = 2²⁰B    1GB = 2³⁰B    1TB = 2⁴⁰B', 1],
+  ['', 0],
+  ['【速率/频率】主频/带宽/传输速率/FLOPS/MIPS → 10 的幂', 1],
+  ['   1kb/s = 10³b/s   1GHz = 10⁹Hz', 1],
+  ['', 0],
+  ['【B 与 b】1B(字节 Byte) = 8b(位 bit)', 1],
+  ['   8Gb/s 的总线 ≠ 8GB/s 的总线，差 8 倍', 1],
+  ['', 0],
+  ['// 习惯：容量用大写 K，速率用小写 k；', 0],
+  ['// 但 M、G 都是大写 → 只能结合上下文判断', 0]
+ ],
+ ex:'<b>典型场景（ch3 起天天用）</b>：<br>'+
+    '① 「4GB 主存，按字节编址，地址多少位？」⟹ 4GB = 2² × 2³⁰ = 2³² B ⟹ <b>32 位</b>。'+
+    '（这里 G 必须取 2³⁰，取 10⁹ 就全错。）<br>'+
+    '② 「总线频率 100MHz、位宽 32 位，带宽多少？」⟹ 100×10⁶ × 32 ÷ 8 = <b>400MB/s</b>。'+
+    '（频率取 10⁶，÷8 是 bit→Byte。）<br>'+
+    '③ 「厂商标称 500GB 的磁盘，系统显示只有 465GB」⟹ 厂商按 10⁹、系统按 2³⁰，500×10⁹ ÷ 2³⁰ ≈ 465。',
+ mem:['<b>容量看 2 的幂，速率看 10 的幂</b>——一句话，但每年都有人栽。',
+      '<b>B 是字节、b 是位，1B = 8b</b>。看到 bps / b/s 就要想到"要不要 ÷8"。',
+      '做题时<b>每写一个 K/M/G，就在草稿纸边上标一句「这是容量(2¹⁰) 还是速率(10³)」</b>。'],
+ und:['为什么会分裂成两套？因为<b>存储是按地址线的二进制寻址来组织的</b>（2ⁿ 个单元），而<b>速率是按国际单位制的十进制来标称的</b>。<br>'+
+      '⟹ 凡是"能被地址选中的东西"（主存单元、Cache 行、页面）就是 2 的幂；凡是"每秒多少"就是 10 的幂。'],
+ chk:['闭卷默出两套基数各管什么；把上面三个典型场景各算一遍。<b>练习系统里「单位换算错」被单列成一个错因标签，刷完 ch1 去统计页看它排第几。</b>'],
+ src:'王道 p.12【注意】框　·　练习系统 <a href="练习系统/组原_第1章.html#Q_1.3-18">1.3-18</a>　·　ch3 起全章通用'}
+];
+
+/* ============ 渲染与交互 ============ */
+const LS='co_fdrill_v1';
+const load=()=>{try{return JSON.parse(localStorage.getItem(LS))||{}}catch(e){return{}}};
+const save=o=>{try{localStorage.setItem(LS,JSON.stringify(o))}catch(e){}};
+const LVN={1:'🔴 默',2:'🟡 改',3:'🔵 读'};
+const days=ts=>Math.floor((Date.now()-ts)/86400000);
+function statusOf(id){
+  const d=load()[id];
+  if(!d||!d.last) return {cls:'s-none',txt:'没默过'};
+  const n=days(d.last);
+  const t=(n===0?'今天默过':n+' 天前默过')+'（累计 '+(d.n||0)+' 次）';
+  if(n<=7) return {cls:'s-ok',txt:t};
+  if(n<=21) return {cls:'s-warn',txt:t};
+  return {cls:'s-bad',txt:t+' · 该复习了'};
+}
+let filt={lv:'all',st:'all'};
+
+function fmlHtml(t){
+  let h='<div class="fmlwrap"><div class="fmlbar"><span class="t">📐 '+t.name+'</span>'
+       +'<button class="mwbtn" data-mw="'+t.id+'">✍️ 默写模式</button></div><pre class="fml" id="F_'+t.id+'">';
+  t.fml.forEach((row,i)=>{
+    const [txt,hide]=row;
+    const esc=txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const isCmt=txt.trim().startsWith('//');
+    h+='<span class="fl'+(hide?' hide':'')+'"><span class="no">'+(txt?(i+1):'')+'</span>'
+      +(isCmt?'<span class="cmt">'+esc+'</span>':esc)+'</span>';
+  });
+  return h+'</pre></div>';
+}
+function cardHtml(t){
+  const st=statusOf(t.id);
+  let h='<div class="algo" id="A_'+t.id+'" data-lv="'+t.lv+'" data-st="'+st.cls+'">'
+   +'<div class="head"><span class="tagl lv'+t.lv+'">'+LVN[t.lv]+'</span>'
+   +'<span class="nm">'+t.name+'</span><span class="tagc">'+t.tag+'</span>'
+   +'<span class="hstat"><span class="dot '+st.cls+'"></span>'+st.txt+'</span>'
+   +'<span class="arrow">▸</span></div><div class="body">';
+  h+='<div class="blk b-q"><b class="h">题型 · 什么时候用它</b>'+t.q+'</div>';
+  h+=fmlHtml(t);
+  h+='<div class="blk b-idea"><b class="h">真题级算例 · 带数字走一遍</b>'+t.ex+'</div>';
+  h+='<div class="blk b-mem"><b class="h">📌 背（必含一条单位/位数）</b><ul>'+t.mem.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>';
+  h+='<div class="blk b-und"><b class="h">🧠 懂</b><ul>'+t.und.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>';
+  h+='<div class="blk b-chk"><b class="h">✍️ 检查点 · 达标判据</b><ul>'+t.chk.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>';
+  h+='<div class="drill"><button class="dbtn" data-drill="'+t.id+'">✍️ 今天默过</button>'
+    +'<span class="dstat" id="D_'+t.id+'">'+st.txt+'</span>'
+    +'<button class="undo" data-undo="'+t.id+'">撤销上次</button></div>';
+  h+='<div class="b-src">来源：'+t.src+'</div>';
+  return h+'</div></div>';
+}
+function renderList(){
+  document.getElementById('list').innerHTML =
+    T.filter(t=>(filt.lv==='all'||String(t.lv)===filt.lv))
+     .filter(t=>(filt.st==='all'||statusOf(t.id).cls===filt.st))
+     .map(cardHtml).join('') || '<div class="note">没有符合条件的模板。</div>';
+  wire();
+}
+function renderOv(){
+  let h='<tr><th>状态</th><th>模板</th><th>章</th><th>等级</th><th class="n">默写次数</th></tr>';
+  T.forEach(t=>{
+    const st=statusOf(t.id), d=load()[t.id]||{};
+    h+='<tr><td><span class="dot '+st.cls+'"></span>'+st.txt+'</td>'
+     +'<td><span class="ovname" data-go="'+t.id+'">'+t.name+'</span></td>'
+     +'<td>'+t.ch+'</td><td>'+LVN[t.lv]+'</td><td class="n">'+(d.n||0)+'</td></tr>';
+  });
+  document.getElementById('ovtab').innerHTML=h;
+  const done=T.filter(t=>statusOf(t.id).cls!=='s-none').length;
+  const due=T.filter(t=>['s-warn','s-bad'].includes(statusOf(t.id).cls)).length;
+  document.getElementById('ovsum').innerHTML=
+    '共 <b>'+T.length+'</b> 条模板（🔴默 '+T.filter(t=>t.lv===1).length
+    +' · 🟡改 '+T.filter(t=>t.lv===2).length+' · 🔵读 '+T.filter(t=>t.lv===3).length
+    +'）　已默过 <b>'+done+'</b> 条　<b style="color:var(--red)">待复习 '+due+'</b> 条';
+  document.querySelectorAll('[data-go]').forEach(el=>el.onclick=()=>{
+    const id=el.dataset.go, card=document.getElementById('A_'+id);
+    if(!card){filt={lv:'all',st:'all'};renderAll();}
+    const c=document.getElementById('A_'+id);
+    if(c){c.classList.add('open');c.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+}
+function renderFilters(){
+  const mk=(k,v,label)=>'<button class="fbtn'+(filt[k]===v?' on':'')+'" data-f="'+k+'" data-v="'+v+'">'+label+'</button>';
+  document.getElementById('filters').innerHTML=
+    '<span class="flabel">等级</span>'+mk('lv','all','全部')+mk('lv','1','🔴 默')+mk('lv','2','🟡 改')+mk('lv','3','🔵 读')
+   +'<span class="flabel" style="margin-left:10px">状态</span>'+mk('st','all','全部')+mk('st','s-none','没默过')
+   +mk('st','s-bad','超 21 天')+mk('st','s-warn','7–21 天')+mk('st','s-ok','7 天内');
+  document.querySelectorAll('#filters .fbtn').forEach(b=>b.onclick=()=>{
+    filt[b.dataset.f]=b.dataset.v; renderAll();
+  });
+}
+function wire(){
+  document.querySelectorAll('.algo .head').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
+  document.querySelectorAll('[data-mw]').forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const pre=document.getElementById('F_'+b.dataset.mw);
+    const on=pre.classList.toggle('masked');
+    b.textContent=on?'👁 显示答案':'✍️ 默写模式';
+  });
+  document.querySelectorAll('[data-drill]').forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const id=b.dataset.drill, o=load(), d=o[id]||{n:0};
+    d.prev=d.last; d.last=Date.now(); d.n=(d.n||0)+1; o[id]=d; save(o);
+    renderAll(); const c=document.getElementById('A_'+id); if(c)c.classList.add('open');
+  });
+  document.querySelectorAll('[data-undo]').forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const id=b.dataset.undo, o=load(), d=o[id];
+    if(!d)return;
+    if(d.prev){d.last=d.prev;delete d.prev;d.n=Math.max(0,(d.n||1)-1);}else{delete o[id];}
+    save(o); renderAll(); const c=document.getElementById('A_'+id); if(c)c.classList.add('open');
+  });
+}
+function renderAll(){renderFilters();renderOv();renderList();}
+renderAll();
+</script>
+</body>
+</html>
