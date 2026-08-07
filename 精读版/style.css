@@ -98,6 +98,9 @@ sub{bottom:-.28em}
 .fml{text-align:center;font-family:var(--serif);font-size:1.02rem;margin:12px 0;
   background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}
 
+/* 宽表在窄屏各自横向滚动，页面本身永不横向滚动（组原 ch2 立，2026-08-07） */
+.tabwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0}
+.tabwrap table{margin:0}
 table{width:100%;border-collapse:collapse;font-size:.87rem;margin:12px 0}
 th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
 th{background:var(--accent-soft);color:var(--accent);white-space:nowrap}

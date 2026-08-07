@@ -143,7 +143,7 @@
   <h4>计算机的功能部件</h4>
   <p>现代计算机将运算器、控制器和各类寄存器高度集成，形成一块称为<b>中央处理器（CPU）</b>的芯片。完整的计算机硬件系统主要包含：<b>中央处理器、存储器、输入/输出控制器、外部设备，以及用于协调这些部件协同工作的总线</b>。</p>
 
-  <table>
+  <div class="tabwrap"><table>
     <tr><th style="width:20%">部件</th><th>书上的定义（考点句）</th></tr>
     <tr><td><b>中央处理器<br>CPU</b></td><td>负责指令执行的核心部件。传统基本组成为<b>运算器和控制器</b>；现代处理器架构中，这两部分被系统地组织为<b>数据通路与控制单元</b>。</td></tr>
     <tr><td><b>数据通路</b></td><td>执行实际运算的硬件通路，核心包括<b>算术逻辑单元（ALU）和通用寄存器组</b>。ALU 负责完成所有算术与逻辑运算；通用寄存器组为 ALU 提供操作数并暂存运算结果，是实现高速数据访问的关键。此外还包含多路选择器、内部互连通路等。</td></tr>
@@ -151,7 +151,7 @@
     <tr><td><b>存储器</b></td><td>按访问特性分为<b>内存与外存</b>。现代内存由<b>主存和高速缓存（Cache）</b>组成；但由于 Cache 是后期引入的，<b>传统上“内存”仅指主存</b>。<b>在冯·诺依曼结构中，主存作为核心的工作存储器</b>，用于存放待执行的程序和数据。外存包括两类：一是可与主存交换数据的磁盘、固态硬盘等，二是用于长期备份的海量存储设备（磁带、光盘等）。</td></tr>
     <tr><td><b>外部设备和<br>设备控制器</b></td><td>外部设备简称外设，也称 I/O 设备。外设通常由<b>物理功能部件</b>（如打印头、鼠标滚轮或按键等）和<b>设备控制器</b>组成，二者在功能或物理实现上往往相互分离：前者负责实际的输入/输出操作，后者则负责与主机通信并控制前者的工作。外设通过设备控制器连接到主机上，各种设备控制器统称 <b>I/O 控制器</b>或 <b>I/O 接口</b>（键盘接口、显示控制器＝显卡、网络控制器＝网卡等）。</td></tr>
     <tr><td><b>总线</b></td><td>计算机中用于在各个部件之间传输信息的<b>公共通路</b>。CPU、主存和 I/O 接口通过总线互连；其中，<b>CPU 和 I/O 接口内部均包含寄存器，部分还集成了高速缓存</b>。</td></tr>
-  </table>
+  </table></div>
 
   <figure>
     <a href="图/组原/图1-1_多总线计算机硬件系统.png" target="_blank" rel="noopener" title="点击看大图">
@@ -198,7 +198,7 @@
 
   <div class="link"><span class="tag">串 · 五大部件 → 后面六章的章节地图（本章最值钱的一张表）</span>
     冯·诺依曼的五大部件不是历史名词，它就是<b>组原这本书的目录</b>：
-    <table style="margin-top:8px">
+    <div class="tabwrap"><table style="margin-top:8px">
       <tr><th>冯·诺依曼部件</th><th>本书哪一章展开</th><th>那一章的核心问题</th></tr>
       <tr><td>运算器</td><td><b>ch2</b> 数据的表示和运算</td><td>数怎么编码、加减乘除电路怎么做、怎么判溢出</td></tr>
       <tr><td>存储器</td><td><b>ch3</b> 存储系统</td><td>层次结构、Cache 三种映射、虚拟存储</td></tr>
@@ -206,7 +206,7 @@
       <tr><td>（指令本身）</td><td><b>ch4</b> 指令系统</td><td>指令格式、寻址方式 —— 即本章说的 ISA</td></tr>
       <tr><td>输入/输出设备</td><td><b>ch7</b> 输入输出系统</td><td>I/O 接口、中断、DMA</td></tr>
       <tr><td>（连接一切的）</td><td><b>ch6</b> 总线</td><td>总线结构、定时、带宽计算</td></tr>
-    </table>
+    </table></div>
     <b>⟹ 本章 1.2.2 一节里出现的每一个名词，后面都有一整章在等它。</b>读到陌生词不必慌，但要知道它归哪一章管。
   </div>
 
@@ -243,7 +243,7 @@
   <p>计算机系统采用多级层次结构，通过<b>逐层抽象</b>隔离复杂的硬件实现与高层应用需求。从用户的应用问题到物理器件，<b>每层都向上提供简洁的接口，向下依赖更底层的功能实现</b>。这种分层设计不仅明确了软/硬件的职责边界，还使系统开发和维护得以并行高效进行。</p>
 
   <p><b>图 1.2 的七层（自上而下）</b>——原书是框图，这里改写成可搜索的表：</p>
-  <table class="layer">
+  <div class="tabwrap"><table class="layer">
     <tr><th style="width:14%">归属</th><th style="width:34%">层</th><th>面向的人 / 这一层在干什么</th></tr>
     <tr class="sw"><td class="lv" rowspan="3">软件</td><td><b>应用（问题）</b></td><td><b>最终用户</b>——要解决的实际问题</td></tr>
     <tr class="sw"><td><b>算法与编程</b></td><td><b>程序员</b>——把问题抽象成正确的算法，再用编程语言写成程序</td></tr>
@@ -252,7 +252,7 @@
     <tr class="hw"><td class="lv" rowspan="3">硬件</td><td><b>微体系结构</b></td><td><b>架构师</b>——处理器内部的硬件组织方式，实现 ISA 定义的功能</td></tr>
     <tr class="hw"><td><b>功能部件 / RTL</b></td><td><b>电子工程师</b></td></tr>
     <tr class="hw"><td><b>电路与器件</b></td><td><b>电子工程师</b></td></tr>
-  </table>
+  </table></div>
 
   <div class="trap"><span class="tag">陷阱 · 操作系统在汇编语言的「下面」，不是上面</span>
     <span class="exam">课后题 1.2-05</span> 问「自上而下的典型层次」，标准答案是
@@ -306,14 +306,14 @@
   </div>
 
   <div class="key"><span class="tag">必记结论 · 编译 vs 解释（1.5 常见问题第 1 条的原文级对照）</span>
-    <table>
+    <div class="tabwrap"><table>
       <tr><th></th><th>编译程序</th><th>解释程序</th></tr>
       <tr><td>翻译时机</td><td>执行<b>前</b>一次性全部翻译</td><td>执行<b>时</b>逐句翻译</td></tr>
       <tr><td>是否生成目标程序</td><td><b>生成</b>，可独立执行的文件</td><td><b>不生成</b>可存储的目标程序</td></tr>
       <tr><td>重复执行</td><td>源程序不变时，<b>无须重复编译</b></td><td>每次运行都要<b>重新翻译一遍</b></td></tr>
       <tr><td>速度</td><td><b>快</b></td><td><b>慢</b></td></tr>
       <tr><td>典型语言</td><td>C、C++</td><td>JavaScript、Python</td></tr>
-    </table>
+    </table></div>
     ⭐ <b>编译程序与汇编程序的区别</b>：若源语言为<b>高级语言</b>（如 C、Java）、目标语言为低级语言（汇编或机器语言），则称为<b>编译程序</b>；若源语言为<b>汇编语言</b>、目标语言为机器语言，则称为<b>汇编程序</b>。
   </div>
 
@@ -548,11 +548,11 @@
     <b>书上说</b>：性能取决于三个要素，三者互相制约。<br>
     <b>潜台词是</b>：命题人会<b>只告诉你其中一两个相等</b>，看你会不会草率地下结论。<br>
     <b>所以能考</b>——把这两道题并排放，出题人的心思就全暴露了：<br>
-    <table style="margin-top:8px">
+    <div class="tabwrap"><table style="margin-top:8px">
       <tr><th>题</th><th>题目锁死了什么</th><th>还剩什么未知</th><th>答案</th></tr>
       <tr><td><span class="exam">课后 1.3-03</span></td><td>CPI 相同（<b>没说 ISA 相同</b>）</td><td>指令条数、主频<b>都</b>未知</td><td><b>无法确定</b></td></tr>
       <tr><td><span class="exam">2017 真题 1.3-17</span></td><td><b>ISA 相同</b> + CPI、主频都给了</td><td>无 —— 指令条数可约掉</td><td>比值 <b>1.6</b></td></tr>
-    </table>
+    </table></div>
     ⭐ <b>「相同 ISA / 相同指令集」这句话不是背景介绍，是解题的钥匙</b>：ISA 相同 ⟹ 同一程序编译出的<b>指令条数相同</b> ⟹ 求比值时可以约掉。<b>没有这句话，1.3-03 那题就只能选"无法确定"。</b><br>
     ⚠️ 1.3-03 的题干还特意写了"功能完全相同的<b>高级语言</b>程序"——<b>高级语言相同 ≠ 机器指令条数相同</b>（要经各自的编译器和 ISA）。<b>看到"高级语言"就要立刻反应：指令条数是未知量。</b>
   </div>
@@ -604,7 +604,7 @@
   <span class="exam">考点追踪：浮点运算指标的概念（2011、2021）</span>
   <div class="key"><span class="tag">必记结论 · FLOPS 家族（要能背到反应过来）</span>
     <b>FLOPS（Floating-point Operations Per Second）</b>：每秒执行的浮点运算次数。
-    <table class="unit">
+    <div class="tabwrap"><table class="unit">
       <tr><th>缩写</th><th>全称</th><th>量级</th><th class="n">中文数词</th></tr>
       <tr><td><b>MFLOPS</b></td><td>Million FLOPS</td><td>10⁶</td><td class="n">百万次/秒</td></tr>
       <tr><td><b>GFLOPS</b></td><td>Giga FLOPS</td><td>10⁹</td><td class="n">十亿次/秒</td></tr>
@@ -612,7 +612,7 @@
       <tr><td><b>PFLOPS</b></td><td>Peta FLOPS</td><td>10¹⁵</td><td class="n">千万亿次/秒</td></tr>
       <tr><td><b>EFLOPS</b></td><td>Exa FLOPS</td><td>10¹⁸</td><td class="n">百亿亿次/秒</td></tr>
       <tr><td><b>ZFLOPS</b></td><td>Zetta FLOPS</td><td>10²¹</td><td class="n">十万亿亿次/秒</td></tr>
-    </table>
+    </table></div>
     <b>记法：从 M = 10⁶ 起，每上一级 ×10³。</b>
   </div>
 
@@ -629,11 +629,11 @@
 
   <div class="trap"><span class="tag">陷阱 · ⚠️ 组原头号单位陷阱：K/M/G/T 到底是 2 的幂还是 10 的幂</span>
     <b>书上【注意】原文</b>：在描述<b>存储容量、文件大小</b>时，K、M、G、T 通常基于 <b>2 的幂次</b>（如 1Kb = 2¹⁰b）；而在描述<b>速率、频率</b>时，k、M、G、T 通常基于 <b>10 的幂次</b>（如 1kb/s = 10³b/s）。习惯上，前者用大写 K，后者用小写 k，但其他前缀（M、G 等）均为大写，<b>具体含义需结合上下文判断</b>。
-    <table style="margin-top:10px">
+    <div class="tabwrap"><table style="margin-top:10px">
       <tr><th>场合</th><th>基数</th><th>例子</th></tr>
       <tr><td><b>容量</b>：主存大小、Cache 大小、磁盘容量、文件大小</td><td><b>2 的幂</b></td><td>1KB = 2¹⁰B = 1024B</td></tr>
       <tr><td><b>速率/频率</b>：主频、总线带宽、传输速率、FLOPS/MIPS</td><td><b>10 的幂</b></td><td>1kb/s = 10³b/s；1GHz = 10⁹Hz</td></tr>
-    </table>
+    </table></div>
     ⚠️ <b>再加一层：B 是字节（Byte），b 是位（bit），1B = 8b。</b>「8Gbps 的总线」和「8GB/s 的总线」差 8 倍。<br>
     <b>本章的 MIPS/FLOPS 全部按 10 的幂算；从第 3 章起算容量时全部按 2 的幂算。</b>
   </div>
@@ -660,24 +660,24 @@
   </div>
 
   <div class="key"><span class="tag">必记结论 · ⭐ 本节五个公式的最终汇总（考前只看这一块）</span>
-    <table>
+    <div class="tabwrap"><table>
       <tr><th style="width:30%">量</th><th>公式</th><th style="width:26%">单位陷阱</th></tr>
       <tr><td><b>时钟周期</b></td><td>= 1 / 主频</td><td>1GHz ⟹ 1ns；1MHz ⟹ 1μs</td></tr>
       <tr><td><b>平均 CPI</b></td><td>= Σ(CPIᵢ × 比例ᵢ)　或　Σ(CPIᵢ × 条数ᵢ) ÷ 总条数</td><td>结果必落在最小 CPI 与最大 CPI 之间</td></tr>
       <tr><td><b>CPU 执行时间</b></td><td>= (指令条数 × CPI) ÷ 主频 = 总时钟周期数 ÷ 主频</td><td>别漏乘指令条数</td></tr>
       <tr><td><b>IPS / MIPS / GIPS</b></td><td>IPS = 主频 ÷ CPI；MIPS = IPS ÷ 10⁶；GIPS = IPS ÷ 10⁹</td><td>是 ÷CPI 不是 ×CPI（量纲自查）</td></tr>
       <tr><td><b>Amdahl（提速）</b></td><td>新时间 = 不可加速部分 + 可加速部分 ÷ 加速倍数</td><td>速度×k ⟹ 时间÷k，不是时间−k%</td></tr>
-    </table>
+    </table></div>
     ⭐ <b>还有两个"倒数关系"要一起记</b>：<b>IPC = 1 / CPI</b>（IPC = 每个时钟周期执行多少条指令）；<b>指令周期 = CPI × 时钟周期</b>（＝执行一条指令的平均时间，与 MIPS 互为倒数）。
   </div>
 
   <div class="trap"><span class="tag">陷阱 · 三个「周期」混一个，整道综合题崩</span>
-    <table>
+    <div class="tabwrap"><table>
       <tr><th>名称</th><th>含义</th><th>量纲</th><th>综合题 1.3-综01 里的值</th></tr>
       <tr><td><b>时钟周期</b></td><td>1/主频，CPU 最小时间单位</td><td>时间</td><td>A：0.125μs</td></tr>
       <tr><td><b>指令周期</b></td><td>执行一条指令的<b>总时间</b></td><td>时间</td><td>A：2.5μs</td></tr>
       <tr><td><b>CPI</b></td><td>指令周期 ÷ 时钟周期</td><td><b>无量纲</b>（几个周期）</td><td>A：20</td></tr>
-    </table>
+    </table></div>
     <b>关系：指令周期 = CPI × 时钟周期</b>，三者知二求一。<br>
     <span class="exam">课后题 1.3-综01</span> 的第 3 问就是靠这条：题干说"两台微机<b>片内逻辑电路完全相同</b>"⟹ <b>平均 CPI 相同（= 20）</b>⟹ 用 B 的时钟周期反算 B 的指令周期与 MIPS。<b>不把那句中文翻译成"CPI 相同"，第 3 问就无从下手。</b>
   </div>
@@ -752,11 +752,11 @@
   <div class="mine"><span class="tag">挖 · 「体系结构 vs 组成」和「ISA vs 微架构」是同一条线，别当成两组词背</span>
     <b>书上在 1.2.4 讲了 ISA / 微架构，又在 1.5 讲体系结构 / 组成，中间没有明说两者的关系。</b><br>
     <b>潜台词是</b>：<u>它们就是同一条分界线的两套叫法</u>——<br>
-    <table style="margin-top:8px">
+    <div class="tabwrap"><table style="margin-top:8px">
       <tr><th>1.2.4 的叫法</th><th>1.5 的叫法</th><th>判据</th><th>例子</th></tr>
       <tr><td><b>ISA</b>（软件可见部分）</td><td><b>计算机体系结构</b></td><td>程序员<u>能</u>看见</td><td>有没有乘法指令、有几个通用寄存器</td></tr>
       <tr><td><b>微体系结构</b></td><td><b>计算机组成</b></td><td>程序员<u>看不见</u>（透明）</td><td>用阵列乘法器还是移位相加、几级流水线</td></tr>
-    </table>
+    </table></div>
     <b>所以能考</b>：判断题一律用同一把尺子——<b>「程序员写代码时需要知道它吗？」需要 ⟹ 体系结构/ISA；不需要 ⟹ 组成/微架构。</b><br>
     ⚠️ <b>顺带解决一个常见困惑</b>：Cache 属于哪个？<b>属于"组成"</b>——它对程序员透明，加不加 Cache 都不用改程序。而<b>"有没有浮点指令"属于体系结构</b>。
   </div>
