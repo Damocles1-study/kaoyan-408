@@ -102,6 +102,14 @@ pre.code{font-family:var(--mono);font-size:.82rem;background:var(--accent-soft);
    配合 .track{min-width:0} 才能让 pre.code 的 overflow-x:auto 真正生效。 */
 .tracks{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 @media (max-width:620px){.tracks{grid-template-columns:minmax(0,1fr)}}
+/* ⚠️ 核对栏在 .wrap(920px) 下每栏只有 ~388px ≈ 51 个等宽单位，
+   位串对齐竖式（32 位分域、补码推导、CPI 列式）普遍 55–75 单位，一律要横向拖动，
+   而对齐竖式一被拖动，行首的标签列就被推出视野、失去意义（组原 ch1/ch2 实测）。
+   ⟹ 宽屏上让核对栏向两侧各探出 130px（正文段落宽度保持 920 不变，阅读行长不受影响）。
+   窄屏（<1200px）不触发，仍走原来的 388px + 横向滚动。 */
+@media (min-width:1200px){
+  .tracks{width:calc(100% + 260px);margin-left:-130px}
+}
 .track{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:.86rem;min-width:0}
 .track.book{background:var(--blue-soft)}
 .track.claude{background:var(--purple-soft)}
@@ -202,6 +210,14 @@ footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:36px;line
 .q table.qtab{border-collapse:collapse;margin:10px 0;font-size:.85rem;font-family:var(--mono);
   display:block;overflow-x:auto;max-width:100%;white-space:nowrap}
 .q table.qtab th,.q table.qtab td{border:1px solid var(--line);padding:4px 10px;text-align:center}
+/* .qtab 默认 white-space:nowrap —— 位串/机器数对齐表靠它保持不折行。
+   但"选项 × 错在哪"这类<b>散文格</b>用 nowrap 会把表撑到 800px+ 而必须横向拖动。
+   ⟹ 散文表加 .tw（text-wrap），让单元格正常折行，宽度自然收进核对栏。 */
+/* 上划线（补码推导里的 Y 反相、C_out 取反、溢出逻辑式）。
+   ⚠️ 绝对不要用 <u> 模拟：漏一个 </u> 会让其后整章题干全带下划线（铁律 §5）。 */
+.ovl{text-decoration:overline}
+.q table.qtab.tw{white-space:normal}
+.q table.qtab.tw td,.q table.qtab.tw th{text-align:left;font-family:var(--sans)}
 .q table.qtab th{background:var(--accent-soft);color:var(--accent);font-family:var(--sans);font-weight:600}
 .q table.qtab td.rowh{background:var(--accent-soft);color:var(--accent);font-family:var(--sans)}
 /* 题干里的补充说明（第6章起用于把原书插图的信息转成文字，如"图中弧集为…"） */

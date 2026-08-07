@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>练习 · 组成原理 第2章 数据的表示和运算</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="组原_index.html">← 组原练习系统首页</a>
+  <header>
+    <h1>计算机组成原理 · 第2章　数据的表示和运算</h1>
+    <div class="sub">题源：27 王道《计算机组成原理》第 2 章章节习题 · 每题「📕书答案 × 🤖Python 复算核对」交叉验证 ·
+      <a href="../精读版/组原_第2章.html" style="color:var(--accent)">📖 本章精读版</a> ·
+      <a href="../计算题_公式模板手册.html" style="color:var(--accent)">🧮 计算模板手册</a> ·
+      <a href="组原_套路库.html" style="color:var(--accent)">🎯 套路库</a> ·
+      <a href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第2章_数据的表示和运算.pdf" style="color:var(--accent)">📄 打开本章电子书</a></div>
+  </header>
+  <div id="root"></div>
+  <footer>本章题库建设中 · 已上线 <b>73 题</b>：2.1 数制与编码 34 题（<b>8 道统考真题</b> 2012/2015/2016/2018/2019/2021/2022/2025）·
+  2.2 运算方法和运算电路 39 题（35 选择 + 4 综合，<b>13 道统考真题</b> 2009/2010/2011/2013/2014/2018×3/2020/2023/2024×2/2025）<br>
+  ⏳ 待上线：2.3 浮点数的表示与运算（45 选择 + 5 综合，含 21 道真题，是全章题量与真题密度双第一）<br>
+  本章全部数值均由 Claude 用 Python <b>独立复算</b>后再与书答比对，逐项吻合 ✅ ·
+  🔍 复算中发现书 p43 一处交叉引用错误：「补码除法的硬件结构与<b>图 2.11</b>所示……」应为<b>图 2.12</b>（图 2.11 是补码乘法器）<br>
+  🔥 整章总纲：<b>「一串位，两种语义」</b>—— 2.1 考类型转换、2.2 考 CF/OF 并存、2.3 考 int 与 float 互解释，一节考一次。</footer>
+</div>
+<script src="data_co.js"></script>
+<script src="engine.js"></script>
+<script>
+SubjApp.mount({root:'#root', scope:{type:'chapter',ch:2}, scopeLabel:'组原第2章',
+  mode:'practice', allowModeToggle:true, groupBySec:true});
+</script>
+</body>
+</html>
