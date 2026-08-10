@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>精读版 · 计算机组成原理 第4章 指令系统</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* 本章专用：指令字段划分条、寻址方式对照表、栈帧图一律用可搜索的表格/位域条重排；
+     只有寻址方式示意图、栈帧图、数据通路图裁原书。 */
+  .ovl{text-decoration:overline}                      /* 上划线：替代危险的 u 标签，见 CLAUDE.md 铁律 §5 */
+  /* 窄屏守卫：本章有大量 "ADD/SUB/MUL/..."、"2009/2013/2014" 这类无空格的斜杠串，
+     不加这一条会在 375px 下顶出整页横向滚动（承 ch3 沉淀）。 */
+  .key,.mine,.trap,.bg,.link,figcaption,p{overflow-wrap:anywhere}
+  table.mono td{font-family:var(--mono);font-size:.83rem}
+  table.mono td.n{font-family:var(--sans)}
+  table.bits{font-family:var(--mono);font-size:.8rem;text-align:center}
+  table.bits td,table.bits th{padding:5px 4px;text-align:center;white-space:nowrap}
+  table.bits td.lab{font-family:var(--sans);text-align:left;white-space:nowrap}
+  /* 指令字段条：把「哪几位是操作码、哪几位是地址码」画成一条 */
+  .fld{display:flex;margin:12px 0;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:.83rem}
+  .fld div{padding:7px 4px;text-align:center;border-right:1px solid var(--line);line-height:1.5}
+  .fld div:last-child{border-right:0}
+  .fld .hi{background:var(--red-soft)}
+  .fld .mid{background:var(--amber-soft)}
+  .fld .lo{background:var(--blue-soft)}
+  .fld .gr{background:var(--green-soft)}
+  .fld b{display:block;font-family:var(--mono);font-size:.76rem;color:var(--muted);font-weight:400}
+  .steps{counter-reset:st;margin:12px 0}
+  .steps .st{background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:9px 13px 9px 40px;margin:7px 0;position:relative;font-size:.88rem}
+  .steps .st::before{counter-increment:st;content:counter(st);position:absolute;left:12px;top:9px;
+    width:19px;height:19px;border-radius:50%;background:var(--accent);color:#fff;
+    font-size:.74rem;line-height:19px;text-align:center;font-family:var(--mono)}
+  .steps .st b{color:var(--accent)}
+  /* 栈帧竖表：从高地址到低地址一格一格排，配合裁下来的图 4.12 对读 */
+  table.frame{font-size:.82rem}
+  table.frame td{text-align:center;padding:6px 8px}
+  table.frame td.addr{font-family:var(--mono);color:var(--muted);text-align:right;white-space:nowrap}
+  table.frame tr.hl td{background:var(--amber-soft);font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>精读版 · 组成原理 第 4 章　指令系统</h1>
+    <div class="sub">王道《计算机组成原理》第 4 章（书内 p.148–194，<b>47 页</b>）正文重排 · 只留考点骨架 · 每节一键跳回原书页 · 配 <a href="../练习系统/组原_第4章.html" style="color:var(--accent)">第 4 章练习（83 题、27 道真题）</a>、<a href="../计算题_公式模板手册.html" style="color:var(--accent)">计算模板手册</a> 与 <a href="../练习系统/组原_套路库.html" style="color:var(--accent)">套路库</a> 边读边算</div>
+  </header>
+
+  <div class="legend">
+    <b>怎么读这一页：</b>正文是书上的内容，我只做了<b>结构重排和取舍</b>。色块分两个维度——<br>
+    <b>① 按来源：</b>
+    <span class="swatch" style="background:var(--amber)"></span><b style="color:var(--amber)">必记结论</b>（书上的考点句）、
+    <span class="swatch" style="background:var(--blue)"></span><b style="color:var(--blue)">我的补讲</b>、
+    <span class="swatch" style="background:var(--red)"></span><b style="color:var(--red)">陷阱</b>。<br>
+    <b>② 按动作：</b>
+    <span class="swatch" style="background:var(--line);border:1px dashed var(--muted)"></span><b style="color:var(--muted)">背景 · 考试不碰</b>——虚线灰块，<b>明确告诉你哪几段可以快速划过</b>；
+    <span class="swatch" style="background:var(--green)"></span><b style="color:var(--green)">知识串联</b>——绿块，就地标出<b>这里和前面哪一章、和《操作系统》《数据结构》哪个概念是同一件事</b>。<br>
+    右侧 <span class="pg" style="float:none;margin:0">📄 p.N</span> 点开跳到原书对应页；紫色 <span class="exam" style="margin:0">考点追踪</span> 是王道标注的真题年份。<br>
+    <b style="color:var(--red)">⚠️ 本章的读法和别的章不一样</b>：4.1、4.2 是<b>选择题主场</b>（27 道真题里 18 道在这两节），
+    而 <b>4.3 一道选择真题都没有，7 道综合大题却全是统考真题</b>（2017 / 2019×2 / 2023 / 2024×2 / 2025）。
+    <b>只刷选择的人会在 4.3 上整块丢分</b>——所以 4.3 这一节我按「读汇编」的方式重写，配了栈帧图和真题机器码对照。<br>
+    <b style="color:var(--amber)">另：本页凡写"复算""实测"的数字，都是我在做这 83 道题时用 Python 真算过的</b>，不是抄书——<b>包括抓出的两处书误</b>（见 4.3 的两个红块）。
+  </div>
+
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=1">📄 p.148</a>
+  <h2>本章定位</h2>
+  <p><b>考纲内容</b>：（一）<b>指令格式的基本概念</b>。（二）<b>指令格式</b>。（三）<b>寻址方式</b>。（四）<b>数据的对齐和大/小端存放方式</b>（该考点已在<a href="组原_第2章.html">第 2 章 2.3 节</a>讲过）。（五）<b>CISC 和 RISC 的基本概念</b>。（六）<b>高级语言程序与机器级代码之间的对应</b>——编译器、汇编器与链接器的基本概念（已在<a href="组原_第1章.html">第 1 章 1.2 节</a>讲过）；选择结构语句的机器级表示；循环结构语句的机器级表示；过程（函数）调用对应的机器级表示。</p>
+  <p><b>王道的复习提示</b>：指令系统是<em>表征一台计算机性能的重要因素</em>。应掌握<b>各种寻址方式的特点及有效地址的计算</b>、<b>三种偏移寻址（相对、基址、变址）的地址计算方法</b>、CISC 与 RISC 的特点与区别。<b>2022 年大纲新增机器级表示相关内容</b>，而机器级代码题型在历年统考中多次出现，需具备<b>读懂汇编代码</b>的能力。本章既可能出选择题，也可能结合其他章节出综合题；指令格式、机器指令、寻址方式与 <b>CPU 指令执行过程</b>密切相关。</p>
+
+  <div class="link"><span class="tag">知识串联 · 本章 27 道真题的<b>逐年分布</b>——看清哪几节是"每年必考区"</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>年份</th><th>4.1</th><th>4.2</th><th>4.3</th><th>4.4</th></tr>
+      <tr><td class="n">2009</td><td class="n"></td><td class="n">相对寻址</td><td class="n"></td><td class="n"><b>RISC 特点</b></td></tr>
+      <tr><td class="n">2010</td><td class="n"></td><td class="n"><b>综合：指令格式 + 相对寻址</b></td><td class="n"></td><td class="n"></td></tr>
+      <tr><td class="n">2011</td><td class="n"></td><td class="n">偏移寻址范畴 · 无符号转移条件</td><td class="n"></td><td class="n"></td></tr>
+      <tr><td class="n">2013</td><td class="n"></td><td class="n">变址寻址 · <b>综合：条件转移数据通路</b></td><td class="n"></td><td class="n"></td></tr>
+      <tr><td class="n">2014</td><td class="n"></td><td class="n">STORE 偏移量范围</td><td class="n"></td><td class="n"></td></tr>
+      <tr><td class="n">2016</td><td class="n"></td><td class="n">先变址后间址</td><td class="n"></td><td class="n"></td></tr>
+      <tr><td class="n">2017</td><td class="n"><b>扩展操作码</b></td><td class="n">变址适用场景</td><td class="n"><b>综合：CISC 判定 + CF</b></td><td class="n"></td></tr>
+      <tr><td class="n">2018</td><td class="n"></td><td class="n">double 数组下标</td><td class="n"></td><td class="n"></td></tr>
+      <tr><td class="n">2019</td><td class="n"></td><td class="n">大端 LSB 地址</td><td class="n"><b>综合 ×2：递归机器码 + Cache/VIPT</b></td><td class="n"></td></tr>
+      <tr><td class="n">2020</td><td class="n"></td><td class="n">直接寻址范围 0~255</td><td class="n"></td><td class="n"></td></tr>
+      <tr><td class="n">2021</td><td class="n"><b>扩展操作码</b></td><td class="n"><b>综合：R/I/J 三型指令</b></td><td class="n"></td><td class="n"></td></tr>
+      <tr><td class="n">2022</td><td class="n"><b>ISA 边界 ×2 + 扩展操作码</b></td><td class="n"></td><td class="n"></td><td class="n"></td></tr>
+      <tr><td class="n">2023</td><td class="n"></td><td class="n">寻址特征字段的作用</td><td class="n"><b>综合：数组 + 缺页</b></td><td class="n"></td></tr>
+      <tr><td class="n">2024</td><td class="n"></td><td class="n"></td><td class="n"><b>综合 ×2：RISC 指令格式 + 数据通路</b></td><td class="n"></td></tr>
+      <tr><td class="n">2025</td><td class="n"><b>ISA 边界</b></td><td class="n"></td><td class="n"><b>综合：补码除法器 + 异常</b></td><td class="n"><b>RISC 特点</b></td></tr>
+    </table></div>
+    <b>2009–2025 逐年全覆盖，一年不缺</b>。三条明显的规律：<br>
+    ① <b>4.2 是"选择题稳定输出区"</b>，2009–2023 几乎每年一道；<br>
+    ② <b>4.3 从 2017 起接管了综合题</b>，<b>2019/2024 各出两道，2023/2025 各一道——近九年有六年考</b>；<br>
+    ③ <b>4.1 的 ISA 边界题集中在 2022 与 2025</b>，<b>是近年新宠</b>（2022 一年出两道）。<br>
+    ⟹ <b>按这张表安排复习：4.2 保正确率、4.3 保大题、4.1 盯 ISA 边界与扩展操作码、4.4 背表。</b>
+  </div>
+
+    <div class="key"><span class="tag">必记结论 · 章首三问（书把答案放在 4.5，我把问题提到这里当靶子）</span>
+    读之前先看一眼，读完回来自己答一遍——<b>答不上来的那一问，就是你这一章没读透的地方</b>：<br>
+    ① 什么是指令？什么是指令系统？<b>为什么要引入指令系统</b>？<br>
+    ② 一般来说，指令由哪些部分组成？<b>各部分的作用</b>是什么？<br>
+    ③ 对一个指令系统而言，<b>寻址方式多或少会带来什么影响</b>？<br>
+    <span style="color:var(--muted);font-size:.86rem">（三问的完整答案在本页最后「4.5 本章小结」，别提前翻。）</span>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 这一章的总纲：<b>指令系统是"硬件承诺给软件的那张合同"</b>（先看这一段再往下读）</span>
+    <b>书上说</b>：指令系统是 ISA 中最核心的部分，<u>ISA 完整定义了软件与硬件之间的接口</u>。<br>
+    <b>潜台词是</b>：<b>这一章 47 页只在回答一个问题——「合同里写了什么，没写什么」。</b>
+    写进合同的（程序员看得见的）归 ISA，没写进合同的（怎么实现）归微架构，<b>而统考三年三次直接考这条分界线</b>（2022×2、2025）。
+    整章四节其实是这张合同的四个条款：<br>
+    <div class="tabwrap"><table class="mono" style="margin-top:8px">
+      <tr><th>节</th><th>合同条款</th><th>页数</th><th>真题</th><th>题型</th></tr>
+      <tr><td class="n"><b>4.1 指令系统</b></td><td class="n">一条指令长什么样（操作码 + 地址码怎么切）</td><td class="n">8</td><td class="n">4</td><td class="n">选择 + 小计算</td></tr>
+      <tr><td class="n"><b>4.2 寻址方式</b></td><td class="n">地址码怎么变成真地址（10 种算法）</td><td class="n"><b>15</b></td><td class="n"><b>14</b></td><td class="n"><b>选择题主场</b></td></tr>
+      <tr><td class="n"><b>4.3 机器级代码</b></td><td class="n">一段 C 代码翻成机器码长什么样</td><td class="n"><b>19</b></td><td class="n">7</td><td class="n"><b>全是 15 分综合题</b></td></tr>
+      <tr><td class="n"><b>4.4 CISC/RISC</b></td><td class="n">合同订得复杂还是简单，各有什么后果</td><td class="n">3</td><td class="n">2</td><td class="n">纯记忆挑错题</td></tr>
+    </table></div>
+    <b>所以能考 Z</b>：<b>4.2 的失分密度是 0.93 真题/页，全章第一，先刷它</b>；但 <b>4.3 按分值算才是第一重心</b>——
+    它 19 页只压着 7 道真题，可那 7 道每道 15 分，且<b>一道选择题都不出</b>。
+    <b>换算一下：4.2 全部 14 道真题合计约 28 分，4.3 的 7 道合计约 105 分。</b>
+    <b>时间怎么分</b>：4.2 用来抢正确率，4.3 用来保底线，4.1 是 4.2 的前置，4.4 一晚上背完。<br>
+    <b>配套动手</b>：<a href="../练习系统/组原_第4章.html">练习系统第 4 章 83 题</a>（每题带 Python 独立复算）、<a href="../计算题_公式模板手册.html">计算模板手册 ch4 条目</a>。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 第 4 章是"承上启下"的枢纽章，前后各接三条线</span>
+    <span class="hub">承上 · ch2</span> <b>大/小端、数据对齐</b>在 2.3 讲过，本章 4.2、4.3 反复用它判端序；<b>补码符号扩展</b>（2.2）是本章形式地址为负时的第一步；<b>浮点数机器数结构</b>（2.3）决定了 2017 真题「float 不能靠移位 ×2」。<br>
+    <span class="hub">承上 · ch3</span> <b>Cache 地址划分与 VIPT</b>（3.5）、<b>页式虚存与缺页</b>（3.6）在 4.3 的 2019、2023、2024 三道真题里直接出现——<b>这三道题一半分数是 ch3 的</b>。<br>
+    <span class="hub">启下 · ch5</span> <b>指令执行过程、数据通路、控制器、指令流水线、异常与中断</b>全部以本章为输入：没有指令格式就没有译码，没有寻址方式就没有取数通路，<b>没有 RISC 的定长指令就没有好流水线</b>。<br>
+    <span class="hub">跨科 · 操作系统</span> <b>基址寻址 ↔ 程序重定位与多道程序</b>；<b>栈帧与 call/ret ↔ 函数调用、中断现场保护</b>；<b>特权指令 ↔ 内核态/用户态</b>。<br>
+    <span class="hub">跨科 · 数据结构</span> <b>4.3 的运行时栈就是数据结构里的栈</b>，只不过"元素"是栈帧；<b>数组地址公式</b> <code>首地址 + i×行宽×元素大小</code> 就是数据结构里的行主序存储映射。<br>
+    ⟹ 读本章时手边最好开着 <a href="组原_第3章.html">ch3 精读版</a>，遇到绿块就翻回去对一眼。
+  </div>
+
+  <!-- ==================== 4.1 ==================== -->
+  <h2>4.1　指令系统</h2>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=1">📄 p.148</a>
+
+  <div class="link"><span class="tag">知识串联 · 「定长指令字有利于流水线」这一句，本章说了三遍，指的是同一件事</span>
+    <span class="hub">4.1.2</span> 「<b>定长指令取指和译码简单，有利于流水线实现</b>」——第一次出现，一句话带过。<br>
+    <span class="hub">4.4 表 4.3</span> 「<b>RISC 指令定长 ⟹ 必须实现流水线；CISC 不固定 ⟹ 可以通过一定方式实现</b>」——第二次，变成 CISC/RISC 的分水岭。<br>
+    <span class="hub">4.3 真题</span> 2017 综 01 第 1 问「M 是 RISC 还是 CISC」<b>判据就是"指令长短不一"</b>——第三次，变成 3 分。<br>
+    <span class="hub">ch5 5.4</span> 到那里才讲透<b>为什么</b>：流水线要求<b>每一段的时间大致相等</b>，而<b>变长指令连"取指要取几个字节"都得先译码才知道</b>，
+    <b>取指段的长度不确定 ⟹ 流水段切不出来</b>。<b>现代 x86 的办法是先把变长指令译成定长的微操作（μop），再去流水——相当于在硬件里塞了个翻译层。</b><br>
+    ⟹ <b>读到"定长"两个字就该条件反射想到"流水线"，这是本章与 ch5 之间最粗的一根线。</b>
+  </div>
+
+    <h3>4.1.1　指令集体系结构（ISA）</h3>
+  <span class="exam">考点追踪：指令集体系结构（ISA）的内容（2022、2025）</span>
+
+  <p><b>机器指令</b>（简称指令）＝ 指示计算机执行某种操作的命令。一台计算机<b>所有指令的集合</b>构成该机的<b>指令系统</b>（也称指令集）。<b>指令系统是 ISA 中最核心的部分</b>；ISA 完整定义了软件与硬件之间的接口，是机器语言或汇编语言程序员必须掌握的基础。</p>
+
+  <div class="key"><span class="tag">必记结论 · ISA 规定的四条内容（逐条背，2022 与 2025 真题就在这四条上做文章）</span>
+    <div class="tabwrap"><table class="mono">
+      <tr><th>#</th><th>ISA 规定的内容</th><th>本章哪里用到</th></tr>
+      <tr><td class="n">①</td><td class="n"><b>指令格式、寻址方式、操作类型</b>，以及各操作所需<b>操作数的个数、类型和寻址约束</b></td><td class="n">4.1、4.2 全节</td></tr>
+      <tr><td class="n">②</td><td class="n"><b>操作数的数据类型</b>，以及是按<b>大端还是小端</b>方式存放</td><td class="n">4.2 第 19/31 题、4.3 判端序</td></tr>
+      <tr><td class="n">③</td><td class="n">程序可访问的<b>寄存器编号、数量和位数</b>，<b>存储空间的大小及编址方式</b></td><td class="n">4.2 三段式计算、2021/2024 真题</td></tr>
+      <tr><td class="n">④</td><td class="n">程序员可见的<b>控制状态</b>，如<b>程序计数器 PC、条件码的定义与行为</b></td><td class="n">4.2 相对寻址、4.3 标志位</td></tr>
+    </table></div>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · ISA 边界题只有一条判据：<b>「换个厂家实现，程序还能不能原样跑」</b></span>
+    <b>书上说</b>：ISA 是<u>软件与硬件之间接口的完整定义</u>，控制信号<u>属于微架构层面的实现细节</u>。<br>
+    <b>潜台词是</b>：判一个东西在不在 ISA 里，别去背清单，问自己一句——
+    <b>「如果 Intel 和 AMD 在这件事上做得不一样，同一个 .exe 还能不能跑？」</b><br>
+    ・改了<b>指令格式 / 寻址方式 / 寄存器个数 / 大小端</b> ⟹ <b>程序跑不了</b> ⟹ <b>在 ISA 里</b>；<br>
+    ・改了<b>时钟周期 / 加法器用串行还是并行进位 / 用微程序还是硬布线 / 单总线还是三总线</b> ⟹ <b>程序照跑，只是快慢不同</b> ⟹ <b>不在 ISA 里</b>。<br>
+    <b>所以能考 Z</b>：2022 真题问「时钟周期、加法器进位方式在不在」——用这句话一秒排除；
+    2025 真题问「是否采用定长指令字格式」——<b>指令定不定长直接决定了机器码怎么切，程序当然跑不了，所以在 ISA 里</b>。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 「在 ISA / 不在 ISA」对照表（三年三考，本节最高频，直接背）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>✅ 在 ISA（程序员可见）</th><th>❌ 不在 ISA（微架构实现细节）</th></tr>
+      <tr><td class="n">指令格式与指令类型</td><td class="n">执行每条指令时的<b>控制信号</b>（2022 考过）</td></tr>
+      <tr><td class="n">寻址方式（2023 明确考「数据寻址方式属于 ISA」）</td><td class="n"><b>CPU 的时钟周期</b>（2022 考过）</td></tr>
+      <tr><td class="n">操作数的数据类型、<b>大端/小端</b></td><td class="n"><b>加法器的进位方式</b>（串行/并行，2022 考过）</td></tr>
+      <tr><td class="n"><b>通用寄存器的个数与位数</b>（2022 考过）</td><td class="n"><b>是否采用阵列乘法器</b>（2025 考过）</td></tr>
+      <tr><td class="n">存储空间大小与编址方式</td><td class="n"><b>微程序控制器还是硬布线控制器</b>（2025 考过）</td></tr>
+      <tr><td class="n">PC、条件码的定义与行为</td><td class="n"><b>单总线还是多总线数据通路</b>（2025 考过）</td></tr>
+      <tr><td class="n"><b>是否采用定长指令字格式</b>（2025 考过）</td><td class="n">Cache 有几级、多大、什么映射方式</td></tr>
+    </table></div>
+    ⚠️ <b>右列全是 ch5（CPU）和 ch3（Cache）的内容</b>——这不是巧合：<b>ch5 讲的整章都是"不在 ISA 里的那一半"</b>。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · ISA 这条分界线，就是整本《组成原理》的目录</span>
+    <span class="hub">本章</span> 4.1–4.4 讲的<b>全是 ISA 这一侧</b>（合同条款）。<br>
+    <span class="hub">ch5 CPU</span> 讲的<b>全是微架构那一侧</b>（怎么兑现合同）：数据通路、控制器、流水线——<b>2025 真题的三个错误选项（阵列乘法器、微程序控制器、单总线数据通路）正好是 ch5 的三个小节标题</b>。<br>
+    <span class="hub">ch3 存储</span> Cache 对程序员透明 ⟹ 不在 ISA；<b>而虚拟存储器的页大小、地址位数是程序可感知的，属于"存储空间大小与编址方式"，在 ISA 里</b>。<br>
+    <span class="hub">操作系统</span> ISA 里那条「程序员可见的控制状态」在 OS 里的名字叫 <b>PSW（程序状态字）</b>，进程切换时保存的就是它 + PC + 通用寄存器——<b>这三样东西之所以要保存，正因为它们在 ISA 里</b>。
+  </div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：高级语言为什么"隐藏了机器级细节"</span>
+    书上这一段说：大多数程序员用 C/C++/Java 编程，开发效率高且不易出错；但高级语言抽象层次高，隐藏了许多机器级细节，导致程序员难以利用与硬件结构相关的优化手段提升性能；<b>若能充分理解 ISA 及底层硬件特性，则能开发出性能更优的程序</b>。
+    <b>这是全章唯一一段"励志话"，统考从不考它</b>，看一眼知道 4.3 那一节为什么存在就行。
+  </div>
+
+  <h3>4.1.2　指令的基本格式</h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=2">📄 p.149</a>
+  <span class="exam">考点追踪：根据指令格式及相关编码条件组合成机器代码（2015）</span>
+
+  <div class="fld">
+    <div class="hi" style="flex:1">操作码字段 OP<b>指明做什么操作</b></div>
+    <div class="lo" style="flex:2">地址码字段<b>指明对谁操作</b></div>
+  </div>
+
+  <p><b>操作码</b>：指明指令应执行的操作及功能，是<b>识别指令、理解其作用以及确定地址码含义</b>的关键。<b>地址码</b>：给出被操作信息（指令或数据）的地址，包括源操作数地址、目的操作数地址、转移目标地址或子程序入口地址等。</p>
+
+  <div class="key"><span class="tag">必记结论 · 指令字长的三条</span>
+    <b>指令字长</b>＝一条指令所包含的二进制位数，取决于<b>操作码长度、地址码长度及地址码个数</b>。<br>
+    ① 所有指令字长相等 ⟹ <b>定长指令字结构</b>。<b>定长指令取指和译码简单，有利于流水线实现。</b><br>
+    ② 指令字长随功能而异 ⟹ <b>变长指令字结构</b>。<br>
+    ③ ⚠️ <b>由于主存通常按字节编址，指令字长通常为字节的整数倍</b>——<b>这一句就是 2017 真题的最后一步台阶（23 位要向上取到 24 位），丢分最多的地方</b>。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 按地址码数目分四种格式 + 访存次数（这张表必须能默写）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>格式</th><th>含义</th><th>访存次数<br>（地址码均为主存地址）</th><th>典型用途</th></tr>
+      <tr><td class="n"><b>零地址</b> <code>[OP]</code></td><td class="n">无显式地址</td><td class="n">1（只取指）</td><td class="n">① 空操作、停机、关中断；② <b>堆栈计算机</b>的运算指令，操作数隐含从<b>栈顶和次栈顶</b>弹出，结果压回栈顶</td></tr>
+      <tr><td class="n"><b>一地址</b> <code>[OP|A1]</code></td><td class="n">① <code>OP(A1) → A1</code>（单操作数：加1、减1、求反、求补、移位）<br>② <code>(ACC) OP (A1) → ACC</code>（累加器型双操作数）</td><td class="n"><b>3</b><br><span style="font-size:.8rem">取指1 + 取数1 + 存结果1</span></td><td class="n">累加器型机器</td></tr>
+      <tr><td class="n"><b>二地址</b> <code>[OP|A1|A2]</code></td><td class="n"><code>(A1) OP (A2) → A1</code>，A1 兼作结果地址</td><td class="n"><b>4</b><br><span style="font-size:.8rem">取指1 + 取两个操作数2 + 存结果1</span></td><td class="n">最常见</td></tr>
+      <tr><td class="n"><b>三地址</b> <code>[OP|A1|A2|A3]</code></td><td class="n"><code>(A1) OP (A2) → A3</code></td><td class="n"><b>4</b>（与二地址相同）</td><td class="n">RISC 风格</td></tr>
+    </table></div>
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · 二地址与三地址的访存次数<b>一样</b>都是 4 次——这是本节最反直觉的一格</span>
+    直觉会以为「地址多一个，访存就多一次」。<b>错。</b><br>
+    三地址只是把结果<b>写到另一个地方</b>，<b>写的次数没变</b>（还是 1 次）；读的次数也没变（还是 2 个操作数）。
+    ⟹ <b>二地址 4 次、三地址 4 次，差别只在"目的操作数会不会被覆盖"，不在访存次数。</b><br>
+    ⚠️ 另一个坑：<b>题目问的是"完成一条指令需几次访存"还是"执行阶段需几次访存"</b>——
+    前者<b>含取指那一次</b>（一地址 = 3），后者<b>不含</b>（见 4.2 表 4.1，一地址直接寻址 = 1）。<b>两张表的口径不同，别混用。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 为什么"地址个数"这件事值得单开一小节——它是 CISC/RISC 之争的第一个战场</span>
+    <b>书上说</b>：零地址指令用于<u>堆栈计算机</u>，一地址指令用于<u>累加器型结构</u>，二/三地址是一般形式。<br>
+    <b>潜台词是</b>：这四种格式其实是<b>计算机体系结构的四代演进</b>，书把它们并列摆出来，掩盖了时间线：<br>
+    <b>零地址（栈机）</b>：指令最短，但每个操作数都得先压栈，指令条数暴增 → 现在只在 JVM 这类虚拟机里用；<br>
+    <b>一地址（累加器机）</b>：早期小机器，只有一个 ACC，所以另一个操作数只能隐含 → 省地址码但并行度极差；<br>
+    <b>二地址</b>：x86 走的路，<code>add eax, ebx</code> 就是它，<b>目的操作数被覆盖</b>（这就是 4.3 里 <code>add eax,edx</code> 的语义）；<br>
+    <b>三地址</b>：RISC 走的路，<code>add r4, r3, r4</code>（2024 真题原文），<b>源和目的分开，编译器好调度</b>。<br>
+    <b>所以能考 Z</b>：<b>看到"目的操作数地址兼结果地址"就该想到 x86/Intel 格式（4.3）；看到"R[rd] ← R[rs1] + R[rs2]"就该想到 RISC（4.4 + 2024 真题）。</b>
+    这一节不是孤立的记忆点，它是后面 4.3、4.4 的定义来源。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 零地址指令的"栈顶和次栈顶"，就是数据结构里的栈</span>
+    <span class="hub">数据结构</span> 表达式求值的<b>后缀表达式（逆波兰式）</b>——弹出栈顶与次栈顶、算完压回栈顶，<b>逐字对应零地址指令的语义</b>。<br>
+    <span class="hub">本章 4.3</span> x86 的 <code>push</code>/<code>pop</code> 与运行时栈是同一个栈，只是 4.3 用它存<b>栈帧</b>而不是存操作数。<br>
+    <span class="hub">操作系统</span> 中断/异常响应时的<b>现场保护</b>也压这个栈（或内核栈）——<b>"隐含用 SP，指令里不写地址"这件事，在 OS 里叫"硬件自动压栈"</b>。
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 综 01 那道"变长比定长省多少空间"的题，是本节唯一一道<b>带百分比</b>的计算</span>
+    <b>题</b>：32 个寄存器、16 位立即数、142 条指令；四类指令各占 20%/30%/25%/25%，<b>指令长度须为 8 的倍数</b>。问各类多少位、变长比定长省多少空间。<br>
+    <b>书上说</b>：算出四类分别是 24 / 24 / 40 / 32 位，<u>定长按最长的 40 位算，变长的平均长度 30 位，所以省 25%</u>。<br>
+    <b>潜台词是</b>：这题的<b>三个台阶</b>各有一个坑，缺一个就全错：<br>
+    <div class="steps">
+      <div class="st"><b>先定三个基本位宽</b>：142 条指令 ⟹ 操作码 <b>⌈log₂142⌉ = 8 位</b>；32 个寄存器 ⟹ 寄存器号 <b>5 位</b>；立即数题给 <b>16 位</b></div>
+      <div class="st"><b>逐类相加再<u>向上取到 8 的倍数</u></b>：8+5+5 = 18 → <b>24</b>；8+5+5+5 = 23 → <b>24</b>；8+5+5+16 = 34 → <b>40</b>；8+16+5 = 29 → <b>32</b>。<b style="color:var(--red)">这一步和 2017 真题是同一个取整动作</b></div>
+      <div class="st"><b>定长必须按最长的算</b>（40 位），变长按<b>加权平均</b>算：<code>0.2×24 + 0.3×24 + 0.25×40 + 0.25×32 = 30</code> ⟹ 省 <code>(40−30)/40 = <b>25%</b></code></div>
+    </div>
+    🐍 我复算过：<code>4.8 + 7.2 + 10 + 8 = 30</code>　✔<br>
+    <b>所以能考 Z</b>：<b>「定长按最长的算」是最容易想歪的一步</b>——不是按平均、不是按最短，<b>因为定长意味着所有指令都得留出最坏情况的空间</b>。
+    这也从数量上说明了 <b>4.4 里"CISC 变长省空间、RISC 定长费空间"到底差多少</b>：<b>本例就是 25%。</b>
+  </div>
+
+  <h3>4.1.3　定长操作码指令格式</h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=3">📄 p.150</a>
+  <span class="exam">考点追踪：定长操作码的指令条数（2015）</span>
+
+  <div class="key"><span class="tag">必记结论 · 定长操作码只有一条公式</span>
+    定长操作码在<b>指令字的最高位部分</b>分配<b>固定位数</b>表示操作码。<br>
+    <b>一个 n 位操作码字段的指令系统最多可表示 2<sup>n</sup> 条指令</b>；反过来，<b>m 条指令至少需要 ⌈log<sub>2</sub>m⌉ 位操作码</b>。<br>
+    <b>优点</b>：<b>简化硬件设计、提高译码速度</b>。在字长为 32 位或更长的系统中，这是常规用法。<br>
+    <span style="color:var(--muted)">例：200 条指令 ⟹ 2<sup>7</sup>=128 &lt; 200 &lt; 2<sup>8</sup>=256 ⟹ <b>至少 8 位</b>。（本节习题 07）</span>
+  </div>
+
+  <h3>4.1.4　扩展操作码指令格式　<span style="color:var(--red)">⭐ 本章计算主场</span></h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=3">📄 p.150</a>
+  <span class="exam">考点追踪：扩展操作码的设计与分析（2017、2021、2022）</span>
+
+  <p>为在<b>有限的指令字长</b>内支持<b>丰富的指令种类</b>，常采用<b>可变长度操作码</b>——操作码字段位数不固定，且分散在指令的不同位置。这<b>增加了指令译码和分析的难度，使控制器设计更加复杂</b>。最常见的变长操作码方法是<b>扩展操作码</b>，它使<b>操作码长度随地址码减少而增加</b>，从而<b>有效缩短指令字长</b>。</p>
+
+  <figure>
+    <img src="图/组原/图4-1_扩展操作码的安排方式.png" alt="一种扩展操作码的安排方式：16 位指令字，4 位基本操作码，三个 4 位地址字段">
+    <figcaption><b>图 4.1　一种扩展操作码的安排方式</b>（书 p.150）。指令字长 16 位，4 位基本操作码 OP + 三个 4 位地址字段 A<sub>1</sub>A<sub>2</sub>A<sub>3</sub>。<b>看这张图只需盯住最左边那一列 1 的个数</b>：4 位全 1 的 <code>1111</code> 是"通往二地址的门票"，8 位全 1 是"通往一地址的门票"，12 位全 1 是"通往零地址的门票"。<b>每一级都必须留一个全 1 编码当门票，所以每级只能用 15 条而不是 16 条</b>；最后一级不用再留门票，所以零地址是 <b>16</b> 条。</figcaption>
+  </figure>
+
+  <div class="key"><span class="tag">必记结论 · 图 4.1 的这套安排（15/15/15/16，共 61 条）</span>
+    <div class="tabwrap"><table class="bits">
+      <tr><th class="lab">操作码位数</th><th>编码</th><th class="lab">条数</th></tr>
+      <tr><td class="lab">4 位</td><td>0000 A1 A2 A3 … 1110 A1 A2 A3</td><td class="lab"><b>15 条三地址指令</b></td></tr>
+      <tr><td class="lab">8 位</td><td>1111 0000 A2 A3 … 1111 1110 A2 A3</td><td class="lab"><b>15 条二地址指令</b></td></tr>
+      <tr><td class="lab">12 位</td><td>1111 1111 0000 A3 … 1111 1111 1110 A3</td><td class="lab"><b>15 条一地址指令</b></td></tr>
+      <tr><td class="lab">16 位</td><td>1111 1111 1111 0000 … 1111 1111 1111 1111</td><td class="lab"><b>16 条零地址指令</b></td></tr>
+    </table></div>
+    书上补充：<b>除这种安排外还有其他多种扩展方法</b>，例如形成 <b>15 条三地址、12 条二地址、63 条一地址和 16 条零地址，共 106 条</b>（读者自行分析）。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 设计扩展操作码的两条铁律（判对错题就靠它）</span>
+    ① <b>不允许短操作码成为长操作码的前缀</b>，即短操作码不能与长操作码的前面部分相同。<br>
+    ② <b>各指令的操作码一定不能重复。</b><br>
+    另：通常对<b>使用频率较高</b>的指令分配<b>较短</b>的操作码，以减少译码和分析时间。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 扩展操作码题的两种口径，我都算过一遍——<b>考场用第 ② 种</b></span>
+    <b>书上说</b>：书答里其实混用了两种算法，从没点破它们是两种口径（第 10、15 题用①，第 11、12 题用②）。<br>
+    <b>潜台词是</b>：这两种口径互为验算，<b>结果必然相同</b>，但<b>易错程度差很多</b>：<br>
+    <b>① 编码空间折算法</b>：把一切折算到<b>最低级（零地址）</b>的编码空间。一条 <var>k</var> 地址指令占用 <code>2<sup>k·a</sup></code> 个零地址编码（<var>a</var> = 单个地址码位数）。<br>
+    <span style="color:var(--muted)">例（2022 真题）：<code>2<sup>16</sup> − 254×2<sup>6</sup> − 12×2<sup>6</sup>×2<sup>6</sup> = 128</code></span><br>
+    <b>② 逐级剩余前缀法</b>：每级先算「本级编码总数 − 本级已用」＝ 剩余前缀数，再 <code>×2<sup>a</sup></code> 传给下一级。<br>
+    <span style="color:var(--muted)">同一题：<code>(2<sup>4</sup>−12)×2<sup>6</sup> = 256</code> → <code>(256−254)×2<sup>6</sup> = 128</code>　✔ 结果一致</span><br>
+    <b>所以能考 Z</b>：<b>口径①一步到位但极容易把"条数"和"编码数"混起来</b>（尤其指数写错一个 <var>a</var>）；
+    <b>口径②每一步的中间量都有物理意义（"还剩几个前缀没用"），算错了自己能看出来</b>。
+    <b>我建议考场固定用②，用①做验算。</b>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 扩展操作码通用递推式（进公式模板手册，背这三行）</span>
+    设指令字长 <var>L</var>、单个地址码长 <var>a</var>，地址数从多到少逐级扩展：<br>
+    <div class="steps">
+      <div class="st"><b>第 1 级</b>（地址最多，设 <var>k</var><sub>1</sub> 个地址）：操作码位数 = <code>L − k₁·a</code>，<b>编码总数 = 2<sup>L−k₁a</sup></b></div>
+      <div class="st"><b>逐级递推</b>：<code>剩余前缀数 = 本级编码总数 − 本级已用条数</code>；<br><code>下一级可用编码数 = 剩余前缀数 × 2<sup>(本级少用的地址位数)</sup></code></div>
+      <div class="st"><b>末级（零地址）</b>不再留门票，<b>剩多少就能定义多少条</b></div>
+    </div>
+    ⚠️⚠️ <b>最后一步别忘了：若题目说"按字节编址"，算出的指令字长必须向上取到 8 的倍数</b>（2017 真题：23 → <b>24</b>）。
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · 2017 真题真正丢分的不是扩展操作码，是最后那一步取整</span>
+    题：按字节编址，只有两种指令格式，三地址 29 条、二地址 107 条，每个地址字段 6 位，指令字长至少多少位？<br>
+    <b>正确链条</b>：29 条三地址 ⟹ 操作码至少 <b>5</b> 位（2<sup>4</sup>=16 &lt; 29 ≤ 32）→ 剩 <code>32 − 29 = 3</code> 个前缀 → 二地址操作码多出 6 位（少一个地址码）⟹ 可有 <code>3×2<sup>6</sup> = 192 ≥ 107</code> ✔ ⟹ 指令字长 <code>5 + 6×3 = 23</code> 位。<br>
+    <b style="color:var(--red)">⟹ 但答案是 24 位</b>：因为<b>按字节编址，指令字长必须是 8 的倍数</b>，23 向上取整到 <b>24</b>。<br>
+    🐍 我复算过：<code>k=5 → (2**5−29)*2**6 = 192 ≥ 107 ✔；k=4 → 2**4−29 &lt; 0 ✘</code>。<b>先验证 5 位够不够，再验证 4 位行不行——两头都试才算做完。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 「短码不能是长码前缀」＝ 数据结构里的<b>前缀码</b>，同一件事的两个说法</span>
+    <span class="hub">数据结构 ch5</span> <b>哈夫曼编码</b>的核心约束就是"任一编码都不是另一编码的前缀"，否则译码时会产生二义性。<br>
+    <span class="hub">本节</span> 扩展操作码的约束<b>一字不差是同一条</b>：若 <code>1111</code> 既是一条三地址指令的操作码，又是二地址指令的前缀，<b>译码器读到 1111 就不知道该停还是该继续读</b>。<br>
+    <span class="hub">再往下</span> 「对高频指令分配短操作码」＝ <b>哈夫曼编码的"高频字符给短码"</b>，连优化目标（平均码长最短）都一样。<br>
+    ⟹ 记住一句话：<b>「扩展操作码 = 硬件版的哈夫曼树，门票编码 1111 就是树上的内部结点」</b>。这样第 10~12 题那种"还剩几条"的题，你可以直接在草稿纸上画一棵树数叶子。<br>
+    <span class="hub">计算机网络</span> 变长编码"不能有前缀歧义"在网络里的对应物是 <b>IP 前缀最长匹配</b>——那里反过来<b>允许</b>前缀重叠，靠"最长匹配"规则消歧。<b>两边对着记，就不会记反。</b>
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 综 03「<b>设计</b>一个扩展操作码」——从"算条数"升级到"写编码"，多了两步</span>
+    <b>题</b>：36 位指令，要能表示 7 条「两个 15 位地址 + 一个 3 位地址」、500 条「一个 15 位地址 + 一个 3 位地址」、50 条无地址指令。<br>
+    <b>书上说</b>：给了三张字段图和二进制串，<b>但没说这些串是怎么定出来的</b>。<br>
+    <b>潜台词是</b>：<b>"设计"题比"计算"题多两个动作——<u>定字段宽度</u> 和 <u>写出编码区间</u></b>：<br>
+    <div class="steps">
+      <div class="st"><b>定第一级操作码宽度</b>：36 − 15 − 15 − 3 = <b>3 位</b>。7 条指令用 <code>000</code>～<code>110</code>，<b>留 <code>111</code> 当门票</b></div>
+      <div class="st"><b>第二级</b>：OP1 固定 <code>111</code>，把腾出来的那个 15 位地址字段整个变成 OP2（15 位）。500 条 ⟹ OP2 从 <code>000000000000000</code>（0）到 <code>000000111110011</code>（<b>499</b>）</div>
+      <div class="st"><b>第三级</b>：OP1 仍是 <code>111</code>，OP2 从 <b>500</b>（<code>000000111110100</code>）到 <b>549</b>（<code>000001000100101</code>），共 50 条，<b>低 18 位全 0</b></div>
+    </div>
+    🐍 我把书上三个二进制串都用 Python 验过：<code>bin(499)/bin(500)/bin(549)</code> 补足 15 位后与书上逐位吻合　✔<br>
+    <b>所以能考 Z</b>：<b>设计题的答案不唯一，但必须满足两条铁律（短码不是长码前缀、编码不重复），而且要写出<u>起止编码</u>而不只是条数</b>。
+    <b>阅卷时"留了哪个编码当门票"和"编码区间的两端"就是采分点。</b>
+  </div>
+
+  <h3>4.1.5　指令的类型</h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=4">📄 p.151</a>
+  <span class="exam">考点追踪：转移指令、调用和返回指令、条件转移指令的区分（2019）</span>
+
+  <div class="key"><span class="tag">必记结论 · 六类指令（速记：传送 / 算逻 / 移位 / 控制 / IO / CPU 控制）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>类型</th><th>典型助记符</th><th>要点</th></tr>
+      <tr><td class="n"><b>① 数据传送</b></td><td class="n">MOV、LOAD、STORE、PUSH、POP</td><td class="n">MOV 寄存器间；<b>LOAD 内存→寄存器、STORE 寄存器→内存</b></td></tr>
+      <tr><td class="n"><b>② 算术和逻辑运算</b></td><td class="n">ADD SUB MUL DIV INC DEC AND OR NOT XOR</td><td class="n">执行时<b>自动设置条件码</b>（4.3 要用）</td></tr>
+      <tr><td class="n"><b>③ 移位操作</b></td><td class="n">算术移位 / 逻辑移位 / 循环移位</td><td class="n">三种移位的区别见 <a href="组原_第2章.html">ch2 2.2</a></td></tr>
+      <tr><td class="n"><b>④ 顺序控制</b></td><td class="n">JMP、BRANCH、CALL、RET、TRAP</td><td class="n"><b>本类是考点集中区</b>，见下方红块</td></tr>
+      <tr><td class="n"><b>⑤ 输入输出</b></td><td class="n">IN、OUT</td><td class="n">CPU 与外设交换数据/控制命令/状态，见 ch7</td></tr>
+      <tr><td class="n"><b>⑥ CPU 控制</b></td><td class="n">停机、开中断、关中断、模式切换</td><td class="n">⚠️ <b>只能在操作系统内核代码中使用</b>（＝特权指令）</td></tr>
+    </table></div>
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · 「调用指令」与「转移指令」的唯一区别，2019 真题就考这一句</span>
+    <b>无条件转移</b>在任何情况下都执行转移；<b>条件转移</b>仅在特定条件满足时转移，转移条件通常是<b>某个标志位的值或多个标志位的组合</b>。<br>
+    🔥 <b>调用指令（CALL）会保存下一条指令的地址（返回地址）</b>，以便子程序结束后能返回；<b>而转移指令（JMP）不返回，也就不保存任何东西</b>。<br>
+    ⟹ 这一句在 <b>4.3 里变成 <code>call</code> 压栈、<code>ret</code> 弹栈</b>，在 <b>ch5 里变成"中断隐指令保存断点"</b>。<b>三处是同一句话的三种说法。</b><br>
+    ⚠️ 另一个必踩的坑：<b>中断隐指令不是指令</b>——它由硬件自动完成，不在指令系统里，<b>更不属于程序控制类指令</b>（本节习题 05、4.2 习题 22 两次考它）。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 为什么"CPU 控制指令只能在内核里用"这句话值得单独记</span>
+    <b>书上说</b>：停机、开/关中断、系统模式切换这类指令<u>只能在操作系统内核代码中使用，以防止用户误用</u>。<br>
+    <b>潜台词是</b>：这就是 <b>OS 里"特权指令"四个字的硬件出处</b>。书在组原里只写了"防止误用"，
+    在《操作系统》里它有一整套机制：<b>CPU 有内核态/用户态两个状态位（在 PSW 里），执行特权指令前硬件检查这一位，不对就产生"非法指令异常"</b>。<br>
+    <b>所以能考 Z</b>：408 里有一类题问「下列指令中哪条是特权指令」——判据就是<b>「这条指令能不能破坏别的进程」</b>：
+    <b>关中断能（会让 OS 失去控制权）、切换页表基址能、置程序状态字能</b>，而<b>加法、取数、转移都不能</b>。
+    <b>再加一条容易漏的：「访管指令（trap/系统调用）恰恰是非特权指令」</b>——它就是用户态用来<b>请求</b>进入内核的那扇门，如果它本身是特权指令，用户就永远进不去了。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 「顺序控制指令」这一类，一个人牵着四科</span>
+    <span class="hub">本章 4.2</span> 转移指令的目标地址怎么算 ⟹ <b>相对寻址 EA = (PC) + A</b>（4.2 最高频考点，六考）。<br>
+    <span class="hub">本章 4.3</span> <code>jle / jg / jbe</code> 靠<b>标志位</b>决定跳不跳；<code>call/ret</code> 靠<b>栈</b>存返回地址。<br>
+    <span class="hub">ch5 CPU</span> <b>条件转移指令是流水线"控制冒险"的唯一来源</b>——因为取指时还不知道跳不跳，所以才需要分支预测。<b>4.4 说 RISC 好流水，前提之一就是它的转移指令格式统一。</b><br>
+    <span class="hub">操作系统</span> <b>TRAP（陷阱/访管）指令 = 系统调用的入口</b>；<b>CALL 保存返回地址 = 中断响应保存断点</b>，两者的差别只有"谁触发的"（软件主动 vs 硬件被动）。<br>
+    <span class="hub">数据结构</span> 递归函数每层调用都压一个栈帧 ⟹ <b>4.3 的 2019 真题就是一道递归求阶乘的机器码题</b>，读它需要同时会数据结构的递归和本节的 CALL/RET。
+  </div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：六类指令里的助记符清单</span>
+    ADD/SUB/MUL/DIV/INC/DEC/AND/OR/NOT/XOR 这些助记符<b>统考从不单独考"这个缩写代表什么"</b>，题干里一定会给出功能说明（尤其 MIPS/RISC 风格指令）。
+    <b>要记的只有两组</b>：① <b>LOAD/STORE</b>（4.4 RISC 的核心特征）；② <b>4.3 的 x86 常用指令表</b>（那张要背，因为 x86 题不给说明）。<b>其余划过即可。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 4.1 这一节考完之后你手里应该只剩四样东西</span>
+    这一节 8 页、19 道题、4 道真题，但真正会被考的只有四条，<b>其余都是为这四条铺路</b>：<br>
+    <div class="steps">
+      <div class="st"><b>ISA 边界</b>——「换个实现程序还跑不跑」（2022×2、2025，三年三考，<b>本节第一高频</b>）</div>
+      <div class="st"><b>扩展操作码递推 + 按字节编址取整</b>（2017、2021、2022，<b>本节唯一的计算题型</b>）</div>
+      <div class="st"><b>访存次数四格表</b>（零 1 / 一 3 / 二 4 / 三 4，含取指），<b>注意与 4.2 表 4.1 的口径区分</b></div>
+      <div class="st"><b>CALL 保存返回地址、JMP 不保存；中断隐指令不是指令</b>（2019）</div>
+    </div>
+    <b>所以能考 Z</b>：如果你时间紧，4.1 这一节<b>只做这四类题</b>就够了，剩下的"指令类型六分类"属于读过就有印象的送分内容。
+  </div>
+
+  <!-- ==================== 4.2 ==================== -->
+  <h2>4.2　寻址方式　<span style="color:var(--red);font-size:.75em">⭐⭐ 全章失分密度第一（0.93 真题/页）</span></h2>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=9">📄 p.156</a>
+
+  <p><b>寻址方式</b>是指<b>确定指令或操作数有效地址的方法</b>，包括确定<b>下一条待执行指令的地址</b>（指令寻址）以及<b>本条指令所需操作数的地址</b>（数据寻址）。</p>
+
+  <div class="mine"><span class="tag">我的补讲 · 这一节 15 页只讲一件事：<b>「指令里写的地址」不等于「真地址」</b></span>
+    <b>书上说</b>：指令中的地址码字段所包含的地址称为<b>形式地址 A</b>，它<u>不代表操作数的真实地址</u>；真实地址需通过寻址方式由形式地址计算得出，称为<b>有效地址 EA</b>。<br>
+    <b>潜台词是</b>：<b>10 种寻址方式 = 从 A 算到 EA 的 10 个不同函数</b>。整节的题只有三类，且都从这句话派生：<br>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>题型</th><th>问什么</th><th>本节题号</th><th>真题</th></tr>
+      <tr><td class="n"><b>① 算 EA</b></td><td class="n">给你 A 和寄存器内容，求 EA 或求操作数</td><td class="n">07/13/16/17/19/26/28/30/31</td><td class="n">2013、2016、2018、2019</td></tr>
+      <tr><td class="n"><b>② 算 PC</b>（相对寻址）</td><td class="n">给你指令地址和偏移量，求转移后 PC</td><td class="n">09/12/14/18/21/23</td><td class="n"><b>2009、2011、2013、2014、2019、2023</b></td></tr>
+      <tr><td class="n"><b>③ 切字段</b>（⌈log₂⌉ 三段式）</td><td class="n">给你指令字长和种类数，求地址码位数与寻址范围</td><td class="n">15/32/综03/综05</td><td class="n">2010、2020、2021</td></tr>
+    </table></div>
+    <b>所以能考 Z</b>：<b>10 种寻址方式的图（图 4.2–4.10）只需看懂"箭头走几步"</b>——走 0 步是立即/寄存器，走 1 步是直接/寄存器间接/三种偏移，走 2 步是间接。
+    <b>剩下的力气全花在②和③上</b>，那才是真题密集区。
+  </div>
+
+  <h3>4.2.1　指令寻址和数据寻址</h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=9">📄 p.156</a>
+  <span class="exam">考点追踪：PC 自增大小与编址方式、指令字长的关系（2013、2014、2019、2023）</span>
+
+  <div class="key"><span class="tag">必记结论 · 指令寻址：顺序 vs 跳跃</span>
+    <b>（1）顺序寻址</b>：通过 PC 加上<b>当前指令的字节长度</b>，自动形成下一条指令地址。<br>
+    ⚠️ 书上原文的【注意】框：<b>PC 自增的大小与编址方式和指令字长有关。</b>现代计算机通常按字节编址，指令字长 16 位（2 字节）则 (PC)+2；32 位（4 字节）则 (PC)+4。<br>
+    <b>（2）跳跃寻址</b>：通过转移类指令实现。<b>是否发生转移通常由状态寄存器中的条件码决定，转移目标地址由指令给出</b>。分两种：<br>
+    　・<b>绝对转移</b>：地址码直接给出目标地址；　・<b>相对转移</b>：地址码给出相对于当前 PC 值的偏移量。<br>
+    无论哪种，<b>转移指令的执行结果都是修改 PC 的值</b>。
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · <b>PC 增量</b>是本章第一坑，四道题构成一条完整证据链——先问编址单位，再问指令长度</span>
+    <b>口诀：<code>PC 增量 = 指令长度 ÷ 编址单位</code></b>。别背结论，背这个除法。
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>题</th><th>编址方式</th><th>指令长度</th><th>PC 增量</th><th>结果</th></tr>
+      <tr><td class="n"><b>习 12</b></td><td class="n"><b>按<u>字</u>编址</b>（字长 16 位）</td><td class="n">2 <b>字节</b> = <b>1 个字</b></td><td class="n"><b>+1</b></td><td class="n">4000H + <b>1</b> + 06H = <b>4007H</b></td></tr>
+      <tr><td class="n"><b>习 23</b>（2009）</td><td class="n">按<b>字节</b>编址</td><td class="n">2 字节</td><td class="n"><b>+2</b></td><td class="n">2000H + <b>2</b> + 06H = <b>2008H</b></td></tr>
+      <tr><td class="n"><b>习 14</b></td><td class="n">按<b>字节</b>编址</td><td class="n">16 位 = 2 字节</td><td class="n"><b>+2</b></td><td class="n">2002H → 2002H + 40H = <b>2042H</b></td></tr>
+      <tr><td class="n"><b>习 18</b></td><td class="n">按<b>字节</b>编址</td><td class="n"><b>3 字节</b></td><td class="n"><b>+3</b></td><td class="n">240 → <b>243</b>（基准）</td></tr>
+    </table></div>
+    <b style="color:var(--red)">习 12 与习 23 是刻意做成的一对</b>：题面几乎逐字相同（4000H/06H vs 2000H/06H），<b>只有"按字编址"与"按字节编址"一词之差，答案就从 +1 变成 +2</b>。<br>
+    ⚠️ 我自己在读这一题时把「转移指令由两个<b>字节</b>组成」看成了「两个<b>字</b>」，算出 4008H 与书答不符，一度以为书错了——<b>放大到 dpi=320 复核才发现是自己抄错</b>。
+    <b>凡是「字/字节」出现的题，读两遍再动笔。</b>
+  </div>
+
+    <div class="link"><span class="tag">知识串联 · <b>⌈log₂ n⌉</b> 这个动作，是 408 四门课里出现次数最多的一个式子</span>
+    <span class="hub">本章</span> 操作码位数 = ⌈log₂ 指令条数⌉；寻址特征位数 = ⌈log₂ 寻址方式数⌉；寄存器编号位数 = ⌈log₂ 寄存器个数⌉。<br>
+    <span class="hub">ch3</span> <b>Cache 组号位数 = ⌈log₂ 组数⌉、块内地址 = log₂ 块大小、页内偏移 = log₂ 页大小</b>——<b>ch3 那些地址划分题，本质就是连做三次 ⌈log₂⌉</b>。<br>
+    <span class="hub">ch1</span> <b>存储单元数 ⟹ MAR 位数</b>（2010 真题：128KB 按字编址、字长 16 位 ⟹ 2<sup>16</sup> 个单元 ⟹ MAR 16 位）。<br>
+    <span class="hub">数据结构</span> <b>完全二叉树高度 = ⌈log₂(n+1)⌉、B 树的层数、折半查找次数</b>。<br>
+    ⟹ 记一句：<b>「凡是"要几位才能编号 n 个东西"，一律 ⌈log₂ n⌉；凡是"n 位能编几个"，一律 2<sup>n</sup>」</b>。
+    <b>本章至少五道题、ch3 至少十道题只考这一个动作，先把它算到不用想。</b>
+  </div>
+
+  <h4>数据寻址：形式地址 A 与有效地址 EA</h4>
+  <span class="exam">考点追踪：指令格式字段位数的分析（2020）、指令格式中寻址特征字段的作用（2023）</span>
+
+  <div class="fld">
+    <div class="hi" style="flex:2">操作码 OP<b>⌈log₂(操作种类数)⌉ 位</b></div>
+    <div class="mid" style="flex:1">寻址特征<b>⌈log₂(寻址方式数)⌉ 位</b></div>
+    <div class="lo" style="flex:3">形式地址 A<b>剩下的全给它</b></div>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · ⌈log₂⌉ 三段式（本节第二大计算题型，四题共用）</span>
+    <b><code>形式地址位数 = 指令字长 − ⌈log₂(操作种类数)⌉ − ⌈log₂(寻址方式种类数)⌉</code></b><br>
+    算出形式地址位数 <var>n</var> 之后，看题目问什么：<br>
+    ・问<b>直接寻址范围</b> ⟹ 写 <b>0 ～ 2<sup>n</sup>−1</b>（<b>主存地址是无符号数，不能为负</b>）；<br>
+    ・问<b>相对寻址偏移量范围</b> ⟹ 写 <b>−2<sup>n−1</sup> ～ 2<sup>n−1</sup>−1</b>（<b>偏移量用补码，可正可负</b>）。<br>
+    <span style="color:var(--muted)">🐍 复算：习 15 <code>⌈log₂97⌉=7, ⌈log₂6⌉=3, 16−7−3=6 → −32~+31</code>；习 32（2020）<code>⌈log₂48⌉=6, ⌈log₂4⌉=2, 16−6−2=8 → 0~255</code></span>
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · 同一个「8 位」，一题答 0～255，一题答 −128～127——差别只在<b>问的是地址还是偏移量</b></span>
+    <b>2020 真题（习 32）</b>算出地址码 8 位，问「直接寻址方式的可寻址范围」⟹ <b>0～255</b>。
+    书上专门加了一句：<b>「注意，主存地址不能为负。」</b><br>
+    <b>习 15</b> 算出地址码 6 位，问「<b>相对寻址的偏移量</b>范围」⟹ <b>−32～+31</b>（6 位补码）。<br>
+    ⟹ <b>判据只有一条：这几位最后要"当地址用"还是"当加数用"。</b>
+    当地址用 ⟹ 无符号；当加数用（要和 PC/BR/IX 相加）⟹ 补码有符号。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 形式地址位数决定什么（四条，逐条背）</span>
+    ・<b>立即寻址</b> ⟹ 形式地址位数决定<b>操作数的取值范围</b>；<br>
+    ・<b>直接寻址</b> ⟹ 决定<b>可寻址的存储空间大小</b>；<br>
+    ・<b>寄存器寻址</b> ⟹ 决定<b>通用寄存器的最大数量</b>；<br>
+    ・<b>寄存器间接寻址</b> ⟹ <b>由寄存器的位数（而非形式地址位数）</b>决定可寻址空间大小。<br>
+    <span style="color:var(--muted)">【注意】(A) 表示地址 A 处所存放的内容，<b>A 可以是寄存器编号或内存地址</b>。</span>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 第 4 条是个"反转"，2021 与 2024 真题都靠它出题</span>
+    <b>书上说</b>：若为寄存器间接寻址，则<u>寄存器的位数</u>决定了可寻址空间大小。<br>
+    <b>潜台词是</b>：前三条的主语都是"形式地址位数"，<b>第四条突然换主语了</b>——这不是笔误，是<b>寄存器间接寻址的全部价值所在</b>：
+    指令里只写一个<b>寄存器编号</b>（32 个寄存器只要 5 位），而真正的地址装在那个 <b>32 位寄存器</b>里。
+    <b>用 5 位指令字段撬动 32 位地址空间</b>——这就是书上说的"扩大了寻址范围，且不受形式地址位数限制"。<br>
+    <b>所以能考 Z</b>：<b>凡题目问"该机最多有多少个通用寄存器"，答案来自<u>寄存器编号字段的位数</u>；问"可寻址主存空间多大"，答案来自<u>地址线位数或寄存器位数</u>——两个数字来源不同，别混。</b>
+    2021 真题（综 05）就是同一题里两问都问：<b>寄存器编号 2 位 ⟹ 最多 4 个寄存器；地址线 20 位 ⟹ 1MB</b>。
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 习 03/04/05 三道"送分题"其实在考三个<b>不同</b>的优点，别混成一个</span>
+    这三题题干很像，答案却是三个不同的寻址方式，<b>因为问的是三件不同的事</b>：<br>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>题</th><th>问什么</th><th>答案</th><th>为什么不是别的</th></tr>
+      <tr><td class="n"><b>习 03</b></td><td class="n">缩短指令中某个<b>地址段的位数</b></td><td class="n"><b>寄存器寻址</b></td><td class="n">寄存器数量少 ⟹ 编号只要 ⌈log₂(寄存器个数)⌉ 位。<b>立即寻址的地址段短了会限制操作数范围；变址/间接寻址的地址段仍与主存空间挂钩</b></td></tr>
+      <tr><td class="n"><b>习 04</b></td><td class="n">简化<b>地址结构</b></td><td class="n"><b>隐含寻址</b></td><td class="n"><b>"简化结构"＝干脆不给地址</b>（隐含在 ACC 里），比"给一个短地址"更彻底</td></tr>
+      <tr><td class="n"><b>习 05</b></td><td class="n">获取操作数<b>最快</b></td><td class="n"><b>立即寻址</b></td><td class="n">排序：<b>立即（0 次访存，操作数已在指令里）＞ 寄存器（0 次访存但要访寄存器）＞ 直接（1 次）＞ 间接（2 次）</b></td></tr>
+    </table></div>
+    <b>所以能考 Z</b>：<b>"缩短地址段"找寄存器寻址、"简化地址结构"找隐含寻址、"最快"找立即寻址</b>——
+    <b style="color:var(--red)">注意"最快"为什么不是寄存器寻址</b>：立即寻址的操作数<b>在取指时就已经跟着指令一起进 CPU 了</b>，<b>执行阶段一次都不用去取</b>；
+    寄存器寻址还得去寄存器堆读一次。<b>这半拍就是它俩的差别。</b>
+  </div>
+
+  <h3>4.2.2　常见的数据寻址方式（10 种）</h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=10">📄 p.157</a>
+
+  <div class="mine"><span class="tag">我的补讲 · 10 张图别一张张背，按<b>「取操作数要走几步」</b>排成一条线</span>
+    书把 10 种方式一字排开，看着像 10 个并列的知识点。<b>其实它们在一条直线上</b>，坐标就是<b>执行阶段的访存次数</b>：
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>走几步</th><th>寻址方式</th><th>EA</th><th>执行阶段访存</th><th>换来了什么</th></tr>
+      <tr><td class="n"><b>0 步</b></td><td class="n">立即寻址</td><td class="n">A 本身就是操作数</td><td class="n"><b>0</b></td><td class="n"><b>最快</b>，但数值范围受形式地址位数限制</td></tr>
+      <tr><td class="n"><b>0 步</b></td><td class="n">寄存器寻址</td><td class="n">EA = R<sub>i</sub></td><td class="n"><b>0</b></td><td class="n">快 + 指令短，但寄存器贵、数量有限</td></tr>
+      <tr><td class="n"><b>1 步</b></td><td class="n">直接寻址</td><td class="n">EA = A</td><td class="n">1</td><td class="n">简单，但地址固定、范围受限</td></tr>
+      <tr><td class="n"><b>1 步</b></td><td class="n">寄存器间接</td><td class="n">EA = (R<sub>i</sub>)</td><td class="n">1</td><td class="n"><b>范围不受形式地址限制</b>，比间接寻址少一次访存</td></tr>
+      <tr><td class="n"><b>1 步</b></td><td class="n"><b>相对 / 基址 / 变址</b></td><td class="n">EA = (PC / BR / IX) + A</td><td class="n">1</td><td class="n"><b>三种偏移寻址，本节真题主场</b></td></tr>
+      <tr><td class="n"><b>2 步</b></td><td class="n">一次间接寻址</td><td class="n">EA = (A)</td><td class="n"><b>2</b></td><td class="n">范围最大、可做指针/转移表，<b>但最慢</b></td></tr>
+      <tr><td class="n"><b>隐含</b></td><td class="n">隐含寻址</td><td class="n">另一个操作数在 ACC</td><td class="n">—</td><td class="n"><b>缩短指令字长</b>，代价是依赖专用硬件</td></tr>
+      <tr><td class="n"><b>隐含</b></td><td class="n">堆栈寻址</td><td class="n">由 SP 隐含给出</td><td class="n">—</td><td class="n">指令表面无操作数，SP 自动更新</td></tr>
+    </table></div>
+    <b>所以能考 Z</b>：题目问"最快 / 最慢 / 无须访存 / 需两次访存"，直接读这一列；
+    问"扩大寻址范围"的有<b>间接、寄存器间接、基址</b>三种（理由各不同，见下面各条）；
+    问"缩短指令字长"的有<b>隐含、寄存器</b>两种。<b>把优缺点按"用什么换什么"记，比按方式记省一半。</b>
+  </div>
+
+  <div class="two">
+    <figure>
+      <img src="图/组原/图4-2_隐含寻址.png" alt="隐含寻址：另一个操作数隐含在 ACC 中">
+      <figcaption><b>图 4.2　隐含寻址</b>。<b>1. 隐含寻址</b>：指令中<b>不显式给出操作数地址</b>，而将其<b>隐含在特定寄存器</b>（如累加器 ACC）中。<b>优点</b>：有效缩短指令字长；<b>缺点</b>：依赖存储隐含操作数的硬件。</figcaption>
+    </figure>
+    <figure>
+      <img src="图/组原/图4-3_立即寻址.png" alt="立即寻址：# 为立即寻址特征，A 即操作数本身">
+      <figcaption><b>图 4.3　立即寻址</b>（考点追踪：立即寻址的概念，2023）。<b>2. 立即寻址</b>：形式地址字段<b>直接存放操作数本身</b>（称立即数，<b>通常以补码表示</b>），<code>#</code> 是立即寻址特征。<b>优点：执行阶段无须访存，速度最快</b>；<b>缺点</b>：数值范围受形式地址位数限制。</figcaption>
+    </figure>
+  </div>
+
+  <div class="two">
+    <figure>
+      <img src="图/组原/图4-4_直接寻址.png" alt="直接寻址：EA = A，一次访存取到操作数">
+      <figcaption><b>图 4.4　直接寻址</b>（考点追踪：地址位数与直接寻址范围的关系，2010、2021）。<b>3. 直接寻址</b>：<b>EA = A</b>。<b>优点</b>：实现简单、执行阶段只访存一次；<b>缺点</b>：位数限制范围，且<b>地址固定难以动态修改</b>。例：形式地址 24 位 ⟹ 范围 2<sup>24</sup> = 16M。</figcaption>
+    </figure>
+    <figure>
+      <img src="图/组原/图4-5_间接寻址.png" alt="间接寻址：EA = (A)，需两次访存">
+      <figcaption><b>图 4.5　间接寻址</b>（考点追踪：间接寻址 EA 的分析，2016）。<b>4. 间接寻址</b>：<b>EA = (A)</b>，A 指向的主存单元里装的是有效地址。<b>优点</b>：<b>可扩大寻址范围</b>（EA 位数由<b>存储字长</b>决定，通常大于 A），支持<b>指针与转移表</b>；<b>缺点</b>：<b>一次间址需 2 次访存</b>。</figcaption>
+    </figure>
+  </div>
+
+  <div class="two">
+    <figure>
+      <img src="图/组原/图4-6_寄存器寻址.png" alt="寄存器寻址：EA = Ri，操作数在寄存器中">
+      <figcaption><b>图 4.6　寄存器寻址</b>（考点追踪：寄存器编号位数与寄存器数量的关系，2022、2024）。<b>5. 寄存器寻址</b>：<b>EA = R<sub>i</sub></b>，地址字段给的是<b>寄存器编号</b>。32 个通用寄存器只需 5 位编号。<b>优点</b>：<b>执行阶段无须访存</b>、地址码短；<b>缺点</b>：寄存器成本高、数量有限。</figcaption>
+    </figure>
+    <figure>
+      <img src="图/组原/图4-7_寄存器间接寻址.png" alt="寄存器间接寻址：EA = (Ri)，寄存器里装的是主存地址">
+      <figcaption><b>图 4.7　寄存器间接寻址</b>（考点追踪：寄存器间接寻址的取数操作，2010）。<b>6. 寄存器间接寻址</b>：<b>EA = (R<sub>i</sub>)</b>，R<sub>i</sub> 里装的<b>不是操作数而是操作数的主存地址</b>。<b>比间接寻址少一次访存</b>；<b>比寄存器寻址多一次访存</b>，但<b>寻址范围不受形式地址位数限制</b>。</figcaption>
+    </figure>
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · 习 17 问的是「<b>有效地址</b>」不是「操作数」——一字之差，答案差一级</span>
+    题：寄存器编号 8，8 号寄存器内容 1200H，地址 1200H 处内容 12FCH，12FCH 处内容 38D8H……问<b>该操作数的有效地址</b>。<br>
+    <b>EA = (R<sub>i</sub>) = 1200H</b>（选 A）；<b>而"操作数"才是 12FCH</b>。<br>
+    ⟹ <b>本节所有间接类题目，动笔前先把题干里的"有效地址 / 操作数 / 访问到的内容"圈出来。</b>
+    对照习 16 与习 26：习 16 问"访问到的操作数为 200"、习 26（2013）问"访问到的操作数"——<b>那两题才是要多走一步的</b>。
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 习 11 的小端取数题：<b>"内存里两个字节" ≠ "寄存器里的那个数"</b></span>
+    <b>题</b>：R2 = 1234H，(1234H) = 56H，(1235H) = 78H，<b>小端方式</b>，执行 <code>MOV R1, [R2]</code> 后 R1 = ？<br>
+    <b>书上说</b>：因为采用小端方式，所以实际存储的数据为 <b>7856H</b>。<br>
+    <b>潜台词是</b>：书这句话说得太快。完整过程是<b>三步</b>：<br>
+    ① 寄存器间接寻址 ⟹ <b>EA = (R2) = 1234H</b>；<br>
+    ② R1 是 16 位 ⟹ <b>要连读两个字节：1234H 和 1235H</b>；<br>
+    ③ <b>小端 = 低地址存低字节</b> ⟹ <b>1234H 里的 56H 是<u>低</u>字节，1235H 里的 78H 是<u>高</u>字节</b> ⟹ 拼起来 <b>R1 = 7856H</b>。<br>
+    <b>所以能考 Z</b>：<b>这题和 4.2 习 19/31（大端 LSB）是一对镜像</b>——
+    <b>习 11 是"给字节推数值"（小端），习 19/31 是"给数值推字节地址"（大端）</b>。<b>两个方向都要会走。</b><br>
+    <b>速记法</b>：<b>小端 = 「低地址放低字节」= 数值倒着摆</b>；<b>大端 = 「低地址放高字节」= 数值正着摆（和人读数一样）</b>。
+    <b>看到内存里是 <code>56 78</code> 而答案是 <code>7856H</code>，就是小端；答案是 <code>5678H</code>，就是大端。</b>
+  </div>
+
+  <figure>
+    <img src="图/组原/图4-8_相对寻址.png" alt="相对寻址：EA = (PC) + A，PC 已完成自增">
+    <figcaption><b>图 4.8　相对寻址</b>（考点追踪：相对寻址的相关分析与计算，<b>2009、2010、2013、2014、2019、2023 六考，全章第一</b>）。<b>7. 相对寻址</b>：<b>EA = (PC) + A</b>。<b style="color:var(--red)">看图只需盯住 PC 那个方框里写的「1002 or 1004」和旁边那句注</b>——「PC 取值后进行了自增运算，<b>自增长度与当前指令长度有关</b>」。这就是全章最贵的一句注。</figcaption>
+  </figure>
+
+  <div class="key"><span class="tag">必记结论 · 相对寻址三条（六考，本节最高频）</span>
+    ① <b>EA = (PC) + A</b>，其中 <b>PC 是取指完成后自动更新的值，指向<u>下一条</u>指令的地址</b>；A 是相对于该 PC 值的偏移量，<b>可正可负，通常以补码表示</b>。<br>
+    ② <b>相对寻址主要用于转移类指令</b>，形式地址 A 的位数决定了转移范围。<br>
+    ③ <b>优点</b>：目标地址不固定而是相对当前位置偏移，因此<b>程序可在内存中任意浮动而不影响转移正确性，便于实现重定位和共享代码</b>。<br>
+    <b>书上例子</b>：按字节编址、指令长 2B，<code>JMP A</code> 位于 1000H，A = 0005H ⟹ <b>取指后 PC = 1002H</b> ⟹ 目标地址 = 1002H + 0005H = <b>1007H</b>。
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · 偏移量的单位可能是「<b>指令条数</b>」而不是字节——<b>看到 ×2 就换单位</b></span>
+    本节有两处偏移量<b>不是字节数</b>：<br>
+    ・习 21 / 综 02：<code>PC = PC + 2 + <b>Imm8×2</b></code>　・综 04（2013 真题）：<code>目标地址 = (PC) + 2 + <b>2×OFFSET</b></code><br>
+    <b>那个 ×2 的含义是：Imm8/OFFSET 数的是"跳几条指令"，一条指令 2 字节，所以要 ×2 才变成字节偏移。</b><br>
+    <b style="color:var(--red)">于是转移范围的口径固定为「前 127 条 ～ 后 128 条」</b>，而不是对称的 ±128：
+    8 位补码范围 −128～+127，<b>但 PC 已经先自增了一条指令</b>，所以<b>往回最远 −128+1 = 前 127 条，往前最远 +127+1 = 后 128 条</b>。<br>
+    ⚠️ 这条结论在习 21（D 选项，对的）和综 02、综 04 里各出现一次，<b>三处口径完全一致，背下来直接用</b>。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 相对寻址的"程序可任意浮动"，就是《操作系统》的<b>程序重定位</b></span>
+    <span class="hub">操作系统</span> 内存管理里的<b>「与位置无关代码（PIC）」</b>之所以可能，硬件基础就是相对寻址：<b>整段程序搬到哪儿，内部的相对转移都还对</b>——因为 PC 和目标一起搬走了，差值不变。<br>
+    <span class="hub">操作系统</span> 而<b>绝对转移</b>的程序搬家后就废了，必须<b>重定位</b>（改写地址）：<b>静态重定位 = 装入时改一遍；动态重定位 = 运行时靠基址寄存器加一次</b>——<b>后者就是下面要讲的基址寻址</b>。<br>
+    <span class="hub">本章 4.3</span> 2019、2023 两道真题里的 <code>call</code>、<code>jmp</code>、<code>jge</code> <b>全都采用相对寻址</b>，判据就是"机器码里那几个字节正好等于目标地址 − 下一条指令地址"。<br>
+    ⟹ 一句话：<b>「相对寻址是硬件给"程序可以搬家"开的通行证」</b>。
+  </div>
+
+    <div class="link"><span class="tag">知识串联 · 间接寻址的那句「<b>易于完成子程序返回</b>」（4.6 速查表），指的就是 4.3 的 <code>ret</code></span>
+    <span class="hub">本章 4.3</span> <code>ret</code> 干的事是「<b>把栈顶那个单元里存的地址取出来送 PC</b>」——<b>这就是一次间接寻址</b>（地址的地址在栈顶）。<br>
+    <span class="hub">本章 4.1</span> 而<b>零地址指令</b>之所以能实现返回，也靠它：<b>地址由 SP 隐含给出，内容才是真地址</b>。<br>
+    <span class="hub">操作系统</span> 中断返回指令 <b>IRET</b> 同理——<b>从内核栈取出断点送 PC</b>。<br>
+    <span class="hub">数据结构</span> 而<b>「地址的地址」在 C 里就是二级指针</b>，间接寻址支持"地址动态生成（指针和转移表）"这句书上原话，
+    说的正是 <b>函数指针数组 / switch 跳转表</b>——<b>编译器把 switch 编译成"查表 + 间接跳转"</b>。<br>
+    ⟹ <b>「间接寻址慢，但它是一切"运行时才知道跳哪"的机制的地基」</b>：返回、虚函数、跳转表，全靠它。
+  </div>
+
+  <figure>
+    <img src="图/组原/图4-9_基址寻址两种方式.png" alt="基址寻址两种实现：(a) 专用基址寄存器 BR；(b) 通用寄存器 R0 作基址寄存器">
+    <figcaption><b>图 4.9　基址寻址</b>（考点追踪：基址寻址的 EA 计算，2019）。<b>8. 基址寻址</b>：<b>EA = (BR) + A</b>。左图 (a) 用<b>专用基址寄存器 BR</b>，右图 (b) 用<b>指定的通用寄存器 R<sub>0</sub></b>——两张子图的差别只在"BR 从哪来"，<b>加法器那一步完全相同</b>。<b>注意 (b) 图里指令多了一个 R<sub>0</sub> 字段</b>，这就是"用通用寄存器当基址"的代价：<b>指令里得多花几位写寄存器编号</b>。</figcaption>
+  </figure>
+
+  <figure>
+    <img src="图/组原/图4-10_变址寻址.png" alt="变址寻址：EA = (IX) + A">
+    <figcaption><b>图 4.10　变址寻址</b>（考点追踪：变址寻址 EA 的相关计算，2013、2016、2024；变址寻址的特点与应用，2017、2018、2024——<b>合计六考</b>）。<b>9. 变址寻址</b>：<b>EA = (IX) + A</b>。<b>和图 4.9(a) 摆在一起看</b>：两张图的线路<b>一模一样</b>，只把 BR 换成了 IX。<b>硬件上它们是同一个加法器，区别全在"谁有权改这个寄存器"</b>——见下面的对照表。</figcaption>
+  </figure>
+
+  <div class="key"><span class="tag">必记结论 · 基址 vs 变址（书上原文的核心表，三行必须能默写）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>对比项</th><th>基址寻址</th><th>变址寻址</th></tr>
+      <tr><td class="n">有效地址</td><td class="n">EA = (BR) + A</td><td class="n">EA = (IX) + A</td></tr>
+      <tr><td class="n">访存次数</td><td class="n">1</td><td class="n">1</td></tr>
+      <tr><td class="n"><b>寄存器内容由谁定</b></td><td class="n"><b>由操作系统或管理程序确定</b>（<b>面向系统</b>）</td><td class="n"><b>由用户设定</b>（<b>面向用户</b>）</td></tr>
+      <tr><td class="n"><b>执行过程中值可变否</b></td><td class="n"><b>不可变</b>（作基地址）</td><td class="n"><b>可变</b>（作偏移量，程序里动态改）</td></tr>
+      <tr><td class="n"><b>谁当基地址、谁当偏移</b></td><td class="n"><b>寄存器 = 基地址，形式地址 A = 偏移量</b></td><td class="n"><b>形式地址 A = 基地址，寄存器 = 偏移量</b></td></tr>
+      <tr><td class="n"><b>特点 / 适用</b></td><td class="n">有利于<b>多道程序设计和编制浮动程序</b></td><td class="n">有利于<b>处理数组问题和编制循环程序</b></td></tr>
+    </table></div>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 基址与变址硬件完全一样，为什么还要分成两种？——因为分的是<b>「谁是常量」</b></span>
+    <b>书上说</b>：二者<u>均通过「寄存器内容 + 形式地址」生成有效地址，但本质不同</u>：基址面向系统、变址面向用户。<br>
+    <b>潜台词是</b>：书讲了"谁设定"，但没讲<b>为什么非要这么分</b>。真正的区别是<b>哪一半在循环里不动</b>：<br>
+    ・<b>基址寻址</b>：<b>寄存器不动</b>（程序装到哪儿由 OS 定，装完就固定），<b>A 在变</b>（访问程序里的不同位置）。
+    <b>⟹ 一个程序有一个基址，一个程序内部有无数条指令。</b><br>
+    ・<b>变址寻址</b>：<b>A 不动</b>（数组首地址就那一个），<b>寄存器在变</b>（i = 0,1,2,…）。
+    <b>⟹ 一个数组有一个首地址，一次循环要走无数个下标。</b><br>
+    <b>所以能考 Z</b>：<b>看到「多道程序 / 浮动 / 重定位 / 操作系统设定」⟹ 基址；看到「数组 / 循环 / 下标 / 用户修改」⟹ 变址。</b>
+    书上的变址例子就是这个结构：数组 B 首地址 1000H 放在 A 里不动，IX 置 0CH（= 3×4）取 B[3]，<b>EA = 0CH + 1000H = 100CH</b>。
+    <b>而 4.3 的 <code>[edx+esi*4]</code>、2024 真题的 <code>slli r4,r2,2 / add r4,r3,r4</code> 全都是这个变址结构的现代写法。</b>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 三种偏移寻址（2011 真题就考这一句）</span>
+    <span class="exam" style="margin-left:0">考点追踪：偏移寻址的范畴（2011）</span><br>
+    <b>相对寻址、基址寻址和变址寻址均属于<u>偏移寻址</u></b>，共同特点是<b>通过某个寄存器的值与形式地址相加</b>来确定有效地址。<br>
+    <b style="color:var(--red)">⚠️ 间接寻址不属于偏移寻址</b>——它<b>不需要任何寄存器</b>，EA = (A) 是"再访存一次"而不是"加一次"。<b>2011 真题（习 24）正是选它。</b>
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 习 27（2014）：<b>「操作码字段（含寻址方式位）为 8 位」</b>——这个括号值 4 分</span>
+    <b>题</b>：16 个通用寄存器、32 位定长指令字、<b>操作码字段（含寻址方式位）为 8 位</b>；STORE 的源操作数用寄存器直接寻址、目的操作数用基址寻址，基址寄存器可以是任意通用寄存器，偏移量用补码。问偏移量取值范围。<br>
+    <b>书上说</b>：32 − 8 = 24 位给两个地址码；<u>源操作数的寄存器编号 4 位、目的操作数的基址寄存器编号也要 4 位</u>，剩 <b>24 − 4 − 4 = 16 位</b>给偏移量 ⟹ <b>−32768 ～ +32767</b>。<br>
+    <b>潜台词是</b>：这题有<b>两个容易漏的减法</b>：<br>
+    ① <b>「含寻址方式位」</b>——意思是<b>寻址特征那几位<u>已经算在 8 位里了</u>，不要再单独减一次</b>。<b>不看这个括号的人会多减 2~3 位。</b><br>
+    ② <b>基址寻址也要指定一个寄存器</b>——题里说"基址寄存器可使用任意一个通用寄存器"，<b>那就必须在指令里写出是哪一个，又花掉 4 位</b>。
+    <b>只减源操作数那 4 位的人会算出 20 位。</b><br>
+    <b>所以能考 Z</b>：<b>"任意一个通用寄存器"这七个字＝"指令里要留编号字段"</b>；反过来<b>"专用基址寄存器 BR"＝"不用留字段"</b>（对照图 4.9 的 (a) 和 (b) 两个子图，
+    <b>(b) 图指令里确实多画了一个 R<sub>0</sub> 字段</b>）。<b>那张图不是装饰，它就是这一分的出处。</b>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 10. 堆栈寻址</span>
+    <b>堆栈</b>是存储器（或寄存器组）中一块按<b>后进先出</b>原则管理的存储区，读/写单元的地址由<b>堆栈指针 SP</b> 给出。<br>
+    ・<b>硬堆栈</b>：由高速寄存器构成，<b>成本高、容量小</b>；<b>软堆栈</b>：从主存划出一段区域，<b>更经济实用</b>（现代机器都是软堆栈）。<br>
+    ・采用堆栈结构的计算机中，多数指令<b>表面上表现为无操作数形式</b>，因为操作数地址由 SP 隐含指定；访问堆栈时 <b>SP 会自动更新</b>指向新栈顶。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 堆栈寻址一条线穿起<b>四个地方</b>，是本章最"低调"的枢纽</span>
+    <span class="hub">本章 4.1.2</span> <b>零地址指令</b>（堆栈计算机的运算指令，操作数隐含从栈顶与次栈顶弹出）。<br>
+    <span class="hub">本章 4.3.4</span> <b>运行时栈与栈帧</b>：<code>push/pop/call/ret</code> 全靠 SP（x86 里叫 ESP）；<b>「访问堆栈时 SP 自动更新」这句话，在 4.3 具体化成"push 前 ESP−4、pop 后 ESP+4"</b>。<br>
+    <span class="hub">数据结构</span> <b>栈的顺序存储</b>：SP 就是栈顶指针 top；<b>"栈向低地址增长"只是把数组下标反过来数而已</b>。<br>
+    <span class="hub">操作系统</span> <b>中断/异常的现场保护压内核栈</b>；<b>进程控制块里保存的 SP 就是这个寄存器</b>；<b>进程地址空间里"栈向下、堆向上"</b>。<br>
+    ⟹ <b>「软堆栈就是主存里划出来的一段」这句看似无关紧要的话，是上面四处能对起来的物理前提</b>——
+    <b>正因为它在主存里，所以它可以很大（支持深递归）、可以被越界写坏（栈溢出攻击）、也需要页表来管。</b>
+  </div>
+
+    <div class="key"><span class="tag">必记结论 · <b>表 4.1</b> 寻址方式、有效地址及访存次数（<b>不含取本条指令</b>，与 4.1 那张表口径不同）</span>
+    <div class="tabwrap"><table class="mono">
+      <tr><th>寻址方式</th><th>有效地址</th><th>执行阶段访存次数</th></tr>
+      <tr><td class="n">立即寻址</td><td class="n">A 即是操作数</td><td class="n"><b>0</b></td></tr>
+      <tr><td class="n">直接寻址</td><td class="n">EA = A</td><td class="n"><b>1</b></td></tr>
+      <tr><td class="n">一次间接寻址</td><td class="n">EA = (A)</td><td class="n"><b>2</b></td></tr>
+      <tr><td class="n">寄存器寻址</td><td class="n">EA = R<sub>i</sub></td><td class="n"><b>0</b></td></tr>
+      <tr><td class="n">寄存器间接一次寻址</td><td class="n">EA = (R<sub>i</sub>)</td><td class="n"><b>1</b></td></tr>
+      <tr><td class="n">相对寻址</td><td class="n">EA = (PC) + A</td><td class="n"><b>1</b></td></tr>
+      <tr><td class="n">基址寻址</td><td class="n">EA = (BR) + A</td><td class="n"><b>1</b></td></tr>
+      <tr><td class="n">变址寻址</td><td class="n">EA = (IX) + A</td><td class="n"><b>1</b></td></tr>
+    </table></div>
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 习 28（2016）「<b>先变址后间址</b>」：复合寻址题只需按字面从右往左读</span>
+    <b>题</b>：指令格式 <code>[OP | M | I | D]</code>，M 是寻址方式、I 是变址寄存器编号、D 是形式地址。<b>先变址后间址</b>的 EA = ？<br>
+    <b>答案是 <code>((I) + D)</code></b>，推导只有两步，<b>照着中文语序做即可</b>：<br>
+    ・<b>"先变址"</b> ⟹ 算出 <code>(I) + D</code>（变址寻址的 EA 公式）；<br>
+    ・<b>"后间址"</b> ⟹ 把上一步的结果<b>再套一层括号</b>（间接寻址 = 再访存一次）⟹ <b><code>((I) + D)</code></b>。<br>
+    <b>所以能考 Z</b>：<b>括号的层数 = 访存的次数</b>。这一族题的所有干扰项都是括号打错位置：<br>
+    ・<code>(I) + D</code>（少一层 = 只做了变址，忘了间址）　・<code>((I)) + D</code>（括号套错了地方 = 先间址后变址）　・<code>I + D</code>（把寄存器<b>编号</b>当成了<b>内容</b>）。<br>
+    <b style="color:var(--red)">最后这个错最隐蔽</b>：<b><code>I</code> 是编号，<code>(I)</code> 才是内容</b>——4.2 开头那句「(A) 表示地址 A 处所存放的内容，<b>A 可以是寄存器编号或内存地址</b>」就是为这一题铺的。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 习 30（2018）：数组题的"反向"问法——<b>给你地址，倒推下标</b></span>
+    <b>题</b>：double 数组 A 首地址 2000H，变址寄存器初值 0，<b>偏移地址 = 变址值 × sizeof(double)</b>，每轮加 1。某次所取元素地址为 2100H，此时变址寄存器是多少？<br>
+    <b>解法就是把变址公式 <code>EA = (IX)×8 + A</code> 反过来解</b>：<br>
+    <code>(IX)×8 = 2100H − 2000H = 100H = <b>256</b></code> ⟹ <code>(IX) = 256 ÷ 8 = <b>32</b></code>　（🐍 复算 ✔）<br>
+    <b>潜台词是</b>：这题的坑<b>不在计算，在单位</b>——<b>算出来的 256 是"字节偏移"，不是"下标"</b>，<b>还要再除以元素大小 8</b>。
+    选项里 <b>A. 25、C. 64、D. 100 全是"少除/多除/算错元素大小"造出来的</b>：
+    <b>选 C（64）＝ 把 256 当成了 100H 的十进制读错；选 D（100）＝ 直接把 100H 当十进制</b>。<br>
+    <b>所以能考 Z</b>：<b>「地址差 ÷ 元素字节数 = 下标差」是本章数组题的通用反解式</b>，
+    <b>它和 4.3 里 <code>slli r4,r2,2</code>（下标 ×4 变字节偏移）是同一个式子的两个方向</b>。<b>正着走用乘、反着走用除，记住"乘/除的都是元素字节数"。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 「立即数通常以补码表示」这半句，是 <a href="组原_第2章.html">ch2</a> 在本章的第一次现身</span>
+    <span class="hub">ch2 2.2</span> 补码的两条性质在本章被反复调用：<b>① 符号扩展只补符号位</b>（正数补 0、负数补 1）；<b>② n 位补码范围 −2<sup>n−1</sup> ～ 2<sup>n−1</sup>−1，正负不对称</b>。<br>
+    <span class="hub">本节</span> 性质 ① 用在<b>习 18（8 位补码扩到 16 位，第三字节写 00H 还是 FFH）</b>与<b>习 31 / 2019 真题（FF12H 扩成 FFFF FF12H）</b>；<br>
+    <span class="hub">本节</span> 性质 ② 用在<b>一切"偏移量范围"题</b>（习 15 的 −32~+31、习 27 的 −32768~+32767）。<br>
+    <span class="hub">本章 4.3</span> 性质 ② 还会在 <b>2025 真题的除法溢出（最小负数 ÷ −1）</b> 里再用一次。<br>
+    ⟹ <b>一句话：「凡是指令里那几位要参与加法，它就是补码；凡是要当地址用，它就是无符号」</b>——
+    <b>这一条判据同时解决了"要不要符号扩展"和"范围写不写负数"两个问题。</b>
+  </div>
+
+    <h4>本节最贵的三类计算（配套 <a href="../练习系统/组原_第4章.html">练习系统 4.2 节 39 题</a> 边读边算）</h4>
+
+  <div class="mine"><span class="tag">我的补讲 · 计算 ① <b>大端方式下 LSB 的地址</b>——习 19 与 2019 真题是同题异构，必须成对做</span>
+    <b>书上说</b>（习 19 答案）：因为是<u>大端方式</u>，所以 LSB 的存放地址为 EA + 3。<br>
+    <b>潜台词是</b>：书直接给了 +3，没说为什么。<b>+3 来自「操作数占 4 字节」</b>，通式是：<br>
+    　<b><code>大端：LSB 地址 = EA + (字节数 − 1)</code>　　<code>小端：LSB 地址 = EA</code></b><br>
+    因为<b>大端把最高有效字节放在最低地址</b>（"高位在前"），所以最低有效字节被挤到了最后一格。<br>
+    <b>所以能考 Z</b>：这两题的完整链条是<b>三步</b>，每一步都能单独设坑：<br>
+    <div class="steps">
+      <div class="st"><b>符号扩展</b>：形式地址是 16 位补码负数 ⟹ 先扩成 32 位再相加。<br>习 19：FF00H → FFFF FF00H；2019 真题：FF12H → FFFF FF12H（= −00EEH）</div>
+      <div class="st"><b>算 EA</b>：EA = (BR) + A。<br>习 19：C000 0000H + FFFF FF00H = <b>BFFF FF00H</b>；2019：F000 0000H + (−00EEH) = <b>EFFF FF12H</b></div>
+      <div class="st"><b>定位 LSB</b>：大端 ⟹ <b>+3</b>。习 19 → <b>BFFF FF03H</b>；2019 → <b>EFFF FF15H</b></div>
+    </div>
+    🐍 我两题都复算过：<code>(0xC0000000 + 0xFFFFFF00) mod 2³² = 0xBFFFFF00</code>、<code>0xF0000000 − 0xEE = 0xEFFFFF12</code>　✔<br>
+    ⚠️ 2019 真题的答案里书特意写了一句<b>「注意，内存地址是无符号数」</b>——意思是<b>相加的结果按 32 位无符号回绕，别去讨论"溢出"</b>。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 计算 ② <b>拆指令字段</b>——习 13 与综 01 是同一个模具压出来的两道题</span>
+    <b>书上说</b>（习 13）：将 2222H 展开成二进制 <code>0010 0010 0010 0010B</code>，第 8～9 位为 10，即用 X2 变址。<br>
+    <b>潜台词是</b>：这类题的机械流程<b>永远是这四步</b>，练熟了 40 秒能做完：<br>
+    <div class="steps">
+      <div class="st"><b>十六进制 → 二进制</b>：一位十六进制 = 四位二进制，直接拆，别心算</div>
+      <div class="st"><b>按题给位段切开</b>：如「低 0～7 位 = D，8～9 位 = X，10～15 位 = OP」</div>
+      <div class="st"><b>查表定寻址方式</b>：X=00 直接 / 01 变址 X1 / 10 变址 X2 / 11 相对</div>
+      <div class="st"><b>套 EA 公式</b>。⚠️ <b>若是相对寻址，基准是取指后的 PC，不是题给的 PC！</b></div>
+    </div>
+    <b>综 01 的第 4 步就是全题唯一的坑</b>：题给 (PC) = 1234H，<b>但主存按<u>字</u>编址、指令 1 个字</b> ⟹ <b>取指后 PC = 1235H 而不是 1236H</b>。
+    于是 ③ 1322H 的 EA = <b>1235H</b> + 22H = 1257H，⑤ 6723H 的 EA = <b>1235H</b> + 23H = 1258H。<br>
+    🐍 复算：<code>(0x1322>>8)&amp;3 = 3</code>（相对）、<code>0x1235+0x22 = 0x1257</code>、<code>0x1235+0x23 = 0x1258</code>　✔<br>
+    <b>所以能考 Z</b>：<b>这一题把「PC 增量」和「拆字段」缝在了一起</b>——先前那张 PC 增量表在这里第五次出现。<b>做完这题再回头看一眼那张表。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 计算 ③ <b>标志位判转移条件</b>——习 21 与习 25（2011）合起来才是完整的一张卡</span>
+    <b>书上说</b>：习 25（2011 真题）无符号"大于"的条件是 <code>CF + ZF = 0</code>；习 21 有符号"大于"的完整条件是 <code>ZF + (SF ⊕ OF) = 0</code>。<br>
+    <b>潜台词是</b>：<b>比较 = 做减法，然后看标志位</b>。两条公式的结构完全一样，都是<b>「不等于 0」＋「大小关系」</b>：<br>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>比较类型</th><th>"大于"的条件</th><th>拆开看</th><th>为什么</th></tr>
+      <tr><td class="n"><b>无符号</b></td><td class="n"><b>CF + ZF = 0</b></td><td class="n"><b>CF = 0</b>（没借位 ⟹ A ≥ B）<br><b>ZF = 0</b>（不相等）</td><td class="n">无符号数只有借没借位这一个信息</td></tr>
+      <tr><td class="n"><b>有符号</b></td><td class="n"><b>ZF + (SF ⊕ OF) = 0</b></td><td class="n"><b>SF ⊕ OF = 0</b>（结果真的为正）<br><b>ZF = 0</b>（不相等）</td><td class="n">溢出会把符号位翻过来，<b>所以要用 OF 把 SF 纠正回来</b></td></tr>
+    </table></div>
+    <b>SF ⊕ OF 为什么等于"真的为正"</b>：没溢出时 OF=0，SF 就是真符号；溢出时 OF=1，SF 是<b>错的</b>，异或一下正好翻回来。
+    <b>书上的说法是「要么 SF=OF=0（未溢出），要么 SF=OF=1（溢出）」——这两句是一回事。</b><br>
+    <b>所以能考 Z</b>：<b>习 21 的 C 选项之所以是错的，就因为它只写了 <code>SF ⊕ OF = 0</code>，漏掉了 ZF = 0</b>（那样 A = B 时也会转移）。
+    <b style="color:var(--red)">两条公式都必须带 ZF = 0，这是唯一的共同点，也是唯一的考点。</b><br>
+    ⚠️ 习 25 的四个选项里有三个用了 SF 或 OF——书上一句话排除：<b>「对于无符号数运算，SF 和 OF 没有意义」</b>。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · CF、OF、SF、ZF 这四个标志，是 ch2 与 4.3 之间的直通车</span>
+    <span class="hub">ch2 2.2</span> 四个标志的<b>产生规则</b>在那里讲过：<b><code>OF = 次高位进位 ⊕ 最高位进位</code></b>、<b><code>CF = C<sub>out</sub> ⊕ Sub</code></b>（Sub=0 加、Sub=1 减）、SF = 结果最高位、ZF = 结果是否全 0。<br>
+    <span class="hub">本节 4.2</span> 四个标志的<b>使用规则</b>：条件转移指令读它们决定跳不跳。<br>
+    <span class="hub">本章 4.3</span> 四个标志的<b>计算现场</b>：习 01/02/03 和 2024 综 05 都要你<b>手算 CF 和 OF</b>。<br>
+    <span class="hub">ch5 CPU</span> 这四位物理上住在<b>标志寄存器（PSW 的一部分）</b>里，由 ALU 输出端直接产生——<b>2013 综 04 和 2024 综 05 的数据通路图上都能看到它们从 ALU 引出来</b>。<br>
+    ⟹ 记一句：<b>「ch2 教你怎么算出这四位，4.2 教你怎么读这四位，4.3 让你两件事一起做，ch5 告诉你这四根线长在哪。」</b>
+  </div>
+
+  <figure>
+    <img src="图/组原/图4-补_变址寻址三级取数.png" alt="2013 真题变址寻址三级取数示意：变址寄存器 1000H + 形式地址 2000H = 3000H，取出 4000H">
+    <figcaption><b>补图（书 p.169 习 26 答案配图）　变址寻址的"三级取数"</b>（2013 统考真题）。<b>这张图是本节最好的防错工具</b>：变址寄存器 1000H <b>与形式地址 2000H 相加</b>得 <b>3000H</b>，<b>再按 3000H 访存</b>取出操作数 <b>4000H</b>。<b style="color:var(--red)">注意左边那两个方框只是"加数"，右边的地址表才是"访存"</b>——题里给的 <code>(1000H)=2000H</code> 是干扰项，变址寻址<b>根本不去读 1000H 这个单元</b>。</figcaption>
+  </figure>
+
+  <div class="trap"><span class="tag">陷阱 · 2013 真题（习 26）的干扰项设计：给你一张地址表，其中两行是<b>用不上的</b></span>
+    题给：变址寄存器 R = 1000H，形式地址 = 2000H；(1000H) = 2000H，(2000H) = 3000H，(3000H) = 4000H。<br>
+    <b>正解</b>：EA = <b>(R) + A = 1000H + 2000H = 3000H</b> ⟹ 操作数 = (3000H) = <b>4000H</b>。<br>
+    <b>三个错误选项各对应一种误读</b>：<br>
+    ・选 B（2000H）＝ 把形式地址当成了答案；<br>
+    ・选 C（3000H）＝ <b>算出 EA 就交卷了，忘了再访存一次取操作数</b>（<b>本题最容易中的一个</b>）；<br>
+    ・选 A（1000H）＝ 把寄存器内容当成了答案。<br>
+    ⟹ 与习 17 对照着做：<b>习 17 问 EA（答 1200H，走一步就停）、习 26 问操作数（答 4000H，要走两步）</b>。<b>同一族题，问法不同，停的位置不同。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 综 03（2010）那道"读机器码 + 追内容变化"的题，是 4.2 通向 4.3 的桥</span>
+    <b>书上说</b>：<code>add (R4), (R5)+</code> 的机器码是 2315H，执行后 R5 变 5679H、存储单元 5678H 变 68ACH。<br>
+    <b>潜台词是</b>：这是全章唯一一道<b>「双向」</b>题——既要<b>由汇编写出机器码</b>，又要<b>由机器码追出副作用</b>。它的解法有固定四步：<br>
+    <div class="steps">
+      <div class="st"><b>切字段</b>：OP(4) | Ms(3) | Rs(3) | Md(3) | Rd(3) = 16 位。<code>add=0010</code>、寄存器间接 <code>Ms=001</code>、R4=<code>100</code>、寄存器间接自增 <code>Md=010</code>、R5=<code>101</code></div>
+      <div class="st"><b>拼二进制再转十六进制</b>：<code>0010 0011 0001 0101B = 2315H</code>（🐍 复算 ✔）</div>
+      <div class="st"><b>逐级取内容</b>：(R4)=1234H → (1234H)=5678H；(R5)=5678H → (5678H)=1234H；<b>相加 5678H + 1234H = 68ACH</b></div>
+      <div class="st"><b style="color:var(--red)">别忘副作用</b>：<code>Md</code> 是「寄存器间接<b>自增</b>」⟹ <b>R5 从 5678H 变成 5679H</b>。<b>结果写回 (R5) 所指单元 5678H，改成 68ACH</b></div>
+    </div>
+    <b>所以能考 Z</b>：<b>第 4 步（自增副作用）是最容易漏的采分点</b>——题问的是"<b>哪些</b>寄存器和存储单元会改变"，
+    <b>答"5678H 单元变 68ACH"只答了一半，还得答"R5 变 5679H"</b>。
+    这个"读完机器码还要追副作用"的习惯，<b>到 4.3 会天天用</b>（那里的副作用叫 ESP 变化、标志位变化）。
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 习 33（2023）与习 22：两道"叙述题"合起来，把<b>寻址方式在 ISA 里的地位</b>钉死了</span>
+    <b>习 33（2023 真题）</b>：一个地址码是通用寄存器编号，寄存器里可能装操作数、也可能装操作数地址，<b>CPU 靠什么区分</b>？<br>
+    <b>答：靠<u>操作数的寻址方式</u></b>（选 A）。理由：<b>指令字由操作码、<u>寻址特征</u>和地址码三个字段组成，寻址特征字段就是用来指明"属于哪种寻址方式"的</b>。
+    <b style="color:var(--red)">关键是排除 D「通用寄存器的内容」</b>——<b>寄存器里就是一串二进制位，它自己不会说明"我是数还是地址"</b>，这个信息只能来自指令。<br>
+    <b>习 22 的 D 选项</b>：「数据寻址方式不属于 ISA 规定的内容」——<b>错，数据寻址方式是 ISA 的核心内容</b>（回扣 4.1.1 那张对照表）。<br>
+    <b>潜台词是</b>：<b>这两题合起来说明了一件事——"一串二进制位是什么"永远由<u>指令</u>决定，不由<u>数据</u>决定。</b><br>
+    <b>所以能考 Z</b>：<b>这条原则在 408 里反复出现</b>：
+    <b><a href="组原_第2章.html">ch2</a> 的「同一个机器数，按无符号读和按补码读是两个值」；4.3 的「同一条 add 指令既设 CF 又设 OF，看哪个由你决定」；OS 的「同一段内存，是代码还是数据由页表权限位决定」</b>——<b>全是同一句话。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 习 22 那句「中断隐指令不属于指令寻址」，是 ch5 与本章的分界桩</span>
+    <span class="hub">本章 4.1.5</span> <b>中断隐指令不是指令</b>——它不在指令系统里，<b>没有操作码，也不会被取指</b>，所以<b>更不属于"程序控制类指令"</b>（习 05）。<br>
+    <span class="hub">本节 4.2</span> 它也<b>不属于指令寻址的范畴</b>（习 22 A，对）——<b>因为"指令寻址"讲的是"下一条指令地址怎么来"，而中断隐指令是硬件在指令周期结束后<u>插进来</u>的一串微操作</b>。<br>
+    <span class="hub">ch5</span> 到 ch5 你会看到它的全貌：<b>关中断 → 保存断点 → 引出中断服务程序</b>三步，<b>全部由硬件自动完成，程序员既写不出它也看不见它</b> ⟹ <b>所以它也不在 ISA 里</b>（回扣 4.1.1）。<br>
+    <span class="hub">操作系统</span> OS 里说的"中断响应"就是这三步；<b>OS 讨论的是响应之后的事（中断处理程序），组原讨论的是响应本身。</b><br>
+    ⟹ <b>一句话：「中断隐指令」这五个字里，唯一真实的是"隐"——它隐到既不是指令、也不在 ISA、也不参与寻址。</b>
+  </div>
+
+  <figure>
+    <img src="图/组原/图4-补_2013综04条件转移数据通路.png" alt="2013 综合题条件转移指令的数据通路示意图，含标志寄存器、指令寄存器、符号扩展器、移位寄存器、加法器、多路选择器">
+    <figcaption><b>补图（书 p.165 综 04）　2013 统考真题：条件转移指令的数据通路</b>。<b>①=指令寄存器 IR</b>（存放当前指令，所以下面标着 OP C Z N OFFSET）、<b>②=移位寄存器</b>（左移一位实现 ×2）、<b>③=加法器</b>（把 PC+2 与 2×OFFSET 相加）。<b style="color:var(--red)">看图的顺序：从 IR 里取出 OFFSET → 符号扩展器 → ② 左移 ×2 → ③ 与 PC+2 相加 → 多路选择器</b>；左半边三个与门 + 一个或门在做另一件事——<b>把 C/Z/N 检测位与标志寄存器逐位相与再相或，实现"需检测的标志中只要有一个为 1 就转移"</b>。这张图是 <b title="ch5 精读版尚未产出">ch5 数据通路</b>的预演。</figcaption>
+  </figure>
+
+  <div class="mine"><span class="tag">我的补讲 · 综 04（2013）第 2 问：<b>为什么要"符号扩展 → 左移"而不是"左移 → 符号扩展"</b></span>
+    <b>书上说</b>：偏移量 <code>1110 0011B</code> = E3H，<u>符号扩展后为 FFE3H，左移一位（乘 2）后为 FFC6H</u>，因此 PC = 200CH + 2 + FFC6H = <b>1FD4H</b>。<br>
+    <b>潜台词是</b>：书按图上的顺序照做了，没解释顺序为什么不能反。<b>原因是：8 位的 E3H 左移一位会把最高位挤掉</b>（E3H &lt;&lt; 1 在 8 位里 = C6H，<b>符号位从 1 变成 1 纯属巧合</b>），而 <b>先扩成 16 位再移，符号信息就一直在最高位保着</b>。<br>
+    <b>所以能考 Z</b>：<b>凡是"补码窄字段要参与宽字长运算"，一律先符号扩展再做别的</b>——这条规则在本章出现了四次：
+    习 18（8 位补码扩到 16 位）、习 31 / 2019 真题（16 位扩到 32 位）、本题（8 位扩到 16 位再左移）、
+    <b>2024 综 05 第 4 问（12 位 imm 扩到 32 位，控制信号 Ext = 1）</b>。<br>
+    🐍 复算：<code>0xE3 符号扩展 = 0xFFE3 = −29；−29×2 = −58；0x200C + 2 − 58 = 0x1FD4</code>　✔<br>
+    ⚠️ 第 1 问还有个小台阶：问「向后（反向）最多可转移多少条指令」，<b>答 127 条而不是 128 条</b>——因为 OFFSET 最小 −128，<b>但 PC 已先自增 +2（一条指令）</b>，抵掉一条。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 2021 综 05 那道"R/I/J 三型指令"，其实是 RISC-V/MIPS，<b>它是 4.4 与 ch5 的伏笔</b></span>
+    <span class="hub">本章 4.4</span> R 型 <code>R[rd] ← R[rs] op R[rt]</code> 是<b>三地址、寄存器-寄存器</b>运算；I 型含访存；J 型只改 PC 低 10 位——<b>这正是 4.4 说的 RISC 特征：定长、格式少、只有 LOAD/STORE 访存</b>。<br>
+    <span class="hub">ch5</span> 三种格式的<b>操作码位置固定在最高几位</b>，所以<b>译码器可以在还不知道是哪型指令时就开始译码</b> ⟹ <b>这是流水线能开动的前提</b>。<br>
+    <span class="hub">本节</span> 第 2 问的"操作码空间共享"是个高级点：<b>I 型与 J 型共用 6 位操作码，且 <code>000000</code> 已被 R 型占用 ⟹ 2<sup>6</sup> − 1 = <u>63</u> 种，别顺手写成 64</b>。<b>这就是 4.1 扩展操作码「留一个编码当门票」的同一个套路，换了个马甲。</b><br>
+    <span class="hub">2024 真题</span> 综 05/06 用的 add / slli / lw 就是<b>同一族 RISC 指令</b>，两年真题<b>可以对着做</b>。
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 综 05（2021）第 1 问：<b>ALU、IR、MAR、MDR 四个位数各有各的来源</b>，一个都不能串</span>
+    <b>题</b>：字长 16 位、按字节编址、<b>地址线 20 位、数据线 8 位</b>、16 位定长指令字。问 ALU 宽度、可寻址主存空间、IR / MAR / MDR 各多少位。<br>
+    <b>书上说</b>：ALU 16 位、主存 2<sup>20</sup> 字节（1MB）、IR 16 位、MAR 20 位、MDR 8 位。<br>
+    <b>潜台词是</b>：这四个数字<b>来自四个完全不同的地方</b>，题目故意给了 16 / 20 / 8 三个互不相同的数字来考你会不会串：<br>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>部件</th><th>位数</th><th>取决于</th><th>为什么</th></tr>
+      <tr><td class="n"><b>ALU</b></td><td class="n">16</td><td class="n"><b>字长</b></td><td class="n">ALU 的宽度＝运算对象的宽度，<b>通常与字长相同</b></td></tr>
+      <tr><td class="n"><b>IR</b></td><td class="n">16</td><td class="n"><b>指令字长</b></td><td class="n">IR 要装下一整条指令；<b>这里恰好也是 16，纯属巧合</b></td></tr>
+      <tr><td class="n"><b>MAR</b></td><td class="n"><b>20</b></td><td class="n"><b>地址线位数</b></td><td class="n">MAR 要驱动地址总线 ⟹ 与<b>地址线</b>等宽</td></tr>
+      <tr><td class="n"><b>MDR</b></td><td class="n"><b>8</b></td><td class="n"><b>数据线宽度</b></td><td class="n">MDR 接数据总线 ⟹ 与<b>数据线</b>等宽，<b>不是字长！</b></td></tr>
+      <tr><td class="n">主存空间</td><td class="n">2<sup>20</sup>B = 1MB</td><td class="n"><b>地址线 + 编址单位</b></td><td class="n">20 根地址线 ⟹ 2<sup>20</sup> 个单元；<b>按字节编址 ⟹ 每单元 1B</b></td></tr>
+    </table></div>
+    <b>所以能考 Z</b>：<b style="color:var(--red)">最容易错的是 MDR</b>——很多人本能写"MDR = 字长 = 16"。
+    <b>错。MDR 跟着数据总线走，本题数据线只有 8 位，所以取一个 16 位的字要跑两次总线。</b>
+    这也回扣了 <a href="组原_第3章.html">ch3</a>：<b>存储字长、数据线宽度、字长三者可以互不相同</b>，题目给几个就得分别对号入座。
+  </div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：隐含寻址与堆栈寻址的历史细节</span>
+    书上在隐含寻址处提到"累加器型结构"、在堆栈寻址处区分"硬堆栈/软堆栈"。<b>这两处从没单独出过统考题</b>：
+    隐含寻址只在选择题里作为"简化地址结构的方法"出现一次（习 04），堆栈寻址只在"零地址指令"处被顺带提一句。
+    <b>硬堆栈 vs 软堆栈的成本比较更是纯背景</b>——知道"现代机器用软堆栈（主存划一段）"就够，<b>这一句在 4.3 会兑现成"运行时栈在主存里"</b>。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 4.2 收官：这一节考完后手里应该剩下的<b>五条</b></span>
+    15 页、39 道题、14 道真题，但会重复出现的只有五条：
+    <div class="steps">
+      <div class="st"><b>PC 增量 = 指令长度 ÷ 编址单位</b>；相对寻址基准<b>永远是下一条指令</b>；<b>看到 ×2 就换单位</b>；转移范围 <b>前 127 ~ 后 128</b></div>
+      <div class="st"><b>⌈log₂⌉ 三段式</b>；<b>问地址范围写 0~2ⁿ−1，问偏移量范围才写补码</b></div>
+      <div class="st"><b>大端 LSB 地址 = EA + (字节数 − 1)</b>；<b>形式地址是负补码要先符号扩展</b></div>
+      <div class="st"><b>基址面向系统（OS 设、不可变）、变址面向用户（可变）</b>；<b>三种偏移寻址不含间接寻址</b></div>
+      <div class="st"><b>有符号看 OF、无符号看 CF，两者都要带 ZF = 0</b></div>
+    </div>
+    <b>所以能考 Z</b>：这五条覆盖了 4.2 全部 14 道真题。<b>把它们抄到一张卡上，做题时对着核，比重读课文快十倍。</b>
+    配套：<a href="../练习系统/组原_第4章.html">练习系统 4.2 节 39 题</a>（含 14 道真题）、<a href="../练习系统/组原_套路库.html">套路库 ch4 卡</a>。
+  </div>
+
+  <!-- ==================== 4.3 ==================== -->
+  <h2>4.3　程序的机器级代码表示　<span style="color:var(--red);font-size:.75em">⭐⭐ 按分值算是全章第一重心（7 道真题全是 15 分综合题）</span></h2>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=24">📄 p.171</a>
+  <span class="exam">考点追踪：涉及汇编代码的年份（2012、2014、2015、2017、2019、2023、2024）</span>
+
+  <p>本节是 <b>2022 年新增考点</b>，但相关知识早已多次以综合题形式出现在历年真题中，<b>难度较大</b>。统考大纲<b>未指定具体指令集</b>，历年真题主要考查 <b>x86 和 MIPS 汇编指令</b>——其中 <b>MIPS 指令通常会在试题中附带功能说明，而 x86 指令则更常作为默认考查对象</b>。因此本节<b>重点介绍 x86 汇编指令</b>。</p>
+
+  <div class="mine"><span class="tag">我的补讲 · <b>先看这一段再往下读</b>：这一节的分数分布极端反常，读法必须跟着变</span>
+    <b>书上说</b>：本节难度较大，不少跨考生感到无从下手。<br>
+    <b>潜台词是</b>：书没告诉你的是<b>这一节的题型分布有多极端</b>——我把 19 页的题逐一数过：<br>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th></th><th>题量</th><th>其中统考真题</th><th>结论</th></tr>
+      <tr><td class="n"><b>选择题</b></td><td class="n">12 道</td><td class="n"><b>0 道</b></td><td class="n">全是王道自编的巩固题</td></tr>
+      <tr><td class="n"><b>综合题</b></td><td class="n">7 道</td><td class="n"><b>7 道全部是统考真题</b><br>2017 · 2019×2 · 2023 · 2024×2 · 2025</td><td class="n"><b>每道 15 分</b></td></tr>
+    </table></div>
+    <b>所以能考 Z</b>：<b>「只刷选择题」的复习法在这一节会彻底失效</b>——本节的选择题一道真题都没有，
+    而<b>近九年有六年在这一节出了大题</b>（2017、2019、2023、2024、2025 连着考）。<br>
+    <b style="color:var(--red)">读法要改成：不求会写汇编，只求会读汇编。</b>具体就三件事——
+    <b>① 认出这段代码在干什么（选择？循环？函数调用？）；② 会算地址（指令长度、转移目标、数组元素地址）；③ 会算标志位（CF/OF）。</b>
+    本节下面的每一块都是围绕这三件事组织的，<b>书上那些指令语法细节只是工具</b>。
+  </div>
+
+    <div class="link"><span class="tag">知识串联 · 4.3 的每一道综合真题，都是<b>三章合一</b>的——先看清"这道题有几章的分"</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>真题</th><th>ch4 的分</th><th>别的章的分</th></tr>
+      <tr><td class="n"><b>2017 综 01</b></td><td class="n">CISC/RISC 判定、指令长度、CF 计算</td><td class="n"><b>ch2</b>：float 机器数结构（第 4 问「shl 能否实现 power×2」）</td></tr>
+      <tr><td class="n"><b>2019 综 02</b></td><td class="n">call 相对寻址偏移量、判端序、条件转移</td><td class="n"><b>ch2</b>：int 溢出（f(13) 为什么错）· <b>ch5</b>：溢出自陷与异常 · <b>数据结构</b>：递归调用次数</td></tr>
+      <tr><td class="n"><b>2019 综 03</b></td><td class="n">（几乎没有）</td><td class="n"><b>ch3 全占</b>：页大小 → 是否同页、Cache 组相联地址划分、<b>VIPT</b></td></tr>
+      <tr><td class="n"><b>2023 综 04</b></td><td class="n">指令长度、相对寻址、立即寻址、数组地址、判端序</td><td class="n"><b>ch3</b>：请求分页、<b>缺页异常</b>（第 4 问）</td></tr>
+      <tr><td class="n"><b>2024 综 05</b></td><td class="n">指令格式、寄存器个数、符号扩展、机器码识别</td><td class="n"><b>ch2</b>：OF/CF 的产生 · <b>ch5</b>：数据通路与控制信号</td></tr>
+      <tr><td class="n"><b>2024 综 06</b></td><td class="n">读指令序列、编码回机器码、比例因子</td><td class="n"><b>ch2</b>：小端读机器数 · <b>ch3</b>：页号、数组跨几页</td></tr>
+      <tr><td class="n"><b>2025 综 07</b></td><td class="n">读指令序列</td><td class="n"><b>ch2 全占</b>：补码除法器结构、除法溢出 · <b>ch5</b>：异常响应</td></tr>
+    </table></div>
+    ⟹ <b>结论很硬：4.3 的综合题里，<u>纯 ch4 的分数不到一半</u>。</b>
+    <b>所以"4.3 做不出来"往往不是 4.3 没学会，而是 ch2 的补码/溢出、ch3 的 Cache/虚存没学扎实。</b>
+    <b>做这七道题前，请先把 <a href="组原_第2章.html">ch2</a> 与 <a href="组原_第3章.html">ch3</a> 精读版的红块过一遍。</b>
+  </div>
+
+  <h3>4.3.1　常用汇编指令介绍</h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=25">📄 p.172</a>
+
+  <figure>
+    <img src="图/组原/图4-11_x86主要寄存器.png" alt="x86 处理器中的 8 个 32 位通用寄存器及其 16 位、8 位子寄存器">
+    <figcaption><b>图 4.11　x86 处理器中的主要寄存器及说明</b>（书 p.172）。<b>左半张图画的是"套娃"</b>：一个 32 位 EAX，低 16 位可当 AX 用，AX 再拆成 AH/AL 两个 8 位。<b>E = Extended</b>（扩展），标识 32 位寄存器。<b style="color:var(--red)">注意只有 EAX/EBX/ECX/EDX 能这样拆</b>，ESI/EDI/EBP/ESP 四个在图里是<b>整条横贯的方格</b>，拆不开。</figcaption>
+  </figure>
+
+  <div class="key"><span class="tag">必记结论 · 八个通用寄存器（<b>EBP 和 ESP 必须记死，其余用途灵活</b>）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>16 位</th><th>32 位</th><th>说明</th><th>可拆 8 位</th><th>在真题里干什么</th></tr>
+      <tr><td class="n">AX</td><td class="n"><b>EAX</b></td><td class="n">累加器 Accumulator</td><td class="n">AH / AL</td><td class="n"><b>函数返回值固定放这里</b>；mul/div 的隐含操作数</td></tr>
+      <tr><td class="n">BX</td><td class="n"><b>EBX</b></td><td class="n">基地址寄存器 Base Register</td><td class="n">BH / BL</td><td class="n">被调用者保存寄存器</td></tr>
+      <tr><td class="n">CX</td><td class="n"><b>ECX</b></td><td class="n">计数寄存器 Count Register</td><td class="n">CH / CL</td><td class="n">移位位数（<code>shr ebx, cl</code>）；循环计数</td></tr>
+      <tr><td class="n">DX</td><td class="n"><b>EDX</b></td><td class="n">数据寄存器 Data Register</td><td class="n">DH / DL</td><td class="n"><b>乘法高 32 位、除法余数</b></td></tr>
+      <tr><td class="n">ESI</td><td class="n"><b>ESI</b></td><td class="n">变址寄存器 Index Register</td><td class="n">—</td><td class="n">数组下标（<code>[edx+esi*4]</code>）</td></tr>
+      <tr><td class="n">EDI</td><td class="n"><b>EDI</b></td><td class="n">变址寄存器 Index Register</td><td class="n">—</td><td class="n">同上</td></tr>
+      <tr><td class="n">EBP</td><td class="n"><b>EBP</b></td><td class="n"><b>堆栈基指针 Base Pointer</b></td><td class="n">—</td><td class="n"><b>指向当前栈帧底部，整个过程执行期间不变</b></td></tr>
+      <tr><td class="n">ESP</td><td class="n"><b>ESP</b></td><td class="n"><b>堆栈顶指针 Stack Pointer</b></td><td class="n">—</td><td class="n"><b>始终指向栈顶，随入栈/出栈动态变化</b></td></tr>
+    </table></div>
+    ⚠️ <b>除 EBP（基址指针）和 ESP（栈指针）外，其余通用寄存器的用途比较灵活。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · "EAX 能拆成 AX / AH / AL"，是 ch2「数据的对齐与字长兼容」的活标本</span>
+    <span class="hub">ch2 2.3</span> 那里讲过 <b>x86 里 word 永远是 16 位</b>（因为 32/64 位都是从 16 位扩展来的）——<b>这就是 AT&amp;T 后缀 <code>w</code> = 2 字节而不是 4 字节的原因</b>。<br>
+    <span class="hub">ch2</span> 「向后兼容」在 ch2 讲的是<b>数据格式</b>兼容，在这里变成了<b>寄存器名字</b>兼容：<b>十几年前写的 16 位程序里的 <code>mov ax, ...</code>，在 32 位 CPU 上仍然合法</b>。<br>
+    <span class="hub">本章 4.4</span> <b>这种"背着历史包袱的兼容"正是 CISC 的典型特征</b>——4.4 会说「CISC 的兼容性优于 RISC」，<b>图 4.11 那张套娃图就是证据</b>。RISC 的寄存器是清一色 32 个 32 位，没有 AH/AL 这种东西。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 操作数标记（题干里会直接用，必须认识）</span>
+    ・<b><code>&lt;reg&gt;</code></b>：任意寄存器。带数字则指定位数——<code>&lt;reg32&gt;</code>（eax…ebp）、<code>&lt;reg16&gt;</code>（ax,bx,cx,dx）、<code>&lt;reg8&gt;</code>（ah,al,…dl）。<br>
+    ・<b><code>&lt;mem&gt;</code></b>：内存地址，如 <code>[eax]</code>、<code>[var+4]</code>、<code>dword ptr [eax+ebx]</code>。<br>
+    ・<b><code>&lt;con&gt;</code></b>：8/16/32 位常数。<br>
+    <span class="exam" style="margin-left:0">考点追踪：分析汇编指令对应的二进制代码（2010）</span><br>
+    ⚠️ <b>x86 指令采用变长编码，操作码通常为 1 字节，但整条指令长度可变。同一指令（如 mov）因操作数类型或寄存器不同，可能对应多种机器码</b>：
+    <div class="tabwrap"><table class="mono">
+      <tr><th>指令形式</th><th>机器码</th><th>指令形式</th><th>机器码</th></tr>
+      <tr><td class="n"><code>mov ax, &lt;con16&gt;</code></td><td class="n"><b>B8H</b></td><td class="n"><code>mov &lt;reg8&gt;/&lt;mem8&gt;, &lt;reg8&gt;</code></td><td class="n"><b>8AH</b></td></tr>
+      <tr><td class="n"><code>mov al, &lt;con8&gt;</code></td><td class="n"><b>B0H</b></td><td class="n"><code>mov &lt;reg16&gt;/&lt;mem16&gt;, &lt;reg16&gt;</code></td><td class="n"><b>8BH</b></td></tr>
+      <tr><td class="n"><code>mov &lt;reg16&gt;, &lt;reg16&gt;/&lt;mem16&gt;</code></td><td class="n"><b>89H</b></td><td class="n"></td><td class="n"></td></tr>
+    </table></div>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「x86 指令变长」这五个字，在真题里是<b>两个采分点</b>，不是背景介绍</span>
+    <b>书上说</b>：x86 指令采用变长编码，<u>整条指令长度可变</u>。<br>
+    <b>潜台词是</b>：这句话在综合题里<b>直接换成分数</b>，共两处：<br>
+    ・<b>2017 真题第 1 问</b>：「计算机 M 是 RISC 还是 CISC？为什么？」<b>标准答案：M 为 CISC，因为 M 的指令长短不一，不符合 RISC 指令系统的特点。</b>
+    ——<b>判据就是题干那张机器码表里 <code>55</code>（1 字节）、<code>39 4D F4</code>（3 字节）、<code>D1 E2</code>（2 字节）长度不一</b>。<br>
+    ・<b>所有算"指令长度"的问题</b>：既然变长，就<b>不能靠"指令字长 ÷ 编址单位"去算</b>，只能用下面这两条路。<br>
+    <b>所以能考 Z</b>：<b>看到题干给的是 x86 机器码（一堆两位十六进制），第一反应就该是"这是 CISC、指令变长"</b>——
+    <b>而看到题干给的是 32 位定长格式表（2021、2024 真题那种），第一反应是"这是 RISC 风格、指令定长"</b>。<b>这一句话本身就值 3 分。</b>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · <b>算"指令长度"的两条路，互为验算</b>（本节三道真题反复用）</span>
+    <div class="steps">
+      <div class="st"><b>路一：相邻两条指令虚拟地址之差</b><br>
+        2019 综 02：call 在 00401025H，下一条在 0040102AH ⟹ <b>call 占 5 字节</b><br>
+        2017 综 01：首指令 00401020H、末指令 0040107FH ⟹ <b>整段 = 0040107FH − 00401020H + 1 = 60H = 96B</b></div>
+      <div class="st"><b>路二：数机器码的字节数</b><br>
+        2023 综 04：<code>C7 84 82 00 20 42 00 0A 00 00 00</code> ⟹ 数出 <b>11 个字节</b> ⟹ 下一条地址 = 004010AEH + 11 = <b>0040 10B9H</b><br>
+        2019 综 02：<code>E8 D6 FF FF FF</code> ⟹ <b>5 个字节</b>，与路一吻合 ✔</div>
+    </div>
+    ⚠️ <b>路一要 +1</b>（算"占多少字节"是闭区间：末地址 − 首地址 + 1）；<b>路二不用 +1</b>（直接数）。<b>这两处的 ±1 是本节最常见的低级错。</b>
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 习 01/02：<b>手算 add 与 sub 的四个标志位</b>，这是本节的入门功，两题必须都做</span>
+    这两题是<b>刻意做成的一对</b>：同样两个数，一题做加、一题做减，<b>让你看清 CF 公式里那个 Sub 到底怎么起作用</b>。
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th></th><th>习 01：<code>add ax, bx</code></th><th>习 02：<code>sub bx, ax</code></th></tr>
+      <tr><td class="n"><b>目的寄存器</b></td><td class="n"><b>ax</b>（Intel 格式：第一个是目的）</td><td class="n"><b>bx</b></td></tr>
+      <tr><td class="n">运算</td><td class="n">FFE8H + 7FE6H</td><td class="n">FFE8H − 7FE6H＝FFE8H + <b>取反加一</b></td></tr>
+      <tr><td class="n">结果</td><td class="n"><b>7FCEH</b></td><td class="n"><b>8002H</b></td></tr>
+      <tr><td class="n"><b>OF</b></td><td class="n"><b>0</b>——<b>两操作数符号不同，加法必不溢出</b></td><td class="n"><b>0</b>——两操作数符号位都是 1，结果符号位也是 1，无溢出</td></tr>
+      <tr><td class="n">SF</td><td class="n"><b>0</b>（结果最高位 0）</td><td class="n"><b>1</b>（结果为负）</td></tr>
+      <tr><td class="n"><b>CF</b></td><td class="n"><code>C<sub>out</sub> ⊕ Sub = 1 ⊕ <b>0</b> = <b>1</b></code></td><td class="n"><code>C<sub>out</sub> ⊕ Sub = 1 ⊕ <b>1</b> = <b>0</b></code></td></tr>
+      <tr><td class="n">ZF</td><td class="n">0</td><td class="n">0</td></tr>
+      <tr><td class="n">答案</td><td class="n"><b>C</b></td><td class="n"><b>B</b></td></tr>
+    </table></div>
+    <b>潜台词是</b>：<b>「两个操作数符号不同，加法必不溢出」是最快的 OF 判据</b>，比数进位快得多——
+    因为<b>异号相加，结果的绝对值一定不超过较大的那个</b>。<b>只有同号相加才可能溢出。</b><br>
+    <b>所以能考 Z</b>：书在习 01 的答案后加了一个必背的【注意】框——<b>「无论是无符号数还是有符号数，都以二进制代码形式无差别地存放在计算机内。即便两个有符号数相加，也会导致 CF 的变动，只是 CF 值对有符号数运算没有意义。」</b>
+    <b style="color:var(--red)">这句话的意思是：CPU 每次运算都把四个标志全算一遍，"该看哪个"是<u>你</u>的事，不是 CPU 的事。</b>
+    🐍 我两题都复算过：<code>(0xFFE8+0x7FE6)&amp;0xFFFF = 0x7FCE</code>、<code>(0xFFE8−0x7FE6)&amp;0xFFFF = 0x8002</code>　✔
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 习 03：机器码题的"小端"怎么落到纸面上——<b>看题干那句括号</b></span>
+    <b>题</b>：<code>sub ax, imm</code> 的机器码是 <code>2dxxxx</code>（<b>从左到右以字节为单位由低地址到高地址</b>），imm = −3、(ax) = 7，求机器码和 OF。<br>
+    <b>答：2DFDFFH，OF = 0</b>（选 C）。<br>
+    <b>潜台词是</b>：<b>题干括号里那句"从左到右 = 由低地址到高地址"才是本题的题眼</b>——它把"内存里的字节顺序"和"你写在纸上的顺序"对齐了。于是：<br>
+    ・imm = −3 的 16 位补码 = <b>FFFDH</b>；<br>
+    ・<b>小端 ⟹ 低字节 FDH 放在低地址 ⟹ 写在<u>左边</u></b> ⟹ 机器码 = <code>2D</code> + <code><b>FD</b></code> + <code><b>FF</b></code> = <b>2DFDFFH</b>；<br>
+    ・OF：<code>7 − (−3) = 10</code>，<b>没超出 16 位有符号范围 ⟹ OF = 0</b>。<br>
+    <b>所以能考 Z</b>：<b>干扰项 2DFFFDH 就是"按人读数的顺序写"（大端）造出来的</b>。
+    <b style="color:var(--red)">判端序的动作永远是同一个：把多字节字段按<u>地址从低到高</u>读出来，看拼出来的是不是原数。</b>
+    <b>这个动作在 2019 综 02（<code>D6 FF FF FF</code> ⟹ FFFFFFD6H）和 2023 综 04（<code>00 20 42 00</code> ⟹ 00422000H）里各用了一次，是本章判端序的唯一方法。</b>
+  </div>
+
+  <h4>常用指令（Intel 格式）</h4>
+
+  <div class="key"><span class="tag">必记结论 · 数据传送指令</span>
+    <b>mov</b>：<code>mov &lt;目的&gt;, &lt;源&gt;</code>，把第二个操作数复制到第一个。<br>
+    <pre class="code">mov eax, ebx              #将 ebx 的值复制到 eax
+mov byte ptr [var], 5     #将常数 5 存入地址 var 处的 1 字节内存单元</pre>
+    🔥🔥 <b>双操作数指令的两个操作数不能同时为内存</b>，即 <b>mov 不能内存→内存</b>。若要在内存间复制，<b>先加载到寄存器，再从寄存器写出</b>。<br>
+    <b>push</b>：入栈。<b>ESP 是栈顶，入栈前先将 ESP <u>减</u> 4（栈向低地址增长），再把操作数写到 ESP 所指地址。</b>⚠️ <b>栈中元素固定为 32 位。</b><br>
+    <b>pop</b>：出栈。<b>先读出 ESP 所指地址的内容，再将 ESP <u>加</u> 4。</b>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 算术和逻辑运算指令（<b>标 🔥 的四条是考点</b>）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>指令</th><th>功能</th><th>要点</th></tr>
+      <tr><td class="n"><code>add / sub</code></td><td class="n">相加 / 第一个减第二个</td><td class="n"><b>结果均存回第一个操作数</b></td></tr>
+      <tr><td class="n"><code>inc / dec</code></td><td class="n">自增 1 / 自减 1</td><td class="n">单操作数</td></tr>
+      <tr><td class="n"><code>imul</code> 🔥</td><td class="n"><b>有符号</b>整数乘法</td><td class="n">双操作数 <code>imul eax,[var]</code> 或三操作数 <code>imul esi,edi,25</code>；<b>结果必须存入寄存器</b></td></tr>
+      <tr><td class="n"><code>mul</code> 🔥</td><td class="n"><b>无符号</b>整数乘法</td><td class="n"><b>仅单操作数</b>；被乘数隐含在 <b>eax</b>，乘积放 <b>edx:eax</b>；<b>edx ≠ 0 ⟹ 结果放不下 ⟹ 置 CF=1、OF=1</b></td></tr>
+      <tr><td class="n"><code>idiv / div</code> 🔥</td><td class="n">有符号 / 无符号除法</td><td class="n"><b>仅指定除数</b>；被除数是 <b>edx:eax 组成的 64 位数</b>；<b>商→eax，余数→edx</b></td></tr>
+      <tr><td class="n"><code>and / or / xor</code></td><td class="n">按位与/或/异或</td><td class="n"><code>and eax,0fH</code> 保留低 4 位；<b><code>xor edx,edx</code> 是"把 edx 清零"的惯用法</b></td></tr>
+      <tr><td class="n"><code>not / neg</code></td><td class="n">按位取反 / 取负</td><td class="n"><b>neg 求的是补码 −x</b>（取反加一），not 只取反</td></tr>
+      <tr><td class="n"><code>shl / shr</code> 🔥</td><td class="n"><b>逻辑</b>左移 / 右移</td><td class="n">第一个操作数是被移位数，第二个是位数（可用 cl）</td></tr>
+    </table></div>
+    ⚠️⚠️ <b><u>无符号乘法以 CF 判断溢出，有符号乘法则以 OF 为准</u></b>——书上明写的一句，<b>易混，做成卡</b>。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · <code>idiv</code> 那句"被除数是 edx:eax 组成的 64 位数"，是 2025 真题整道大题的题眼</span>
+    <b>书上说</b>：idiv 仅指定除数，<u>被除数为 edx:eax 组成的 64 位有符号数</u>，商存 eax、余数存 edx。<br>
+    <b>潜台词是</b>：<b>32 位数除以 32 位数，为什么要先凑成 64 位？</b>因为<b>除法器的结构就是这样设计的</b>——
+    被除数必须比除数"宽一倍"，才能保证每一步上商都有意义。所以 <b>C 语言里一句 <code>d[i]/x</code>，编译出来必须先做一次符号扩展</b>。<br>
+    <b>2025 真题（综 07）就是把这句话展开成一整道大题</b>：<code>scov R1</code> 这条指令干的就是 <code>{R0,R1} ← SEXT(R1)</code>，
+    <b>把 32 位的 d[i] 符号扩展成 64 位，高 32 位进 R0、低 32 位进 R1</b>；再 <code>idiv R1,R2</code> 才合法。<br>
+    <b>所以能考 Z</b>：<b>凡看到除法指令前面有一条"看不懂的扩展指令"（scov / cdq / SEXT），它一定在做"凑够双倍字长的被除数"这件事。</b>
+    <b>这也解释了 2025 第 1 问的答案</b>：除法器里 <b>R 装高 32 位（FFFF FFFFH，因为 8765 4321H 是负数）、Q 装低 32 位（8765 4321H）、Y 装除数（0000 00FFH）</b>。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 控制流指令</span>
+    <b>x86 用指令指针寄存器 EIP（相当于 PC）指示当前执行指令的地址</b>，每条指令执行后 EIP 自动指向下一条。<b>EIP 不能直接访问，但可通过控制流指令修改。</b><br>
+    <b>1) jmp</b>：无条件转移到 label 处。<span class="exam" style="margin-left:0">考点追踪：无条件转移指令的指令格式（2021）</span><br>
+    <b>2) j&lt;condition&gt;</b>：条件转移，<b>根据状态标志（ZF、SF 等）决定是否转移</b>。<span class="exam" style="margin-left:0">考点追踪：条件转移指令与标志位的结合（2013）</span>
+    <div class="tabwrap"><table class="mono">
+      <tr><th>指令</th><th>含义</th><th>指令</th><th>含义</th></tr>
+      <tr><td class="n"><code>je</code></td><td class="n">相等时转移（equal）</td><td class="n"><code>jg</code></td><td class="n">大于时转移（greater）</td></tr>
+      <tr><td class="n"><code>jz</code></td><td class="n">结果为零时转移（zero）</td><td class="n"><code>jge</code></td><td class="n">大于等于时转移</td></tr>
+      <tr><td class="n"><code>jne</code></td><td class="n">不相等时转移</td><td class="n"><code>jl</code></td><td class="n">小于时转移（less）</td></tr>
+      <tr><td class="n"><code>jle</code></td><td class="n">小于等于时转移</td><td class="n"><code>jbe</code></td><td class="n"><b>无符号</b>小于等于时转移（below）</td></tr>
+    </table></div>
+    <b>3) cmp / test</b>：<b>cmp 执行减法但不保存结果，仅设置标志位；test 执行按位与但不保存结果，仅更新标志位（特别是 ZF）</b>。二者通常与 j&lt;condition&gt; 配合。<br>
+    <b>4) call / ret</b>：🔥🔥 <b>call 将下一条指令的地址（返回地址）压入栈，然后转移到 label；ret 从栈顶弹出返回地址并转移过去。</b><span class="exam" style="margin-left:0">考点追踪：call 指令的功能（2019）</span>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · <code>j</code> 后面那个字母怎么记：<b>g/l 是有符号，a/b 是无符号</b></span>
+    <b>书上说</b>：给了 je/jz/jne/jg/jge/jl/jle 七条，另在例子里用了 <code>jbe</code> 却没解释。<br>
+    <b>潜台词是</b>：x86 的条件转移<b>分成两套助记符</b>，书把它们混在一起给了，容易记乱：<br>
+    ・<b>有符号用 <u>g</u>reater / <u>l</u>ess</b>：<code>jg / jge / jl / jle</code> ⟹ 内部查的是 <b>SF、OF、ZF</b>；<br>
+    ・<b>无符号用 <u>a</u>bove / <u>b</u>elow</b>：<code>ja / jae / jb / jbe</code> ⟹ 内部查的是 <b>CF、ZF</b>。<br>
+    <b>所以能考 Z</b>：<b>看到汇编里用了 jbe/ja，就知道编译器把这两个数当无符号处理</b>——
+    <b>书上 <code>get_cont</code> 那个例子用 jbe，正是因为比较的是<u>指针</u>，而 C 语言规定指针按无符号整数比较</b>；
+    <b>而 <code>nsum_for</code> 例子里 i 和 n 都是 int，所以用 jle/jg</b>。<b>两个例子是刻意做成的一组对照，书没点破，但考的就是这个。</b><br>
+    <b>反过来用</b>：题目若问"为什么这里用 jbe 不用 jle"，答案就是<b>「操作数是指针/无符号数」</b>；这一条和 4.2 的「有符号看 OF、无符号看 CF」是同一件事的两个层面。
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 习 05：<code>imul</code> 三操作数题的两个坑——<b>算错地址</b>和<b>写错落点</b></span>
+    <b>题</b>：R[eax] = 080480B4H，R[ebx] = 00000011H，M[080480F8H] = 000000B0H，执行 <code>imul eax, [eax+ebx*4], -16</code> 后什么变了？<br>
+    <b>答：R[eax] = FFFFF500H</b>（选 C）。两步：<br>
+    ① <b>算源操作数地址</b>：<code>R[eax] + R[ebx]×4 = 080480B4H + 11H×4 = 080480B4H + 44H = <b>080480F8H</b></code>（🐍 复算 ✔）；<br>
+    ② <b>算乘积</b>：<code>M[080480F8H] × (−16) = B0H × (−16) = 176 × (−16) = −2816 = <b>FFFFF500H</b></code>（🐍 复算 ✔）。<br>
+    <b>潜台词是</b>：<b style="color:var(--red)">选项 B 和 D 把结果写进了内存单元 M[080480F8H]，这是本题真正的陷阱</b>——
+    书上讲 imul 时明说过<b>「结果存入第一个操作数，<u>必须为寄存器</u>」</b>，<b>所以内存单元的内容不会改变</b>。<br>
+    <b>所以能考 Z</b>：<b>这一族题永远问"什么<u>变了</u>"，而不是"结果是多少"</b>——
+    <b>动笔前先圈出"目的操作数是谁"（Intel 格式：第一个），再算数值。</b>
+    习 01/02 也是同一个考法（<b>习 01 变的是 ax，习 02 变的是 bx</b>），<b>三道题串起来看，"目的操作数在第一个"这句话就再也忘不掉了</b>。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 习 06：<b>条件转移的目标地址，起点是"下一条指令"</b>——本节最短但最常错的一题</span>
+    <b>题</b>：<code>804846c: 7e 0d　jle xxxxxxxx</code>，偏移量 0dH；执行到前一条 cmp 时 i = 105、j = 100（j 在 edx、i 在 eax）。jle 执行后转到哪里？<br>
+    <b>答：804847bH</b>（选 D）。两步：<br>
+    ① <b>判断跳不跳</b>：<code>cmp edx,eax</code> 算的是 <b>edx − eax = 100 − 105 &lt; 0</b> ⟹ <b>满足"小于等于"⟹ 转移</b>；<br>
+    ② <b>算目标</b>：<code><b>本条地址 804846cH + 本条长度 2 + 偏移量 0dH = 804847bH</b></code>（🐍 复算 ✔）。<br>
+    <b>潜台词是</b>：<b>"本条长度 2"是从机器码 <code>7e 0d</code> 数出来的（两个字节）</b>——<b>这就是"数机器码字节数"求指令长度那条路的最小实例</b>。<br>
+    <b>所以能考 Z</b>：<b style="color:var(--red)">三个错误选项正好是三种漏算</b>：
+    <b>804846eH ＝ 只加了长度没加偏移；8048479H ＝ 只加了偏移没加长度；8048461H ＝ 把偏移当成了负数</b>。<br>
+    ⟹ <b>把这条写成一个不变的口诀：<code>目标 = 本条地址 + 本条长度 + 偏移量</code>，其中"本条地址 + 本条长度"就是<u>下一条指令地址</u>，也就是取指后的 PC。</b>
+    <b>这条口诀在 2019、2023 两道真题里各用一次，一字不改。</b>
+  </div>
+
+  <h4>汇编指令格式：AT&amp;T vs Intel</h4>
+
+  <div class="key"><span class="tag">必记结论 · 六条区别（<b>统考用 Intel 格式</b>，但 AT&amp;T 可能出现在题干里）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>#</th><th>AT&amp;T 格式</th><th>Intel 格式</th></tr>
+      <tr><td class="n">①</td><td class="n">指令名<b>必须小写</b></td><td class="n"><b>对大小写不敏感</b></td></tr>
+      <tr><td class="n">②</td><td class="n">操作数顺序：<b>「源, 目的」</b></td><td class="n"><b>「目的, 源」</b></td></tr>
+      <tr><td class="n">③</td><td class="n"><b>寄存器前加 <code>%</code>，立即数前加 <code>$</code></b></td><td class="n">两者<b>均无前缀</b></td></tr>
+      <tr><td class="n">④</td><td class="n">内存寻址用<b>圆括号 <code>( )</code></b></td><td class="n">用<b>方括号 <code>[ ]</code></b></td></tr>
+      <tr><td class="n">⑤</td><td class="n">复杂寻址 <code>disp(base, index, scale)</code>；<br><code>8(%edx,%eax,2)</code> ⟹ R[edx] + R[eax]×2 + 8</td><td class="n">写作 <code>[edx + eax*2 + 8]</code></td></tr>
+      <tr><td class="n">⑥</td><td class="n">助记符<b>后加后缀</b>表明操作数大小：<br><b><code>b</code>=byte、<code>w</code>=word、<code>l</code>=long</b></td><td class="n">内存操作数<b>前</b>加 <b><code>byte ptr</code>、<code>word ptr</code>、<code>dword ptr</code></b></td></tr>
+    </table></div>
+    ⚠️ 书上【注意】框：<b>在 x86 体系结构中，32 或 64 位都是由 16 位扩展来的，因此 word（字）始终表示 16 位。</b>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · <b>表 4.2</b> 两种格式对照（六行，能对着任一列写出另一列）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>AT&amp;T 格式</th><th>Intel 格式</th><th>含义</th></tr>
+      <tr><td class="n"><code>mov $100, %eax</code></td><td class="n"><code>mov eax, 100</code></td><td class="n">100 → R[eax]</td></tr>
+      <tr><td class="n"><code>mov %eax, %ebx</code></td><td class="n"><code>mov ebx, eax</code></td><td class="n">R[eax] → R[ebx]</td></tr>
+      <tr><td class="n"><code>mov %eax, (%ebx)</code></td><td class="n"><code>mov [ebx], eax</code></td><td class="n">R[eax] → M[R[ebx]]</td></tr>
+      <tr><td class="n"><code>mov %eax, -8(%ebp)</code></td><td class="n"><code>mov [ebp-8], eax</code></td><td class="n">R[eax] → M[R[ebp]−8]</td></tr>
+      <tr><td class="n"><code>lea 8(%edx,%eax,2), %eax</code></td><td class="n"><code>lea eax, [edx+eax*2+8]</code></td><td class="n">R[edx]+R[eax]×2+8 → R[eax]</td></tr>
+      <tr><td class="n"><code>movl %eax, %ebx</code></td><td class="n"><code>mov dword ptr [ebx], eax</code></td><td class="n">32 位 R[eax] → M[R[ebx]]</td></tr>
+    </table></div>
+    ⚠️ <b><code>mov</code> 传的是内存<u>内容</u>，<code>lea</code> 传的是<u>有效地址</u>本身。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · <code>lea</code> 是本节最"不像它自己"的一条指令——<b>它是加法器，不是访存指令</b></span>
+    <b>书上说</b>：lea 用于将<u>有效地址（而非内存内容）</u>加载到寄存器；后面在 add 函数的机器码里又说了一句
+    <u>「这里好像没有加法指令，实际上 lea 指令执行的是加法运算 R[edx]+R[eax] = x + y」</u>。<br>
+    <b>潜台词是</b>：<b>lea 借用了寻址部件的加法器，但把结果直接给你，不去访存。</b>于是它有了两个身份：<br>
+    ・<b>名义身份</b>：算地址（"取某个数组元素的地址"）；<br>
+    ・<b>实际身份</b>：<b>一条能做「乘 2/4/8 再加常数」的多功能加法指令</b>，且<b>不影响标志位</b>（这是编译器爱用它的原因）。<br>
+    <b><code>lea eax, [edx+eax*2+8]</code> 一条指令干了：一次乘法（×2）+ 两次加法。</b>用 add/imul 要三条。<br>
+    <b>所以能考 Z</b>：<b>书上 add 函数体的核心就一条 <code>lea eax,[edx+eax]</code>，题目若问"这条指令的功能是什么"，答案是"实现 x + y 并把和送入 EAX"，而不是"计算某地址"。</b>
+    <b style="color:var(--red)">看到 lea 别本能地去想访存——它是本节唯一一条"带方括号却不访存"的指令。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · <code>[edx + eax*2 + 8]</code> 这一串，就是 4.2 的<b>变址寻址</b>穿了件 x86 的衣服</span>
+    <span class="hub">本章 4.2</span> <code>disp(base, index, scale)</code> 逐项对应：<b>base = 基址寄存器（4.2 的 BR）、index = 变址寄存器（4.2 的 IX）、disp = 形式地址 A、scale = 比例因子</b>。<br>
+    <b>x86 把基址和变址<u>同时</u>用上了</b>，所以 EA = <b>基址 + 变址×比例 + 位移</b>——这是 4.2 那三种偏移寻址的<b>合体版</b>。<br>
+    <span class="hub">数据结构</span> 这个式子就是<b>二维数组的行主序地址公式</b>：<code>a[i][j] 的地址 = 首地址 + i×行宽×元素大小 + j×元素大小</code>。
+    <b>scale（1/2/4/8）就是"元素占几字节"</b>。<br>
+    <span class="hub">本节真题</span> 2023 综 04 的 <code>[ecx+edx*4+00422000h]</code> 就是它：<b>00422000H = 数组首地址、edx = j、比例 4 = int 的字节数</b>，
+    <b style="color:var(--red)">而 ecx 里装的不是 i，是 i×256</b>（因为 x86 的 scale 只能取 1/2/4/8，装不下 i×64×4 = i×256，只能先算好）。<b>这是那道题最容易答错的一问。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 「调用者保存 / 被调用者保存」这个约定，在 OS 里叫<b>上下文切换</b></span>
+    <span class="hub">本章 4.3.4</span> <b>EAX/ECX/EDX 由调用者保存，EBX/ESI/EDI 由被调用者保存</b>——这是<b>软件层面的约定</b>（编译器遵守，硬件不管）。<br>
+    <span class="hub">操作系统</span> 而<b>进程切换时必须保存<u>全部</u>寄存器</b>，因为<b>切换是"随机打断"的，没有任何约定可依赖</b>——
+    <b>这就是"过程调用轻、进程切换重"的根本原因</b>：前者只需存 3 个寄存器，后者要存整套现场（通用寄存器 + PC + PSW + 页表基址）。<br>
+    <span class="hub">ch5</span> 中断响应介于两者之间：<b>硬件只自动保存断点和 PSW（中断隐指令），其余寄存器由中断服务程序自己压栈</b>——<b>相当于硬件版的"调用者保存 + 被调用者保存"分工。</b><br>
+    ⟹ <b>三个场景的差别只在一个问题上：「谁知道待会儿还要用哪些寄存器」</b>——
+    <b>编译器知道（所以能省着存）、OS 不知道（所以全存）、中断硬件只知道最少的那几个（所以剩下的交给软件）。</b>
+  </div>
+
+    <h3>4.3.2　选择语句的机器级表示</h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=29">📄 p.176</a>
+
+  <div class="key"><span class="tag">必记结论 · 条件码是怎么被设置的</span>
+    <b>条件码描述了最近一次算术或逻辑运算结果的属性</b>，常用的有 <b>CF、ZF、SF、OF</b>。<br>
+    ・<b>add、sub、imul、or、and、shl、inc、dec、not、sal 等运算指令在执行时会<u>自动</u>设置条件码</b>；<br>
+    ・<b>cmp 和 test 专门用于设置条件码</b>：<b><code>cmp 相当于 sub</code>、<code>test 相当于 and</code>，但都<u>不保存结果</u></b>，仅更新标志位；<br>
+    ・<b>j&lt;condition&gt; 读取 ZF、OF、SF 实现转移。</b>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · if-else 的 goto 等价形式（<b>必默</b>，一切分支代码都长这样）</span>
+    <pre class="code">// 原始形式
+if(test_expr)  then_statement;  else  else_statement;
+
+// 编译器实际生成的等价 goto 形式
+t = test_expr;        // 暂存测试结果
+if(!t) goto false;    // 条件为假 → 跳到假分支
+then_statement        // 真分支
+goto done;            // 跳过假分支
+false:
+else_statement        // 假分支
+done:</pre>
+    ⚠️ 在 C 语言中，<b>test_expr 的值为 0 表示"假"，非 0（<u>包括负数</u>）表示"真"</b>；两个分支<b>只会执行其中一个</b>。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 书上完整例子（p.177）——指针比较用<b>无符号</b>转移指令</span>
+    <pre class="code">int get_cont(int *p1, int *p2){
+    if(p1 &gt; p2)  return *p2;
+    else         return *p1;
+}</pre>
+    已知 p1、p2 的实参已压入调用函数的栈帧，地址分别为 <b>R[ebp]+8、R[ebp]+12</b>；<b>返回值须存放在 eax 中</b>。
+    <pre class="code">mov  eax,dword ptr [ebp+8]     #R[eax]←M[R[ebp]+8]，加载参数 p1
+mov  edx,dword ptr [ebp+12]    #R[edx]←M[R[ebp]+12]，加载参数 p2
+cmp  eax,edx                   #比较 p1 和 p2，设置条件码
+jbe  .L1                       #若 p1 ≤ p2，转移到 L1
+mov  eax,dword ptr [edx]       #R[eax]←M[R[edx]]，取 *p2 作为返回值
+jmp  .L2                       #无条件转移，跳过 else 分支
+.L1:
+mov  eax,dword ptr [eax]       #R[eax]←M[R[eax]]，取 *p1 作为返回值
+.L2:</pre>
+    ⚠️⚠️ <b>指针比较在 C 语言中按无符号整数处理，故使用 <code>jbe</code>（无符号"小于等于"）。</b><br>
+    ⚠️ cmp 的两个操作数<b>都应来自寄存器</b>，所以要先把栈里的实参 <code>mov</code> 到 eax/edx。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · <b>怎么"看汇编认结构"</b>——if-else 的三个签名特征</span>
+    <b>书上说</b>：书给了 goto 等价形式和一个例子，但没总结"反过来怎么认"。<b>而考试是反着来的：给你汇编，让你说这是什么结构。</b><br>
+    <b>if-else 的三个签名特征（对照习题 09 的四个选项）</b>：<br>
+    <div class="steps">
+      <div class="st"><b>必有一条条件转移指令</b>（跳向"另一个分支"）——习 09 选项 B，对</div>
+      <div class="st"><b>必有一条无条件转移指令</b>（真分支执行完要跳过假分支）——习 09 选项 A，对</div>
+      <div class="st"><b>计算条件的代码一定在条件转移指令之前</b>（先 cmp 才能 j）——习 09 选项 C，对</div>
+    </div>
+    <b style="color:var(--red)">但第四条是错的</b>：<b>「then 分支的代码一定排在 else 分支之前」——不一定！</b>
+    书上的 <code>get_cont</code> 例子就是反的：源码里 <code>if(p1&gt;p2) return *p2;</code> 是 then 分支，
+    <b>可汇编里 <code>jbe .L1</code> 一跳，把 else 分支（<code>*p1</code>）放到了 .L1 里，反而排在后面</b>；<b>then 分支的代码顺序执行、else 分支被跳到</b>。
+    <b>编译器可以任意选择"跳走哪一支"，取决于它把条件取反了没有。</b>（习 09 答案选 D。）<br>
+    <b>所以能考 Z</b>：<b>读汇编时不要假设"上面那段一定是 then"</b>——<b>先看条件转移指令的方向和它取的是原条件还是反条件</b>。
+    例子里源码是 <code>p1 &gt; p2</code>，汇编用的是 <code>jbe</code>（≤），<b>正是取反后跳走</b>。
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 2017 综 01 第 3 问：<b>「0 减 FFFF FFFFH」为什么 CF = 1</b>——本章最烧脑的一次标志位计算</span>
+    <b>题</b>：<code>cmp dword ptr [ebp-0Ch], ecx</code> 实现 <b>i 与 n−1 的比较</b>。执行 <code>f1(0)</code>、i = 0 时，CF 是多少？<br>
+    <b>书上说</b>：n = 0 ⟹ <b>n−1 = FFFF FFFFH</b>；于是做 <code>0000 0000H − FFFF FFFFH</code>，
+    在补码加/减运算器中即 <code>00000000H + 00000000H + 1 = 00000001H</code>，<b>C<sub>out</sub> = 0、Sub = 1 ⟹ CF = 0 ⊕ 1 = <u>1</u></b>。<br>
+    <b>潜台词是</b>：书跳过了两处，补上就顺了：<br>
+    ① <b>为什么 n−1 = FFFF FFFFH</b>：n 是 <code>unsigned</code>，<b>0 − 1 在无符号里回绕成最大值</b>。<b>这正是这段 C 代码的 bug 演示</b>——<code>for(i=0; i&lt;=n-1; i++)</code> 在 n=0 时会循环 40 多亿次。<br>
+    ② <b>减法怎么变成加法</b>：<code>A − B = A + <u>B 取反</u> + 1</code>。FFFF FFFFH 取反 = 0000 0000H，再 +1 ⟹ 加数是 <code>00000000H + 1</code>，
+    <b>整个加法 <code>0 + 0 + 1 = 1</code>，最高位没有进位 ⟹ C<sub>out</sub> = 0</b>。<br>
+    <b>所以能考 Z</b>：<b style="color:var(--red)">这是本章唯一一处 C<sub>out</sub> = 0 的减法</b>，也正因如此 <b>CF = 1</b>（有借位）。
+    对照习 02（减法但 C<sub>out</sub> = 1 ⟹ CF = 0），<b>两题一起看就能把 <code>CF = C<sub>out</sub> ⊕ Sub</code> 这个异或彻底吃透：<u>减法时 C<sub>out</sub> 和 CF 永远相反</u></b>。
+  </div>
+
+  <h3>4.3.3　循环语句的机器级表示</h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=30">📄 p.177</a>
+  <span class="exam">考点追踪：循环语句的机器级代码分析（2014、2017、2019、2023）</span>
+
+  <div class="key"><span class="tag">必记结论 · 三种循环的统一归宿</span>
+    <b>x86 指令集中没有直接对应 while/for/do-while 的指令</b>，编译器用<b>条件测试（cmp、test）+ 条件转移（je、jne、jg、jle…）</b>的组合实现。<br>
+    🔥🔥 <b>大多数编译器会把这三种循环<u>统一转换为类似 do-while 的形式</u>。</b>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>循环</th><th>测试位置</th><th>循环体至少执行几次</th><th>编译后的结构</th></tr>
+      <tr><td class="n"><b>do-while</b></td><td class="n"><b>后</b>测试</td><td class="n"><b>≥ 1 次</b></td><td class="n">循环体 → 尾部 cmp + j? 跳回</td></tr>
+      <tr><td class="n"><b>while</b></td><td class="n"><b>前</b>测试</td><td class="n"><b>可能 0 次</b></td><td class="n"><b>头部先判一次跳出</b> + 上面那个结构</td></tr>
+      <tr><td class="n"><b>for</b></td><td class="n"><b>前</b>测试</td><td class="n"><b>可能 0 次</b></td><td class="n">init → <b>头部判一次</b> → 循环体 + update → 尾部跳回</td></tr>
+    </table></div>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · for 循环的完整 goto 展开（<b>必默</b>）</span>
+    <pre class="code">// for(init_expr; test_expr; update_expr) body_statement 展开为：
+init_expr;            // 初始化（只执行一次）
+t = test_expr;        // 头部先测一次
+if(!t) goto done;     // 初始条件为假 → 循环体一次都不执行
+loop:
+body_statement        // 循环体
+update_expr;          // 更新（i++）
+t = test_expr;        // 尾部再测
+if(t) goto loop;      // 仍为真 → 跳回
+done:</pre>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 书上完整例子（p.178–179）——<b>把这段汇编和上面的 goto 模板逐行对齐看</b></span>
+    <pre class="code">int nsum_for(int n){
+    int i;  int result = 0;
+    for(i=1; i&lt;=n; i++)  result += i;
+    return result;
+}</pre>
+    <pre class="code">mov  ecx,dword ptr [ebp+8]   #R[ecx]←M[R[ebp]+8]，加载参数 n 到 ecx
+mov  eax,0                   #result = 0（result 被优化到 eax）
+mov  edx,1                   #i = 1      （i 被优化到 edx）
+cmp  edx,ecx                 #比较 i : n            ← 头部测试
+jg   .L2                     #若 i &gt; n，跳出（一次都不执行）
+.L1:                         #循环体入口
+add  eax,edx                 #result += i
+add  edx,1                   #i++
+cmp  edx,ecx                 #再次比较 i : n        ← 尾部测试
+jle  .L1                     #若 i ≤ n，跳回
+.L2:</pre>
+    🔥 <b>实参 n 的地址是 R[ebp]+8</b>；<b>编译器把频繁使用的局部变量优化到寄存器</b>：<b>result → eax（同时是返回值寄存器）、i → edx</b>。<br>
+    ⚠️ <b>i 和 n 都是 int，所以 <code>i ≤ n</code> 是有符号比较，用 jle / jg 这类有符号转移指令。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · <b>看汇编认循环的两个"钩子"</b>——一头一尾各一条转移指令</span>
+    <b>书上说</b>：三种循环最终都被编译成 do-while 形式。<br>
+    <b>潜台词是</b>：这句话给了你一个<b>识别模板</b>——<b>循环在汇编里的样子永远是"两条转移指令夹一段代码"</b>：<br>
+    ・<b>头部</b>一条 <code>cmp + j&lt;反条件&gt;</code> <b>向下跳到循环出口</b>（这是 while/for 才有的；do-while 没有这一条）；<br>
+    ・<b>尾部</b>一条 <code>cmp + j&lt;原条件&gt;</code> <b>向上跳回循环入口</b>（<b>三种循环都有</b>）。<br>
+    <b>所以能考 Z</b>：<b>「向上跳的那条转移指令 = 循环；向下跳的 = 分支或跳出」</b>，判据就是<b>偏移量的正负</b>。<br>
+    <b>2023 真题就靠这一条读题</b>：第 2 条 <code>jmp 00401084h</code>（<b>向下</b>，偏移 09H，正数）是"跳到头部测试"；
+    第 7 条 <code>jge 004010bch</code>（向下，偏移 32H）是"跳出循环"。<b>结合源码 <code>for(i=0;i&lt;24;i++)</code> 就能确认这是 for 循环的标准骨架。</b><br>
+    ⚠️ 顺带回答习 10：<b>循环"一定至少包含一条条件转移指令"（尾部那条），但"不一定包含无条件转移指令"</b>——
+    do-while 就没有。<b>选项 D「循环体内执行的指令不包含条件转移指令」是错的</b>，尾部那条就在循环体内。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · "编译器把局部变量优化到寄存器"，是 4.4「RISC 要配大量通用寄存器」的原因</span>
+    <span class="hub">本章 4.4</span> RISC 特点第 4 条<b>「CPU 中配备大量通用寄存器」</b>——<b>为什么要多？就是为了让编译器能把更多局部变量塞进寄存器</b>，
+    因为 RISC 只有 LOAD/STORE 能访存，<b>变量留在内存里每用一次就要两条指令</b>。<br>
+    <span class="hub">本节</span> <code>nsum_for</code> 里 result 和 i <b>整个循环都没碰过内存</b>，这才是它快的原因。<br>
+    <span class="hub">ch3</span> <b>寄存器是存储层次的最顶层</b>（3.1 那张金字塔的塔尖）——"把变量优化到寄存器"就是<b>把最热的数据放到最快的层</b>，
+    和 Cache 装最近用过的块<b>是同一个思想（局部性）的两个层次</b>。<br>
+    <span class="hub">ch5</span> 而寄存器多了也有代价：<b>过程调用时要保存/恢复的寄存器就多</b> ⟹ 于是有了下面的"调用者保存/被调用者保存"约定。
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 2019 综 02 第 4、5 问：<b>int 溢出与"溢出自陷指令"</b>——两问其实是一条链</span>
+    <b>第 4 问</b>：f(13) = 6227020800，但 f1(13) 返回 1932053504，为什么？怎么改？<br>
+    <b>答</b>：<b>6227020800 超出了 32 位 int 的最大值（2<sup>31</sup>−1 = 2147483647）</b>，结果<b>被截断成低 32 位</b>；
+    改法是<b>把返回值类型改为 double / long long / float / long double</b>。<br>
+    <b>第 5 问</b>：<code>imul</code> 的乘法器输出高、低 32 位满足什么条件时 OF = 1？要让 CPU 在溢出时转异常处理，编译器应在 imul 后加什么指令？<br>
+    <b>答</b>：<b>乘积的高 33 位不全为 0 或不全为 1 时 OF = 1</b>；<b>应加一条"溢出自陷指令"</b>。<br>
+    <b>潜台词是</b>：这两问连起来才完整——<b>硬件<u>知道</u>溢出了（OF 被置 1），但 C 语言<u>不管</u>它，于是程序若无其事地返回了错值</b>。
+    <b style="color:var(--red)">"溢出自陷指令"就是把这条被忽略的信息重新接上：它查 OF，为 1 就调用溢出异常处理程序。</b><br>
+    <b>"高 33 位"为什么是 33 不是 32</b>：<b>因为符号位要被算进去</b>——32×32 位相乘得 64 位，<b>若结果能用 32 位补码表示，则高 32 位必须全是低 32 位符号位的复制</b>，
+    <b>算上低 32 位的最高位（符号位本身），就是"高 33 位全 0 或全 1"</b>。<br>
+    <b>所以能考 Z</b>：<b>这条判据和 <a href="组原_第2章.html">ch2</a> 的"补码乘法溢出判断"是同一条</b>，
+    而<b>"溢出自陷 → 异常处理"这条链在 2025 综 07（除法异常）里又出现一次</b>——<b>两年真题，同一个机制。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 2019 综 02 第 1 问「计算 f(10) 需要调用 f1 多少次」，这是<b>数据结构的递归</b>混进了组原</span>
+    <span class="hub">数据结构</span> <code>f1(n) = n × f1(n−1)</code>，递归到 <code>n ≤ 1</code> 停止 ⟹ <b>f1(10), f1(9), …, f1(1) 共 <u>10</u> 次</b>（<b>包含最外层那次</b>，这是最容易差 1 的地方）。<br>
+    <span class="hub">本章</span> 每次递归调用<b>压一个栈帧</b>：返回地址 4B + 旧 EBP 4B + 参数 4B …… ⟹ <b>递归深度 × 栈帧大小 = 栈空间消耗</b>。<br>
+    <span class="hub">操作系统</span> <b>递归太深 ⟹ 栈溢出（stack overflow）</b>——这就是 OS 里"进程栈段"有大小限制的现实后果。<br>
+    <span class="hub">本章 4.3</span> 而<b>第 16 行的 <code>call f1 (00401000)</code> 是"自己调自己"</b>，从机器码 <code>E8 D6 FF FF FF</code> 能看出<b>偏移量是负数（FFFF FFD6H）</b> ⟹ <b>往回跳</b> ⟹ <b>这就是递归在机器码层面的样子</b>。<br>
+    ⟹ <b>一句话：「看到 call 的偏移量为负且目标是本函数入口，就是递归。」</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · <code>cmp</code> 和 <code>test</code>「只设标志不写回」，在 ch5 的数据通路上是一根<b>断掉的线</b></span>
+    <span class="hub">本节</span> <b>cmp = sub 不写回、test = and 不写回</b>。<br>
+    <span class="hub">ch5 数据通路</span> 在硬件上，这意味着<b>执行 cmp 时 ALU 照常算，但"写回寄存器"的控制信号（RegWrite）不置位</b>——
+    <b>ALU 的结果输出端 F 那根线上的值被丢弃，只有 OF/SF/ZF/CF 四根标志线被锁存进标志寄存器</b>。
+    <b>对照上面 2024 综 05 那张数据通路图：F 和四个标志是从 ALU 引出的两组不同的线，cmp 就是"只要右边这组"。</b><br>
+    <span class="hub">本章 4.2</span> 这也解释了<b>为什么"比较"能用"减法"实现却不破坏操作数</b>——<b>4.2 习 25 说的"bgt 会将 A 和 B 相减"，减的结果根本没存下来。</b><br>
+    ⟹ <b>记一句：「cmp 是一次<u>被丢弃结果</u>的减法，它唯一的产物是四个标志位。」</b>
+  </div>
+
+    <h3>4.3.4　过程调用的机器级表示　<span style="color:var(--red);font-size:.8em">⭐ 本节难点，也是全章综合题的地基</span></h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=32">📄 p.179</a>
+
+  <div class="key"><span class="tag">必记结论 · 调用过程的六步（P = 调用者，Q = 被调用者；<b>习 12 就考这个顺序</b>）</span>
+    <div class="steps">
+      <div class="st"><b>P</b> 将入口参数（实参）放到 <b>Q 能访问的位置</b></div>
+      <div class="st"><b>P</b> 执行 <b>call</b> 指令，<b>将返回地址（call 的下一条指令地址）压入栈</b>，并转移到 Q</div>
+      <div class="st"><b>Q</b> <b>建立自己的栈帧</b>，为局部变量分配空间，必要时保存某些寄存器</div>
+      <div class="st"><b>Q</b> 执行其主体代码</div>
+      <div class="st"><b>Q</b> 将返回结果放到约定位置，释放局部变量空间，恢复之前保存的寄存器</div>
+      <div class="st"><b>Q</b> 执行 <b>ret</b> 指令，<b>从栈顶弹出返回地址</b>，转移回 P</div>
+    </div>
+    ⟹ 记成 <b>②③①⑥⑤④</b>（习 12 的选项编号）：<b>传参 → 存返回地址并转移 → 保存现场 → 执行函数体 → 恢复现场 → 返回</b>。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 寄存器保存约定（<b>谁保存</b>是关键）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>类别</th><th>寄存器</th><th>谁负责保存</th></tr>
+      <tr><td class="n"><b>调用者保存寄存器</b></td><td class="n"><b>EAX、ECX、EDX</b></td><td class="n">若 <b>P</b> 希望调用后仍用这些值，<b>P 必须在调用前自行压栈保存</b>，返回后恢复</td></tr>
+      <tr><td class="n"><b>被调用者保存寄存器</b></td><td class="n"><b>EBX、ESI、EDI</b></td><td class="n">若 <b>Q</b> 要用这些寄存器，<b>Q 必须在使用前保存到栈中</b>，返回前恢复</td></tr>
+    </table></div>
+    <b>为什么要有这个约定</b>：寄存器数量有限，调用双方共享，<b>若不加保护直接覆盖将导致程序出错</b>。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 栈帧（stack frame）的三条</span>
+    ・每个过程执行时在<b>运行时栈</b>中分配一块专属区域，称为<b>栈帧</b>；<b>整个运行时栈由多个连续的栈帧组成</b>。<br>
+    ・<b>EBP（基址指针）指向当前栈帧的基址</b>（保存旧 EBP 的位置），<b>ESP（栈指针）始终指向当前栈顶</b>。<br>
+    ・⚠️⚠️ <b>栈从高地址向低地址增长</b>；过程执行时 <b>ESP 随入栈/出栈动态变化，而 EBP 在当前过程执行期间保持不变</b>，便于<b>通过固定偏移访问参数和局部变量</b>。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · <b>整个 4.3 的地基就是下面这张"尺子"</b>——记住它，一切机器级代码题都能读</span>
+    <b>书上说</b>：参数在 <code>R[ebp]+8</code>、<code>R[ebp]+12</code>；局部变量在 <code>R[ebp]-4</code>、<code>R[ebp]-8</code>、<code>R[ebp]-12</code>。<br>
+    <b>潜台词是</b>：书是在两个例子里<u>分别</u>提到这些偏移的，<b>没有把它们拼成一张完整的尺子</b>。拼起来是这样：
+    <div class="tabwrap"><table class="frame mono">
+      <tr><td class="addr">高地址 ↑</td><td class="n">…</td><td class="n"></td></tr>
+      <tr><td class="addr">[ebp+12]</td><td class="n">第 2 个参数</td><td class="n">参数区，<b>从右往左压</b></td></tr>
+      <tr><td class="addr">[ebp+8]</td><td class="n">第 1 个参数</td><td class="n"><b>参数从 +8 起</b></td></tr>
+      <tr class="hl"><td class="addr">[ebp+4]</td><td class="n"><b>返回地址</b></td><td class="n">call 压入，4 字节</td></tr>
+      <tr class="hl"><td class="addr">[ebp]</td><td class="n"><b>旧 EBP</b></td><td class="n">push ebp 压入，4 字节　<b>← EBP 指这里</b></td></tr>
+      <tr><td class="addr">[ebp−4]</td><td class="n">第 1 个局部变量</td><td class="n">局部变量区</td></tr>
+      <tr><td class="addr">[ebp−8]</td><td class="n">第 2 个局部变量</td><td class="n"></td></tr>
+      <tr><td class="addr">低地址 ↓</td><td class="n">…　<b>← ESP 指栈顶</b></td><td class="n"></td></tr>
+    </table></div>
+    <b style="color:var(--red)">「参数为什么从 +8 开始而不是 +4？」——因为中间隔着<u>两个 4 字节的台阶</u>：返回地址（call 压的）和旧 EBP（push ebp 压的）。</b>
+    <b>这一句是本节最值钱的一句，答对了这一节的题就都能读。</b><br>
+    <b>所以能考 Z</b>：<b>看到 <code>[ebp+正数]</code> 就知道在读参数，看到 <code>[ebp-正数]</code> 就知道在读写局部变量，看到 <code>[esp+…]</code> 就知道在<u>为下一次调用</u>准备参数。</b>
+    书上 caller 那段汇编的每一行都能用这三句话读完。
+  </div>
+
+  <figure>
+    <img src="图/组原/图4-12_caller和add的栈帧.png" alt="caller 和 add 的栈帧：从高地址到低地址依次为旧 EBP、sum、temp2、temp1、未使用、80、125、返回地址、EBP 在 caller 中的值">
+    <figcaption><b>图 4.12　caller 和 add 的栈帧</b>（书 p.180）——<b>本章最该看熟的一张图，4.3 全部综合题的地基</b>。从上往下（高地址→低地址）：<b>EBP 在 P 中的旧值（EBP 指这里）→ sum → temp2 → temp1 → <span style="color:var(--red)">未使用（4 字节对齐填充）</span> → 80 → 125 → 返回地址（ESP 指这里）→ EBP 在 caller 中的值</b>。<b style="color:var(--red)">看图三个要点</b>：① <b>参数区在栈帧的最低端</b>（80 在上、125 在下 ⟹ <b>左参数 125 在低地址</b>）；② <b>"未使用"那一格就是 16 字节对齐填出来的</b>；③ <b>ESP 之下就已经是 add 的栈帧了</b>——两个栈帧是紧挨着的。</figcaption>
+  </figure>
+
+  <div class="key"><span class="tag">必记结论 · 书上完整例子 caller 的汇编（p.180，逐行读一遍）</span>
+    <pre class="code">int add(int x, int y){ return x+y; }
+int caller(){
+    int temp1=125;  int temp2=80;
+    int sum=add(temp1,temp2);
+    return sum;
+}</pre>
+    <pre class="code">caller:
+    push ebp                      #保存调用者 P 的 EBP
+    mov  ebp,esp                  #建立新栈帧：EBP←当前栈顶
+    sub  esp,24                   #为局部变量和参数区分配 24 字节空间
+    mov  [ebp-12],125             #temp1 = 125
+    mov  [ebp-8],80               #temp2 = 80
+    mov  eax,dword ptr [ebp-8]    #加载 temp2
+    mov  [esp+4],eax              #将 temp2 放入参数区【高】地址
+    mov  eax,dword ptr [ebp-12]   #加载 temp1
+    mov  [esp],eax                #将 temp1 放入参数区【低】地址  ← 见下方红块
+    call add                      #调用 add，返回值保存于 eax
+    mov  [ebp-4],eax              #将返回值存入 sum
+    mov  eax,dword ptr [ebp-4]    #将 sum 作为返回值
+    leave                         #等价于 mov esp,ebp 和 pop ebp
+    ret                           #弹出返回地址并跳回</pre>
+    <b>书上对 caller 栈帧的四条分析</b>：<br>
+    ・caller <b>仅使用了 EAX（调用者保存寄存器），没用任何被调用者保存寄存器</b> ⟹ 除 <code>push ebp</code> 外无须保存其他寄存器；<br>
+    ・三个局部变量 temp1、temp2、sum 都分配在栈中，<b>占 12 字节</b>；<br>
+    ・call 之前<b>依次将入口参数 temp2 和 temp1 的值（80 和 125）保存到栈中</b>（<b>左参数位于较低地址，右参数位于较高地址</b>），<b>占 8 字节</b>；<br>
+    ・执行 call 时再把<b>返回地址</b>压入栈，<b>占 4 字节</b>。
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · 🔍 <b>我在这里抓出书上一处自相矛盾</b>（p.180 汇编注释 vs 同页正文）</span>
+    书上 caller 汇编<b>第 9 行的注释</b>写的是：<code>mov [esp],eax</code> &nbsp;<b>#……将 temp1 放入参数区<u>高</u>地址</b>。<br>
+    <b style="color:var(--red)">这里应为「低地址」</b>，三条证据：<br>
+    ① <b>同一页正文自己写的是</b>：「（<b>左参数位于较低地址，右参数位于较高地址</b>）」——temp1 是左参数；<br>
+    ② <b><code>[esp]</code> 显然低于 <code>[esp+4]</code></b>，而上一行 <code>mov [esp+4],eax</code> 放的是 temp2（右参数），注释写的是"高地址"，<b>两行注释撞车了</b>；<br>
+    ③ <b>图 4.12 里 125 画在 80 的下面（更低地址）</b>，与"temp1 在低地址"一致。<br>
+    ⟹ <b>结论：书上这条注释印错了一个字。</b>练习系统里这道题我已 <code>verdict:'warn'</code> 双写。<br>
+    ⚠️ <b>这个坑值得记</b>：<b>凡是「谁在高地址、谁在低地址」的题，别信注释，去看图或去看 <code>[esp]</code> 与 <code>[esp+4]</code> 的大小关系。</b>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · 🔥🔥 <b>栈帧大小的计算</b>（真题最爱，28 → 32 那一步是考点）</span>
+    <b><code>栈帧大小 = 旧 EBP(4) + 局部变量 + 参数区 + 返回地址(4)，再<u>向上取整到 16 的倍数</u></code></b><br>
+    本例：<code>4（旧 EBP）+ 12（temp1/temp2/sum）+ 8（参数区 80 和 125）+ 4（返回地址）= <b>28 字节</b></code>；<br>
+    <b>但 GCC 为保证数据严格对齐，规定每个函数的栈帧大小必须是 16 字节的倍数</b> ⟹ <b>最终分配 32 字节</b>，<b>多出的 4 字节作为对齐填充（图 4.12 里那格"未使用"）</b>。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · <code>leave</code> 指令</span>
+    在 ret 之前必须<b>释放当前栈帧并恢复调用者的基址指针</b>，<b>leave 就干这件事</b>，等价于两条指令：
+    <pre class="code">mov esp, ebp        #将 ESP 设置为当前 EBP 的值，即指向保存旧 EBP 的位置
+pop ebp             #从栈中弹出旧 EBP，恢复过程 P 的基址指针</pre>
+    执行完后 <b>EBP 已恢复为 P 中的原始值，ESP 指向栈顶的返回地址</b>，此时 <b>ret 便可从 ESP 所指位置取出返回地址并转移回 P</b>。<br>
+    <span style="color:var(--muted)">（编译器也可以不用 leave，而用显式 pop 配合调整 ESP 来回收栈帧。）</span>
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · add 过程的机器代码（书 p.181）——<b>三段式 + 指令长度验算</b></span>
+    <pre class="code">8048469: 55           push ebp                 ┐ 准备阶段
+804846a: 89 e5        mov  ebp,esp             ┘
+804846c: 8b 45 0c     mov  eax,dword ptr [ebp+12]   ┐
+804846f: 8b 55 08     mov  edx,dword ptr [ebp+8]    ├ 过程体
+8048472: 8d 04 02     lea  eax,[edx+eax]            ┘
+8048475: 5d           pop  ebp                 ┐ 结束阶段
+8048476: c3           ret                      ┘</pre>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>阶段</th><th>行</th><th>做什么</th></tr>
+      <tr><td class="n"><b>准备阶段</b></td><td class="n">1、2</td><td class="n"><code>push ebp</code> 保存 caller 的 EBP，<code>mov ebp,esp</code> 使 <b>EBP 指向当前栈帧基址</b>。此时入口参数 x、y（<b>125 和 80</b>）分别在 <b>R[ebp]+8、R[ebp]+12</b></td></tr>
+      <tr><td class="n"><b>过程体</b></td><td class="n">3、4、5</td><td class="n">把 <b>y（[ebp+12]）加载到 EAX</b>、<b>x（[ebp+8]）加载到 EDX</b>；<b><code>lea</code> 计算 edx+eax 存回 EAX 作为返回值</b>——<b>这里"没有加法指令"，加法是 lea 做的</b></td></tr>
+      <tr><td class="n"><b>结束阶段</b></td><td class="n">6、7</td><td class="n"><code>pop ebp</code> 恢复 caller 的 EBP；<b>ret 从栈顶弹出返回地址</b>，转回 caller 中 <code>call add</code> 之后那条 <code>mov [ebp-4],eax</code></td></tr>
+    </table></div>
+    🐍 <b>指令长度复算（相邻地址之差 vs 数机器码字节数，两法吻合）</b>：<code>1, 2, 3, 3, 3, 1</code>　✔ ——<b>这就是"x86 指令变长"的实物证据</b>。<br>
+    🔥 <b>为什么 add 的栈帧极简</b>：它<b>没有局部变量、没用任何被调用者保存寄存器、也不再调用其他过程</b>，<b>仅需保存 EBP 以维持调用链的完整性</b>。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 运行时栈这一套，在四门课里各有一个名字</span>
+    <span class="hub">数据结构</span> <b>运行时栈就是"栈"这个 ADT 的最著名应用</b>：递归的每一层压一个栈帧。<b>2019 真题（求阶乘 f1）就是一道"递归 + 机器码"的合体题</b>——问"计算 f(10) 需要调用 f1 多少次"（答 <b>10 次</b>），这是数据结构的问法；问"call 指令偏移量是多少"，这是本章的问法。<br>
+    <span class="hub">操作系统</span> <b>栈帧的保存/恢复 ＝ 中断与异常的现场保护</b>，区别只有三点：中断是<b>硬件</b>压栈、压的是<b>内核栈</b>、还要多压一个 <b>PSW</b>。<b>"为什么要保存返回地址"这个问题，两门课的答案一字不差。</b><br>
+    <span class="hub">操作系统</span> <b>栈从高地址向低地址增长</b>，而<b>堆从低地址向高地址增长</b>——两者相向而行，中间是空闲区。<b>这就是 OS 内存管理里进程地址空间那张图。</b><br>
+    <span class="hub">ch5</span> <code>call</code>/<code>ret</code> 在 ch5 会被拆成微操作序列（<b>取指 → 算目标地址 → PC 入栈 → 目标地址送 PC</b>），<b>与中断隐指令的微操作高度相似</b>。<br>
+    ⟹ <b>这一块是 408 里"一处学会、四处得分"的典型，值得比别处多花一小时。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 习 11：<b>为什么"返回地址只能由调用指令自己算"</b>——一句反证就说清了</span>
+    <b>书上说</b>（习 11 答案）：<u>返回地址只能由调用指令来计算并保存，因为执行调用指令后就转移到了被调用过程，因此无法获取返回地址。</u><br>
+    <b>潜台词是</b>：这是一句<b>反证</b>——如果不在 call 那一刻算，<b>下一刻 PC 已经跳到 Q 了，"P 的下一条指令地址"这个信息就永久丢失了</b>。<b>所以硬件必须在转移的同一拍把它存下来。</b><br>
+    同理可推出另外两条（习 11 的 C、D 选项）：<br>
+    ・<b>嵌套调用必须压栈</b>：若只存在一个固定寄存器里，<b>第二层调用会把第一层的返回地址覆盖掉</b>；<b>栈天然支持"后进先出"的嵌套</b>。<br>
+    ・<b>选项 D 是错的</b>：「转移目标地址无须在指令中明显给出」——<b>错，被调用过程的第一条指令地址<u>一定</u>要在 call 指令里给出</b>（否则跳去哪儿？）。<b>"无须给出"的是<u>返回</u>地址（ret 从栈里拿），不是<u>目标</u>地址。</b><br>
+    <b>所以能考 Z</b>：<b>call 指令里明写的是"去哪儿"，栈里存的是"从哪儿来"——两个方向别搞反。</b>
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 2023 综 04 第 4 问：<b>缺页问题为什么答"不会"</b>——判据只有一句话</span>
+    <b>题</b>：第一次执行第 19 条指令时，<b>取指令</b>过程中是否会发生缺页异常？为什么？<br>
+    <b>答：不会。</b>因为<b>第 19 条指令所在的整段程序都在页号为 <u>00401H</u> 的同一个页面中</b>，
+    而<b>执行到第 19 条之前，前面 18 条指令早已被取过</b>，<b>该页必然已在主存</b>，所以取指不会缺页。<br>
+    <b>潜台词是</b>：这一问的解法<b>就一个动作——把两个虚拟地址的高 20 位对一下</b>（页大小 4KB ⟹ 低 12 位是页内偏移，<b>高 20 位是页号</b>）：<br>
+    ・第 1 条指令 <code>00401072H</code> → 页号 <b>00401H</b>；第 19 条 <code>004010AEH</code> → 页号 <b>00401H</b>　⟹ <b>同页</b>。<br>
+    <b>2019 综 03 第 1 问是完全一样的动作</b>：push 在 <code>00401000H</code>、ret 在 <code>0040104AH</code>，<b>高 20 位都是 00401H ⟹ 同页</b>。<br>
+    <b>所以能考 Z</b>：<b style="color:var(--red)">「是否同页」＝「高 (32 − log₂页大小) 位是否相同」，一秒可判。</b>
+    ⚠️ <b>但要看清题问的是"取<u>指令</u>"还是"取<u>数据</u>"</b>——本题问取指令（不会缺页）；
+    <b>若问的是访问 a[i][j] 这个数据，答案就可能不同了</b>（数组 a 首地址 00422000H，与代码不在同一页，且 24×64×4 = 6KB &gt; 4KB，<b>数组本身就跨页</b>）。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 2024 综 06 第 2 问：<b>一道题连做四件事</b>，是全章"三章合一"的样板</span>
+    <b>题</b>：i = 5、r1（sum）= 0000 1332H、r3（数组首地址）= 0013 DFF0H，给一张内存字节表，求 a[i] 的地址、a[i] 与 sum 的机器数、a[i] 所在页号、数组至少存放在几页。<br>
+    <div class="steps">
+      <div class="st"><b>算地址</b>（本章）：<code>a[5] 地址 = 0013DFF0H + 5×4 = <b>0013E004H</b></code>　（🐍 ✔）</div>
+      <div class="st"><b>小端读表</b>（<a href="组原_第2章.html">ch2</a>）：0013E004~E007 四个字节是 <code>DC EC FF FF</code>，<b>小端 ⟹ 低地址是低字节</b> ⟹ <b>a[5] = FFFF ECDCH</b></div>
+      <div class="st"><b>补码加法</b>（ch2）：<code>sum = 00001332H + FFFFECDCH = <b>0000000EH</b></code>（32 位回绕；FFFFECDCH 是负数 −4900，1332H = 4914，<b>4914 − 4900 = 14 = 0EH</b> ✔）</div>
+      <div class="st"><b>算页号与跨页</b>（<a href="组原_第3章.html">ch3</a>）：页大小 4KB ⟹ 页号 = 高 20 位 ⟹ <code>0013E004H &gt;&gt; 12 = <b>0013EH</b></code>；
+        表中数据横跨 <b>0013DH 与 0013EH 两个页号</b> ⟹ <b>数组 a 至少存放在 2 页中</b></div>
+    </div>
+    <b>所以能考 Z</b>：<b style="color:var(--red)">第 3 步那个"负数相加"最容易慌</b>——不用换算成十进制，<b>直接按 32 位十六进制加、进位丢掉即可</b>。
+    <b>第 4 步"至少几页"的判据是"表里出现了几个不同的高 20 位"</b>，<b>不是"数组多大 ÷ 页大小"</b>（那样算会漏掉"数组没有页对齐"这件事）。
+  </div>
+
+  <h4>本节真题实战：两道 RISC 风格大题（2024 与 2025）</h4>
+
+  <figure>
+    <img src="图/组原/图4-补_2024综05指令格式.png" alt="2024 真题 add、slli、lw 三种指令的 32 位格式与功能说明">
+    <figcaption><b>补图（书 p.185 综 05 图 (a)）　2024 统考真题：add / slli / lw 的指令格式</b>。<b>三条指令共用同一套字段划分</b>：<code>31–25 | 24–20 | 19–15 | 14–12 | 11–7 | 6–0</code>。<b style="color:var(--red)">看这张表只需盯三件事</b>：① <b>rs1/rs2/rd 都是 5 位</b> ⟹ <b>最多 32 个通用寄存器</b>；② <b>lw 把高 12 位整块当 imm</b>（所以没有 rs2）；③ <b>最低 7 位（6–0）是操作码</b>，三条各不相同——<b>这就是第 5 问"凭什么断定它是 lw"的依据</b>。</figcaption>
+  </figure>
+
+  <figure>
+    <img src="图/组原/图4-补_2024综05数据通路.png" alt="2024 真题的部分数据通路：扩展器、MUX、ALU 及 OF/SF/ZF/CF 输出">
+    <figcaption><b>补图（书 p.185 综 05 图 (b)）　2024 统考真题：部分数据通路与控制信号</b>。<b>信号只有三个，各管一件事</b>：<b>Ext</b> 控制扩展器（0 = 零扩展，1 = 符号扩展）、<b>ALUBsrc</b> 控制 MUX 选 B 还是选扩展结果（<b>0 = 选寄存器 B，1 = 选立即数</b>）、<b>ALUctr</b> 三位选运算（000 加 / 001 减 / 010 逻辑左移）。<b style="color:var(--red)">ALU 右侧引出的 OF/SF/ZF/CF 四根线，就是 4.2 那四个标志位的物理出处</b>——<b title="ch5 精读版尚未产出">ch5 数据通路</b>会把这张图铺满整页。</figcaption>
+  </figure>
+
+  <div class="mine"><span class="tag">我的补讲 · 2024 综 05 第 2 问：<b>手算 OF 和 CF</b>，这是全章唯一一处要你真的去看进位</span>
+    <b>书上说</b>：8765 4321H + 9876 5432H = 1FDB 9753H，<u>次高位向最高位的进位为 0，最高位产生的进位为 1，因此 OF = 0 ⊕ 1 = 1</u>；<u>add 做加法 Sub = 0，因此 CF = 0 ⊕ 1 = 1</u>。<br>
+    <b>潜台词是</b>：书直接报了两个进位值，<b>没说怎么看出来的</b>。方法是<b>把最高位单独拆出来算</b>：<br>
+    <div class="steps">
+      <div class="st"><b>去掉最高位，只加低 31 位</b>：<code>0765 4321H + 1876 5432H = 1FDB 9753H</code>。这个结果 &lt; 2<sup>31</sup> ⟹ <b>低 31 位没有向最高位进位 ⟹ 次高位进位 = 0</b></div>
+      <div class="st"><b>再看最高位</b>：两个数最高位都是 <b>1</b>（8H 和 9H 的最高位），<code>1 + 1 + 0（来自低位的进位）= 10</code> ⟹ <b>最高位产生进位 = 1，本位 = 0</b>（与结果 1FDB9753H 的最高位 0 吻合 ✔）</div>
+      <div class="st"><b>套公式</b>：<b>OF = 次高位进位 ⊕ 最高位进位 = 0 ⊕ 1 = <u>1</u></b>；<b>CF = C<sub>out</sub> ⊕ Sub = 1 ⊕ 0 = <u>1</u></b></div>
+    </div>
+    🐍 我复算过：<code>(0x87654321 + 0x98765432) &amp; 0xFFFFFFFF = 0x1FDB9753</code>，低 31 位和 <code>= 0x1FDB9753 &lt; 2³¹</code>　✔<br>
+    <b>所以能考 Z</b>：<b>第 3 小问「若处理的是无符号整数，应根据哪个标志位判断溢出」——答 <u>CF</u></b>。
+    <b>本题两个标志都等于 1，纯属巧合；真正的考点是"该看哪一个"，而不是"值是多少"。</b>（有符号看 OF、无符号看 CF——<b>4.2 那张卡在这里第三次用上</b>。）
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 2024 综 05 第 5 问的解法可以固化成三步，<b>是"看机器码认指令"的标准流程</b></span>
+    <b>题</b>：机器码 A040 A103H，为什么一定是 lw？若 R[01H] = FFFF A2D0H，读取的存储地址是什么？<br>
+    <div class="steps">
+      <div class="st"><b>拆成二进制，先看操作码字段</b>：<code>A040A103H = 1010 0000 0100 0000 1010 0001 0000 0011B</code>。
+        <b>IR[6:0] = 0000011</b>、<b>IR[14:12] = 010</b> ⟹ 对照图 (a)，<b>只有 lw 是这个组合</b>（add 是 0110011/000，slli 是 0010011/010）</div>
+      <div class="st"><b>取出 imm 并符号扩展</b>：<b>IR[31:20] = A04H</b>，最高位是 1（负数）⟹ <b>符号扩展成 32 位 = FFFF FA04H</b></div>
+      <div class="st"><b>算有效地址</b>：<code>R[rs1] + imm = FFFF A2D0H + FFFF FA04H = <b>FFFF 9CD4H</b></code>（32 位回绕）</div>
+    </div>
+    🐍 复算：<code>0xA040A103 &amp; 0x7F = 0x03 ✔；(0xA040A103 &gt;&gt; 12) &amp; 7 = 2 ✔；0xA040A103 &gt;&gt; 20 = 0xA04；(0xFFFFA2D0 + 0xFFFFFA04) &amp; 0xFFFFFFFF = 0xFFFF9CD4 ✔</code><br>
+    <b>所以能考 Z</b>：<b>这三步（切操作码 → 取立即数并扩展 → 算地址）就是 RISC 风格题的通用解法</b>，
+    <b>2021 综 05、2024 综 05/06 三道题的解法逐字相同</b>，只是字段位置不同。<b>做熟一道，三道都会。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 2024 综 06 第 3 问：<b>把汇编"编码回"机器码</b>，这是唯一一道反向题</span>
+    <b>题</b>：指令 <code>slli r4, r2, 2</code> 的机器码是什么？<br>
+    <b>解法就是照着图 (a) 的格式表<u>填空</u></b>：<b>slli 的格式是</b> <code>0000000 | shamt | rs1 | 010 | rd | 0010011</code>，<br>
+    填入 <b>shamt = 2 = <code>00010</code>、rs1 = r2 = <code>00010</code>、rd = r4 = <code>00100</code></b>：<br>
+    <code>0000000 00010 00010 010 00100 0010011</code> ⟹ 四位一组重排 ⟹ <b>0021 2213H</b>　（🐍 复算 ✔）<br>
+    <b>所以能考 Z</b>：<b>第二小问「若数组 a 改为 short 类型，slli 应写成什么」——答 <code>slli r4, r2, 1</code></b>。
+    理由：<b>比例因子 = 元素字节数</b>，int 是 4 字节所以左移 2 位（×4），<b>short 是 2 字节所以左移 1 位（×2）</b>。
+    <b>这一条和 4.2 变址寻址、和 x86 的 <code>[edx+esi*4]</code> 是同一条规则的第三次出现。</b>
+  </div>
+
+  <figure>
+    <img src="图/组原/图4-补_2025综07补码除法器.png" alt="2025 真题补码除法器逻辑结构：除数寄存器 Y、32 位 ALU、余数寄存器 R、余数/商寄存器 Q、控制逻辑">
+    <figcaption><b>补图（书 p.186 综 07 图 (b)）　2025 统考真题：补码除法器逻辑结构</b>（⚠️ 书上题面误印为「09」，见下方红块）。<b>四个部件各管一件事</b>：<b>Y</b> 装除数、<b>{R, Q}</b> 合起来装被除数（<b>R 高 32 位、Q 低 32 位</b>，算完 <b>R 留余数、Q 留商</b>）、<b>32 位 ALU</b> 由 ALUop 控制做<b>加或减</b>、<b>控制逻辑</b>受时钟驱动，管"左移"和"写使能"——<b style="color:var(--red)">而它里面就装着那个计数器</b>（因为补码除法要迭代固定次数）。这张图是 <a href="组原_第2章.html">ch2 除法运算</a>的硬件版。</figcaption>
+  </figure>
+
+  <div class="trap"><span class="tag">陷阱 · 🔍 <b>第二处书误（排版）</b>：4.3.5 综合题题号从 06 直接跳到 09</span>
+    书 p.186 的这道 2025 真题，<b>题面印的是「09.【2025 统考真题】」</b>，<b>但 4.3.6 答案区里它的编号是「07」</b>——<b>中间的 07、08 两题根本不存在</b>。<br>
+    我把这一处放大到 <b>dpi=340 复核过</b>，确认题面印的确实是「09」，<b>不是我看错</b>。<br>
+    ⟹ <b>结论：题面题号排版错误，应为 07。</b>练习系统里我按 <b>07</b> 统一编号，避免你对答案时找不到。<br>
+    ⚠️ 这是本章抓出的<b>第 2 处书上问题</b>（第 1 处是上面 p.180 的"高/低地址"注释矛盾）。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 2025 综 07 第 2 问：<b>除法异常只有两种情况</b>，别漏第二种</span>
+    <b>书上说</b>：x 为 0000 0000H 时发生<u>除数为零异常</u>；d[i] 为 8000 0000H 且 x 为 FFFF FFFFH 时发生<u>除运算溢出异常</u>。<br>
+    <b>潜台词是</b>：第一种谁都想得到，<b>第二种是"最小负数除以 −1"</b>，为什么会溢出？<br>
+    因为 <b>32 位补码的范围是 −2<sup>31</sup> ～ 2<sup>31</sup>−1，<u>不对称</u></b>（<a href="组原_第2章.html">ch2</a> 讲过）：
+    <code>−2<sup>31</sup> ÷ (−1) = +2<sup>31</sup></code>，<b>而 +2<sup>31</sup> 超出了正数最大值 2<sup>31</sup>−1</b>，<b>装不下 ⟹ 溢出</b>。<br>
+    <b>所以能考 Z</b>：<b>「补码正负范围不对称」这一条在 408 里会兑现三次</b>——
+    ① ch2 求 <code>|−2<sup>31</sup>|</code> 时溢出；② <b>本题的除法溢出</b>；③ <code>neg</code> 指令对最小负数取负时溢出。<b>都是同一个根。</b><br>
+    第 2 问后半段问「异常响应过程中 CPU 要做什么」，标准答案三步：<b>保存断点和程序状态（到内核栈或特定寄存器）→ 关中断 → 转移到内核中的异常处理程序</b>。
+    <b>这三步在 <b title="ch5 精读版尚未产出">ch5</b> 和《操作系统》里会各讲一遍，措辞完全一样。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · <b>2019 综 03 是全章最"跨章"的一问</b>——它把 ch3 的 Cache 与 VIPT 搬进了 ch4</span>
+    题干：主存地址 32 位，页大小 4KB；指令 Cache 有 64 行、<b>4 路组相联</b>、块大小 64B。问地址怎么划分、call 指令会在哪一组命中。<br>
+    <span class="hub">ch3 3.5</span> <b>Cache 地址划分</b>：64 行 ÷ 4 路 = <b>16 组 ⟹ 组号 4 位</b>；块大小 64B ⟹ <b>块内地址 6 位</b>；<b>标记 = 32 − 4 − 6 = 22 位</b>。<br>
+    <span class="hub">ch3 3.6</span> <b>页大小 4KB ⟹ 虚拟地址与物理地址的低 12 位完全相同</b>（页内偏移不参与地址转换）。<br>
+    <span class="hub">合起来 = VIPT</span> <b>组号 4 位 + 块内 6 位 = 10 位 ≤ 12 位页内偏移</b> ⟹ <b>组号可以直接从<u>虚拟</u>地址取，不用等地址转换完成</b>。
+    于是 call 指令虚拟地址 00401025H 的低 12 位 <code>025H = 0000 0010 0101B</code> ⟹ 块内 = 低 6 位 <code>100101</code>，<b>组号 = 第 6~9 位 = <code>0000</code> = 第 <u>0</u> 组</b>。（🐍 复算 ✔）<br>
+    ⟹ <b>这一问告诉你一件事：4.3 的综合题经常有一半分数不在第 4 章</b>。<b>2023 真题第 4 问问缺页（ch3 虚存）、2024 综 06 第 2 问问页号与"数组至少存放在几页"（ch3 虚存）——都是同一个套路。</b>
+    <b>复习 4.3 时请把 <a href="组原_第3章.html">ch3 精读版</a>放在手边。</b>
+  </div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：书上建议"结合 GDB 调试查看汇编"</span>
+    书在 4.3.1 末尾建议：在学习 C 语言程序时，结合调试工具（如 GDB）查看其对应的汇编代码，以加深理解。
+    <b>这是一条学习建议，不是考点</b>——考场上不会让你写汇编，只会让你读。<b>如果时间紧，跳过这一步没有任何损失</b>；
+    真要动手，<b>把书上的 caller/add 两段例子在纸上按图 4.12 画一遍栈帧，比开 GDB 有效率得多</b>。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 4.3 收官：这一节考完后手里应该剩下的<b>六条</b></span>
+    19 页、19 道题、7 道综合真题（<b>合计约 105 分</b>），会重复出现的只有六条：
+    <div class="steps">
+      <div class="st"><b>栈帧尺子</b>：<code>[ebp+8]</code> 起是参数、<code>[ebp+4]</code> 返回地址、<code>[ebp]</code> 旧 EBP、<code>[ebp−4]</code> 起是局部变量；<b>栈帧大小向上取到 16 的倍数</b></div>
+      <div class="st"><b>指令长度两求法</b>（相邻地址之差 / 数机器码字节数）<b>互为验算</b>；<b>相对寻址偏移量 = 目标地址 − <u>下一条</u>指令地址</b></div>
+      <div class="st"><b>判端序</b>：把机器码里的多字节字段按字节读出来。<code>D6 FF FF FF</code> ⟹ FFFFFFD6H ⟹ <b>小端</b></div>
+      <div class="st"><b>数组地址</b> = <code>首地址 + i×行宽×元素大小 + j×元素大小</code>；<b>比例因子 = 元素字节数</b>；<b>x86 比例因子只能取 1/2/4/8，装不下就先算好放寄存器</b></div>
+      <div class="st"><b>标志位</b>：<code>CF = C<sub>out</sub> ⊕ Sub</code>、<code>OF = 次高位进位 ⊕ 最高位进位</code>；<b>有符号看 OF、无符号看 CF</b></div>
+      <div class="st"><b>lea 是加法不是访存</b>；<b>cmp = sub 不写回、test = and 不写回</b>；<b>三种循环都编译成 do-while 形状</b></div>
+    </div>
+    <b>所以能考 Z</b>：<b>这六条覆盖了 2017–2025 全部七道综合真题的骨架。</b>
+    剩下的分数在 ch2（补码、溢出、浮点）和 ch3（Cache 划分、页号、缺页）那边，<b>本节的题几乎都是"三章合一"的。</b>
+  </div>
+
+  <!-- ==================== 4.4 ==================== -->
+  <h2>4.4　CISC 和 RISC 的基本概念</h2>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=43">📄 p.190</a>
+
+  <p><b>指令系统朝着两个截然不同的方向发展</b>：一是<b>通过增强原有指令功能、引入更复杂的指令，将部分软件功能固化到硬件中</b>，这类机器称为<b>复杂指令系统计算机（CISC）</b>，典型代表是采用 <b>x86 架构</b>的处理器；二是<b>通过精简指令集、简化指令功能，以提升指令执行效率</b>，这类机器称为<b>精简指令系统计算机（RISC）</b>，典型代表是 <b>ARM、MIPS</b> 等架构。</p>
+
+  <div class="link"><span class="tag">知识串联 · CISC 的「多数指令均可直接访问内存」，正是 4.1 那张<b>访存次数表</b>的来源</span>
+    <span class="hub">本章 4.1.2</span> 「二地址指令若地址码均为主存地址，需 <b>4 次</b>访存」——<b>这种指令只有 CISC 才有</b>。
+    <b>RISC 里根本不存在"两个操作数都在内存"的运算指令</b>，所以它的运算指令<b>访存次数永远是 1（只有取指那一次）</b>。<br>
+    <span class="hub">本章 4.2 表 4.1</span> 同理，<b>间接寻址那个"2 次访存"在 RISC 里也不存在</b>——RISC 连间接寻址都没有。<br>
+    <span class="hub">ch1</span> 于是 <b>CISC 的 CPI 天然就高</b>：<b>一条指令访存 4 次，光访存就要 4 个存储周期</b>。
+    这解释了表 4.3 的「各种指令执行时间相差较大」与「大多数指令需多个时钟周期」两行<b>其实是同一个原因</b>。<br>
+    <span class="hub">ch5</span> 也解释了为什么 <b>CISC 只能用微程序控制</b>：<b>一条指令要拆成十几个微操作，用组合逻辑硬连线画不出来。</b><br>
+    ⟹ <b>「谁能访存」这一条，往下一路决定了访存次数、CPI、控制方式、能否流水——4.4 表里那十行有五行是它派生的。</b>
+  </div>
+
+    <h3>4.4.1　复杂指令系统计算机（CISC）</h3>
+  <span class="exam">考点追踪：CISC 的特点（2017）</span>
+
+  <div class="key"><span class="tag">必记结论 · CISC 的七条特点</span>
+    ① <b>指令系统庞大复杂，指令数量通常超过 200 条</b>；<br>
+    ② <b>指令长度不固定，指令格式和寻址方式种类繁多</b>；<br>
+    ③ <b>多数指令均可直接访问内存</b>；<br>
+    ④ 各类指令的<b>使用频率差异显著</b>；<br>
+    ⑤ <b>指令执行时间相差较大，大多数指令需多个时钟周期才能完成</b>；<br>
+    ⑥ <b>控制器多采用微程序控制</b>，部分复杂指令难以用硬连线逻辑实现；<br>
+    ⑦ <b>难以通过优化编译生成高效的目标代码</b>。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · RISC 诞生的那条统计数据（书上原文，必记）</span>
+    对传统 CISC 指令系统的统计分析表明：<b>各种指令的使用频率相差悬殊，约 80% 的程序执行仅依赖于 20% 的简单指令，而其余 80% 的复杂指令使用频率极低。</b><br>
+    基于这一观察，设计者开始尝试<b>仅保留高频使用的简单指令，并通过它们组合实现不常用的复杂指令功能</b>，由此催生了 RISC 架构。
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 那条 <b>80/20 统计</b>不是背景故事，它是 RISC 全部设计决策的<b>唯一论据</b></span>
+    <b>书上说</b>：<u>约 80% 的程序执行仅依赖于 20% 的简单指令，而其余 80% 的复杂指令使用频率极低。</u><br>
+    <b>潜台词是</b>：<b>这一句话可以推出 RISC 的每一条特点</b>，考简答题时它就是"为什么"的标准开头：<br>
+    ・既然 80% 的复杂指令几乎不用 ⟹ <b>砍掉它们，只留高频的</b>（特点 ①，指令 &lt; 100 条）；<br>
+    ・既然只留简单指令 ⟹ <b>它们的长度和格式自然能统一</b>（特点 ②，定长）；<br>
+    ・既然指令简单 ⟹ <b>硬布线就能译，不必用微程序</b>（特点 ⑥）⟹ <b>省下的 40% 芯片面积去放寄存器</b>（特点 ④）；<br>
+    ・既然复杂功能要靠多条简单指令拼 ⟹ <b>拼得好不好全看编译器</b>（特点 ⑦）。<br>
+    <b>所以能考 Z</b>：<b>4.4 唯一可能出的大题就是"简述 RISC 的设计思想及其依据"</b>，
+    <b>标准答法就是"先摆 80/20 这条统计，再顺着上面这条链说下来"</b>——<b>每一步都是采分点，而且不会背串。</b><br>
+    ⚠️ 注意<b>这条统计说的是"执行频率"不是"指令条数"</b>：<b>CISC 里那 80% 的复杂指令数量上确实占多数，但运行时几乎不被执行</b>。<b>把主语说反了会失分。</b>
+  </div>
+
+  <h3>4.4.2　精简指令系统计算机（RISC）</h3>
+  <span class="exam">考点追踪：RISC 的特点（2009、2025）</span>
+
+  <div class="key"><span class="tag">必记结论 · RISC 的七条特点（与 CISC 逐条对着背）</span>
+    ① <b>仅选取使用频率最高的简单指令</b>，复杂功能由多条简单指令组合实现；<br>
+    ② <b>指令长度固定，指令格式和寻址方式种类较少</b>；<br>
+    ③ <b>仅 LOAD/STORE 指令可访问内存</b>，其余运算均在寄存器之间进行；<br>
+    ④ <b>CPU 中配备大量通用寄存器</b>；<br>
+    ⑤ <b>普遍采用指令流水线技术，绝大多数指令在一个时钟周期内完成</b>；<br>
+    ⑥ <b>以硬布线控制为主</b>，极少或完全不使用微程序控制；<br>
+    ⑦ <b>高度依赖编译器优化</b>，以缩短程序执行时间。<br>
+    <b>核心思想一句话</b>：<b>简化指令系统，强调「寄存器-寄存器」操作，力求指令格式统一。</b>
+  </div>
+
+  <div class="trap"><span class="tag">陷阱 · <b>本节两条最反直觉的结论，五道题里四道在考它们</b></span>
+    <b style="color:var(--red)">① CISC 的兼容性<u>优于</u> RISC。</b>——很多人本能觉得"新的、先进的 RISC 应该更好"，<b>错。</b><br>
+    书上原话：<b>CISC 架构通常支持向后兼容，即新机型包含旧机型的全部指令并加以扩展；而 RISC 由于大幅简化指令集、改变指令格式，通常无法与老机型兼容。</b>
+    （习 01 选项 C「RISC 机的兼容性优于 CISC 机」是<b>错</b>的；习 03 选项 A「新设计的 RISC 是从 CISC 指令系统中挑一部分以实现兼容」也是<b>错</b>的——<b>RISC 挑简单指令不是为了兼容，也不可能兼容 CISC</b>。）<br>
+    <b style="color:var(--red)">② 流水线<u>不是</u> RISC 的专利。</b>——表 4.3 最后一行写得很精确：<b>RISC「必须实现」流水线，CISC「可以通过一定方式实现」</b>。<br>
+    ⟹ 于是习 01 的 A「RISC 机一定采用流水技术」<b>对</b>，B「采用流水技术的机器一定是 RISC 机」<b>错</b>；
+    <b>而 2025 真题（习 06）的 C 选项「难以采用流水线数据通路实现微架构」正是反的——RISC 恰恰最适合流水线。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「CISC 兼容性更好」这件事，其实是<b>商业史</b>而不是技术优劣</span>
+    <b>书上说</b>：<u>x86 架构凭借庞大的软件生态占据主流地位，早期大量软件均基于 CISC 设计，纯 RISC 系统难以满足兼容性需求</u>；且<u>现代 CISC 处理器已在内部融合了大量 RISC 思想</u>。<br>
+    <b>潜台词是</b>：<b>"兼容性"在这里不是一个技术指标，是一个历史包袱。</b>
+    CISC 兼容性好，<b>不是因为它设计得更周到，而是因为它必须一直背着旧指令不敢删</b>——
+    <b>图 4.11 那张 EAX/AX/AH/AL 套娃图就是包袱的实物</b>。<br>
+    <b>反过来，RISC 兼容性差也不是缺点，是它主动砍掉包袱换来的：定长、格式少、只有 LOAD/STORE 访存。</b><br>
+    <b>所以能考 Z</b>：<b>凡是问"哪个更好"的选项都要警惕，本节的正确答案往往是"各有代价"</b>。
+    而<b>「现代 CISC 内部融合了 RISC 思想」</b>这句也是考点素材——现代 x86 在译码阶段把复杂指令拆成"微操作（μop）"再流水执行，
+    <b>这就是为什么 CISC 也能流水线</b>，正好解释了表 4.3 最后一行的"可以通过一定方式实现"。
+  </div>
+
+    <div class="link"><span class="tag">知识串联 · <b>2024 与 2021 两道真题用的就是 RISC 指令集</b>——4.4 的每条特征都能在题干里指出来</span>
+    <span class="hub">2024 综 05</span> 题干说「<b>32 位定长指令字</b>」⟹ <b>特点 ②（定长）</b>；三条指令 add / slli / <b>lw</b> ⟹ <b>特点 ③（只有 LOAD/STORE 访存，lw = load word）</b>；
+    rs1/rs2/rd 各 5 位 ⟹ <b>32 个通用寄存器 ⟹ 特点 ④（寄存器多）</b>；<code>R[rd] ← R[rs1] + R[rs2]</code> ⟹ <b>三地址、寄存器-寄存器运算 ⟹ 核心思想</b>。<br>
+    <span class="hub">2021 综 05</span> R / I / J 三型 <b>16 位定长</b>，<b>操作码都在最高位</b> ⟹ 同上；<b>J 型只改 PC 低 10 位</b> ⟹ <b>寻址方式少（特点 ②）</b>。<br>
+    <span class="hub">2017 综 01</span> 反过来：题干给的机器码 <code>55</code>（1B）、<code>D1 E2</code>（2B）、<code>39 4D F4</code>（3B）<b>长短不一</b> ⟹ <b>判定为 CISC</b>。<br>
+    ⟹ <b>结论：这一节的"纯记忆内容"其实每年都在综合题里被间接考。</b>
+    <b>看到题干给"定长指令格式表"就在心里说一句"这是 RISC"，看到"一堆长短不一的十六进制机器码"就说"这是 CISC"——这两句话本身在 2017 年就直接值 3 分。</b>
+  </div>
+
+  <h3>4.4.3　CISC 和 RISC 的比较</h3>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=44">📄 p.191</a>
+
+  <div class="mine"><span class="tag">我的补讲 · RISC 四条优势里，<b>只有第 ① 条给了数字</b>——那两个百分比是本节唯一可能被直接问的量</span>
+    <b>书上说</b>：CISC 用微程序控制，<u>控制存储器占 CPU 芯片面积的 50% 以上</u>；RISC 用硬布线控制，<u>逻辑电路仅占约 10%</u>。<br>
+    <b>潜台词是</b>：<b>这两个数字回答了一个 RISC 最常被问的问题——"砍掉指令省下来的面积去哪了？"</b>
+    答案是：<b>省下的 40% 芯片面积，变成了 RISC 的大量通用寄存器和更大的 Cache</b>。<br>
+    <b>于是特点 ④「CPU 中配备大量通用寄存器」不是设计者的偏好，而是省出来的红利</b>——<b>它和第 ① 条是因果关系，不是并列关系。</b><br>
+    <b>所以能考 Z</b>：本节若出简答，标准答法是<b>把四条优势排成一条因果链</b>：
+    <b>「指令简单 ⟹ 硬布线控制（面积 50%→10%）⟹ 省下的面积放寄存器与 Cache ⟹ 访存减少 + 单周期完成 ⟹ 流水线顺畅 ⟹ 速度快」</b>，
+    <b>再补上"结构简单所以好设计好维护、指令规整所以编译器好优化"两条</b>。<b>四条就都说到了，而且是有逻辑的，不是背清单。</b>
+  </div>
+
+    <div class="key"><span class="tag">必记结论 · RISC 的四条优势（注意 ① 那两个百分比）</span>
+    ① <b>更高效利用芯片面积</b>：CISC 采用微程序控制，其<b>控制存储器占 CPU 芯片面积的 50% 以上</b>，而 RISC 采用硬布线控制，<b>逻辑电路仅占约 10%</b>；<br>
+    ② <b>更高的运算速度</b>：指令少、格式统一、寻址简单，配合大量通用寄存器和流水线，大多数指令单周期完成；<br>
+    ③ <b>更易设计与维护</b>：结构简单、设计周期短、出错概率低、便于调试验证；<br>
+    ④ <b>更利于编译优化</b>：指令类型和寻址方式有限，编译器<b>更容易选择最优指令序列、调整指令调度</b>。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · <b>表 4.3</b> CISC 与 RISC 的对比（<b>全章最该背的一张表，逐行默写</b>）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>对比项目</th><th>CISC</th><th>RISC</th></tr>
+      <tr><td class="n">指令系统</td><td class="n">复杂，庞大</td><td class="n">简单，精简</td></tr>
+      <tr><td class="n"><b>指令数目</b></td><td class="n"><b>一般大于 200 条</b></td><td class="n"><b>一般小于 100 条</b></td></tr>
+      <tr><td class="n"><b>指令字长</b></td><td class="n">不固定</td><td class="n"><b>定长</b></td></tr>
+      <tr><td class="n"><b>可访存指令</b></td><td class="n"><b>不加限制</b></td><td class="n"><b>只有 LOAD/STORE 指令</b></td></tr>
+      <tr><td class="n">各种指令执行时间</td><td class="n">相差较大</td><td class="n"><b>绝大多数在一个周期内完成</b></td></tr>
+      <tr><td class="n">各种指令使用频度</td><td class="n">相差很大</td><td class="n">都比较常用</td></tr>
+      <tr><td class="n"><b>通用寄存器数量</b></td><td class="n">较少</td><td class="n"><b>多</b></td></tr>
+      <tr><td class="n">目标代码</td><td class="n">难以用优化编译生成高效的目标代码程序</td><td class="n">采用优化的编译程序，生成代码较为高效</td></tr>
+      <tr><td class="n"><b>控制方式</b></td><td class="n"><b>绝大多数为微程序控制</b></td><td class="n"><b>绝大多数为组合逻辑（硬布线）控制</b></td></tr>
+      <tr><td class="n"><b>指令流水线</b></td><td class="n"><b>可以通过一定方式实现</b></td><td class="n"><b>必须实现</b></td></tr>
+    </table></div>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 这张表不用死记十行——<b>只记「定长」两个字，其余九行都能推出来</b></span>
+    <b>书上说</b>：表 4.3 十行并列，看着像十个独立的记忆点。<br>
+    <b>潜台词是</b>：<b>RISC 的一切特征都是从"指令定长、格式统一"这一条推出来的</b>，推导链条如下：<br>
+    <div class="steps">
+      <div class="st"><b>指令定长</b> ⟹ 取指边界固定，译码器不用先算长度 ⟹ <b>硬布线控制就够了，不必用微程序</b>（第 9 行）</div>
+      <div class="st"><b>定长 + 硬布线</b> ⟹ 每条指令的时序整齐 ⟹ <b>绝大多数单周期完成</b>（第 5 行）⟹ <b>流水线各段等长，必须也必然采用流水线</b>（第 10 行）</div>
+      <div class="st"><b>指令字就那么长，塞不下复杂寻址</b> ⟹ <b>寻址方式少、只有 LOAD/STORE 访存</b>（第 4 行）⟹ 运算全在寄存器间做 ⟹ <b>必须配大量通用寄存器</b>（第 7 行）</div>
+      <div class="st"><b>指令种类少、格式规整</b> ⟹ <b>编译器容易调度</b>（第 8 行）；但也 ⟹ <b>复杂功能要多条指令拼</b> ⟹ <b>指令条数少（&lt;100）却依赖编译器</b>（第 2 行）</div>
+      <div class="st"><b>改了指令格式</b> ⟹ <b>老程序的机器码全废</b> ⟹ <b>兼容性差</b>（书上正文，表里没列但必考）</div>
+    </div>
+    <b>所以能考 Z</b>：考场上写不出某一行时，<b>从"定长"开始推一遍就出来了</b>。
+    <b>而 CISC 那一列全部取反即可</b>——它只有一条独立的正面属性：<b>兼容性好、指令功能强</b>。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 4.4 这一节其实是 <b title="ch5 精读版尚未产出">ch5</b> 的<b>预告片</b>，六条特征对应六个小节</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>4.4 的说法</th><th>在 ch5 会展开成</th></tr>
+      <tr><td class="n"><b>RISC 必须实现流水线</b></td><td class="n"><b>5.4 指令流水线</b>：定长 ⟹ 各段延迟均衡 ⟹ 时空图整齐；<b>变长指令的取指段长度都不确定，根本切不出流水段</b></td></tr>
+      <tr><td class="n"><b>RISC 用硬布线、CISC 用微程序</b></td><td class="n"><b>5.3 控制器</b>：硬布线 = 组合逻辑直接产生控制信号（快、难改）；微程序 = 把控制信号存在控制存储器里（慢、灵活）</td></tr>
+      <tr><td class="n"><b>控制存储器占芯片 50%，逻辑电路仅 10%</b></td><td class="n"><b>5.3</b> 这两个数字就是"为什么 RISC 能把省下的面积拿去放寄存器和 Cache"</td></tr>
+      <tr><td class="n"><b>只有 LOAD/STORE 访存</b></td><td class="n"><b>5.4</b> 访存只发生在流水线的固定一段（MEM 段）⟹ <b>结构冲突大幅减少</b></td></tr>
+      <tr><td class="n"><b>大量通用寄存器</b></td><td class="n"><b>5.4</b> 数据冲突可用寄存器转发（forwarding）化解；也回扣 <b>4.3「编译器把局部变量优化到寄存器」</b></td></tr>
+      <tr><td class="n"><b>指令执行时间相差大（CISC）</b></td><td class="n"><b>5.1 CPI</b>：CISC 的 CPI 高且方差大，<b>这正是 <a href="组原_第1章.html">ch1</a> 性能公式 <code>CPU 时间 = 指令数 × CPI × 时钟周期</code> 里 CISC 与 RISC 的分野</b>——<b>CISC 指令数少但 CPI 高，RISC 指令数多但 CPI ≈ 1</b></td></tr>
+    </table></div>
+    ⟹ 一句话：<b>「4.4 说的是结论，ch5 讲的是理由。」</b>先在这里把结论背熟，读 ch5 时会轻松很多。
+  </div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：RISC 与 CISC 的历史叙事</span>
+    书上这一段讲：历史上 RISC 曾被视为未来方向，但现实中 x86 凭软件生态占据主流；现代 CISC 已融合大量 RISC 思想，两者性能差距日益缩小。
+    <b>这段叙事本身不出题</b>，但其中<b>两句话是考点素材</b>，已提到上面的红块和蓝块里：<b>①「CISC 兼容性更好」；②「现代 CISC 内部融合 RISC 思想」（解释了 CISC 为什么也能流水）</b>。
+    <b>其余（ARM 在移动端、Intel 在桌面端之类）纯属背景，划过。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 4.4 的题只有一种问法：<b>「下列……<u>错误</u>的是」</b>——所以要按"错误选项"来记</span>
+    我把本节六道题的问法数了一遍：<b>五道是"错误/不正确/不符合"</b>。<b>这意味着复习的重点不是"RISC 有什么特点"，而是"命题人会怎么把它说反"。</b>
+    下面这五个「反说法」逐条记住，本节就满分了：
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>命题人的反说法</th><th>正确的是</th><th>出处</th></tr>
+      <tr><td class="n">「RISC 的兼容性优于 CISC」</td><td class="n"><b>CISC 兼容性更好</b>（向后兼容 + 软件生态）</td><td class="n">习 01 C</td></tr>
+      <tr><td class="n">「寻址方式减少、<b>指令功能尽可能强</b>」</td><td class="n">寻址少是 RISC，<b>但"指令功能强"是 CISC</b></td><td class="n">习 02 B</td></tr>
+      <tr><td class="n">「CISC 指令格式种类多，<b>更有利于编译优化</b>」</td><td class="n"><b>格式多反而增大编译优化复杂性，不利于优化</b></td><td class="n">习 04 C</td></tr>
+      <tr><td class="n">「RISC 普遍采用<b>微程序</b>控制器」</td><td class="n"><b>RISC 用硬布线</b>（速度快）</td><td class="n">习 05 A（2009）</td></tr>
+      <tr><td class="n">「RISC <b>难以</b>采用流水线数据通路」</td><td class="n"><b>RISC 恰恰最适合流水线</b>（指令周期均匀）</td><td class="n">习 06 C（2025）</td></tr>
+    </table></div>
+    <b>所以能考 Z</b>：另有两条容易被绕进去的（习 03）——<b>「RISC 是为兼容 CISC 而从中挑指令」错</b>（RISC 不可能兼容 CISC）；
+    <b>「采用 RISC 后计算机体系结构恢复到早期情况」错</b>（RISC 只是 CPU 结构变了，且其架构也远比早期复杂）。
+    <b>但「RISC 的主要目标是减少指令数」这句本身是对的</b>，错的是后半句"允许以增加每条指令功能的方法来减少指令数"（<b>那是 CISC 的做法</b>）。
+  </div>
+
+  <!-- ==================== 4.5 / 4.6 ==================== -->
+  <div class="mine"><span class="tag">我的补讲 · 用 <a href="组原_第1章.html">ch1</a> 的性能公式给 CISC/RISC 之争收个口——<b>这是最能说明"没有赢家"的角度</b></span>
+    <b>书上说</b>：现代 CISC 已融合大量 RISC 思想，<u>两者在性能上的差距日益缩小</u>。<br>
+    <b>潜台词是</b>：书只给了结论。用 <a href="组原_第1章.html">ch1</a> 那条公式一看就明白为什么：<br>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th><code>CPU 时间 = 指令数 × CPI × 时钟周期</code></th><th>CISC</th><th>RISC</th></tr>
+      <tr><td class="n"><b>指令数</b>（完成同一任务需几条）</td><td class="n"><b>少</b>（一条顶好几条）</td><td class="n"><b>多</b>（复杂功能靠拼）</td></tr>
+      <tr><td class="n"><b>CPI</b>（每条平均几个周期）</td><td class="n"><b>高</b>且方差大（多次访存、微程序）</td><td class="n"><b>≈ 1</b>（单周期 + 流水线）</td></tr>
+      <tr><td class="n"><b>时钟周期</b>（一拍多长）</td><td class="n"><b>长</b>（控制逻辑复杂，关键路径长）</td><td class="n"><b>短</b>（硬布线，路径短）</td></tr>
+    </table></div>
+    <b>所以能考 Z</b>：<b style="color:var(--red)">三项此消彼长，乘起来才是真实性能——这就是"没有唯一赢家"的数学表达。</b>
+    <b>凡是问"RISC 一定比 CISC 快吗"，答案是"不一定，要看三项的乘积"</b>；
+    <b>凡是问"RISC 为什么快"，就答"CPI 和时钟周期两项都小，足以抵消指令数的增加"。</b>
+    这条公式也是 <b>ch1 与 ch4、ch5 三章之间最直接的一根线</b>。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 全章收口：<b>这 47 页真正要你带走的，是三张表和一把尺子</b></span>
+    整章读完，如果只能留四样东西在脑子里，就是这四样——<b>它们覆盖了 27 道真题里的 24 道</b>：
+    <div class="steps">
+      <div class="st"><b>一张「在 ISA / 不在 ISA」对照表</b>（4.1.1）——判据是「换个实现程序还跑不跑」。<b>2022×2、2025 三考。</b></div>
+      <div class="st"><b>一张「基址 vs 变址 vs 相对」三种偏移寻址表</b>（4.2.2）——判据是「谁在循环里不动」。<b>4.2 十四道真题里十道靠它。</b></div>
+      <div class="st"><b>一张「CISC vs RISC」表 4.3</b>（4.4.3）——从"定长"一条推出其余九行。<b>2009、2017、2025 三考，且每年在综合题里被间接考。</b></div>
+      <div class="st"><b>一把「栈帧尺子」</b>（4.3.4）——<code>[ebp+8]</code> 参数 / <code>[ebp+4]</code> 返回地址 / <code>[ebp]</code> 旧 EBP / <code>[ebp−4]</code> 局部变量。<b>4.3 七道综合题的读题工具。</b></div>
+    </div>
+    <b>剩下的三道真题</b>（2017 扩展操作码、2021 与 2022 扩展操作码）<b>靠 4.1.4 那条递推式 + 「按字节编址要取到 8 的倍数」</b>。<br>
+    <b>所以能考 Z</b>：<b>把这四样东西默写在一张 A4 上，就是本章的全部考纲。</b>
+    默不出来的那一格，回到本页对应的色块重读一遍即可——<b>不必从头再看 47 页。</b>
+  </div>
+
+    <h2>4.5　本章小结（章首三问的答案）</h2>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=46">📄 p.193</a>
+
+  <div class="key"><span class="tag">必记结论 · ① 什么是指令？什么是指令系统？为什么要引入指令系统？</span>
+    <b>指令是控制计算机完成某种基本操作的命令。一台计算机所能执行的全部机器指令的集合，称为该机的指令系统。</b><br>
+    🔥 <b>引入指令系统具有双重意义</b>：<br>
+    ・对<b>软件层面</b>：为程序员提供了<b>统一的硬件抽象接口</b>，无须直接操作物理电路或二进制编码，显著提升编程效率；<br>
+    ・对<b>硬件层面</b>：指令系统的格式、功能和寻址能力<b>直接决定了处理器的微架构设计、性能潜力和适用领域</b>。
+  </div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：第 ① 问答案里"双重意义"那两段展开</span>
+    书用整整两段讲「指令系统对<b>软件层面</b>提供统一的硬件抽象接口、对<b>硬件层面</b>决定微架构设计与性能潜力」。
+    <b>措辞漂亮，但统考从不考</b>——选择题不会问"为什么要引入指令系统"，综合题更不会。
+    <b>这一问只需记住前两句定义（"指令是命令、全部指令的集合是指令系统"）</b>，后面的展开划过即可。
+    <b>本节真正值得停留的是第 ③ 问</b>（寻址方式多少的影响），它和 4.4 是同一道题，<b>有出简答题的可能</b>。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · ② 指令由哪些部分组成？各部分的作用？</span>
+    一条典型指令由<b>操作码</b>和<b>地址码</b>两部分构成：<br>
+    ・<b>操作码</b>指明指令的<b>功能类型</b>（加法、转移、加载等），是 <b>CPU 识别和执行指令的核心依据</b>；<br>
+    ・<b>地址码</b>提供操作所需的<b>地址信息</b>：操作数的存储位置、运算结果的保存地址、程序转移的目标地址或子程序的入口地址。
+  </div>
+
+  <div class="key"><span class="tag">必记结论 · ③ 寻址方式多或少会带来什么影响？（<b>现成的简答题素材，两侧各三点</b>）</span>
+    <b>寻址方式的设计需权衡「编程灵活性」与「硬件效率」</b>：<br>
+    ・<b>寻址方式丰富</b>（立即、寄存器、直接、间接、变址、相对等）⟹ 程序更简洁高效、便于表达复杂的数据访问模式；
+    <b>但会增加指令译码逻辑的复杂度，不利于流水线调度，并可能增大控制单元面积</b>。<br>
+    ・<b>寻址方式过少</b> ⟹ 简化硬件、提升执行速度；<b>却会限制程序表达能力，迫使程序员用多条指令模拟复杂访问，降低代码效率</b>。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 第 ③ 问其实就是 4.4 的 CISC/RISC 之争换了个问法</span>
+    <b>书上说</b>：寻址方式多则灵活但译码复杂、不利流水线；少则硬件简单但表达力受限。<br>
+    <b>潜台词是</b>：<b>这一问和 4.4 是同一道题</b>——<b>「寻址方式丰富」＝ CISC，「寻址方式少」＝ RISC</b>，
+    连列出的优缺点都能逐条对上（译码复杂 ↔ 微程序控制；不利流水线 ↔ CISC 只能"通过一定方式"流水；用多条指令模拟 ↔ RISC 依赖编译器）。<br>
+    <b>所以能考 Z</b>：如果考简答/论述，<b>这两问可以互相借答案</b>。答题时把 <b>4.4 表 4.3 的十行拆成"因为寻址方式多/少，所以……"</b>，
+    就能写满，而且<b>每一句都在踩采分点</b>。
+  </div>
+
+    <div class="mine"><span class="tag">我的补讲 · 4.6 那张八行速查表怎么用：<b>它是"反查表"，不是"正查表"</b></span>
+    <b>书上说</b>：八种寻址方式各自的"特点与适用情况"。<br>
+    <b>潜台词是</b>：这张表<b>不该拿来"从寻址方式查特点"</b>（那是 4.2 已经讲透的），<b>它的价值在于<u>反过来查</u></b>——
+    <b>考题往往先给你一个应用场景，让你挑寻址方式</b>：<br>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>题干里的关键词</th><th>答案</th><th>真题</th></tr>
+      <tr><td class="n">按下标顺序访问<b>一维数组</b> / 编制<b>循环</b>程序</td><td class="n"><b>变址寻址</b></td><td class="n">2017（习 29）、2018（习 30）</td></tr>
+      <tr><td class="n"><b>多道程序</b> / 程序<b>浮动</b> / <b>重定位</b></td><td class="n"><b>基址寻址</b></td><td class="n">2019（习 31）</td></tr>
+      <tr><td class="n"><b>转移</b>指令 / 程序可任意<b>浮动</b>而转移仍正确</td><td class="n"><b>相对寻址</b></td><td class="n">2009/2013/2014/2023</td></tr>
+      <tr><td class="n">赋<b>初值</b>、用<b>常量</b>、要求<b>最快</b></td><td class="n"><b>立即寻址</b></td><td class="n">习 05、2023（习 33 的题干背景）</td></tr>
+      <tr><td class="n">要<b>扩大寻址范围</b>、做<b>指针</b>/转移表、子程序<b>返回</b></td><td class="n"><b>间接寻址</b></td><td class="n">2016（习 28）</td></tr>
+      <tr><td class="n"><b>缩短地址字段</b> / 高频运算</td><td class="n"><b>寄存器寻址</b></td><td class="n">习 03、2022/2024</td></tr>
+    </table></div>
+    <b>所以能考 Z</b>：<b>把这张表按"关键词 → 寻址方式"的方向背一遍，选择题基本可以秒选。</b>
+    <b style="color:var(--red)">唯一要小心的是"浮动"这个词</b>：<b>"程序浮动"既可能指基址寻址（OS 重定位），也可能指相对寻址（转移仍正确）</b>——
+    <b>判据是看它在说"数据访问"还是"转移指令"：数据 ⟹ 基址；转移 ⟹ 相对。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · <b>LOAD/STORE 型指令</b>这一问，把 4.4 与 ch5 的流水线焊死了</span>
+    <span class="hub">本章 4.4</span> 「只有 LOAD/STORE 能访存」是 RISC 特点 ③。<br>
+    <span class="hub">ch5 5.4</span> 它在流水线里的兑现是：<b>访存只发生在固定的 MEM 段</b> ⟹ <b>任何两条指令都不会在同一拍抢访存部件</b> ⟹ <b>结构冲突大幅减少</b>。
+    对比 CISC：<b>一条 <code>add [var], 10</code> 在执行段就要访存，取指段也要访存，两者会撞</b>。<br>
+    <span class="hub">ch3</span> 而书上说的缺点「<b>LOAD/STORE 指令比例高，增加指令条数</b>」，<b>靠 Cache 缓解</b>——<b>这就是"现代编译器优化和高速缓存机制可有效缓解此问题"那句话的具体所指</b>。<br>
+    <span class="hub">ch1</span> 用 <a href="组原_第1章.html">ch1</a> 的性能公式看得最清楚：<b>RISC 让"指令数"变大、"CPI"变小、"时钟周期"变短</b>，
+    <b>CISC 反之</b>——<b><code>CPU 时间 = 指令数 × CPI × 时钟周期</code> 这三项此消彼长，这才是 CISC/RISC 之争没有唯一赢家的数学原因。</b>
+  </div>
+
+  <h2>4.6　常见问题和易混淆知识点</h2>
+  <a class="pg" href="../../王道教材/计算机组成原理_分章/王道计算机组成原理_第4章_指令系统.pdf#page=47">📄 p.194</a>
+
+  <div class="key"><span class="tag">必记结论 · 八种寻址方式的特点与适用情况（<b>可以直接当八张卡背</b>）</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>寻址方式</th><th>特点与适用情况</th></tr>
+      <tr><td class="n"><b>立即寻址</b></td><td class="n">操作数直接嵌入指令，<b>无须访存</b>，常用于<b>赋初值或常量</b></td></tr>
+      <tr><td class="n"><b>直接寻址</b></td><td class="n">指令中给出操作数的内存地址，<b>访存一次</b>，适用于<b>固定地址访问</b></td></tr>
+      <tr><td class="n"><b>间接寻址</b></td><td class="n">指令给出地址的地址，<b>需两次访存</b>，<b>扩大了寻址范围，易于完成子程序返回</b></td></tr>
+      <tr><td class="n"><b>寄存器寻址</b></td><td class="n">操作数在寄存器中，<b>指令短、速度快</b>，适合<b>高频运算</b></td></tr>
+      <tr><td class="n"><b>寄存器间接寻址</b></td><td class="n">寄存器存放操作数地址，<b>兼具灵活性与较大寻址范围</b></td></tr>
+      <tr><td class="n"><b>基址寻址</b></td><td class="n">EA = 基址寄存器 + 偏移量，<b>基址由系统设定</b>，适用于<b>多道程序的地址重定位</b></td></tr>
+      <tr><td class="n"><b>变址寻址</b></td><td class="n">EA = 变址寄存器 + 偏移量，<b>变址寄存器由用户控制</b>，适合<b>数组遍历和循环</b></td></tr>
+      <tr><td class="n"><b>相对寻址</b></td><td class="n">EA = PC + 偏移量，<b>主要用于转移指令</b></td></tr>
+    </table></div>
+    🔥🔥 <b>书上对基址与变址的最终收口</b>：<b>形成方式相同，都是 EA = 寄存器内容 + 偏移量。但基址寄存器由操作系统管理、偏移量可变；变址寄存器由程序员控制、偏移量固定。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 4.6 第 2 问那句「仅给出起始地址」，藏着一个 408 常考的<b>反问</b></span>
+    <b>书上说</b>：操作数为多字节数据时，<u>指令中仅给出该操作数的起始地址，CPU 根据操作数类型自动读取连续的多个字节</u>。<br>
+    <b>潜台词是</b>：这句话有个必然推论——<b>「操作数类型」这个信息必须藏在指令里的某个地方</b>，否则 CPU 不知道该读几个字节。它藏在哪儿？<b>三种可能，408 都考过</b>：<br>
+    ・<b>藏在操作码里</b>：x86 的 <code>mov al,…</code>（1 字节）和 <code>mov ax,…</code>（2 字节）<b>机器码不同（B0H vs B8H）</b>——<b>4.3 那张机器码表就是证据</b>；<br>
+    ・<b>藏在显式的长度前缀里</b>：<code>byte ptr / word ptr / dword ptr</code>（Intel）或后缀 <code>b/w/l</code>（AT&amp;T）；<br>
+    ・<b>藏在专门的指令里</b>：RISC 的 <code>lw</code>（load word，4 字节）、<code>lb</code>（load byte，1 字节）<b>是两条不同的指令</b>。<br>
+    <b>所以能考 Z</b>：<b style="color:var(--red)">凡是题目问"这条指令读/写了几个字节"，答案一定能从上面三处之一读出来，绝不能靠猜。</b>
+    <b>2024 综 05 的 lw 就是第三种（w = word = 4 字节，所以第 5 问算出的是一个 32 位数的地址）。</b>
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 4.6 收官 · <b>这一章最该做成卡的六组"易混对"</b></span>
+    整章读完，真正会在考场上让你犹豫的不是新概念，是这六组长得像的东西。<b>建议直接抄成六张卡</b>：
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>易混对</th><th>一句话分开</th><th>出处</th></tr>
+      <tr><td class="n"><b>基址 vs 变址</b></td><td class="n"><b>谁在循环里不动</b>：基址是寄存器不动（OS 设）、变址是形式地址不动（数组首地址）</td><td class="n">4.2、4.6</td></tr>
+      <tr><td class="n"><b>间接 vs 寄存器间接</b></td><td class="n"><b>地址存在内存里（2 次访存）还是存在寄存器里（1 次访存）</b></td><td class="n">4.2 表 4.1</td></tr>
+      <tr><td class="n"><b>有效地址 vs 操作数</b></td><td class="n"><b>问 EA 就停在地址，问操作数还要再访存一次</b></td><td class="n">习 17 vs 习 26</td></tr>
+      <tr><td class="n"><b>CF vs OF</b></td><td class="n"><b>无符号看 CF、有符号看 OF；两者总是同时被置，只是意义不同</b></td><td class="n">4.3 习 01/02、2024 综 05</td></tr>
+      <tr><td class="n"><b>jg/jle vs ja/jbe</b></td><td class="n"><b>g/l = 有符号（查 SF、OF）、a/b = 无符号（查 CF）</b></td><td class="n">4.3 两个书例</td></tr>
+      <tr><td class="n"><b>CISC vs RISC 的流水线</b></td><td class="n"><b>RISC「必须实现」、CISC「可以通过一定方式实现」——不是"能不能"，是"必不必须"</b></td><td class="n">4.4 表 4.3</td></tr>
+    </table></div>
+    <b>所以能考 Z</b>：<b>本章 27 道真题里，至少 12 道的错误选项就是靠这六组的"说反了"造出来的。</b>
+    <b>把卡做出来，考场上遇到就是白送的分。</b>配套见 <a href="../卡库_计算机组成原理.html">卡库</a> 的 ch4 条目。
+  </div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：4.6 第 2 问那段"字节编址"的常识铺垫</span>
+    书在 4.6 第 2 问里花了半页解释「现代计算机普遍采用字节编址，每个内存单元存 1 字节（8 位）」。
+    <b>这半页是给完全没接触过体系结构的读者铺的常识</b>，到了第 4 章你早就在 <a href="组原_第3章.html">ch3</a> 用它算过几十道题了。
+    <b>这一问真正的考点只有一句</b>——<b>「指令中仅给出起始地址，读几个字节由操作数类型决定」</b>，已提到上面的蓝块里。
+    <b>其余（int 占 4 字节、double 占 8 字节之类）划过即可。</b>
+  </div>
+
+    <div class="key"><span class="tag">必记结论 · 另外两问</span>
+    <b>Q：一个操作数在内存可能占多个单元，怎样在指令中给出它的地址？</b><br>
+    A：<b>现代计算机普遍采用字节编址，每个单元存 1 字节。当操作数为多字节数据（int 4 字节、double 8 字节）时，指令中<u>仅给出起始地址</u>（第一个字节的地址），CPU 根据操作数类型自动读取连续的多个字节。</b><br><br>
+    <b>Q：LOAD/STORE 型指令有什么特点？</b>（<b>RISC 的核心设计原则之一</b>）<br>
+    ・<b>访存与计算分离</b>：只有 LOAD（内存→寄存器）和 STORE（寄存器→内存）能访问主存，<b>所有运算指令仅操作寄存器中的数据</b>；<br>
+    ・<b>指令格式规整</b>：<b>寄存器编号位数远少于内存地址</b>，通过固定字段分配可实现<b>定长指令</b>，极大简化译码逻辑；<br>
+    ・<b>利于流水线执行</b>：<b>统一的指令长度和访存边界，使取指、译码、执行等阶段易于并行化</b>；<br>
+    ・<b>潜在缺点</b>：<b>频繁的数据搬移导致程序中 LOAD/STORE 指令比例较高，增加指令条数</b>；但现代编译器优化和高速缓存机制可有效缓解。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 「起始地址 + 类型决定读几个字节」这句话，连着三章</span>
+    <span class="hub">ch2 2.3</span> <b>大/小端与边界对齐</b>：既然只给起始地址，那<b>"起始地址装的是最高有效字节还是最低有效字节"就必须由 ISA 规定</b> ⟹ <b>这就是大小端存在的原因</b>。<br>
+    <span class="hub">本章 4.2</span> <b>大端 LSB 地址 = EA + (字节数 − 1)</b>（习 19、2019 真题）——<b>"字节数"正是由这句话里的"操作数类型"决定的</b>。<br>
+    <span class="hub">本章 4.3</span> <code>byte ptr / word ptr / dword ptr</code> 存在的全部意义，就是在指令里<b>补上"读几个字节"这个信息</b>——
+    因为 <code>mov [var], 5</code> 光看地址不知道是写 1 字节还是 4 字节。<b>AT&amp;T 的 <code>b/w/l</code> 后缀干的是同一件事。</b><br>
+    <span class="hub">ch3 3.2</span> <b>边界对齐存储</b>：多字节操作数若跨越存储字边界，<b>一次访存取不完，要访存两次</b> ⟹ 这就是"按边界对齐"的性能理由。<br>
+    ⟹ <b>一句话：「指令只给起始地址」这个设计，把"读几个字节"和"哪头在前"两个问题甩给了 ISA，于是有了类型标记和大小端。</b>
+  </div>
+
+  <div class="link"><span class="tag">🔑 全章跨科枢纽总清单 —— 读完本章请对着这张表自查一遍</span>
+    <div class="tabwrap"><table class="mono tw">
+      <tr><th>枢纽</th><th>本章位置</th><th>连到哪里</th></tr>
+      <tr><td class="n"><b>ISA 与微架构的分界</b></td><td class="n">4.1.1（2022×2、2025）</td><td class="n"><b>ch5 全章都在讲"分界线的另一侧"</b> · ch3 Cache 对程序员透明 · OS 的 PSW</td></tr>
+      <tr><td class="n"><b>前缀码 / 变长编码</b></td><td class="n">4.1.4 扩展操作码</td><td class="n"><b>数据结构：哈夫曼编码</b>（短码不能是长码前缀，高频给短码）· 网络：IP 最长前缀匹配</td></tr>
+      <tr><td class="n"><b>相对寻址与程序浮动</b></td><td class="n">4.2.2 相对寻址（六考）</td><td class="n"><b>OS：程序重定位、位置无关代码</b> · 4.3 的 jmp/jge/call 全用它</td></tr>
+      <tr><td class="n"><b>基址寻址</b></td><td class="n">4.2.2 基址寻址</td><td class="n"><b>OS：动态重定位、多道程序、基址+限长寄存器</b></td></tr>
+      <tr><td class="n"><b>变址寻址与数组</b></td><td class="n">4.2.2 变址、4.3 数组地址</td><td class="n"><b>数据结构：数组的行主序存储映射</b> · 2018/2023/2024 三年真题</td></tr>
+      <tr><td class="n"><b>标志位 CF/OF/SF/ZF</b></td><td class="n">4.2 转移条件、4.3 手算</td><td class="n"><b>ch2：标志位的产生公式</b> · ch5：标志寄存器与数据通路 · <b>有符号看 OF、无符号看 CF</b></td></tr>
+      <tr><td class="n"><b>补码符号扩展</b></td><td class="n">4.2 习 18/31、4.3 imm 扩展</td><td class="n"><b>ch2 2.2 补码</b>；<b>补码范围不对称 ⟹ 2025 真题的除法溢出</b></td></tr>
+      <tr><td class="n"><b>栈与栈帧</b></td><td class="n">4.3.4 过程调用</td><td class="n"><b>数据结构：栈与递归</b> · <b>OS：函数调用、中断现场保护、进程地址空间（栈向下、堆向上）</b></td></tr>
+      <tr><td class="n"><b>Cache 划分与 VIPT</b></td><td class="n">4.3 综 03（2019）</td><td class="n"><b>ch3 3.5 组相联映射</b>（组号 4 + 块内 6 ≤ 页内偏移 12 ⟹ 组号可从虚地址取）</td></tr>
+      <tr><td class="n"><b>页式虚存与缺页</b></td><td class="n">4.3 综 04（2023）、综 06（2024）</td><td class="n"><b>ch3 3.6 虚拟存储器</b> · OS 请求分页</td></tr>
+      <tr><td class="n"><b>异常与中断</b></td><td class="n">4.1.5 TRAP、4.3 溢出自陷/除法异常</td><td class="n"><b>ch5 异常和中断机制</b> · OS 中断处理 · <b>「保存断点与程序状态 → 关中断 → 转处理程序」三步</b></td></tr>
+      <tr><td class="n"><b>定长指令与流水线</b></td><td class="n">4.1.2、4.4 表 4.3</td><td class="n"><b>ch5 5.4 指令流水线</b>（RISC 必须实现、CISC 可以实现）</td></tr>
+      <tr><td class="n"><b>特权指令</b></td><td class="n">4.1.5 CPU 控制指令</td><td class="n"><b>OS：内核态/用户态、系统调用</b>（<b>访管指令本身不是特权指令</b>）</td></tr>
+    </table></div>
+    ⟹ <b>这十三条就是"第 4 章是承上启下枢纽"的全部含义</b>：<b>它向上收 ch1–ch3 的账，向下给 ch5 铺路，同时是《操作系统》和《数据结构》在组原里的接口。</b>
+  </div>
+
+  <div class="outro">
+    <b>本章 47 页读完了。</b>接下来把手上的东西用起来——<br>
+    · <a href="../练习系统/组原_第4章.html">第 4 章练习（83 题 · 27 道统考真题 · 2009–2025 逐年全覆盖）</a>，每题带 Python 独立复算；<br>
+    · <a href="../计算题_公式模板手册.html">计算模板手册</a>（扩展操作码递推、⌈log₂⌉ 三段式、PC 增量、栈帧大小、标志位五组公式已收录）；<br>
+    · <a href="../练习系统/组原_套路库.html">组原套路库</a> 与 <a href="../卡库_计算机组成原理.html">卡库</a>（易混辨析卡：基址 vs 变址、CISC vs RISC、有符号 vs 无符号转移）。<br>
+    <b style="color:var(--red)">按失分权重排的复习顺序</b>：<b>4.3 的七道综合真题（约 105 分）＞ 4.2 的十四道选择真题（约 28 分）＞ 4.1（约 8 分）＞ 4.4（约 4 分）</b>；
+    但<b>按"最快见效"排是反的</b>——<b>4.4 一晚上背完、4.1 两晚、4.2 三天、4.3 要一周</b>。<b>时间紧就先把 4.4 和 4.2 吃干净，再啃 4.3。</b><br>
+    <b>本页抓出书上 2 处问题</b>：<b>① p.180 caller 汇编注释「temp1 放入参数区高地址」与同页正文矛盾，应为低地址</b>（4.3 红块）；
+    <b>② 4.3.5 综合题题号从 06 跳到 09，而答案区编号为 07</b>（dpi=340 复核，4.3 红块）。两处均已就地标出。
+  </div>
+
+  <footer>王道《计算机组成原理》第 4 章 指令系统 · 精读版 · 408 复盘中心</footer>
+</div>
+</body>
+</html>
