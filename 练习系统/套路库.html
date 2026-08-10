@@ -43,6 +43,11 @@
 table.tk{width:100%;border-collapse:collapse;margin:8px 0;font-size:.86rem}
 table.tk th,table.tk td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
 table.tk th{background:var(--accent-soft);color:var(--accent);font-weight:600;white-space:nowrap}
+/* 宽表须有自己的横向滚动容器，否则会顶出整页横滚（窄屏）；cardHtml 自动套 .tabwrap */
+.tabwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0}
+.tabwrap table.tk{margin:0;min-width:max-content}
+/* 长串「2012/2016/2019/…」在斜杠处不断行，会顶出窄屏横滚 ⟹ 允许必要时任意断行 */
+.tbody .flow,.tbody .tmpl,.tbody .trap{overflow-wrap:anywhere}
 .qlinks{margin-top:14px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .qlinks .lab{font-size:.8rem;color:var(--muted)}
 .qlinks a{font-family:var(--mono);font-size:.78rem;text-decoration:none;color:var(--blue);
@@ -93,15 +98,18 @@ table.tk th{background:var(--accent-soft);color:var(--accent);font-weight:600;wh
   function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
   function plain(t){const d=document.createElement('div');d.innerHTML=t;return d.textContent;}
 
+  /* 给每个 <table> 套一个横向滚动容器（见 style 里的 .tabwrap） */
+  const wrapT=h=>String(h||'').replace(/<table\b/g,'<div class="tabwrap"><table')
+                              .replace(/<\/table>/g,'</table></div>');
   function cardHtml(t){
     let h='<div class="tcard'+(t.tier==='🔴'?' hot':'')+'" id="C_'+t.id+'" data-ch="'+t.ch+'">';
     h+='<h3><span class="cid">'+t.id+'</span><span>'+t.tier+'</span><span>'+t.title+'</span></h3>';
     h+='<div class="trigs">'+t.trig.map(x=>'<span class="trig">'+esc(x)+'</span>').join('')+'</div>';
     h+='<button class="toggle">看套路 ▾</button>';
     h+='<div class="tbody">';
-    h+='<h4>判定 / 解题流程</h4><div class="flow">'+t.flow+'</div>';
-    if(t.tmpl)h+='<h4>模板 · 公式</h4><div class="tmpl">'+t.tmpl+'</div>';
-    if(t.traps&&t.traps.length){h+='<h4>陷阱</h4>';t.traps.forEach(x=>h+='<div class="trap">'+x+'</div>');}
+    h+='<h4>判定 / 解题流程</h4><div class="flow">'+wrapT(t.flow)+'</div>';
+    if(t.tmpl)h+='<h4>模板 · 公式</h4><div class="tmpl">'+wrapT(t.tmpl)+'</div>';
+    if(t.traps&&t.traps.length){h+='<h4>陷阱</h4>';t.traps.forEach(x=>h+='<div class="trap">'+wrapT(x)+'</div>');}
     if(t.qids&&t.qids.length){
       h+='<div class="qlinks"><span class="lab">练这些题 →</span>';
       /* 题号形如 3.4-14 / 4.2-综2 / 4-特训1，章号一律取开头的连续数字 */
