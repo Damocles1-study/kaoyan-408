@@ -217,6 +217,11 @@ footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:36px;line
    ⚠️ 绝对不要用 <u> 模拟：漏一个 </u> 会让其后整章题干全带下划线（铁律 §5）。 */
 .ovl{text-decoration:overline}
 .q table.qtab.tw{white-space:normal}
+/* 流水线时空图这类「一行十几个时钟周期」的网格表：列数多、每格只有 IF/ID 两三个字符，
+   默认 padding 4px 10px 会让 17 列表撑到 670px 而超出核对栏的 518px。
+   ⟹ .tight 收紧内边距与字号，让时空图在核对栏里一眼看全，不必横向拖动。 */
+.q table.qtab.tight th,.q table.qtab.tight td{padding:3px 5px;font-size:.78rem}
+
 .q table.qtab.tw td,.q table.qtab.tw th{text-align:left;font-family:var(--sans)}
 .q table.qtab th{background:var(--accent-soft);color:var(--accent);font-family:var(--sans);font-weight:600}
 .q table.qtab td.rowh{background:var(--accent-soft);color:var(--accent);font-family:var(--sans)}
