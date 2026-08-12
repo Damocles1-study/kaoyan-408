@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>操作系统 · 教材练习系统</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← 返回 408 复盘中心</a>
+  <header>
+    <h1>操作系统 · 教材练习系统</h1>
+    <div class="sub">题源 = 王道《操作系统》章节习题 · 练习/考试双模式 · <b>书答 × 干扰项溯源 / Python 排程复算</b> · 自动错题本 + 统计 · 数据存本地浏览器</div>
+  </header>
+
+  <div class="stats" id="quick"></div>
+
+  <div class="card">
+    <h2>练习入口</h2>
+    <div class="grid" id="tools"></div>
+  </div>
+
+  <div class="card">
+    <h2>按章练习</h2>
+    <div class="grid" id="chaps"></div>
+  </div>
+
+  <div class="card">
+    <h2>操作系统和前两科有什么不一样</h2>
+    <div style="font-size:.88rem;line-height:1.9">
+      <b>①「🤖 核对与延伸」这一栏在 OS 干三件事。</b>数构是跑 C 程序对拍、组原是 Python 复算位模式与周期数，
+      而 OS ch1 是概念题的主场，所以核对栏改成：<b>把每个干扰项「是怎么造出来的」还原</b>（是张冠李戴？是把优点写反？是全称量词？）、
+      <b>把同一考点的跨年真题串成一条线</b>、<b>需要算的（甘特图、CPU 利用率、时间片）用 Python 独立排程复算</b>。
+      从第 2 章起，PV 题的核对栏会变成<b>穷举交错执行序列、自动检查死锁与缓冲区越界</b>。<br>
+      <b>② 错因标签换成了 OS 一套。</b>OS 的失分源不是算错，是判断错，所以标签是
+      <b>概念边界混 / 态与特权级判断错 / 硬件·OS 分工记错 / 同步模型认错 / PV 顺序颠倒 / 调度算法记混 / 地址与时间算错 / 读题漏条件</b>。<br>
+      <b>③ 记录与前两科完全分家。</b>三科的做题记录、错题本、统计各存各的（localStorage 键 <code>os_*</code> vs <code>co_*</code> vs <code>ds_*</code>），互不覆盖。<br>
+      <b>④ OS 最大的失分源是「谁在什么态下做什么」。</b>发生在用户态还是内核态、由硬件做还是由 OS 做、
+      是中断还是异常——第 1 章 27 道真题里有 18 道卡在这三条缝上。刷题时错在这里，请老实勾「态与特权级判断错」「硬件/OS分工记错」。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>怎么用</h2>
+    <div style="font-size:.88rem;line-height:1.9">
+      <b>① 第一遍闭卷刷：</b>进某章或真题场，切「📝 考试模式」，做完点<b>交卷</b>→ 出正确率 + 错误知识点归因，自动记一次。<br>
+      <b>② 开卷精修：</b>「📖 练习模式」即点即判、随时展开「📕书答 × 🤖核对与延伸」双栏。<br>
+      <b>③ 消化错题：</b>错的自动进<b>错题本</b>，专项重刷到做对即移出。<br>
+      <b>④ 让我分析：</b>错题多了，错题本点「导出报告」复制发我 → 我按你薄弱点补讲解/技巧，再更新页面你上传。<br>
+      <b>⑤ 看长进：</b>「我的统计」看正确率趋势与弱项；换设备前先导出备份。
+    </div>
+  </div>
+
+  <footer><b>第 1 章已就绪：88 题</b>（1.1 操作系统的基本概念 11 + 1.2 操作系统发展历程 22 +
+  <b>1.3 操作系统的运行环境 33</b> + 1.4 操作系统结构 10 + 1.5 操作系统引导 5 + 1.6 虚拟机 7；86 选择 + 2 综合应用），
+  含 <b>27 道统考真题</b>（2010–2025 共 16 个年份，仅缺 2009）。<br>
+  🔥 <b>1.3 运行环境是全章、也是目前四科所有已建章中失分密度最高的一节</b>：
+  11 页正文塞进 <b>18 道统考真题 ≈ 1.64 道/页</b>（组原最高的 6.2 节是 1.14/页、ch5 的 5.6 是 0.90/页），
+  且 <b>2011–2024 连续 14 年每年必考，2012 / 2015 / 2021 / 2022 各考 2 道</b>。<br>
+  ⭐⭐ <b>1.3 的四条分界线（本章全部真题都卡在这四条缝上）</b>：<br>
+  ① <b>「在用户态<u>发生</u>」vs「在用户态<u>执行</u>」</b>——系统调用、外中断、缺页都<u>发生</u>于用户态、<u>处理</u>在内核态；
+  <b>只有进程切换连"发生"都在内核态</b>（2012 真题）。2024 又把它细分成「中断<u>发生时</u>」（可能在用户态）
+  与「中断处理程序<u>开始执行时</u>」（一定在内核态）。<br>
+  ② <b>硬件做的 vs 操作系统做的</b>——<b>硬件</b>：保存断点 PC/PSW、改模式位、查中断向量；
+  <b>OS</b>：初始化中断向量表、保存通用寄存器、保存中断屏蔽字、执行服务例程。
+  <b>2015 / 2020 / 2022 三年考的是同一把刀。</b><br>
+  ③ <b>中断（外，返回第 i+1 条）vs 异常（内，返回第 i 条重执行）</b>——
+  <b>「缺页中断」名字带中断、分类却属异常（故障）</b>，2016 真题的正解就是这一条。<br>
+  ④ <b>指令属于哪一态</b>——陷入/访管指令在<u>用户态</u>执行；关中断、I/O 指令、置时钟、停机、
+  中断屏蔽字设置在<u>内核态</u>。这一单点在 ch1 考了 5 次（2014、2021 + 三道书内题）。<br>
+  ✅ <b>两道甘特图综合题（1.2-21 / 1.2-22）已用 Python 独立排程复算</b>：
+  单道 40/80 = 50% · 多道 40/45 = 88.9% · CPU 空闲区间 [100,150]ms、利用率 250/300 = 83.3% ·
+  进程 B 的两段等待 [0,50] 与 [180,200]——<b>各段与书图逐段吻合，本章未发现书上错误。</b><br>
+  ⏳ <b>下一步：ch1 精读版 → 套路库 → 卡库回填 → 第 2 章进程与线程（139 页，全书一半，PV 主场）。</b></footer>
+</div>
+<script src="data_os.js"></script>
+<script src="engine.js"></script>
+<script>
+// 快速统计
+(function(){
+  const arr=SubjApp.attempts(), w=SubjApp.wrongBook();
+  const closed=arr.filter(a=>a.mode==='闭卷');
+  const avg=closed.length?Math.round(closed.reduce((s,a)=>s+a.acc,0)/closed.length):'–';
+  const unres=Object.values(w).filter(e=>!e.res).length;
+  document.getElementById('quick').innerHTML=
+    '<div class="stat"><div class="v">'+arr.length+'</div><div class="k">累计结算</div></div>'
+   +'<div class="stat"><div class="v">'+avg+(avg==='–'?'':'%')+'</div><div class="k">闭卷平均正确率</div></div>'
+   +'<div class="stat"><div class="v">'+unres+'</div><div class="k">待消化错题</div></div>';
+})();
+// 中央入口
+document.getElementById('tools').innerHTML=
+  '<a class="tile" href="OS_套路库.html"><h3>🧠 解题套路库</h3><p>看到什么字眼→用什么套路 · 刷完课后题提炼 · 每张卡链回原题</p></a>'
+ +'<a class="tile" href="OS_真题场.html"><h3>🎯 真题场</h3><p>各章统考真题自动汇集 · 随机抽题闭卷模拟</p></a>'
+ +'<a class="tile" href="OS_错题本.html"><h3>📕 错题本</h3><p>错题自动收集 · 专项重刷 · 导出报告发我分析</p></a>'
+ +'<a class="tile" href="OS_我的统计.html"><h3>📈 我的统计</h3><p>正确率趋势 · 知识点弱项 · 错因归因分布 · 数据备份</p></a>'
+ +'<a class="tile" href="../卡库_操作系统.html"><h3>🃏 易混辨析卡库</h3><p>并发vs并行 · 中断vs异常 · 用户态vs内核态 · 五种内核结构</p></a>';
+// 章节
+let h='';
+SubjApp.chapters().forEach(c=>{
+  const n=OS_DATA.filter(q=>q.ch===c.id).length;
+  if(c.ready) h+='<a class="tile" href="OS_第'+c.id+'章.html"><h3>第'+c.id+'章 '+c.name+'<span class="badge '+(c.wip?'off':'on')+'">'+(c.wip?'建设中 '+n+'题':'已就绪 '+n+'题')+'</span></h3><p>'+(c.wip||'点击进入 · 练习/考试双模式')+'</p></a>';
+  else h+='<div class="tile dim"><h3>第'+c.id+'章 '+c.name+'<span class="badge off">待铺开</span></h3><p>按同格式生成</p></div>';
+});
+document.getElementById('chaps').innerHTML=h;
+</script>
+</body>
+</html>

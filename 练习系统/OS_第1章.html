@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>练习 · 操作系统 第1章 计算机系统概述</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="OS_index.html">← 操作系统练习系统首页</a>
+  <header>
+    <h1>操作系统 · 第1章　计算机系统概述</h1>
+    <div class="sub">题源：27 王道《操作系统》第 1 章章节习题 · 每题「📕书答案 × 🤖核对与延伸」交叉验证 ·
+      <a href="../精读版/OS_第1章.html" style="color:var(--accent)">📖 本章精读版</a> ·
+      <a href="OS_套路库.html" style="color:var(--accent)">🧠 解题套路库</a> ·
+      <a href="../../王道教材/操作系统_分章/王道操作系统_第1章_计算机系统概述.pdf" style="color:var(--accent)">📄 打开本章电子书</a></div>
+  </header>
+  <div id="root"></div>
+  <footer>本章 88 题（1.1 基本概念 11 + 1.2 发展历程 22 + <b>1.3 运行环境 33</b> + 1.4 操作系统结构 10 + 1.5 操作系统引导 5 + 1.6 虚拟机 7；86 选择 + 2 综合应用）·
+  含 <b>27 道统考真题</b>（2010–2025，仅缺 2009）。<br>
+  🔥 <b>1.3 运行环境是全章重心</b>：11 页正文里塞了 <b>18 道统考真题（1.64 道/页）</b>，
+  <b>2011–2024 连续 14 年每年必考</b>，密度高于组原全书最高的 6.2 节（1.14/页）。<br>
+  ✅ 两道甘特图综合题（1.2-21 / 1.2-22）已用 Python <b>独立排程复算</b>：
+  单道 50% · 多道 88.9% · CPU 空闲 [100,150]ms 与利用率 83.3%，各段与书图逐段吻合。</footer>
+</div>
+<script src="data_os.js"></script>
+<script src="engine.js"></script>
+<script>
+SubjApp.mount({root:'#root', scope:{type:'chapter',ch:1}, scopeLabel:'OS第1章',
+  mode:'practice', allowModeToggle:true, groupBySec:true});
+</script>
+</body>
+</html>
