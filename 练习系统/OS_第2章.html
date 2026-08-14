@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>练习 · 操作系统 第2章 进程与线程</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="OS_index.html">← 操作系统练习系统首页</a>
+  <header>
+    <h1>操作系统 · 第2章　进程与线程</h1>
+    <div class="sub">题源：27 王道《操作系统》第 2 章章节习题 · 每题「📕书答案 × 🤖核对与延伸」交叉验证 ·
+      <a href="../精读版/OS_第2章.html" style="color:var(--accent)">📖 本章精读版</a> ·
+      <a href="OS_套路库.html" style="color:var(--accent)">🧠 解题套路库</a> ·
+      <a href="../../王道教材/操作系统_分章/王道操作系统_第2章_进程与线程.pdf" style="color:var(--accent)">📄 打开本章电子书</a></div>
+  </header>
+  <div id="root"></div>
+  <footer style="text-align:left">
+  <b>本章规划 291 题 / 63 道统考真题</b>（全书最大章，139 页，占《操作系统》全书 39%）。
+  当前已建 <b>2.1 共 74 题（17 道真题，2010–2025 仅缺 2013/2016/2017）</b>：
+  进程篇 40 + 线程篇 17 + 统考真题 17（16 选择 + 1 综合）。<br>
+  ⏳ 待建：2.2 CPU 调度 67 题（22 真题）· <b>2.3 同步与互斥 85 题（23 真题，含 13 道 PV 综合真题）</b> · 2.4 死锁 50 题（12 真题）。<br><br>
+  🔥 <b>2.1 的失分主线只有一条：状态转换的「谁引起谁」</b>——本节 74 题里有 <b>14 题</b>考它，
+  2014／2015／2018／2019／2022／2023 六年真题全在这条线上。<b>一句判据吃透全部</b>：
+  <u>只缺 CPU ⟹ 就绪；缺 CPU 以外的东西或在等事件 ⟹ 阻塞</u>。
+  「申请处理器得不到 ⟹ 阻塞态」是本节最大的坑，三年真题拿它当干扰项。<br>
+  📌 <b>第二主线：用户级线程 vs 内核级线程</b>（11 题）——所有结论都能从一句话推出来：
+  <u>内核感知不到 ULT，所以只能按进程为单位下手</u> ⟹ 阻塞连坐、不能多核并行、OS 不为 ULT 建 TCB（2019 真题）。<br>
+  📌 <b>第三主线：线程私有 vs 共享</b>（2011、2024 两次真题，干扰项造法完全相同）——
+  私有＝TCB／PC／寄存器组／<b>栈与栈指针</b>；共享＝地址空间、代码段、全局变量、<b>已打开文件 fd</b>、堆。</footer>
+</div>
+<script src="data_os.js"></script>
+<script src="engine.js"></script>
+<script>
+SubjApp.mount({root:'#root', scope:{type:'chapter',ch:2}, scopeLabel:'OS第2章',
+  mode:'practice', allowModeToggle:true, groupBySec:true});
+</script>
+</body>
+</html>
