@@ -2541,7 +2541,7 @@ window.OS_DATA = [
   +'  <u>跨进程</u>换线程：必须换地址空间 ⟹ 只有内核能做 ✗\n'
   +'  ⟹ 「跨进程调度不需要内核」自相矛盾</pre>'
   +'🐍 <b>A 里的「100 倍」是可以算出来的（本节唯一能量化的点）</b>：'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>调度单位</th><th>进程 A（1 线程）</th><th>进程 B（100 线程）</th><th>B 中每线程所得</th></tr>'
   +'<tr><td><b>ULT</b>：按<u>进程</u>分片</td><td>得 100ms，独占 ⟹ 100ms</td><td>得 100ms，100 人分</td><td>1ms ⟹ <b>A 的线程是 B 的 100 倍</b></td></tr>'
   +'<tr><td><b>KLT</b>：按<u>线程</u>分片</td><td>1 个线程 ⟹ 100ms</td><td>100 个线程 × 100ms</td><td>100ms ⟹ <b>进程 B 总时间是 A 的 100 倍</b></td></tr></table></div>'
@@ -2666,7 +2666,7 @@ window.OS_DATA = [
  opts:['该进程的其他线程仍可继续运行','整个进程都将阻塞','该阻塞线程将被撤销','该阻塞线程将永远不可能再执行'], ans:'B',
  book:'在多对一的线程模型中，只有一个内核级线程，用户级线程的"多"对操作系统透明，因此操作系统内核只能感知到一个调度单位的存在。因此该进程的一个线程被阻塞后，该进程就被阻塞，进程的其他线程当然也被阻塞。注意，作为对比，在一对一模型中将每个用户级线程都映射到一个内核级线程，因此当某个线程被阻塞时，不会导致整个进程被阻塞。',
  claude:'一致，选 B。<b>三种多线程模型的对照表要能默写——本题及 2.1-56、2.1-57 都从这张表出：</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>模型</th><th>映射</th><th>一个线程阻塞</th><th>多核并行</th><th>切换开销</th></tr>'
   +'<tr><td><b>多对一</b></td><td>n 个 ULT → 1 个 KLT</td><td><b>整个进程阻塞</b></td><td>✗</td><td>小（用户态）</td></tr>'
   +'<tr><td><b>一对一</b></td><td>1 个 ULT → 1 个 KLT</td><td>只阻塞该线程</td><td>✓</td><td>大（进内核）</td></tr>'
@@ -2764,7 +2764,7 @@ window.OS_DATA = [
  opts:['不管系统是否支持线程，进程都是资源分配的基本单位','线程是资源分配的基本单位，进程是调度的基本单位','系统级线程和用户级线程的切换都需要内核的支持','同一进程中的各个线程拥有各自不同的地址空间'], ans:'A',
  book:'在引入线程后，进程依然是资源分配的基本单位，线程是调度的基本单位，同一进程中的各个线程共享进程的地址空间。在用户级线程中，有关线程管理的所有工作都由应用程序完成，无须内核的干预，内核意识不到线程的存在。',
  claude:'一致，选 A。<b>本题四个选项就是本节四条核心结论的「一对三反」：</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>选项</th><th>判定</th><th>依据</th></tr>'
   +'<tr><td><b>A</b> 进程始终是资源分配单位</td><td>✓</td><td>与 2.1-54 的 C 项一字不差</td></tr>'
   +'<tr><td>B 线程分配资源 / 进程调度</td><td>✗</td><td>把两者对调（2.1-54 的 B 项）</td></tr>'
@@ -2802,7 +2802,7 @@ window.OS_DATA = [
  opts:['一个管道可实现双向数据传输','管道的容量仅受磁盘容量大小限制','进程对管道进行读操作和写操作都可能被阻塞','一个管道只能有一个读进程或一个写进程对其操作'], ans:'C',
  book:'普通管道只允许单向通信，数据只能往一个方向流动，要实现双向数据传输，就需要定义两个方向相反的管道，A 错误。管道是一种存储在内存中的、固定大小的缓冲区，管道的大小通常为内存的一页，其大小并不是受磁盘容量大小的限制，B 错误。由于管道的读/写操作都可能遇到缓冲区满或空的情况，当管道满时写操作会被阻塞，直到有数据读出；而当管道空时读操作会被阻塞，直到有数据写入，因此 C 正确。一个管道可以有多个读进程或多个写进程对其进行操作，但是这会增加数据竞争和混乱的风险，为了避免这种情况，应使用互斥锁或信号量等同步机制来保证每次只有一个进程对管道进行读或写操作，D 错误。',
  claude:'一致，选 C。<b>管道的四条属性，本题一次考了四条，逐条钉死：</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>属性</th><th>正确说法</th><th>本题干扰项怎么造的</th></tr>'
   +'<tr><td>方向</td><td><b>单向</b>；要双向须建两个管道</td><td>A 说「一个管道双向」</td></tr>'
   +'<tr><td>容量</td><td><b>内核内存中的固定大小缓冲区</b>（常为一页，Linux 环形缓冲区约 64KB）</td><td>B 把「表现为文件」误当成「就是磁盘文件」</td></tr>'
@@ -2846,7 +2846,7 @@ window.OS_DATA = [
   +'Ⅱ 从磁盘读数据 → 等 I/O    ⟹ 阻塞 ✓\n'
   +'Ⅲ CPU 被高优先权进程拿走 → <b>只缺 CPU</b> ⟹ 就绪 ✗</pre>'
   +'⭐ <b>连着三年的同一条刀口，值得并排看</b>：'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>年份</th><th>问法</th><th>那个「缺 CPU」的干扰项</th><th>正确落点</th></tr>'
   +'<tr><td>2015（2.1-63）</td><td>哪个会「运行 → 就绪」</td><td>被高优先级抢占 —— 是<b>答案</b></td><td>就绪</td></tr>'
   +'<tr><td>2018（本题）</td><td>哪个会「阻塞」</td><td>Ⅲ CPU 被拿走 —— 是<b>干扰项</b></td><td>就绪</td></tr>'
@@ -3059,7 +3059,7 @@ window.OS_DATA = [
   +'<b>length 是 main() 中的局部变量</b>，若未被优化至寄存器，则分配在<b>用户栈</b>；'
   +'<b>ptr 指向的字符串</b>由 malloc() 动态分配，位于<b>运行时堆</b>中。',
  claude:'一致。<b>本题是 2.1-22（进程实体分段）的真题版，三问覆盖了 2.1.3 节的全部考点。逐问拆开看命题人在考什么：</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>问</th><th>要答的对象</th><th>答案</th><th>判据（一句话）</th></tr>'
   +'<tr><td>1a</td><td>PCB 在哪</td><td><b>内核区</b></td><td>PCB 由内核维护，<u>不属于用户可见的地址空间</u></td></tr>'
   +'<tr><td>1b</td><td>scanf 等输入时的状态</td><td><b>阻塞态</b></td><td>等 I/O 事件 ⟹ 缺的不是 CPU</td></tr>'
@@ -3376,7 +3376,7 @@ window.OS_DATA = [
  opts:['B、E、C、D','B、E、D、C','E、B、C、D','B、C、E、D'], ans:'A',
  book:'照顾短作业 → 短作业优先；照顾紧急作业（优先级高的优先调度）→ 基于优先级的剥夺调度算法；实现人机交互，要保证每个作业都能在一定时间内轮到 → 时间片轮转；使各种作业用户满意，要处理多级反馈 → 多级反馈队列。',
  claude:'一致，答案 <b>B、E、C、D</b>（选 A）。<b>四个需求 ↔ 四种算法，是本节的「算法选型速查表」：</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>需求关键词</th><th>算法</th><th>为什么</th></tr>'
   +'<tr><td>照顾<b>短</b>作业</td><td>SJF</td><td>短的先跑 ⟹ 平均周转最小</td></tr>'
   +'<tr><td>照顾<b>紧急</b>作业</td><td><b>剥夺式</b>优先级</td><td>紧急 ⟹ 必须能抢，非抢占来不及</td></tr>'
@@ -3491,7 +3491,7 @@ window.OS_DATA = [
  opts:['计算型作业的优先权应高于 I/O 型作业的优先权','用户进程的优先权应高于系统进程的优先权','在动态优先权中，随着作业等待时间的增加，其优先权将随之下降','在动态优先权中，随着进程执行时间的增加，其优先权降低'], ans:'D',
  book:'优先级算法中，I/O 繁忙型作业要优于计算繁忙型作业，系统进程的优先权应高于用户进程的优先权。作业的优先权与长作业、短作业或系统资源要求的多少没有必然的关系。在动态优先权中，随着进程执行时间的增加其优先权随之降低，随着作业等待时间的增加其优先权相应上升。',
  claude:'一致，选 D。<b>本题一次考完优先级的「四条口径」，全部背下来就等于拿下三道真题：</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>口径</th><th>正确方向</th><th>本题干扰项</th></tr>'
   +'<tr><td>类型</td><td><b>I/O 型 &gt; 计算型</b></td><td>A 说反（2013 真题 2.2-42 正面考）</td></tr>'
   +'<tr><td>归属</td><td><b>系统进程 &gt; 用户进程</b></td><td>B 说反</td></tr>'
@@ -3512,7 +3512,7 @@ window.OS_DATA = [
  opts:['先来先服务','时间片轮转','优先级','短进程优先'], ans:'B',
  book:'时间片轮转调度算法是按固定的时间配额来运行的，时间一到，不管是否完成，当前的进程必须撤下，调度新的进程，因此它是由时间配额决定的、是绝对可抢占的。而优先级算法和短进程优先调度算法都可分为抢占式和不可抢占式。',
  claude:'一致，选 B。<b>「绝对」二字是题眼：C、D 两种算法各有抢占与非抢占两个版本，所以都不「绝对」。</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>算法</th><th>抢占性</th><th>备注</th></tr>'
   +'<tr><td>FCFS</td><td><b>绝对不可抢占</b></td><td>先到先得，一占到底</td></tr>'
   +'<tr><td>HRRN 高响应比</td><td><b>不可抢占</b></td><td>只在进程结束时重算响应比</td></tr>'
@@ -4110,7 +4110,7 @@ window.OS_DATA = [
  opts:['仅Ⅰ、Ⅱ','仅Ⅲ、Ⅳ','仅Ⅱ、Ⅲ、Ⅳ','Ⅰ、Ⅱ、Ⅲ和Ⅳ'], ans:'D',
  book:'多级反馈队列调度算法需要综合考虑优先级数量、优先级之间的转换规则等：就绪队列的数量会影响长进程的最终完成时间（Ⅰ正确）；就绪队列的优先级会影响进程执行的顺序（Ⅱ正确）；各就绪队列的调度算法会影响各队列中进程的调度顺序（Ⅲ正确）；进程在就绪队列中的迁移条件会影响各进程在各队列中的执行时间（Ⅳ正确）。',
  claude:'一致，选 D（四条全要）。<b>四条恰好是多级反馈队列的四个「可调旋钮」，缺一个算法就没法落地：</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>参数</th><th>不定它会怎样</th><th>本章实例</th></tr>'
   +'<tr><td>Ⅰ 队列数量</td><td>不知道要建几个队列</td><td>2.2-29 是三级（A/B/C）</td></tr>'
   +'<tr><td>Ⅱ 队列优先级</td><td>不知道先调哪个队列</td><td>A &gt; B &gt; C</td></tr>'
@@ -4293,7 +4293,7 @@ window.OS_DATA = [
   +'  <b>取出</b>：最高优先权永远在<u>表头</u> ⟹ 直接摘头结点 ⟹ <b>O(1)</b>\n'
   +'⟹ 有序结构的通性：<u>把代价前置到插入，换取查询的廉价</u></pre>'
   +'📌 <b>顺手把几种就绪队列实现的复杂度对照记住</b>：'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>实现</th><th>插入</th><th>取最高优先级</th><th>适合</th></tr>'
   +'<tr><td><b>有序单链表</b>（本题）</td><td>O(n)</td><td>O(1)</td><td>调度频繁、插入少</td></tr>'
   +'<tr><td>无序链表</td><td>O(1)</td><td>O(n)</td><td>插入频繁、调度少</td></tr>'
@@ -4488,7 +4488,7 @@ window.OS_DATA = [
   +'<b>若按「依次在 0、1、2、3、4 时刻到达」算，四组数全错。</b>'
   +'这是典型的中文歧义句——<b>遇到「以…的顺序到达」，一定回读有没有给具体时刻。</b><br>'
   +'⭐ <b>四组结果放在一起看，才是本题真正的价值：</b>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>算法</th><th>平均周转</th><th>平均带权</th><th>点评</th></tr>'
   +'<tr><td><b>SJF</b></td><td><b>7</b> ⭐最优</td><td><b>1.74</b> ⭐最优</td><td>同时到达时的理论最优解</td></tr>'
   +'<tr><td>RR</td><td>9.2</td><td>2.84</td><td>周转不如 SJF，但<u>短作业响应快</u>（作业 2 在 t=2 就完了）</td></tr>'
@@ -4527,7 +4527,7 @@ window.OS_DATA = [
   +'· 直至 8:50，作业 2 执行完毕，此时<b>作业 3、4 竞争空出的一道内存空间，作业 4 的运行时间短（20 &lt; 50），因此先调入</b>，'
   +'但它的优先数低于作业 1（6 &gt; 5），因此作业 1 先执行；<br>'
   +'· 到 9:10 时，作业 1 执行完毕，再将作业 3 调入内存，且由于作业 3 的优先数高（4 &lt; 6）而占用 CPU。'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>作业号</th><th>到达时间</th><th>运行时间</th><th>优先数</th><th>进入内存时间</th><th>结束时间</th><th>周转时间</th></tr>'
   +'<tr><td>1</td><td>8:00</td><td>40min</td><td>5</td><td>8:00</td><td>9:10</td><td>70min</td></tr>'
   +'<tr><td>2</td><td>8:20</td><td>30min</td><td>3</td><td>8:20</td><td>8:50</td><td>30min</td></tr>'
@@ -4535,7 +4535,7 @@ window.OS_DATA = [
   +'<tr><td>4</td><td>8:50</td><td>20min</td><td>6</td><td>8:50</td><td>10:20</td><td>90min</td></tr></table></div>'
   +'2）平均周转时间 = (70 + 30 + 90 + 90)/4 = <b>70min</b>。',
  claude:'<b>一致。⭐ 本题的命门是<u>三层嵌套</u>，每一层用不同的规则，漏掉中间那层必错：</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>层</th><th>管什么</th><th>用什么规则</th><th>本题的体现</th></tr>'
   +'<tr><td>①</td><td>内存有几个位置</td><td><b>两道</b>（硬约束）</td><td>8:30 作业 3 到了也进不来</td></tr>'
   +'<tr><td>②</td><td>谁能<b>进内存</b></td><td>作业调度：<b>短作业优先</b></td><td>8:50 空出一位，<b>作业 4（20min）胜过作业 3（50min）</b></td></tr>'
@@ -4568,7 +4568,7 @@ window.OS_DATA = [
         '第二问（RR，配额 2）：按就绪队列的 FCFS 轮转。关键是每次「时间片用完的进程回到队尾」时，<u>队尾此刻有谁</u>——刚到达的新进程要先入队。',
         '⚠️ 时刻 2 时 P₁ 用完一个配额要回队尾，此时队列里是 P₂、P₃，P₄ 还没到（3 时刻才到）。这一步决定了后面整条轮转序列。'],
  book:'<b>解：</b>1）按照<b>可抢占式短进程优先</b>调度算法：'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>进程</th><th>到达时刻</th><th>预计执行时间</th><th>执行时间段</th><th>周转时间</th></tr>'
   +'<tr><td>P₁</td><td>0</td><td>8</td><td>0~1；10~17</td><td>17</td></tr>'
   +'<tr><td>P₂</td><td>1</td><td>4</td><td>1~5</td><td>4</td></tr>'
@@ -4580,7 +4580,7 @@ window.OS_DATA = [
   +'· 时刻 10，P₄ 运行结束，选择 P₁ 运行。· 时刻 17，P₁ 结束，只剩 P₃，调度其运行。· 时刻 26，P₃ 结束。<br>'
   +'平均周转时间 = [(17−0) + (5−1) + (26−2) + (10−3)]/4 = <b>13</b>。<br><br>'
   +'2）<b>时间片轮转</b>按就绪队列的 FCFS 进行轮转，<b>在时刻 2，P₁ 被挂到就绪队列队尾，队列顺序为 P₂、P₃、P₁，此时 P₄ 还未到达。</b>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>进程</th><th>到达时刻</th><th>预计执行时间</th><th>执行时间段</th><th>周转时间</th></tr>'
   +'<tr><td>P₁</td><td>0</td><td>8</td><td>0~2；6~8；14~16；20~22</td><td>22</td></tr>'
   +'<tr><td>P₂</td><td>1</td><td>4</td><td>2~4；10~12</td><td>11</td></tr>'
@@ -4635,7 +4635,7 @@ window.OS_DATA = [
   +'  总开销 = 36 × 0.4ms（中断）+ 3ms（调度切换）= 14.4 + 3 = 17.4ms\n'
   +'  占比 = 17.4 / 360 = <b>4.83%</b>（原方案同口径为 6% + 1.5% = 7.5%）</pre>'
   +'⭐ <b>三条对策各自动了公式里的哪一项，答题时要点明</b>：'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>对策</th><th>动的是</th><th>副作用</th></tr>'
   +'<tr><td>降低中断频率 120→100</td><td>放大<b>分母</b>（间隔 8.3→10ms）</td><td>系统计时精度下降</td></tr>'
   +'<tr><td>时间片加大 24→36 个中断</td><td>放大<b>分母</b>（时间片 200→360ms）</td><td><b>响应时间变长</b>，交互体验变差</td></tr>'
@@ -4725,7 +4725,7 @@ window.OS_DATA = [
   +'1）各作业的执行时间片段：J₁ 10:00—10:35 · J₄ 10:35—10:55 · J₂ 10:55—11:25 · J₅ 11:25—11:55 · J₃ 11:55—12:40。<br>'
   +'2）周转时间分别为 <b>35min、75min、145min、35min、85min</b>，平均周转时间为 <b>75min</b>。',
  claude:'<b>一致 —— 🐍 Python 复算平均周转 75min ✓。⭐ 本题是本节难度最高的一道，三个易错点全在「两层决策」上：</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>时刻</th><th>作业调度（HRRN）决定谁<b>进内存</b></th><th>进程调度（抢占 SPF）决定谁<b>占 CPU</b></th></tr>'
   +'<tr><td>10:00</td><td>J₁ 进（唯一）</td><td>J₁ 跑</td></tr>'
   +'<tr><td>10:10</td><td>J₂ 进（有空位）</td><td><b>J₁ 继续</b>（剩 25 &lt; J₂ 的 30）</td></tr>'
@@ -4921,7 +4921,7 @@ window.OS_DATA = [
  ans:'D',
  book:'同步机制应遵循的四个准则是：空闲让进、忙则等待、有限等待、让权等待。「无限等待」不是准则，正确的表述是「有限等待」。',
  claude:'一致，选 D。<b>四准则是本节的骨架，必须能背、且要知道每条被谁违反。</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>准则</th><th>说的是</th><th>谁违反它</th></tr>'
   +'<tr><td><b>空闲让进</b></td><td>没人用就该让人进</td><td>单标志法 · 双标志<b>后</b>检查</td></tr>'
   +'<tr><td><b>忙则等待</b></td><td>有人用就必须等</td><td>双标志<b>先</b>检查</td></tr>'
@@ -4963,7 +4963,7 @@ window.OS_DATA = [
  ans:'B',
  book:'临界资源是一次仅允许一个进程使用的资源。公用队列是典型的临界资源。磁盘属于共享设备，由操作系统统一协调，可被多个进程「同时」使用；私用数据不被共享；可重入代码不含可修改的全局状态，无须互斥。',
  claude:'一致，选 B。<b>本题真正的考点是三个「看起来像但其实不是」的反例。</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>选项</th><th>为什么不是</th></tr>'
   +'<tr><td>磁盘</td><td><b>共享设备</b>：OS 统一调度扇区访问，多个进程可交替使用，进程层面无须自己加锁</td></tr>'
   +'<tr><td><b>公用队列</b></td><td><b>是</b>：两个进程同时入队会破坏链指针 ⟹ 必须互斥</td></tr>'
@@ -5130,7 +5130,7 @@ window.OS_DATA = [
  ans:'B',
  book:'互斥信号量表示临界资源的可用数量，一次仅允许一个进程访问，因此初值为 1。',
  claude:'一致，选 B。<b>与下一题（同步信号量初值）是一对，必须一起记，且下一题有坑。</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>信号量类型</th><th>初值</th><th>含义</th></tr>'
   +'<tr><td><b>互斥</b>信号量 mutex</td><td><b>1</b></td><td>这类资源只有 1 个，谁先 P 谁用</td></tr>'
   +'<tr><td>多个同类资源</td><td><b>资源总数</b></td><td>3 台打印机就写 3（见 2.3-35）</td></tr>'
@@ -5992,7 +5992,7 @@ window.OS_DATA = [
  ans:'C',
  book:'a、b 是各线程的局部变量，不需要互斥；a = x 与 b = x 都是读操作，读读之间不需要互斥；x += 1 与 x += 3 分属两个不同进程，两个 x 是不同进程的变量，互不影响。只有 x += 1 与 x += 2 是同一进程内两个线程对同一共享变量的写操作，需要互斥。',
  claude:'一致，选 C。<b>本题四个选项恰好是四条判据的反例集，逐条筛一遍就出来了。</b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>选项</th><th>为什么不需要互斥</th><th>用的判据</th></tr>'
   +'<tr><td>A　a=1 与 a=2</td><td><b>局部变量</b>，各线程栈里各一份</td><td>只有全局变量才可能需要互斥</td></tr>'
   +'<tr><td>B　a=x 与 b=x</td><td>都是<b>读</b>操作</td><td>读读不互斥</td></tr>'
@@ -6134,7 +6134,7 @@ window.OS_DATA = [
  ans:'C',
  book:'Peterson 方法、swap 指令、TestAndSet 指令都采用忙等待方式，进程在等待时不会放弃 CPU，均不满足让权等待。只有信号量方法（记录型信号量）通过 block 原语使进程自我阻塞，实现了让权等待。',
  claude:'一致，选 C。<b>⭐ 一句话结论：<u>只有记录型信号量（和管程）会让权等待，其余全是忙等。</u></b><br>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>机制</th><th>等待时干什么</th><th>让权等待</th></tr>'
   +'<tr><td>单标志法 / 双标志法 / <b>Peterson</b></td><td>在 while 里空转</td><td>✗</td></tr>'
   +'<tr><td><b>TS 指令 / Swap 指令</b></td><td>反复执行原子指令</td><td>✗</td></tr>'
@@ -12747,7 +12747,7 @@ window.OS_DATA = [
         +'<b>页号在快表里 ⟹ 快表命中，直接得页帧</b>；<b>页号不在快表但在页表里 ⟹ 查内存页表</b>。'],
  book:'<b>解：</b>页面大小 64B = 2⁶B ⟹ 页内位移占 <b>6 位</b>。代码段长 702B，702 ÷ 64 = 10.97 ⟹ '
   +'需要 <b>11 个页面，页号为 0 ~ 10</b>。'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>八进制逻辑地址</th><th>二进制</th><th>页号</th><th>页内位移</th><th>结果</th></tr>'
   +'<tr><td>0105</td><td>0 0100 0101</td><td>1</td><td>5</td><td><b>快表命中</b> ⟹ (F1, 5)</td></tr>'
   +'<tr><td>0217</td><td>0 1000 1111</td><td>2</td><td>15</td><td><b>快表命中</b> ⟹ (F2, 15)</td></tr>'
@@ -15263,7 +15263,7 @@ window.OS_DATA = [
         +'另外别忘了第二个地址要补一句「用该表项更新快表」，那是采分点。'],
  book:'<b>解：</b>一页 32B ⟹ <b>低 5 位为页内位移</b>，其余高位为页号；'
   +'进程长 320B ⟹ 共 <b>10 页（页号 0~9）</b>。'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>八进制</th><th>二进制</th><th>页号</th><th>位移</th><th>处理</th></tr>'
   +'<tr><td>101</td><td>001 000 001</td><td><b>2</b></td><td>1</td>'
   +'<td>在快表中 ⟹ 页帧 <b>f3</b> ⟹ 物理地址 <b>(f3, 1)</b></td></tr>'
@@ -16221,7 +16221,7 @@ window.OS_DATA = [
         '改进型 CLOCK 找 (R, M) = (0, 0)：表里只有页 0 满足 ⟹ 第一轮就中。'
         +'⟹ 两个 CLOCK 给出<b>相同</b>答案，但<b>理由不同</b>，卷面要分别写。'],
  book:'<b>解：</b>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>算法</th><th>依据</th><th>替换</th></tr>'
   +'<tr><td><b>FIFO</b></td><td>装入时间最小 = 120</td><td><b>第 2 页</b></td></tr>'
   +'<tr><td><b>LRU</b></td><td>上次引用时间最小 = 260</td><td><b>第 1 页</b></td></tr>'
@@ -16335,7 +16335,7 @@ window.OS_DATA = [
         +'要说出<b>两点</b>：① 缺页次数与<b>数据存放方式和程序访问顺序</b>关系极大；'
         +'② 缺页多时<b>减小页面会带来严重影响</b>。'],
  book:'<b>解：</b>'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>情形</th><th>程序 1（行优先遍历）</th><th>程序 2（列优先遍历）</th></tr>'
   +'<tr><td>每页 <b>200</b> 个整数（<b>一页存两行</b>）</td>'
   +'<td>每访问两行缺页一次 ⟹ <b>50 次</b></td>'
@@ -16685,7 +16685,7 @@ window.OS_DATA = [
  book:'<b>解：</b>页 4KB ⟹ <b>低 12 位为页内位移，高位为页号</b>'
   +'（<b>十六进制的一位数字对应二进制 4 位，因此十六进制的低三位正好为页内位移，最高位为页号</b>）。<br>'
   +'1）'
-  +'<div class="tabwrap"><table class="qtab">'
+  +'<div class="tabwrap"><table class="qtab tw">'
   +'<tr><th>虚地址</th><th>页号 P</th><th>过程</th><th>用时</th></tr>'
   +'<tr><td><b>2362H</b></td><td>2</td>'
   +'<td>TLB 初始为空 ⟹ 访问快表 10ns 落空 → 访问页表 100ns 得页框号 → 合成物理地址后访问主存 100ns</td>'
