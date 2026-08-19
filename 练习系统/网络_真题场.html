@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>真题场 · 计算机网络统考真题</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="网络_index.html">← 计算机网络练习系统首页</a>
+  <header>
+    <h1>真题场 · 计算机网络统考真题</h1>
+    <div class="sub">自动汇集各章带「统考真题」标签的题目 · 默认<b>考试模式</b>（闭卷做完再交卷）· 可随机抽题模拟</div>
+  </header>
+  <div class="stats">
+    <div class="stat"><div class="v" id="cnt">–</div><div class="k">已收录真题</div></div>
+    <div class="stat"><div class="v" id="yrs">–</div><div class="k">覆盖年份</div></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h2>抽题设置</h2>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.88rem">
+      <label>随机抽 <input type="number" id="num" value="8" min="1" style="width:56px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)"> 题</label>
+      <button class="tbtn primary" id="go">🎲 抽一组</button>
+      <button class="tbtn" id="all">📚 全部真题（按年份顺序）</button>
+    </div>
+  </div>
+  <div id="root"></div>
+  <footer>真题标签来自各章章末标注（统考年份）· 更多年份随第 2–6 章铺开自动加入<br>
+  📌 第 1 章 14 道真题里，<b>5 道是计算题</b>（2010、2013、2023、2024、2025，全部集中在 1.1.4 与 1.1.6），
+  <b>9 道是概念题</b>（2009、2013、2014、2016、2017、2019、2020、2021、2022，集中在 1.2 节）。<br>
+  ⭐ 五道计算真题共用一个母公式 <b>k·r+(m−1)·r</b>，差别只在包装：
+  2010 给分组头要先算有效数据 · 2013 要对比报文交换 · 2023 用「时延带宽积」藏起传播时延 ·
+  2024 问最大吞吐量（两层 min-max）· 2025 三种交换方式一起考且三段链路速率各不相同。<br>
+  ⚠️ <b>2025 年 408 解析 PDF 不可靠</b>（≥10 道选择题答案错），本站真题答案一律以王道教材 + Python 独立复算为准。</footer>
+</div>
+<script src="data_net.js"></script>
+<script src="engine.js"></script>
+<script>
+const exams=SubjApp.pool({type:'exam'});
+document.getElementById('cnt').textContent=exams.length;
+const years=[...new Set(exams.map(q=>q.exam))].sort();
+document.getElementById('yrs').textContent=years.length?years.join(' / '):'—';
+
+let app=null;
+function mountRandom(){
+  const n=Math.max(1,parseInt(document.getElementById('num').value)||8);
+  app=SubjApp.mount({root:'#root', scope:{type:'exam'}, scopeLabel:'网络真题场·随机',
+    mode:'exam', allowModeToggle:true, random:true, randomN:n, groupBySec:false, number:true});
+}
+function mountAll(){
+  app=SubjApp.mount({root:'#root', scope:{type:'exam'}, scopeLabel:'网络真题场·全部',
+    mode:'exam', allowModeToggle:true, groupBySec:false, number:true});
+}
+document.getElementById('go').onclick=mountRandom;
+document.getElementById('all').onclick=mountAll;
+mountRandom();
+</script>
+</body>
+</html>

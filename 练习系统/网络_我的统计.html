@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的统计 · 计算机网络</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="网络_index.html">← 计算机网络练习系统首页</a>
+  <header>
+    <h1>我的统计 · 计算机网络</h1>
+    <div class="sub">每次「结算/交卷」自动记录 · 正确率趋势 · 知识点弱项 · <b>错因归因分布（网络专用八类标签）</b> · 数据备份（跨设备靠导出/导入）</div>
+  </header>
+  <div id="root"></div>
+  <footer>⚠️ 四科的记录<b>各存各的</b>（localStorage 键 <code>net_*</code> / <code>os_*</code> / <code>co_*</code> / <code>ds_*</code>），互不覆盖；备份文件也分开导出，导错科目会被拦下。</footer>
+</div>
+<script src="data_net.js"></script>
+<script src="engine.js"></script>
+<script>SubjApp.renderStats('#root');</script>
+</body>
+</html>

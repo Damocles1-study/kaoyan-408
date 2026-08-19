@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>错题本 · 计算机网络</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="网络_index.html">← 计算机网络练习系统首页</a>
+  <header>
+    <h1>错题本 · 计算机网络</h1>
+    <div class="sub">做错的题自动进来 · 专项重刷直到做对（做对即「消化」移出）· 错题多了点「导出报告」发我做分析</div>
+  </header>
+
+  <div id="analysis"></div>
+
+  <div class="card">
+    <h2>导出错题报告（发给 Claude 分析）</h2>
+    <div class="hint">静态网页看不到你的数据，也无法自动改自己。把下面这段复制发我，我据此分析薄弱点、补讲解与解题技巧，再更新页面你上传。</div>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="tbtn primary" id="gen">📋 生成并复制报告</button>
+      <a class="tbtn" href="网络_我的统计.html" style="text-decoration:none">📈 我的统计</a>
+    </div>
+    <textarea class="export" id="report" placeholder="点上方按钮生成…"></textarea>
+  </div>
+
+  <h2 class="sec">重刷未消化错题</h2>
+  <div id="root"></div>
+</div>
+<script src="data_net.js"></script>
+<script src="engine.js"></script>
+<script>
+// 分析概览
+(function(){
+  const w=SubjApp.wrongBook();
+  const unres=Object.entries(w).filter(([id,e])=>!e.res);
+  const kpc={};unres.forEach(([id])=>{const q=SubjApp.byId(id);if(!q)return;const k=(q.kp&&q.kp[0])||'未分类';kpc[k]=(kpc[k]||0)+1;});
+  const kps=Object.entries(kpc).sort((a,b)=>b[1]-a[1]);
+  let h='<div class="stats"><div class="stat"><div class="v">'+unres.length+'</div><div class="k">未消化错题</div></div>'
+    +'<div class="stat"><div class="v">'+Object.keys(w).length+'</div><div class="k">历史错题总数</div></div>'
+    +'<div class="stat"><div class="v">'+kps.length+'</div><div class="k">涉及知识点</div></div></div>';
+  if(kps.length){const mx=kps[0][1];
+    h+='<div class="card"><h2>错误集中在这些知识点</h2><div class="kpbars">';
+    kps.forEach(([k,v])=>{h+='<div class="kpbar"><span class="lab">'+k+'</span><span class="bar"><i style="width:'+(v/mx*100)+'%"></i></span><span>'+v+'</span></div>';});
+    h+='</div></div>';}
+  document.getElementById('analysis').innerHTML=h;
+})();
+
+document.getElementById('gen').onclick=()=>{
+  const r=SubjApp.buildReport();
+  const ta=document.getElementById('report');ta.value=r;ta.select();
+  try{navigator.clipboard.writeText(r);SubjApp.toast('报告已复制，粘给我即可');}
+  catch(e){document.execCommand&&document.execCommand('copy');SubjApp.toast('已生成，请手动复制');}
+};
+
+// 重刷错题（练习模式）
+if(SubjApp.pool({type:'wrong'}).length){
+  SubjApp.mount({root:'#root', scope:{type:'wrong'}, scopeLabel:'OS错题重刷',
+    mode:'practice', allowModeToggle:true, groupBySec:false, number:true,
+    emptyText:'🎉 目前没有未消化的错题！'});
+}else{
+  document.getElementById('root').innerHTML='<div class="empty">🎉 目前没有未消化的错题。去 <a href="网络_第1章.html" style="color:var(--accent)">第1章</a> 或 <a href="网络_真题场.html" style="color:var(--accent)">真题场</a> 做题，错的会自动收进来。</div>';
+}
+</script>
+</body>
+</html>
