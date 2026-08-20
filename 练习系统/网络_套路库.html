@@ -117,7 +117,7 @@ table.tk th{background:var(--accent-soft);color:var(--accent);font-weight:600;wh
       h+='<div class="qlinks"><span class="lab">练这些题 →</span>';
       /* 题号形如 3.4-14 / 4.2-综2 / 4-特训1，章号一律取开头的连续数字 */
       t.qids.forEach(id=>{const ch=(String(id).match(/^\d+/)||[t.ch])[0];
-        h+='<a href="OS_第'+ch+'章.html#Q_'+encodeURIComponent(id)+'">'+id+'</a>';});
+        h+='<a href="网络_第'+ch+'章.html#Q_'+encodeURIComponent(id)+'">'+id+'</a>';});
       h+='</div>';
     }
     h+='</div></div>';
