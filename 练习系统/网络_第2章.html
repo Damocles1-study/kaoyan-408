@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>练习 · 计算机网络 第2章 物理层</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="网络_index.html">← 计算机网络练习系统首页</a>
+  <header>
+    <h1>计算机网络 · 第2章　物理层</h1>
+    <div class="sub">题源：27 王道《计算机网络》第 2 章章节习题 · 每题「📕书答案 × 🤖核对与延伸」交叉验证 ·
+      <a href="../精读版/NET_第2章.html" style="color:var(--accent)">📖 本章精读版</a> ·
+      <a href="网络_套路库.html" style="color:var(--accent)">🧠 解题套路库</a> ·
+      <a href="../../王道教材/计算机网络_分章/王道计算机网络_第2章_物理层.pdf" style="color:var(--accent)">📄 打开本章电子书</a></div>
+  </header>
+  <div id="root"></div>
+  <footer>本章 130 题（2.1.1 基本概念 22 + <b>2.1.2 信道的极限容量 34</b> + <b>2.1.3 编码与调制 28</b> +
+  2.2 传输介质与接口特性 24 + 2.3 物理层设备 18 + 综合应用 4；126 选择 + 4 综合应用）·
+  含 <b>13 道统考真题</b>（2009、2011–2018、2021–2024，共 13 个年份，缺 2010/2019/2020/2025）。<br>
+  🔥 <b>2.1 是绝对重心</b>：全章 13 道真题里 <b>11 道落在 2.1</b>（12 页 0.92 真题/页），且其中 <b>9 道要动笔算</b>。
+  <b>母公式只有两个</b>——奈氏 <b>C = 2W·log₂V</b>（无噪声，管码元速率）、香农 <b>C = W·log₂(1+S/N)</b>（有噪声，管每码元比特数）。
+  <b>题干只给「带宽+状态数」用奈氏，只给「带宽+信噪比」用香农，两样都给就两个都算取 min。</b><br>
+  ⭐ <b>四条分界线</b>：① 奈氏 vs 香农何时并用 · ② <b>电气特性（电压<u>范围</u>）vs 功能特性（电平<u>含义</u>）</b> ·
+  ③ <b>放大器（模拟，连噪声一起放大）vs 中继器（数字，再生＝放大+整形）</b> · ④ 基带 / 频带 / 宽带传输。<br>
+  ✅ 全章 <b>41 项已用 Python 独立复算</b>（奈氏香农 18 题逐题算、两道综合题事件级排程对拍、三张波形图逐像素解码），
+  并溯源了 5 个干扰项的造法。<br>
+  🔍 <b>抓出书上 1 处错误</b>：习题 25（<b>2021 统考真题</b>）解析的逐位叙述里「第 5 位有跳变(0)」应为「<b>第 5 位无跳变(1)</b>」——
+  按其自身叙述连起来是 1011 0001（选项 B），与它给出的答案 A 矛盾；逐像素解码坐实<b>答案 A（1011 1001）正确、解析第 5 位错</b>。</footer>
+</div>
+<script src="data_net.js"></script>
+<script src="engine.js"></script>
+<script>
+SubjApp.mount({root:'#root', scope:{type:'chapter',ch:2}, scopeLabel:'网络第2章',
+  mode:'practice', allowModeToggle:true, groupBySec:true});
+</script>
+</body>
+</html>
