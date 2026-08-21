@@ -48,10 +48,12 @@ function mathup(html){
 
 /* ---------- 参考代码遮罩 ----------
    综合应用题的 code 字段放的是「参考实现」＝答案的一部分，直接摊在题干下面等于送答案。
-   规则：subjective 且未标 codeStem 的 code 一律当答案代码 → 收进核对面板并默认打码；
+   规则：**未标 codeStem 的 code 一律当答案代码** → 收进核对面板并默认打码（不分题型）；
         codeStem:true 表示这段代码是题目给的（如「分析下列程序段的复杂度」），照常显示在题干里。
+   ⚠️ 2026-08-21 修：原来只对 subjective 生效，导致网络 ch1/ch2 的 26 道选择题
+        把 Python 复算脚本（含干扰项溯源）直接印在题干里，做题前答案就露了。
    全局开关存 localStorage：true=默认遮住（默认值），false=默认直接展开。 */
-function isAnsCode(q){return q.type==='subjective' && q.code && !q.codeStem;}
+function isAnsCode(q){return !!q.code && !q.codeStem;}
 function veilOn(){const v=load(LS_CV,true);return v!==false;}
 function setVeil(v){save(LS_CV,!!v);}
 
@@ -107,7 +109,7 @@ function qHtml(q,idx){
   if(isAnsCode(q))
     h+='<div class="codeans"><h4>'+(META.codeAnsTitle||'💻 参考实现（C · Claude 写并实测）')+'</h4>'
       +'<div class="codewrap'+(veilOn()?' veiled':'')+'"><pre class="code">'+escCode(q.code)+'</pre>'
-      +'<button class="codepeek">✍️ 建议先自己默写 —— 点这里显示参考代码</button></div></div>';
+      +'<button class="codepeek">'+(META.codePeekLabel||'✍️ 建议先自己默写 —— 点这里显示参考代码')+'</button></div></div>';
   const vc=q.verdict==='warn'?'warn':'ok';
   const vt=q.verdict==='warn'?'⚠️ 存疑 · 见右栏，最终由你裁决':'✅ 两方一致'+(q.type==='choice'?'（书答 '+q.ans+'）':'');
   h+='<div class="verdict '+vc+'">'+vt+'</div>';
