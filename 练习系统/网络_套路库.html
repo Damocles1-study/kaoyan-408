@@ -67,7 +67,7 @@ table.tk th{background:var(--accent-soft);color:var(--accent);font-weight:600;wh
   <a class="back" href="网络_index.html">← 计算机网络练习系统首页</a>
   <header>
     <h1>计算机网络 · 解题套路库</h1>
-    <div class="sub">「看到什么字眼 → 想到什么套路」· 由 Claude 把王道课后题逐题做完后自己提炼 · 每张卡链回原题 · <b>ch1 已收录：流水线时延母公式 · 层次归属三定语 · 两模型对调表</b></div>
+    <div class="sub">「看到什么字眼 → 想到什么套路」· 由 Claude 把王道课后题逐题做完后自己提炼 · 每张卡链回原题 · <b>已收录 ch1–ch3 共 67 张</b>：ch1 流水线时延母公式与层次归属三定语 · ch2 奈氏／香农取 min · <b>ch3 信道利用率五步模板、最短帧长 2τ·C、冲突域广播域三步数数</b></div>
   </header>
 
   <div class="tkbar">
@@ -78,7 +78,7 @@ table.tk th{background:var(--accent-soft);color:var(--accent);font-weight:600;wh
   </div>
 
   <div class="verdict ok" style="margin-top:14px;background:var(--amber-soft);color:var(--amber)">
-    <b>怎么用：</b>先只看卡片上的<b>触发词</b>，在心里把「该用什么套路、模板长什么样、坑在哪」讲一遍，再点开验证。<b>本章泾渭分明：1.1 是<u>计算族</u>（TN1-1～TN1-8），先默写母公式 T ＝ (k+m−1)·r 再点开对；1.2 是<u>判据族</u>（TN1-11～TN1-16），先在心里把「圈定语、圈模型名」的动作走一遍再点开对。</b>
+    <b>怎么用：</b>先只看卡片上的<b>触发词</b>，在心里把「该用什么套路、模板长什么样、坑在哪」讲一遍，再点开验证。<b>三章各有各的读法</b>：<b>ch1</b> 分计算族（TN1-1～TN1-8，先默写 T ＝ (k+m−1)·r）与判据族（TN1-11～TN1-16，先走「圈定语、圈模型名」的动作）；<b>ch2</b> 只有两个母公式，重点在「给状态数用奈氏、给信噪比用香农、都给取 min」；<b>ch3 是全书最大的一章，13 张 🔴 卡里有 9 张是计算</b>——<u>先默写 <b>U ＝ min(1, N·T<sub>D</sub>/T)</b> 与 <b>L<sub>min</sub> ＝ 2τ·C</b> 两条母公式，再点开核对</u>。
     做题卡壳时反过来用——把题干里的关键词丢进搜索框，找对应的卡。
   </div>
 
@@ -90,7 +90,7 @@ table.tk th{background:var(--accent-soft);color:var(--accent);font-weight:600;wh
 <script>
 (function(){
   const $=s=>document.querySelector(s);
-  const CH_NAME={1:'计算机系统概述',2:'进程与线程',3:'内存管理',4:'文件管理',5:'输入输出管理'};
+  const CH_NAME={1:'计算机网络体系结构',2:'物理层',3:'数据链路层',4:'网络层',5:'传输层',6:'应用层'};
   let curCh='all', kw='';
 
   // 章节筛选按钮
