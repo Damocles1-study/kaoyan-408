@@ -72,6 +72,9 @@ h3.grp{font-size:.8rem;letter-spacing:.08em;color:var(--muted);margin:20px 0 10p
 .q .tag{font-size:.7rem;background:var(--blue-soft);color:var(--blue);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px}
 .q .kp{font-size:.68rem;background:var(--amber-soft);color:var(--amber);border-radius:999px;padding:1px 8px;margin-left:5px;vertical-align:2px}
 .q .stem{margin-bottom:2px}
+/* ⚠️ 长的无空格串（IPv6 地址、a/b/c/d 斜杠串、MAC 地址）在窄屏下无处可断，
+   会把整页顶出横向滚动条。给题干与核对栏统一开 anywhere，pre.code 不受影响（它自带 overflow-x）。 */
+.q .stem,.q .opts,.q .track,.q .hints{overflow-wrap:anywhere}
 pre.code{font-family:var(--mono);font-size:.82rem;background:var(--accent-soft);color:var(--ink);
   border-radius:8px;padding:10px 14px;margin:10px 0;overflow-x:auto;line-height:1.55;white-space:pre}
 @media (prefers-color-scheme: dark){pre.code{background:#2f2a24}}
