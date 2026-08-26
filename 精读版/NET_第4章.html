@@ -1161,3 +1161,547 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <span class="hub">拥塞控制</span> <b>「源点抑制」是 4.1.5 说的<u>闭环控制</u>的一个具体实例</b>：
   <u>路由器检测到拥塞 → 反馈给源点 → 源点降速</u>；<b>而它<u>被新标准废弃</u>这件事同样值得记——
   <u>因为拥塞控制的重担后来完全交给了 ch5 的 TCP</u></b>（<b style="color:var(--red)">这正是「端到端原则」的又一次胜利</b>）。</div>
+
+  <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第4章_网络层.pdf#page=55">📄 p.181</a>
+  <h2>4.3　IPv6　<span style="font-size:.8rem;color:var(--muted)">5 页 · 9 题 · 1 真题（2023）· 半小时就能吃透的一节</span></h2>
+
+  <div class="mine"><span class="tag">我的补讲 · 这 5 页怎么读：它是「地址不够用」这条故事线的结局</span>
+  <b>IPv4 地址已于 <u>2011 年 2 月耗尽</u>。为解决这个问题一共采取了三种措施</b>：
+  <b>① CIDR（让分配更合理）· ② NAT（省着用公网地址）· ③ IPv6（换一套地址空间）。</b>
+  <b style="color:var(--red)">书上明说：前两种<u>只是延缓</u>了 IPv4 的使用寿命，<u>只有第三种能从根本上解决</u>。</b><br>
+  ⟹ <b>这一句把 4.2.2（CIDR）、4.2.3（NAT）、4.3（IPv6）三节串成了一条完整的故事线</b>，<u>选择题喜欢把三者放在一起问「哪个能根本解决」。</u><br>
+  ⭐ <b>投产比提示</b>：<b>本节 5 页只有 1 道真题（2023），但王道在这 5 页里标了<u>三处「考点追踪」，三处全指向 2023</u></b>——
+  <u>说明 2023 那一年是把这一节<b>考了个遍</b>，之后至今未再考</u>。
+  <b>读法：<u>不要精雕细刻，但也别跳过</u>——记住下面五条硬结论 + 会做缩写还原，这 5 页就到手了。</b></div>
+
+  <h3>4.3.1　IPv6 的特点　<span class="exam">考点追踪：IPv6 的特点（2023）</span></h3>
+
+  <div class="key"><span class="tag">必记 · IPv6 的十个特点（加粗的四条几乎每次考到 IPv6 都出现）</span>
+  <b>① <span style="color:var(--red)">更大的地址空间——这是最重要的</span></b>：地址从 <b>32 位增大到 128 位（16B）</b>，
+  <b style="color:var(--red)">地址空间是 IPv4 的 2<sup>128</sup>/2<sup>32</sup> ＝ 2<sup>96</sup> 倍</b>。<br>
+  <b>② 扩展的地址层次结构</b>（空间大了，就能划出更多层次）。<br>
+  <b>③ 灵活的首部格式</b>：定义了许多可选的<b>扩展首部</b>；<u>能提高路由器处理效率，<b>因为路由器通常不处理扩展首部</b></u>。<br>
+  <b>④ 改进的选项</b>：<b>IPv6 首部长度固定，选项放在<u>有效载荷</u>中</b>；<u>而 IPv4 的选项放在首部的可变部分</u>。<br>
+  <b>⑤ 允许协议继续扩充</b>（IPv4 的功能是固定不变的）。<br>
+  <b>⑥ 支持即插即用（自动配置地址）</b> ⟹ <b style="color:var(--red)">通常不需要使用 DHCP</b>。<br>
+  <b>⑦ 支持资源的预分配</b>（实时音视频等需要带宽与时延保证的应用）。<br>
+  <b>⑧ <span style="color:var(--red)">只有源主机才能分片，只支持端到端分片，不允许中间路由器分片</span></b>（<u>与 IPv4 正好相反</u>）。<br>
+  <b>⑨ <span style="color:var(--red)">首部长度固定为 40B</span></b>（<u>IPv4 的首部长度可变，必须是 4B 的整数倍</u>）。<br>
+  <b>⑩ 增大了安全性</b>：身份鉴别与保密功能由扩展首部提供。<br>
+  ⚠️ <b>IPv6 与 IPv4 <u>不</u>兼容，但与其他互联网协议（TCP、UDP、ICMP、IGMP、DNS 等）<u>总体兼容</u></b>，
+  <u>仅在少数地方做了必要修改，主要是为了处理更长的地址。</u></div>
+
+  <div class="trap"><span class="tag">陷阱 · 2023 真题的两个坑，都埋在数字上</span>
+  <b>坑一：「IPv6 地址空间是 IPv4 的 <u>96 倍</u>」——错，是 <b style="color:var(--red)">2<sup>96</sup> 倍</b>。</b>
+  <u>96 与 2<sup>96</sup> 差了大约 2.4×10<sup>28</sup> 倍，但在选项里只差一个上标，扫读极易漏。</u>
+  <b>🐍 复算：2<sup>128</sup>/2<sup>32</sup> ＝ 2<sup>96</sup> ≈ 7.9×10<sup>28</sup>。</b><br>
+  <b>坑二：「IPv4 首部和 IPv6 基本首部的长度<u>均可变</u>」——错。</b>
+  <b style="color:var(--red)">IPv4 首部可变（20–60B），IPv6 基本首部<u>固定 40B</u>。</b>
+  <u>「一个可变一个固定」，选项把它们捏成「均可变」，就是在赌你只记得 IPv4 那半句。</u><br>
+  ⭐ <b>2023 那道题的正确项是 Ⅲ（过渡用双协议栈和隧道）与 Ⅳ（Hop Limit ≡ TTL），答案 D。</b>
+  <u>把这两个「对的」也记住，比只记两个坑更保险。</u></div>
+
+  <h3>4.3.2　IPv6 数据报的基本首部　<span class="exam">考点追踪：IPv6 首部格式及字段含义（2023）</span></h3>
+
+  <p><b>IPv6 数据报 ＝ 基本首部 + 有效载荷（净负荷）</b>。有效载荷由<b>零个或多个扩展首部</b>（<u>扩展首部<b>不属于</b>基本首部</u>）<b>及其后的数据部分</b>构成。</p>
+
+    <figure class="fig"><img src="图/NETch4/NET4_f12_IPv6数据报一般形式.png" alt="fig412">
+  <figcaption><b>图 4.12 具有多个可选扩展首部的 IPv6 数据报的一般形式</b>。上面一条：<b>基本首部（40 字节）＋ 有效载荷（不超过 65535 字节）</b>，左边一个粗箭头标着<b>「发送在前」</b>，指着基本首部。下面把「有效载荷」这一格<b>展开</b>：<b>扩展首部1 … 扩展首部N ＋ 数据部分</b>。⭐ <b style="color:var(--red)">这张图要抓住的就一件事：扩展首部<u>在有效载荷里面</u>，不在基本首部里</b>——<u>所以「有效载荷长度」这个字段算的是<b>包含扩展首部在内</b>的全部字节数，也所以路由器可以不管扩展首部、直接看那 40B 就转发</u>。</figcaption></figure>
+
+  <div class="key"><span class="tag">必记 · IPv6 相对 IPv4 的八项调整（「IPv4 vs IPv6」对照题的全部素材）</span>
+  <div class="tabwrap"><table>
+  <tr><th>取消 / 改动了什么</th><th>为什么</th></tr>
+  <tr><td>取消「<b>首部长度</b>」</td><td>基本首部<b>固定 40B</b>，不需要了</td></tr>
+  <tr><td>取消「服务类型」</td><td>功能由<b>通信量类（优先级）和流标号</b>实现</td></tr>
+  <tr><td>取消「总长度」</td><td>改用「<b>有效载荷长度</b>」</td></tr>
+  <tr><td>取消「<b>标识、标志、片偏移</b>」</td><td>相关功能<b>移到分片扩展首部</b></td></tr>
+  <tr><td>「<b>TTL</b>」更名为「<b>跳数限制</b>」</td><td><b style="color:var(--red)">作用不变</b>，只是名称更贴合实际含义</td></tr>
+  <tr><td>取消「协议」</td><td>改用「<b>下一个首部</b>」</td></tr>
+  <tr style="background:var(--amber-soft)"><td>取消「<b>首部检验和</b>」</td><td><b style="color:var(--red)">传输层已提供差错检测</b>，取消可<b>加快路由器处理速度</b></td></tr>
+  <tr><td>取消「选项」</td><td>功能由<b>灵活的扩展首部</b>实现</td></tr>
+  </table></div>
+  ⚠️ <b>结果很反直觉，书上专门点了一句</b>：<b style="color:var(--red)">字段数从 IPv4 的 12 个<u>减少到 8 个</u>，首部长度却从 20B <u>增加到 40B</u></b>——
+  <u>因为两个地址字段各自从 4B 涨到了 16B，光这两项就 32B。</u></div>
+
+    <figure class="fig"><img src="图/NETch4/NET4_f13_IPv6基本首部.png" alt="fig413">
+  <figcaption><b>图 4.13 IPv6 数据报的基本首部的格式</b>。<b>只有四行</b>（对比 IPv4 的六行）：第一行<b>版本(4) ｜ 通信量类(8) ｜ 流标号(20)</b>，第二行<b>有效载荷长度(16) ｜ 下一个首部(8) ｜ 跳数限制(8)</b>，第三、四行各被一个 <b>128 位</b>的地址整行占满。左侧那个大括号标着「<b>IPv6 的基本首部（40B）</b>」。⭐ <b style="color:var(--red)">数一下：前两行 8B ＋ 两个地址 32B ＝ 40B，正好</b>——<u>这就是「字段少了、首部反而长了」的算术证据</u>。<b>与图 4.5 并排看，IPv4 首部里那些被取消的字段（首部长度、标识/标志/片偏移、协议、首部检验和）在这张图上一个都找不到。</b></figcaption></figure>
+
+  <div class="key"><span class="tag">必记 · 八个字段里只有三个要细看</span>
+  <b>版本</b>（4 位，值为 <b>6</b>）· <b>通信量类</b>（8 位，区分类别/优先级）· <b>源/目的地址</b>（各 128 位）——<u>这四个一看就懂</u>。剩下三个要细看：
+  <div class="tabwrap"><table>
+  <tr><th>字段</th><th>位数</th><th>要点</th></tr>
+  <tr><td><b>流标号</b></td><td>20</td><td><b>「流」＝ 互联网上从<u>特定源点到特定终点</u>（单播或多播）的一系列数据报</b>（如实时音视频）；<u>路径上的路由器可据此提供<b>特定的服务质量保证</b></u>；<b style="color:var(--red)">同一个流的所有数据报有相同的流标号</b></td></tr>
+  <tr><td><b>有效载荷长度</b></td><td>16</td><td><b>基本首部<u>之后</u>的字节数</b>，<b style="color:var(--red)">包括所有扩展首部和上层数据</b>；最大 65535B</td></tr>
+  <tr><td><b>下一个首部</b></td><td>8</td><td>类似 IPv4 的「协议」字段：<u><b>没有</b>扩展首部就标识上层协议；<b>有</b>扩展首部就标识紧随其后的<b>第一个扩展首部</b>的类型</u></td></tr>
+  <tr><td><b>跳数限制</b></td><td>8</td><td><b>作用等同于 IPv4 的 TTL</b>；源主机设初值（<b>最大 255</b>），每经一个路由器减 1，减到 0 丢弃</td></tr>
+  </table></div></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「取消首部检验和」这一条，是全书最好的一道分层权衡题</span>
+  <b>书上说 X</b>：IPv6 取消首部检验和，因为传输层已提供差错检测，这样能加快路由器处理速度。<br>
+  <b>潜台词是 Y</b>：<u>这是一次<b>明确的取舍</b>，理由要能自己复述出来</u>——
+  <b style="color:var(--red)">① 下面：链路层的 CRC 已经把出错的帧丢掉了；② 上面：TCP/UDP 检验和覆盖了包括数据在内的全部内容；
+  ③ 中间这一层每经过一跳就要<u>重算一次</u>（因为 TTL 变了），代价高、收益低。</b>
+  <u>三条合起来 ⟹ 中间这一层的检验属于<b>重复劳动</b>，砍掉换速度。</u><br>
+  <b>所以能考 Z</b>：<b>选择题「IPv6 使用首部检验和保证传输正确性」——错（05 题的 D 项）</b>；
+  <b>简答「为什么 IPv6 取消首部检验和」——答上面三条。</b><br>
+  ⭐ <b>把这个思路推广，就得到 408 里一条通用的判断法则</b>：
+  <b style="color:var(--red)">同一个功能若在多层重复实现，就要问「哪一层做<u>一次</u>就够」</b>——
+  <u>差错检测（链路层 + 传输层就够）· 流量控制（链路层与传输层各做各的，作用范围不同，都需要）·
+  可靠传输（端到端原则说：必须在<b>端</b>做，中间做了也白做）。</u>
+  <b>这三条对照着记，ch3／本章／ch5 的一大批判断题就都通了。</b></div>
+
+  <h3>4.3.3　IPv6 地址</h3>
+
+  <div class="key"><span class="tag">必记 · 三种目的地址类型（<span style="color:var(--red)">IPv6 没有广播地址</span>）</span>
+  <b>① 单播</b>：传统的点对点通信，发给唯一指定的接收方。<br>
+  <b>② 多播</b>：一点对多点，发给所有加入该多播组的接口。<br>
+  <b>③ <span style="color:var(--red)">任播（Anycast）——IPv6 新增的地址类型</span></b>：<b>「一址多用、就近交付」</b>；
+  <u>任播地址标识<b>一组</b>接口，但网络只把数据报交付给其中<b>路由距离最近的那一个</b></u>。<br>
+  ⚠️ <b style="color:var(--red)">IPv6 没有广播地址</b>——<u>广播的功能由「多播」承担了</u>。<b>这是一道现成的判断题。</b></div>
+
+  <div class="key"><span class="tag">必记 · 冒号十六进制记法与两条缩写规则（<span style="color:var(--red)">本节唯一要动手的题型</span>）</span>
+  <b>把 128 位分成 <u>8 组</u>，每组 <u>16 位（4 个十六进制数）</u>，组间用冒号分隔</b>，
+  例如 <code>4BF5:AA12:0216:FEBC:BA5F:039A:BE9A:2170</code>。
+  <div class="tabwrap"><table>
+  <tr><th>规则</th><th>内容</th><th>易错点</th></tr>
+  <tr><td><b>① 省略前导零</b></td><td>每组中<b>前面</b>连续的十六进制零可省略，<u>但至少保留一个数字</u></td><td><b style="color:var(--red)">开头的 0 可省，结尾的 0 <u>不可</u>省</b>（<code>89A</code> 还原成 <code>089A</code>，不是 <code>89A0</code>）</td></tr>
+  <tr><td><b>② 双冒号</b></td><td>一个或多个<b>连续的全零组</b>可用 <code>::</code> 替代</td><td><b style="color:var(--red)"><code>::</code> 在一个地址中<u>只能用一次</u></b>，否则无法确定各段省了几组</td></tr>
+  </table></div>
+  <b>例</b>：<code>4BF5:0000:0000:0000:BA5F:039A:000A:2176</code>
+  ⟹ 先省前导零 <code>4BF5:0:0:0:BA5F:39A:A:2176</code>
+  ⟹ 再用双冒号 <b><code>4BF5::BA5F:39A:A:2176</code></b>。</div>
+
+  <div class="mine"><span class="tag">我的补讲 · 缩写还原三步法（03、04 两题的标准动作）</span>
+  <b>还原（缩写 → 完整）的机械步骤，一步都别跳</b>：
+  <ol>
+  <li><b>先补组数</b>：数出现有的组数 k，<code>::</code> 代表 <b>8 − k</b> 个全零组，把它们摊开写成 <code>0000</code>。</li>
+  <li><b>再补每组的位数</b>：每组不足 4 位的，<b style="color:var(--red)">在<u>前面</u>补 0</b> 补到 4 位。</li>
+  <li><b>核对</b>：最终必须<b>正好 8 组、每组 4 位</b>。</li>
+  </ol>
+  <pre class="fml">04 题：8::D0:123:CDEF:89A  还原
+
+第1步 现有 5 组（8 / D0 / 123 / CDEF / 89A）⟹ :: 代表 3 个全零组
+      8 : 0000 : 0000 : 0000 : D0 : 123 : CDEF : 89A
+第2步 每组前面补 0 到 4 位
+      0008:0000:0000:0000:00D0:0123:CDEF:089A     ← 答案 D
+      ⚠️ 最后一组是 089A 不是 89A0，这就是干扰项 A/B 的来源</pre>
+  <b>🐍 我用 <code>ipaddress</code> 复算过：<code>8::D0:123:CDEF:89A</code> 展开正是 <code>0008:0000:0000:0000:00D0:0123:CDEF:089A</code>，只有 D 吻合。</b><br>
+  ⭐ <b>判断合法性（03 题）更简单：<u>数 <code>::</code> 出现了几次，出现两次以上直接判非法</u>。</b>
+  <b>🐍 <code>1A22::120D::72A2::00C0</code> 被 <code>ipaddress</code> 直接判为非法地址，选 C 无误。</b></div>
+
+  <div class="key"><span class="tag">必记 · 表 4.3 IPv6 地址的分类（五类，记 CIDR 记法那一列）</span>
+  <div class="tabwrap"><table>
+  <tr><th>地址类型</th><th>CIDR 记法</th><th>说明</th></tr>
+  <tr><td><b>未指明地址</b></td><td><b>::/128</b></td><td><b style="color:var(--red)">不能用作目的地址</b>，仅供尚未配置 IPv6 地址的主机作源地址（<u>≈ IPv4 的 0.0.0.0</u>）</td></tr>
+  <tr><td><b>环回地址</b></td><td><b>::1/128</b></td><td>作用同 IPv4 环回，<b>但 IPv6 只定义了这<u>一个</u></b>（<u>IPv4 是整个 127.0.0.0/8 段</u>）</td></tr>
+  <tr><td><b>多播地址</b></td><td><b>FF00::/8</b></td><td>占 IPv6 地址空间的 <b>1/256</b></td></tr>
+  <tr><td><b>本地链路单播地址</b></td><td><b>FE80::/10</b></td><td><b style="color:var(--red)">仅用于本地链路内通信，不能被路由器转发</b></td></tr>
+  <tr><td><b>全球单播地址</b></td><td>见下</td><td>用得最多</td></tr>
+  </table></div>
+  <b>全球单播地址的划分非常灵活（图 4.14 的三行）</b>：
+  <pre class="fml">① 整个 128 位 ────────────────────── 节点地址
+② 子网前缀(n 位) ──┬── 接口标识符(128−n 位)      ← 接口标识符 ≈ IPv4 的主机号
+③ 全球路由选择前缀(n) ┬ 子网标识符(m) ┬ 接口标识符(128−n−m)</pre>
+  ⭐ <b>第 ③ 行的三级结构，就是 4.2.2 那个「网络号 + 子网号 + 主机号」三级结构的 IPv6 版</b>——<u>换了名字，思想一模一样。</u></div>
+
+  <h3>4.3.4　从 IPv4 向 IPv6 过渡　<span class="exam">考点追踪：IPv4 向 IPv6 过渡的策略（2023）</span></h3>
+
+  <div class="key"><span class="tag">必记 · 两种过渡策略（2023 真题的正确项之一）</span>
+  <u>过渡<b>只能逐步演进</b>，并确保新部署的 IPv6 系统<b>向后兼容</b>——能接收、转发 IPv4 数据报并为其选路。</u>
+  <div class="tabwrap"><table>
+  <tr><th>策略</th><th>做法</th><th>关键细节</th></tr>
+  <tr><td><b>双协议栈</b></td><td>一台主机上<b>同时安装 IPv4 与 IPv6 两个协议栈</b>，各配一个地址，两边都能通</td><td><b style="color:var(--red)">靠应用层的 DNS 判断该用哪一套</b>：<u>DNS 返回 IPv4 地址就用 IPv4，返回 IPv6 地址就用 IPv6</u></td></tr>
+  <tr><td><b>隧道技术</b></td><td>IPv6 数据报进入 IPv4 网络时，<b>整个被封装成 IPv4 数据报的<u>数据部分</u></b>；离开 IPv4 网络后再取出交给 IPv6 协议处理</td><td><b>「隧道」这个词的意思：中途的 IPv4 路由器<u>只看到一个普通的 IPv4 数据报</u>，完全不知道里面装着 IPv6</b></td></tr>
+  </table></div></div>
+
+  <div class="link"><span class="tag">知识串联 · IPv6 这 5 页，和另外三章各有一根线</span>
+  <span class="hub">分层</span> <b>「取消首部检验和」← ch3 3.3 的链路层 CRC ＋ → ch5 5.2.2 的 TCP/UDP 检验和</b>：
+  <u>三层的差错检测放在一起看，才能理解为什么中间那层可以砍</u>。
+  <b style="color:var(--red)">这是 408 最典型的一道「同一个功能该在哪一层做」的分层权衡题。</b><br>
+  <span class="hub">封装</span> <b>隧道技术 ＝ 「把一层的报文塞进另一层当数据」</b>，
+  <u>与 ch3 的 PPP／VPN 封装、ch5 的「TCP 报文段装进 IP 分组」是同一种手法</u>——
+  <b>封装的本质就是「让中间人看不懂、也不需要懂」。</b><br>
+  <span class="hub">分块与映射</span> <b>全球单播地址的三级划分（全球路由前缀 / 子网标识 / 接口标识）</b>
+  <u>＝ IPv4 的「网络号 / 子网号 / 主机号」＝ OS 的「多级页表」＝ 组原 Cache 的「标记 / 组号 / 块内偏移」</u>——
+  <b style="color:var(--red)">四者是同一个「分级定位」模式的四次实例化。</b><br>
+  <span class="hub">队列与调度</span> <b>流标号提供 QoS，往前连着 4.1.3 的<u>虚电路服务</u></b>（<u>都是「为一条流预留特定处理」</u>），
+  <b>往后连着 ch5 的服务质量</b>；<u>而任播的「就近交付」则与 OS 的负载均衡、4.5 多播的一对多形成三点对照。</u><br>
+  <span class="hub">DNS</span> <b>双协议栈靠 DNS 返回的地址类型来决策 → ch6 6.2 域名系统</b>（<u>IPv4 是 A 记录、IPv6 是 AAAA 记录</u>）——
+  <b>这是本章少数几个直接依赖应用层的地方。</b></div>
+
+  <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第4章_网络层.pdf#page=60">📄 p.186</a>
+  <h2>4.4　路由算法与路由协议　<span style="font-size:.8rem;color:var(--red)">⭐ 22 页 · 33 题 · 7 真题 · 全章第二重心</span></h2>
+
+  <div class="mine"><span class="tag">我的补讲 · 4.4 的真题密度只有 0.32，为什么还排第二重心？</span>
+  <b>三个理由，缺一不可</b>：<br>
+  <b>① 分值不看密度看题型</b>：<u>本节 7 道真题里有 <b>3 道是综合题</b></u>——<b>2013（聚合+最长匹配+BGP）· 2014（OSPF，王道明标「数据结构与计网组合题」）· <span style="color:var(--red)">2024（RIP 收敛 + TTL + BGP，一道题五问）</span></b>。
+  <u>按 15 分/道估，这三道 ≈ 45 分，抵得上十几道选择题。</u><br>
+  <b>② 它是<u>近年新热点</u></b>：<b style="color:var(--red)">王道在这 22 页里标了 11 处「考点追踪」，其中 <u>2024 一年就占 5 处</u></b>
+  （RIP 收敛机制 · RIP 优缺点 · OSPF 与 RIP 特性对比 · BGP 会话类型 · BGP 报文类型 · BGP 路由选择策略）。
+  <u>一个考点在同一年被标五次，说明命题人刚刚把这一节翻了个遍。</u><br>
+  <b>③ 它有一张<u>必默写</u>的表</b>：<b>表 4.6 三协议对照表</b>（<u>类型 / 算法 / 传递协议 / 路径选择 / 交换节点 / 交换内容，六行三列</u>）——
+  <b style="color:var(--red)">这张表本身就能出五六道选择题，是本节投产比最高的东西，读到最后我会把它整张摆出来。</b></div>
+
+  <h3>4.4.1　路由算法</h3>
+
+  <p>路由选择协议的核心是<b>路由算法</b>，即生成路由表各表项的计算方法。目的很明确：<b>给定一组路由器及其互连链路，找到从源路由器到目的路由器的最佳路径</b>。<u>「最佳」通常指<b>费用最低</b>，而费用可根据<b>跳数、带宽、延迟</b>等因素定义</u>。</p>
+
+  <div class="key"><span class="tag">必记 · 静态路由 vs 动态路由</span>
+  <div class="tabwrap"><table>
+  <tr><th></th><th>静态路由算法</th><th>动态路由算法</th></tr>
+  <tr><td><b>怎么来的</b></td><td><b>网络管理员手工配置</b>每一条路由</td><td>根据网络状态变化（链路故障、新增）<b>动态调整自身路由表</b></td></tr>
+  <tr><td><b>优点</b></td><td><b>实现简单、开销小</b></td><td><b>能较好地适应网络状态变化</b></td></tr>
+  <tr><td><b>缺点</b></td><td><b style="color:var(--red)">不能及时适应网络状态变化</b></td><td><b style="color:var(--red)">实现复杂、开销大</b></td></tr>
+  <tr><td><b>适用</b></td><td>简单的<b>小型</b>网络</td><td>较复杂的<b>大型</b>网络</td></tr>
+  </table></div>
+  <b>常用的动态路由算法分两类：<span style="color:var(--red)">距离-向量算法（DV）与链路状态算法（LS）</span></b>——<u>这两个词是本节全部内容的骨架。</u></div>
+
+  <div class="key"><span class="tag">必记 · 距离-向量算法（Bellman-Ford）的核心公式与三项信息</span>
+  <b>DV 算法基于 <u>Bellman-Ford 算法</u>，<span style="color:var(--red)">不要求每个节点掌握完整的网络拓扑</span></b>，只需知道两件事：
+  <u>① 与相邻节点之间的距离；② 各邻居到目的节点的最短距离</u>。
+  <pre class="fml">d_x(y) = min { c(x,v) + d_v(y) }        v 取遍 x 的所有邻居
+
+含义：我到 y 有多远 = 【我到某个邻居的代价 + 那个邻居到 y 的代价】里最小的一个</pre>
+  <b>⭐ 所有最短路径算法都依赖同一个基本性质</b>：
+  <b style="color:var(--red)">「两点之间的最短路径，必然包含路径上任意子路径的最短路径」</b>——<u>这就是《数据结构》里 Dijkstra／Floyd 的<b>最优子结构</b>性质</u>。<br>
+  <b>每个节点 x 维护三项信息</b>：<b>① 到每个直连邻居 v 的链路费用 c(x,v)；② 自己的距离向量（x 到网络中其他各节点的费用）；
+  ③ 从每个邻居收到的距离向量<u>副本</u>。</b><br>
+  <b>运行方式</b>：<u>每个节点<b>定期向所有邻居</b>发送自己的距离向量；收到邻居的新向量后更新副本、按公式重算自己的向量；
+  <b style="color:var(--red)">若自己的向量变了就立即再向所有邻居发送</b>（没变就不发）。</u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · DV 迭代题的做题模板：一张 3×3 的表，逐轮填</span>
+  <b>书上说 X</b>：图 4.16 用三节点网络 <code>x —2— y —1— z</code>、<code>x —7— z</code> 演示了两轮迭代。<br>
+  <b>潜台词是 Y</b>：<u>这类题<b>永远只考三件事</b></u>——
+  <b>① 初始向量是什么（<span style="color:var(--red)">只填直连邻居的链路费用，非邻居填 ∞</span>）；② 第 k 轮后哪一格变了；③ 什么时候收敛。</b><br>
+  <b>所以能考 Z</b>：把三轮摊成一张表，答案一目了然（<b>🐍 已用 Bellman-Ford 迭代复算，与书上三张表逐格吻合</b>）：
+  <div class="tabwrap"><table>
+  <tr><th>到</th><th>(a) 初始 DV<sub>x</sub>／DV<sub>y</sub>／DV<sub>z</sub></th><th>(b) 第 1 次交换后</th><th>(c) 第 2 次交换后</th></tr>
+  <tr><td><b>x</b></td><td>0 ／ 2 ／ 7</td><td>0 ／ 2 ／ <b style="color:var(--red)">3</b></td><td>0 ／ 2 ／ 3</td></tr>
+  <tr><td><b>y</b></td><td>2 ／ 0 ／ 1</td><td>2 ／ 0 ／ 1</td><td>2 ／ 0 ／ 1</td></tr>
+  <tr><td><b>z</b></td><td>7 ／ 1 ／ 0</td><td><b style="color:var(--red)">3</b> ／ 1 ／ 0</td><td>3 ／ 1 ／ 0</td></tr>
+  </table></div>
+  <b>关键一格的算法</b>：<code>d<sub>x</sub>(z) ＝ min{ c(x,y)+d<sub>y</sub>(z), c(x,z)+d<sub>z</sub>(z) } ＝ min{2+1, 7+0} ＝ <b>3</b></code>
+  ⟹ <u><b>x↔z 从 7 降到 3</b>（<b>绕道 y 比直连更近</b>）；<b>x 和 z 的向量变了要再发一轮，y 没变则不必发</b>；第 2 轮谁都没变 ⟹ <b>收敛</b>。</u><br>
+  ⚠️ <b style="color:var(--red)">「更新报文的大小与网络节点数成正比」——这一句是 DV 的致命缺陷，也是它与 LS 对比时的第一条。</b>
+  <u>最常见的 DV 协议就是 <b>RIP</b>，它用<b>跳数</b>作为费用度量。</u></div>
+
+  <div class="key"><span class="tag">必记 · 链路状态算法（LS）的两项任务与三个优点</span>
+  <b>链路状态 ＝ 「本路由器与哪些邻居相连，以及对应链路的代价」。</b>
+  <b style="color:var(--red)">LS 要求每个节点都掌握完整的全网拓扑图</b>，为此每个节点做两件事：
+  <b>① 主动探测所有相邻节点的状态；② 定期把自身的链路状态通过<u>洪泛法</u>传播给全网所有节点。</b>
+  <u>于是每个节点都能用 <b>Dijkstra 算法</b>独立算出到其他所有节点的最短路径；链路状态一变就立即重算。</u><br>
+  <b>三个主要优点</b>：<br>
+  <b>① 所有节点基于<u>相同的链路状态数据库</u>独立计算，<span style="color:var(--red)">不依赖邻居的路由决策 ⟹ 避免了 DV 的无穷计数问题</span>；</b><br>
+  <b>② 拓扑完整 ⟹ 本地即可算出全局最优，<u>收敛快且无环</u>；</b><br>
+  <b>③ <span style="color:var(--red)">链路状态报文只含本节点的直连链路信息，报文大小与网络总规模无关</span> ⟹ 大网中扩展性更好。</b><br>
+  <b>典型的 LS 算法就是 <u>OSPF</u>。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · DV 与 LS 的对比，本质是「信息传得远还是传得广」</span>
+  <b>书上说 X</b>：DV 只与直接邻居交换、发的是完整距离向量（与节点数成正比）；LS 洪泛给全网、但每条报文只含局部信息。<br>
+  <b>潜台词是 Y</b>：<u>两者<b>各自省了一样、各自费了一样</b>，是一笔对称的账</u>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>距离-向量 DV</th><th>链路状态 LS</th></tr>
+  <tr><td><b>信息传给谁</b></td><td><b>只给直接邻居</b>（传得<u>近</u>）</td><td><b>洪泛给全网</b>（传得<u>远</u>）</td></tr>
+  <tr><td><b>每条报文多大</b></td><td><b style="color:var(--red)">整个距离向量，∝ 节点数</b>（内容<u>多</u>）</td><td><b style="color:var(--red)">只有自己的直连链路，与规模无关</b>（内容<u>少</u>）</td></tr>
+  <tr><td><b>每个节点知道什么</b></td><td>只知道「到各处多远」，<b>不知道全图</b></td><td><b>知道完整拓扑</b></td></tr>
+  <tr><td><b>算法</b></td><td>Bellman-Ford，<b>分布式迭代</b></td><td>Dijkstra，<b>本地独立计算</b></td></tr>
+  <tr><td><b>典型病</b></td><td><b style="color:var(--red)">无穷计数、慢收敛</b></td><td>洪泛本身的开销</td></tr>
+  </table></div>
+  <b>所以能考 Z</b>：<b>凡问「为什么大网用 OSPF 不用 RIP」，答两条——<u>① 报文大小与规模无关；② 不会无穷计数、收敛快</u>。</b>
+  <b style="color:var(--red)">⟹ 一句话记法：<u>DV 是「跟邻居打听，消息层层转」，LS 是「大家把自己那块拼图发给所有人，各自拼出全图」。</u></b></div>
+
+  <div class="link"><span class="tag">知识串联 · 这一节其实是《数据结构》第 6 章的应用题</span>
+  <span class="hub">最短路径</span> ⭐ <b>DV ＝ Bellman-Ford，LS ＝ Dijkstra，两个算法你在《数据结构》ch6 图里都手算过</b>：
+  <u>连「最优子结构」这句话都是同一句</u>。<b>408 复盘中心的<a href="../模拟器_图算法.html" style="color:var(--accent)">图算法八合一模拟器</a>里就有 Dijkstra 的逐步演示，
+  卡在 OSPF 算路的题上时，回去跑两遍比看文字快。</b>
+  <b style="color:var(--red)">⚠️ 2014 那道 OSPF 综合真题，王道自己在题干上标了「数据结构与计网组合题」——它真的就是一道 Dijkstra 手算题。</b><br>
+  <span class="hub">局部决策</span> <b>DV 的「只跟邻居打听就能收敛到全局最优」，是分布式算法里最漂亮的结论之一</b>，
+  <u>与 OS 里「每个进程只看自己的局部状态、靠调度器涌现全局秩序」同构</u>。<br>
+  <span class="hub">中断</span> <b>DV「定期发」vs LS「变了才发」，正是《组成原理》I/O 的<u>程序查询 vs 中断</u>、OS 的<u>轮询 vs 事件驱动</u></b>——
+  <b style="color:var(--red)">同一个权衡在三科出现了第三次：定期查简单但浪费，有事才报高效但要有触发机制。</b></div>
+
+  <h3>4.4.2　分层次的路由选择协议</h3>
+
+  <p>互联网采用<b>自适应的分布式路由选择协议</b>。由于规模庞大、且许多联网单位不愿对外暴露内部网络细节，因此采用<b>分层次</b>的路由选择协议：把整个互联网划分为许多较小的<b>自治系统 AS</b>，每个 AS 对外表现为<b>单一且一致的路由选择策略</b>，而<b>AS 的管理者有权自主决定内部使用什么协议</b>（RIP 或 OSPF）。</p>
+
+  <div class="key"><span class="tag">必记 · IGP 与 EGP（两个词、两句话）</span>
+  <div class="tabwrap"><table>
+  <tr><th></th><th>内部网关协议 IGP</th><th>外部网关协议 EGP</th></tr>
+  <tr><td><b>用在哪</b></td><td><b>自治系统<u>内部</u></b>的路由选择</td><td><b>自治系统<u>之间</u></b>的路由选择</td></tr>
+  <tr><td><b>别名</b></td><td><b>域内路由选择</b></td><td><b>域间路由选择</b></td></tr>
+  <tr><td><b>代表</b></td><td><b>RIP、OSPF</b></td><td><b style="color:var(--red)">BGP-4</b></td></tr>
+  <tr><td><b>与外界的关系</b></td><td><b>与其他 AS 用什么协议无关</b></td><td>把路由信息从一个 AS 传到另一个 AS</td></tr>
+  </table></div>
+  <b>⭐ 每个 AS 至少有一个或多个<u>边界路由器</u></b>（图 4.17 的 R1、R2），
+  <b style="color:var(--red)">它们除了运行本系统的 IGP，<u>还要运行 EGP（如 BGP-4）</u></b>——<u>「一台路由器同时跑两种协议」是本节最容易被忽略的一句。</u></div>
+
+    <figure class="fig"><img src="图/NETch4/NET4_f17_两个AS互连.png" alt="fig417">
+  <figcaption><b>图 4.17 两个自治系统互连的示意图</b>。左边一朵云是<b>自治系统 A</b>（内部「用内部网关协议，如 <b>RIP</b>」），右边一朵是<b>自治系统 B</b>（内部「用内部网关协议，如 <b>OSPF</b>」），两朵云各自伸出一台边界路由器 <b>R1</b> 与 <b>R2</b>，中间那条双向箭头标着「<b>用外部网关协议（如 BGP-4）</b>」。⭐ <b style="color:var(--red)">这张图一眼说清了三件事</b>：<u>① 两个 AS 内部<b>可以用完全不同的 IGP</b>，互不干涉；② 跨 AS 只能靠 EGP；③ <b>R1 和 R2 这两台边界路由器<u>身兼二职</u>——既跑本 AS 的 IGP，又跑 BGP-4</b></u>。<b>第 ③ 点是最容易被忽略、也最容易出选择题的一句。</b></figcaption></figure>
+
+  <h3>4.4.3　路由信息协议 RIP　<span class="exam">考点追踪：RIP 中跳数为 16 的含义（2010）· RIP 使用的下层协议（2017）· RIP 路由收敛机制（2024）· RIP 的优缺点（2024）</span></h3>
+
+  <p><b>RIP 是一种分布式的、基于距离向量的路由选择协议</b>，是 IGP 中最早得到广泛应用的协议之一。</p>
+
+  <div class="key"><span class="tag">必记 · RIP 的五条规定与三问三答</span>
+  <b>五条规定</b>：<br>
+  <b>① 用<u>跳数</u>衡量距离：<span style="color:var(--red)">到直连网络的距离规定为 1</span>，每经过一个路由器跳数加 1。</b><br>
+  <b>② 「好」路由 ＝ 所经路由器数量最少（跳数最少）。</b><br>
+  <b>③ <span style="color:var(--red)">一条路径最多只能包含 15 个路由器，跳数 16 ＝ 目的网络不可达</span> ⟹ RIP 仅适用于小型自治系统。</b><br>
+  <b>④ 路由表项三字段：<u>&lt;目的网络 N，距离 d，下一跳路由器地址 X&gt;</u></b>，读作「我通过 X 到 N 的距离是 d」。<br>
+  <b>⑤ 每个路由器维护一个距离向量（到所有目的网络的距离记录）。</b><br>
+  <b>三问三答（必背）</b>：
+  <div class="tabwrap"><table>
+  <tr><th>问</th><th>答</th></tr>
+  <tr><td><b>和谁交换</b></td><td><b style="color:var(--red)">仅和直接相邻的路由器</b></td></tr>
+  <tr><td><b>交换什么</b></td><td><b style="color:var(--red)">本路由器当前的完整路由表（全部路由信息）</b></td></tr>
+  <tr><td><b>何时交换</b></td><td><b style="color:var(--red)">按固定时间间隔（默认 30 秒）</b>；拓扑变化时也及时通告</td></tr>
+  </table></div>
+  <b>⭐ <span style="color:var(--red)">RIP 是应用层协议，使用 UDP 传送（端口 520）</span></b>；
+  ⚠️ <b>RIP 选的路径<u>不一定时延最短，但一定跳数最少</u></b>——<u>因为它只看跳数。</u></div>
+
+  <div class="key"><span class="tag">必记 · RIP 的距离向量更新算法（<span style="color:var(--red)">2024 综合真题的第一问</span>）</span>
+  <b>收到相邻路由器 X 发来的 RIP 报文后</b>：
+  <pre class="fml">第 1 步 把报文里【所有】项目改一遍：
+        下一跳 ← X          距离 ← 距离 + 1
+
+第 2 步 逐项与自己的路由表比较：
+  IF   表中【没有】目的网络 N
+       ⟹ 加入路由表（发现新网络）
+  ELIF 表中有 N，且原下一跳【就是 X】
+       ⟹ 【无条件】用新项目替换（以最新消息为准）
+  ELIF 表中有 N，但原下一跳【不是 X】
+       ⟹ 仅当新距离 d【更小】时才替换（找到更优路径）
+  ELSE 什么也不做
+
+第 3 步 若连续 180 秒未收到某邻居的更新报文
+        ⟹ 把该邻居对应的路由项距离置为 16（不可达）</pre>
+  <b style="color:var(--red)">⚠️ 第二条是全节最容易错的一条：下一跳相同就<u>无条件</u>更新，<b>哪怕距离变大</b>。</b>
+  <u>理由：下一跳没变，说明这条信息就是从这条路上来的<b>最新</b>消息，必须以最新为准；<b>只有下一跳不同时才去比距离</b>。</u></div>
+
+  <div class="key"><span class="tag">必记 · 书上主例：R6 收到 R4 的路由表后怎么改（表 4.4 → 表 4.5）</span>
+  <div class="tabwrap"><table>
+  <tr><th>目的网络</th><th>R6 原表</th><th>R4 发来</th><th>加 1 改下一跳后</th><th style="color:var(--red)">R6 更新后</th><th>依据</th></tr>
+  <tr><td><b>Net1</b></td><td>（无）</td><td>3, R1</td><td>4, R4</td><td class="hit"><b>4, R4</b></td><td>表中没有 ⟹ <b>新增</b></td></tr>
+  <tr><td><b>Net2</b></td><td>3, <b>R4</b></td><td>4, R2</td><td>5, R4</td><td class="hit"><b>5, R4</b></td><td><b style="color:var(--red)">下一跳相同 ⟹ 无条件更新（距离从 3 变 5 也照换）</b></td></tr>
+  <tr><td><b>Net3</b></td><td>4, <b>R5</b></td><td>1, 直接交付</td><td>2, R4</td><td class="hit"><b>2, R4</b></td><td>下一跳不同，<b>新距离 2 &lt; 原距离 4 ⟹ 更新</b></td></tr>
+  </table></div>
+  <b>🐍 已按三条规则逐项复算：更新后 R6 的表 ＝ Net1&lt;4,R4&gt; · Net2&lt;5,R4&gt; · Net3&lt;2,R4&gt;，与表 4.5(b) 完全吻合。</b><br>
+  <u>「加 1 并把下一跳改为 X」这一步的含义是：<b>R6 可以通过 R4 到达这些网络，但距离比 R4 自己到达它们的距离大 1。</b></u></div>
+
+  <div class="key"><span class="tag">必记 · RIP 的优缺点　<span class="exam">2024</span></span>
+  <b>优点</b>：<b>① 实现简单、开销小、收敛过程较快；② <span style="color:var(--red)">「好消息传播得快」</span></b>——<u>发现更短的路由后，更新信息会迅速传遍所有路由器。</u><br>
+  <b>缺点</b>：<b>① 限制了网络规模（最大有效距离 15）；② 交换的是<u>完整路由表</u>，网络越大通信开销越大；
+  ③ <span style="color:var(--red)">「坏消息传播得慢」——故障时要反复多次交换才能收敛，即慢收敛 / 无穷计数问题。</span></b></div>
+
+    <figure class="fig"><img src="图/NETch4/NET4_f18_RIP链路开销改变.png" alt="fig418">
+  <figcaption><b>图 4.18 RIP 举例：链路开销改变</b>。左右两幅图的拓扑完全一样——<b>网 N — R1 — R2</b>，R1 与 R2 之间的链路开销为 <b>1</b>；差别只在 N 到 R1 那条线上的标注：<b>(a) 发现更短的路由</b>标着「<b>4 → 1</b>」（<u>距离变小 ＝ 好消息</u>），<b>(b) 链路出现故障</b>标着「<b style="color:var(--red)">4 → 16</b>」（<u>16 ＝ 不可达 ＝ 坏消息</u>）。⭐ <b>两幅图的区别只有一个数字，结果却天差地别</b>：<u>(a) 一轮就传完；(b) 要爬 12 轮 ≈ 6 分钟</u>。<b style="color:var(--red)">看图时把这两个数字并排记住——「4→1 快、4→16 慢」，就是本节最著名的那句「好消息传播得快、坏消息传播得慢」的全部内容。</b></figcaption></figure>
+
+  <div class="mine"><span class="tag">我的补讲 · 「坏消息传播得慢」是怎么发生的：一步一步推给你看</span>
+  <b>书上说 X</b>（图 4.18b）：R1 与 R2 相邻、链路开销 1；初始 R1 有 <code>&lt;N, 4, 直接&gt;</code>，R2 有 <code>&lt;N, 5, R1&gt;</code>。
+  某刻 R1 发现 N 不可达（距离置 16），<u>但要等下一次周期性更新（30s）才通知 R2</u>；
+  而 R2 可能<b>抢先</b>把自己的 <code>&lt;N, 5, R1&gt;</code> 发给了 R1。<br>
+  <b>潜台词是 Y</b>：<u>R1 收到后<b>误以为「原来还能绕道 R2 到 N」</b></u>——
+  <b style="color:var(--red)">而 R2 那条路本来就是经 R1 的，这是一个「自己教坏自己」的回环。</b>
+  <b>于是距离开始一格一格往上爬</b>：
+  <pre class="fml">R1 &lt;N,16,直接&gt;  R2 &lt;N,5,R1&gt;
+  ⟹ R1 收到 R2 的报文，改成 &lt;N, 6, R2&gt;      ← 第一次「教坏」
+  ⟹ R2 收到 R1 的报文，改成 &lt;N, 7, R1&gt;      ← 此后【下一跳相同 ⟹ 无条件替换】
+  ⟹ &lt;N,8,R2&gt; → &lt;N,9,R1&gt; → … → &lt;N,16,R2&gt; → &lt;N,16,R1&gt;
+  共 12 轮周期性交换 × 30s ≈ 6 分钟，双方才都判定「N 不可达」</pre>
+  <b>🐍 我严格按三条更新规则做过事件级模拟：确实是 12 轮 ≈ 6 分钟，与书上叙述吻合。</b>
+  <b style="color:var(--red)">⚠️ 模拟时的关键点：R1 第一次把下一跳改成 R2 之后，后续每次收到 R2 的报文都属于「下一跳相同 ⟹ 无条件替换」，所以距离才会一路爬升；
+  若误用「只在更短时才更新」，会卡在 6/7 反复震荡而永远到不了 16。</b><br>
+  <b>所以能考 Z</b>：<b>① 问「几轮后收敛」——按上面的爬升数；② 问「跳数上限 15 有什么用」——<u>给无穷计数封顶，否则会无限循环</u>；
+  ③ 问「好消息为什么快」——<u>更短的路由一旦出现，任何一条规则都会立刻接受它，一轮传一跳，没有回环</u>。</b></div>
+
+  <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第4章_网络层.pdf#page=65">📄 p.191</a>
+  <h3>4.4.4　开放最短路径优先协议 OSPF　<span class="exam">考点追踪：OSPF 与 RIP 特性对比（2024）· OSPF 使用的下层协议（2017）</span></h3>
+
+  <p><b>OSPF 是分布式链路状态算法的典型代表，采用 Dijkstra 最短路径算法。</b><u>名字里虽有「最短路径优先」，但这<b>不意味着其他协议不用最短路径原则</b>——AS 内使用的所有路由协议都在找最短路径，<b>只是「最短」的度量标准不同</b></u>（<b>RIP 量跳数，OSPF 量代价</b>）。</p>
+
+  <div class="key"><span class="tag">必记 · OSPF vs RIP 的四个主要区别（<span style="color:var(--red)">2024 直接考这张表</span>）</span>
+  <div class="tabwrap"><table>
+  <tr><th>#</th><th>OSPF</th><th>RIP</th></tr>
+  <tr><td>1</td><td><b>用<u>洪泛法</u>向本 AS 中<u>所有</u>路由器发送信息</b>：向所有输出端口发给邻居，邻居再转给它的所有邻居（<b style="color:var(--red)">但不再回传给刚刚发来信息的那个路由器</b>），最终全区域每台都收到一个副本</td><td>仅向<b>直接相邻</b>的几个路由器发送</td></tr>
+  <tr><td>2</td><td>发的是<b>本路由器与其相邻路由器之间的链路状态（局部拓扑）</b></td><td>发的是<b>自己所知的全部路由信息（完整路由表）</b></td></tr>
+  <tr><td>3</td><td><b style="color:var(--red)">仅在链路状态发生变化时才触发洪泛更新</b>，收敛快，<b>不会出现「坏消息传得慢」</b></td><td><b>不论拓扑是否变化都定期交换</b></td></tr>
+  <tr style="background:var(--amber-soft)"><td>4</td><td><b style="color:var(--red)">OSPF 是网络层协议，不用 UDP 也不用 TCP，直接封装在 IP 数据报中（IP 首部协议字段 ＝ 89）</b></td><td><b style="color:var(--red)">RIP 是应用层协议，使用 UDP（端口 520）</b></td></tr>
+  </table></div>
+  <b>📌 书上灰框给了「层次判断题」的判据，原话很值钱</b>：
+  <u>「<b>用 UDP 传送</b>」是指把协议数据作为 <b>UDP 报文的数据部分</b>；「<b>直接使用 IP 数据报传送</b>」是指把协议数据<b>直接作为 IP 数据报的数据部分</b>。
+  <b>RIP 报文属于前者。</b></u></div>
+
+  <div class="key"><span class="tag">必记 · OSPF 另外五项优势</span>
+  <b>① 支持对每条路由设置<u>不同的代价</u></b>（可针对不同业务类型算差异化路径）；<br>
+  <b>② 多条等代价路径时可实现<u>负载分担（负载均衡）</u></b>；<br>
+  <b>③ 分组具备<u>鉴别功能</u></b>，确保只在可信路由器之间交换链路状态；<br>
+  <b>④ 支持<u>可变长子网掩码和无分类编址</u></b>（<u>⚠️ 这一条正是 RIP 的短板，选择题常拿来对比</u>）；<br>
+  <b>⑤ 每条链路状态通告都带一个 <u>32 位序号</u>，序号越大表示状态越新。</b><br>
+  <u>所有路由器最终构建出一致的<b>链路状态数据库 LSDB</b>，再各自用 Dijkstra 算出路由表。</u><br>
+  📌 <b style="color:var(--red)">书上灰框，极易被忽略但很能出题：Dijkstra 虽能算出完整的最优路径，但路由表中<u>不存整条路径，只存「下一跳」</u>——只有到了下一跳，才能确定再下一跳怎么走。</b></div>
+
+  <div class="key"><span class="tag">必记 · OSPF 的区域划分（图 4.19）</span>
+  <b>为支持大规模网络，OSPF 把一个 AS 划分为若干<u>区域（Area）</u>。</b>
+  <b style="color:var(--red)">好处：把洪泛交换链路状态的范围限制在各区域内，而不是整个 AS，从而显著减少通信开销。</b>
+  <ul>
+  <li>每个区域由<b>一个或多个区域边界路由器</b>负责为进出该区域的分组提供路由（<u>图 4.19 中的 R3、R4、R7</u>）。</li>
+  <li><b>AS 内必须有一个区域配置成<u>主干区域</u>（0.0.0.0）</b>，它包含 AS 内的所有区域边界路由器，用于连通其他区域。</li>
+  <li><b style="color:var(--red)">跨区域传送的路径固定为：源区域 → 本地区域边界路由器 → 主干区域 → 目的区域边界路由器 → 目的地。</b></li>
+  <li><b>主干区域中还要指定一个<u>自治系统边界路由器</u></b>（图中的 R6），专门负责与本 AS 之外的其他 AS 交换路由信息。</li>
+  </ul></div>
+
+    <figure class="fig"><img src="图/NETch4/NET4_f19_OSPF划分区域.png" alt="fig419">
+  <figcaption><b>图 4.19 OSPF 划分区域举例</b>。一个大椭圆是<b>自治系统 AS</b>，里面套着四个小椭圆：<b>主干区域 0.0.0.0</b>（含 R3、R5、R6、R7、R4）与三个普通区域——<b>0.0.0.1</b>（R1、R2，挂网1/网2/网3）、<b>0.0.0.2</b>（R8，挂网4/网5）、<b>0.0.0.3</b>（R9，挂网6/网7/网8）。顶上一条线标着「<b>至其他自治系统</b>」，从 <b>R6</b> 引出。⭐ <b style="color:var(--red)">看图要认出两类特殊路由器</b>：<u>① <b>区域边界路由器</b>＝ 同时踩在两个椭圆边界上的那几台（<b>R3、R4、R7</b>）——每个区域至少有一台；② <b>自治系统边界路由器</b>＝ 通往外部 AS 的那台（<b>R6</b>），它在<u>主干区域</u>里</u>。<b>再顺着图走一遍跨区域路径：从区域 0.0.0.1 的网 1 出发 → R3（本地区域边界）→ 主干区域 → R4（目的区域边界）→ 区域 0.0.0.2 的网 4</b>——<b style="color:var(--red)">「必须经过主干区域」这条规则在图上是看得见的：三个普通区域彼此<u>没有任何直接连线</u>。</b></figcaption></figure>
+
+  <div class="key"><span class="tag">必记 · OSPF 的五种分组（记住谁问谁答）</span>
+  <div class="tabwrap"><table>
+  <tr><th>#</th><th>分组</th><th>作用</th></tr>
+  <tr><td>1</td><td><b>问候（Hello）</b></td><td><b>发现邻居、维持邻接关系</b>，确认链路双向连通</td></tr>
+  <tr><td>2</td><td><b>数据库描述（DD）</b></td><td>发送自己 LSDB 中所有链路状态项目的<b>摘要</b></td></tr>
+  <tr><td>3</td><td><b>链路状态请求（LSR）</b></td><td>向邻居<b>请求</b>某些链路状态项目的<b>详细信息</b></td></tr>
+  <tr style="background:var(--amber-soft)"><td>4</td><td><b>链路状态更新（LSU）</b></td><td><b style="color:var(--red)">用洪泛法发送链路状态通告 LSA，是 OSPF 最核心的部分</b></td></tr>
+  <tr><td>5</td><td><b>链路状态确认（LSAck）</b></td><td>对链路更新分组的<b>确认</b></td></tr>
+  </table></div>
+  <b>⭐ 五种分组正好串成一条完整的剧情：<u>Hello 找到人 → DD 对目录 → LSR 要细节 → LSU 给细节 → LSAck 回执</u>。</b>
+  <u>这样记比逐条背名字快得多。</u></div>
+
+  <div class="key"><span class="tag">必记 · OSPF 的四个时间常数（<span style="color:var(--red)">经常直接问数字</span>）</span>
+  <div class="tabwrap"><table>
+  <tr><th>常数</th><th>值</th><th>含义</th></tr>
+  <tr><td><b>问候间隔</b></td><td><b>10 s</b></td><td>相邻路由器每隔 10s 交换问候分组</td></tr>
+  <tr><td><b>判死时间</b></td><td><b>40 s</b></td><td><b style="color:var(--red)">40s 内未收到邻居的问候分组 ⟹ 判定邻居不可达</b>，立即更新 LSDB 并重跑 Dijkstra</td></tr>
+  <tr><td><b>LSA 最大生存期</b></td><td><b>60 分钟</b></td><td>超过则失效</td></tr>
+  <tr><td><b>LSA 刷新周期</b></td><td><b>30 分钟</b></td><td>最初生成该 LSA 的路由器定期刷新，防止 LSA 丢失或异常</td></tr>
+  </table></div>
+  ⚠️ <b>书上补了一句常被拿去出题的话：<u>网络中传送的大多数 OSPF 分组都是问候分组</u></b>（<u>因为它每 10 秒就要发一轮，而其余四种只在拓扑变化时才出现</u>）。</div>
+
+  <div class="mine"><span class="tag">我的补讲 · OSPF 的可靠性是自己做的，这一点和 BGP 形成绝妙对照</span>
+  <b>书上说 X</b>：OSPF 用 LSU 洪泛、用 LSAck 确认；BGP 走 TCP。<br>
+  <b>潜台词是 Y</b>：<u>两者都需要<b>可靠传输</b>，但解决方式完全相反</u>——
+  <b style="color:var(--red)">OSPF 直接坐在 IP 上（IP 不可靠），所以它<u>自己实现了一套确认机制（LSAck）</u>；
+  BGP 干脆<u>借用传输层的 TCP</u>，一行确认代码都不用写。</b><br>
+  <b>所以能考 Z</b>：<b>①「OSPF 如何保证可靠传输」——靠 LSAck 确认分组，不靠传输层；
+  ② 由此可推出「OSPF 的层次」——<u>它自己做确认这件事本身就说明它下面没有可靠传输层，所以它是网络层协议</u>。</b><br>
+  ⭐ <b>把三个协议的可靠性来源排一排，这条线就闭合了</b>：
+  <div class="tabwrap"><table>
+  <tr><th>协议</th><th>坐在谁上面</th><th>可靠性从哪来</th></tr>
+  <tr><td><b>RIP</b></td><td>UDP（不可靠）</td><td><b>不要求可靠</b>——丢一次没关系，30 秒后还会再发一遍</td></tr>
+  <tr><td><b>OSPF</b></td><td><b>IP</b>（不可靠）</td><td><b style="color:var(--red)">自己做：LSAck 确认 + LSA 序号</b></td></tr>
+  <tr><td><b>BGP</b></td><td><b>TCP</b>（可靠）</td><td><b style="color:var(--red)">直接继承 TCP</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 「协议的可靠性可以自己做、可以借下层、也可以干脆不要」，这是 408 里最好的一个分层设计案例。</b></div>
+
+  <h3>4.4.5　边界网关协议 BGP　<span class="exam">考点追踪：BGP 的功能（2013）· BGP 使用的下层协议（2013、2017）· BGP 会话类型（2024）· BGP 报文类型及作用（2024）· BGP 路由选择的策略（2024）</span></h3>
+
+  <p><b>BGP 是不同自治系统的路由器之间交换路由信息的协议，是一种外部网关协议。</b><u>RIP 和 OSPF 都只能在一个 AS 内工作；<b>若没有 BGP，全世界数以万计的 AS 就都是一个个彼此孤立的「孤岛」</b></u>。</p>
+
+  <div class="key"><span class="tag">必记 · BGP 为什么不追求「最佳路由」（两条理由 + 一句结论）</span>
+  <b>① 互联网规模太大</b>——AS 之间的路由选择非常困难，每个主干网路由器表中的项目数都极其庞大，<u><b>要寻找最佳路由是很不现实的</b></u>。<br>
+  <b>② <span style="color:var(--red)">AS 之间的路由选择必须考虑政治、安全或经济等因素</b></span>（<u>这是 IGP 完全不需要考虑的</u>）。<br>
+  <b style="color:var(--red)">⟹ 结论：BGP 只能力求寻找一条<u>能够到达目的网络且比较好的路由（不能兜圈子）</u>，<u>而并非寻找一条最佳路由</u>。</b><br>
+  <b>BGP 采用<u>路径向量</u>路由选择协议</b>（<u>与 DV、LS 都不同，是第三种</u>）；<b style="color:var(--red)">BGP 是应用层协议，基于 TCP 实现（端口 179）</b>。</div>
+
+  <div class="key"><span class="tag">必记 · BGP 路由的两个关键属性</span>
+  <pre class="fml">BGP 路由 = &lt;前缀, BGP 属性&gt; = &lt;前缀, AS-PATH, NEXT-HOP&gt;</pre>
+  <b>AS-PATH（自治系统路径）</b>：记录该路由<b>所经过的自治系统序列</b>；每个 AS 有全局唯一的 <b>ASN</b>，
+  <u>路由每经过一个 AS 就把它的 ASN 加进 AS-PATH</u>。
+  <b style="color:var(--red)">⟹ BGP 路由指出经过哪些 <u>AS</u>，但<u>不指明</u>具体经过哪些路由器。</b><br>
+  <b>NEXT-HOP（下一跳）</b>：接收该路由的路由器去往目的网络时应使用的下一跳地址；
+  <u>通常是<b>通告此路由的邻居 AS 的边界路由器上、与本 AS 直连的那个接口 IP</b>，即 AS-PATH 中第一个 AS 的入口点。</u></div>
+
+  <div class="key"><span class="tag">必记 · eBGP 与 iBGP　<span class="exam">2024</span></span>
+  <b>一个 AS 中有两类路由器：<u>边界路由器</u>与<u>内部路由器</u>。</b>
+  <u>边界路由器之间、以及 AS 内部的 BGP 路由器之间，都通过<b>端口 179 的半永久 TCP 连接</b>（交换完信息仍保持连接）交换 BGP 路由信息。</u>
+  <b>每对通过 TCP 交换 BGP 报文的路由器称为 <u>BGP 对等方</u>，该 TCP 连接称为 <u>BGP 会话</u>。</b>
+  <div class="tabwrap"><table>
+  <tr><th>会话类型</th><th>在哪</th></tr>
+  <tr><td><b>外部 BGP（eBGP）会话</b></td><td><b style="color:var(--red)">跨越两个 AS</b></td></tr>
+  <tr><td><b>内部 BGP（iBGP）会话</b></td><td><b style="color:var(--red)">位于同一个 AS 内部</b></td></tr>
+  </table></div>
+  <b>⟹ BGP 不仅用于 AS 之间，<u>还运行在 AS 内部</u>，以确保外部路由信息在整个 AS 中正确传播。</b>
+  <b style="color:var(--red)">⚠️ 为避免路由信息丢失，BGP 要求 AS 内的<u>任意两台 BGP 路由器之间都建立 iBGP 会话</u>，但<u>不要求物理直连</u>（全连接的是「会话」不是「链路」）。</b></div>
+
+    <figure class="fig"><img src="图/NETch4/NET4_f20_BGP路由举例.png" alt="fig420">
+  <figcaption><b>图 4.20 BGP 路由的举例</b>。左上角有一张<b>三种线型的图例</b>：<u>实线＝物理连接、虚线＝ <b>iBGP 会话</b>、粗实线＝ <b>eBGP 会话</b></u>——<b style="color:var(--red)">这张图例是全图的钥匙，先看它再看图</b>。右边小云是 <b>AS1</b>（含 R1 与网络 <b>X</b>），左边大云是 <b>AS2</b>（含边界路由器 <b>R2</b> 与内部的 R3、R4、R5）。<b>R2 与 R1 之间是一条 eBGP 会话</b>（粗线，标着 <b>eBGP</b>），<b>AS2 内部 R2–R3、R2–R4、R2–R5 之间是三条 iBGP 会话</b>（虚线，各标 <b>iBGP</b>）。左下角画着 R4 那张待填的路由表：<u>「前缀匹配 X ｜ 下一跳 <b>?</b>」</u>，旁边气泡写着 R4「收到 <b>X, AS1, R1</b>」。⭐ <b style="color:var(--red)">整张图就是在问那个问号该填什么</b>——<u>答案不是 R1（在别的 AS 里，够不着），而是<b>先解析出必须经 R2，再用 IGP 算出到 R2 的下一跳 R3</b></u>。<b>另外注意：iBGP 的虚线是<u>会话</u>不是链路，R2–R5 之间并没有物理直连——这正是「iBGP 要求两两建会话但不要求物理直连」的图示。</b></figcaption></figure>
+
+  <div class="mine"><span class="tag">我的补讲 · 图 4.20 那个例子在讲什么：BGP 路由要「翻译」两次才能进路由表</span>
+  <b>书上说 X</b>：AS2 的内部路由器 R4 收到一条 BGP 路由「X，AS-PATH＝AS1，NEXT-HOP＝R1」，最后在路由表里写下 <code>&lt;X, R3&gt;</code>。<br>
+  <b>潜台词是 Y</b>：<u>从「NEXT-HOP＝R1」到「下一跳写 R3」中间隔着<b>两次翻译</b></u>，这正是本例的全部要点：
+  <ol>
+  <li><b>第一次翻译（NEXT-HOP 解析）</b>：<b style="color:var(--red)">R1 在 AS1 里，AS2 的内部路由器根本无法直接把分组发给它</b>；
+  R4 知道 R1 是自己的 eBGP 对等方 <b>R2</b> 的邻居 ⟹ <u>要去 R1，必须先到 R2</u>，路径变成「R2→R1→X」。</li>
+  <li><b>第二次翻译（IGP 查找）</b>：<b>R4 再用<u>内部网关协议</u>（RIP/OSPF）算出「我到 R2 的最优路径」</b>，
+  假设查得下一跳是 <b>R3</b> ⟹ 于是在路由表里写 <b><code>&lt;X, R3&gt;</code></b>。</li>
+  </ol>
+  <b>最终转发路径：<u>R4 → R3 → R2 → R1 → X</u></b>（<u>同理 R3 的表里会写 <code>&lt;X, R2&gt;</code></u>）。<br>
+  <b>所以能考 Z</b>：<b style="color:var(--red)">每个路由器收到新的 BGP 路由通告后，都要执行「NEXT-HOP 解析 + IGP 查找」两步，才能把路由正确写入本地路由表。</b>
+  <u>2013 与 2024 两道综合真题都在考这个「BGP 给方向、IGP 给下一跳」的分工。</u><br>
+  ⭐ <b>一句话记法：<u>BGP 负责「出了本 AS 该往哪个 AS 走」，IGP 负责「在本 AS 内部怎么走到出口」</u>——两者接力，缺一不可。</b></div>
+
+  <div class="key"><span class="tag">必记 · BGP 路由选择的四条原则（<span style="color:var(--red)">按优先级从高到低，顺序必背</span>）</span>
+  <div class="tabwrap"><table>
+  <tr><th>优先级</th><th>原则</th><th>说明与书上给的反例</th></tr>
+  <tr style="background:var(--amber-soft)"><td><b>1</b></td><td><b>本地偏好 LOCAL-PREF 最高</b></td><td>其值<b>由管理员根据政治或经济策略设置</b>（图 4.21：高速链路设 300、低速设 200 ⟹ 全部流量走高速那条）。<b style="color:var(--red)">⚠️ 即使高速链路过载，BGP 也不会自动切一部分到空闲的低速链路。</b></td></tr>
+  <tr><td><b>2</b></td><td><b>AS-PATH 最短（AS 跳数最少）</b></td><td>图 4.22：AS1→AS2→AS3→AS5（经 2 个 AS）vs AS1→AS4→AS5（经 1 个）⟹ 选后者。<b style="color:var(--red)">⚠️ 但 AS4 若是个很大的 AS，分组在它内部要转发更多次，反而更慢——<u>AS 跳数最少未必最好</u>。</b></td></tr>
+  <tr><td><b>3</b></td><td><b>热土豆路由选择</b></td><td><b>让分组经过最少的转发次数<u>离开本 AS</u></b>（像扔掉烫手的土豆）。<u>此时要用 IGP 来算，<b style="color:var(--red)">不同路由器算出的结果不同</b></u>：图 4.23 中 R1 选 R4（走路由 2），R2 选 R3（走路由 1）。</td></tr>
+  <tr><td><b>4</b></td><td><b>BGP 标识符数值最小</b></td><td>BGP 报文首部的 BGP 标识符是运行 BGP 的路由器的唯一标识；前三条都定不下来时用它<b>兜底</b></td></tr>
+  </table></div>
+  <b>⭐ 口诀：<span style="color:var(--red)">偏好 → 跳数 → 热土豆 → 标识符</span></b>
+  （<u>「先听老板的（策略），再看远近（AS 数），再看谁能最快甩出去（热土豆），最后按编号（标识符）」</u>）。</div>
+
+    <figure class="fig"><img src="图/NETch4/NET4_f21_23_BGP选路三例.png" alt="fig421-23">
+  <figcaption><b>图 4.21 / 4.22 / 4.23——BGP 选路前三条原则的三个例子，竖排在一起对照看。</b><br><b>【上·图 4.21 本地偏好】</b> AS1 里 R1 与 R2 通过 iBGP 相连：<b>R1 走「高速链路」到 AS2，标 <code>LOCAL-PREF ＝ 300</code></b>；<b>R2 走「低速链路」到 AS3，标 <code>LOCAL-PREF ＝ 200</code></b>；AS2、AS3 都能到 AS4。<u>300 &gt; 200 ⟹ <b>所有发往 AS4 的流量都从 R1 离开</b></u>。<b style="color:var(--red)">⚠️ 图上那条低速链路即使完全空闲、高速链路已经过载，BGP 也不会自动分流——这是 LOCAL-PREF 的代价。</b><br><b>【中·图 4.22 AS 跳数】</b> 从 AS1 到 AS5 有两条弧：<b>上弧经 AS2→AS3（标「经过 2 个 AS」）</b>，<b>下弧只经 AS4（标「优先选择经过 1 个 AS 的 BGP 路由」）</b> ⟹ 选下弧。<b style="color:var(--red)">⚠️ 但请看图上的 AS4——它被画成一朵<u>塞满了路由器的大灰云</u>，内部要转发好多跳。这就是书上那句「AS 跳数最少的路由未必是最好的」的图证。</b><br><b>【下·图 4.23 热土豆】</b> AS1 内 <b>R1—R2—R3</b> 与 <b>R1—R4</b>，<u>各段开销都标着 <b>1</b></u>；<b>路由 1 经 R3→AS2→AS3</b>，<b>路由 2 经 R4→AS4→AS3</b>。<u>两条路由的偏好与 AS 数都相同 ⟹ 各路由器<b>各自选「离本 AS 出口最近」的那条</b></u>：<b>R1 到 R4 只要 1 跳 ⟹ 选路由 2；R2 到 R3 只要 1 跳 ⟹ 选路由 1</b>。<b style="color:var(--red)">⭐ 同一个 AS 里的两台路由器选了不同的 BGP 路由——这正是热土豆算法「结果因路由器而异」的含义。</b><br>🔍 <b style="color:var(--red)">顺带记一处书误</b>：<u>图 4.23 里两条路由的标注印成了「<b>BPG</b> 路由 1／2」，正文里写的是「BGP 路由 1／2」——<b>是图上把 BGP 拼成了 BPG</b></u>（dpi 400 复核过）。<b>不影响做题，看到别以为是新名词。</b></figcaption></figure>
+
+  <div class="key"><span class="tag">必记 · BGP 的四种报文与两个时间常数　<span class="exam">2024</span></span>
+  <b>刚启动时会话两端交换<u>完整的 BGP 路由表</u>；此后<u>仅在路由发生变化时发送更新部分</u></b>（<u>节省带宽、降低处理开销</u>）。
+  <div class="tabwrap"><table>
+  <tr><th>#</th><th>报文</th><th>作用</th></tr>
+  <tr><td>1</td><td><b>Open（打开）</b></td><td>与对等方<b>建立关系</b>、使通信初始化、<b>协商协议参数</b></td></tr>
+  <tr style="background:var(--amber-soft)"><td>2</td><td><b>Update（更新）</b></td><td><b style="color:var(--red)">BGP 的核心</b>：通告某一路由的信息，以及列出要撤销的多条路由</td></tr>
+  <tr><td>3</td><td><b>Keepalive（保活）</b></td><td><b>周期性证实与对等方的连通性</b></td></tr>
+  <tr><td>4</td><td><b>Notification（通知）</b></td><td>发送<b>检测到的差错</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⚠️ 一条极容易忽略的规定：撤销路由可以<u>一次撤销多条</u>，但新增路由时<u>每个更新报文只能增加一条</u>。</b><br>
+  <b>时间常数</b>：<b>Keepalive 发送间隔 <u>60s</u>，保持时间 <u>180s</u>（<span style="color:var(--red)">前者恰是后者的 1/3</span>）</b>；
+  <u>每收到任意 BGP 报文，保持时间计时器就重置为 0；若在保持时间内没收到任何 BGP 报文，就认为对等方失效、关闭连接。</u><br>
+  <u>建立流程：<b>先建 TCP 连接 → 交换 Open 报文（相互识别、协商参数）→ 接受方返回 Keepalive 报文 → 会话建立</b>。</u></div>
+
+  <div class="key"><span class="tag">必记 · ⭐⭐ 表 4.6 三种路由协议的比较（<span style="color:var(--red)">本章最该默写的一张表</span>）</span>
+  <div class="tabwrap"><table>
+  <tr><th>协议</th><th style="color:var(--amber)">RIP</th><th style="color:var(--blue)">OSPF</th><th style="color:var(--green)">BGP</th></tr>
+  <tr><td><b>类型</b></td><td>内部（IGP）</td><td>内部（IGP）</td><td><b style="color:var(--red)">外部（EGP）</b></td></tr>
+  <tr><td><b>路由算法</b></td><td><b>距离向量</b></td><td><b>链路状态</b></td><td><b style="color:var(--red)">路径向量</b></td></tr>
+  <tr style="background:var(--amber-soft)"><td><b>传递协议</b></td><td><b>UDP</b>（端口 520，应用层协议）</td><td><b>IP</b>（协议号 89，网络层协议）</td><td><b>TCP</b>（端口 179，应用层协议）</td></tr>
+  <tr><td><b>路径选择</b></td><td><b>跳数最少</b></td><td><b>代价最低</b></td><td><b style="color:var(--red)">较好，非最佳</b></td></tr>
+  <tr><td><b>交换节点</b></td><td>和本节点相邻的路由器</td><td><b style="color:var(--red)">网络中的所有路由器</b></td><td>和本节点相邻的路由器</td></tr>
+  <tr><td><b>交换内容</b></td><td>当前本路由器知道的<b>全部信息（自己的路由表）</b></td><td>与本路由器相邻的<b>所有路由器的链路状态</b></td><td><b>首次：整个路由表；非首次：有变化的部分</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⭐ 六行里最常单独出题的是第三行（传递协议）与第五行（交换节点）。</b>
+  <u>第三行的记法：<b>「RIP 走 U（UDP）、OSPF 走 I（IP）、BGP 走 T（TCP）」——UIT 三个字母，按 R-O-B 的顺序念一遍就记住了。</b></u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 三协议对照表的「反向出题法」：命题人只会这四种换法</span>
+  <b>把表 4.6 的每一格拆开，能造出的错误选项其实只有四类</b>，认出套路就不会被绕：
+  <div class="tabwrap"><table>
+  <tr><th>换法</th><th>典型错项</th><th>反驳</th></tr>
+  <tr><td><b>① 交换传递协议</b></td><td>「OSPF 使用 UDP 传送」「RIP 直接封装在 IP 中」「BGP 使用 UDP」</td><td><b style="color:var(--red)">UDP-IP-TCP 顺序不能乱；OSPF 是唯一直接坐在 IP 上的</b></td></tr>
+  <tr><td><b>② 交换类型</b></td><td>「BGP 是内部网关协议」「OSPF 用于 AS 之间」</td><td><b>只有 BGP 是外部的</b></td></tr>
+  <tr><td><b>③ 交换算法</b></td><td>「OSPF 基于距离向量」「RIP 基于链路状态」「BGP 基于链路状态」</td><td><b style="color:var(--red)">DV / LS / 路径向量三者一一对应，BGP 是独一份的路径向量</b></td></tr>
+  <tr><td><b>④ 交换「和谁换」</b></td><td>「OSPF 只与相邻路由器交换信息」</td><td><b>OSPF 洪泛到<u>全区域所有</u>路由器</b>；<u>只与邻居换的是 RIP 和 BGP</u></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⚠️ 第 ④ 类最阴</b>：<u>OSPF 的洪泛<b>动作</b>确实是「发给相邻路由器」，但<b>结果</b>是全区域每台都收到</u>——
+  <b>题目问「向谁发送信息」时，OSPF 的标准答案是「本自治系统中的所有路由器」。</b><br>
+  ⭐ <b>我的自测法：把表 4.6 蒙住协议名那一行，只看六个属性，能不能倒着说出是哪个协议。</b>
+  <u>做得到，这一节的选择题就基本满分了。</u></div>
+
+  <div class="link"><span class="tag">知识串联 · 路由协议这一节，往三个方向各伸出一根线</span>
+  <span class="hub">端口</span> <b>RIP 走 UDP 520、BGP 走 TCP 179 → ch5 传输层</b>：
+  <u>把这两个端口号和 ch6 的 DNS 53、HTTP 80、FTP 20/21 放在同一张表里背，效率高得多</u>；
+  <b style="color:var(--red)">而「OSPF 没有端口号」这件事本身就是它是网络层协议的证据。</b><br>
+  <span class="hub">分块与映射</span> <b>AS 分层路由 ＝ 用层次结构压缩全局表规模</b>，
+  <u>与《组成原理》多级 Cache、《操作系统》多级页表是同一个套路</u>——
+  <b>OSPF 内部再划「区域」，等于在层次里又加了一层，动机完全一样：把洪泛/查找的范围关进一个小盒子。</b><br>
+  <span class="hub">洪泛</span> <b>OSPF 的洪泛法 ← ch3 3.5 的广播介质、← ch6 P2P 的查询扩散</b>：
+  <u>三处都要处理同一个问题——<b>怎么防止无限转发</b></u>。
+  <b style="color:var(--red)">OSPF 的答案是「不回传给刚发来的那台」＋ LSA 序号去重，这与 ch3 交换机的生成树、ch6 的 TTL 限制是同一族解法。</b><br>
+  <span class="hub">可靠传输</span> <b>「路由协议自己要不要做可靠传输」是一道很好的分层反思题</b>：
+  <u>OSPF 自己做（LSAck）· BGP 借 TCP · RIP 干脆不要</u>——<b>三种答案都对，因为三者对丢包的容忍度不同。</b></div>
