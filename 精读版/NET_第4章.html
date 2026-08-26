@@ -139,6 +139,20 @@
   <b style="color:var(--red)">但结论那一句必须停下来</b>：<u>「TCP/IP 的网络层向上只提供简单灵活的、无连接的、尽最大努力交付的数据报服务」</u>——
   <b>这一句 2011 年直接考成了一道选择题（答案 A：无连接、不可靠的数据报服务）。</b></div>
 
+  <div class="mine"><span class="tag">我的补讲 · 4.1 的 28 题里，有 7 道是我自编补位的——为什么要补</span>
+  <b>原书 4.1 节只有 21 道选择题，练习系统里是 28 道。多出来的 7 道<u>不是凑数</u></b>：
+  <div class="tabwrap"><table>
+  <tr><th>补的题</th><th>补它的理由</th></tr>
+  <tr><td><b>中继系统四层</b></td><td>原书只在正文列了四层，<b style="color:var(--red)">却没有一道题直接考它</b>——而它是 4.7.1 与 ch3 3.8 的公共底座</td></tr>
+  <tr><td><b>路由表 vs 转发表</b></td><td>书上专门用一段话区分，<b>正文讲了、习题没考</b>，但 4.7.3 又考了一次</td></tr>
+  <tr><td><b>虚电路三阶段时序</b></td><td>图 4.2 的时序图信息量很大，<u>只看不练记不住</u></td></tr>
+  <tr><td><b>数据报的四种坏事</b></td><td>「出错、丢失、重复、失序」<b style="color:var(--red)">要能一字不差列出</b>，且 4.8 疑难点 1 会扩成五条</td></tr>
+  <tr><td><b>SDN 三接口</b></td><td>2022 只考了南向接口，<u>另外两个也要能对上号</u></td></tr>
+  <tr><td><b>拥塞控制 vs 流量控制</b>、<b>开环 vs 闭环</b></td><td>这半页是 ch5 的总纲，<b>必须先在这里练熟</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 补位的判据只有一条：<u>正文明确讲了、后面还要用，但原书没出题的知识点</u>。</b>
+  <u>全章一共自编补位 14 题（原书 183 ⟹ 练习系统 197），4.1 这一节占了一半，因为它是全章概念最密集、习题最稀的一节。</u></div>
+
   <div class="key"><span class="tag">必记 · 尽最大努力交付＝允许发生四件坏事</span>
   网络层不保证可靠 ⟹ 分组可能<b>出错、丢失、重复、失序</b>（<u>四个词要能一字不差地列出来</u>）。
   <b>好处是：路由器可以做得<u>简单、廉价</u></b>，可靠性上移给传输层。
@@ -167,6 +181,13 @@
   <b>所以能考 Z</b>：<b>2011 真题问「TCP/IP 模型的网络层提供什么」，答案是<u>无连接、不可靠的数据报服务</u></b>——
   <u>哪怕你正在用 TCP 下载文件，网络层依旧是无连接的。</u>
   <b style="color:var(--red)">凡选项里出现「因为使用了 TCP，所以网络层是面向连接的」，一律错。</b></div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：「网关」这个词的历史包袱</span>
+  书上灰框说：<u>由于历史原因，许多有关 TCP/IP 的文献也<b>将网络层的路由器称为网关</b></u>。
+  <b>这段历史（早期 ARPANET 把所有互连设备统称 gateway，后来才细分）从不出题</b>，可以划过。
+  <b style="color:var(--red)">但有一个日常用语要因此对上号</b>：<u>你在配置网络时填的「<b>默认网关</b>」，填的其实是<b>路由器接口的 IP 地址</b>，不是什么第四层设备</u>——
+  <b>这个用法沿用的正是这段历史遗留的旧称呼。</b>
+  <u>而考纲意义上的「网关」指的是<b>网络层以上的中继系统</b>，用来连接高层协议不同的网络，两者不是一回事。</u></div>
 
   <div class="key"><span class="tag">必记 · 中继系统按层次分四种（本章第一张必背表）</span>
   <div class="tabwrap"><table>
@@ -285,6 +306,20 @@
 
     <figure class="fig"><img src="图/NETch4/NET4_f03_数据报转发分组.png" alt="fig43">
   <figcaption><b>图 4.3 数据报方式转发分组</b>（A→B）。主机 A 把 <b>P₁ 和 P₂</b> 逐个交给节点 A，<u>节点 A 查<b>转发表</b>后<b style="color:var(--red)">把两个分组送上了不同的路</b></u>：<b>P₁ 走 A→C→E→B</b>，<b>P₂ 走 A→D→…→B</b>，最后两者都到达主机 B。<b>每一跳都画了一条虚线 ACK 弧</b>（逐段确认，不是端到端确认）。⭐ <b>与图 4.2 对照着看，一眼就能记住表 4.1 的第三、四行</b>：<u>虚电路是<b>一串固定的斜条</b>，数据报是<b>一张分岔的网</b></u>——<b>分岔 ⟹ 各分组独立选路 ⟹ 可能失序到达</b>。<b style="color:var(--red)">⚠️ 别被 ACK 弧误导成「数据报也可靠」：那是相邻节点间的链路层确认，网络层依旧不保证端到端可靠。</b></figcaption></figure>
+
+  <div class="mine"><span class="tag">我的补讲 · 数据报的六条特点，其实是「无状态」推出来的六个推论</span>
+  <b>不必逐条背，抓住「<u>路由器不保存任何连接状态</u>」这一个前提，六条全能推出来</b>：
+  <div class="tabwrap"><table>
+  <tr><th>特点</th><th>怎么从「无状态」推出来</th></tr>
+  <tr><td>① 无须建立连接</td><td>没有状态要建立</td></tr>
+  <tr><td>② 每分组独立选路 ⟹ 可能失序</td><td><b style="color:var(--red)">没有状态记住「上一个分组走了哪条路」</b></td></tr>
+  <tr><td>③ 分组携带完整地址</td><td>没有状态可查，<b>每个分组只能自带全部信息</b></td></tr>
+  <tr><td>④ 存在排队时延与丢包</td><td>没有预留资源</td></tr>
+  <tr><td>⑤ 故障适应能力强</td><td><b style="color:var(--red)">节点挂了也没丢失什么状态</b>，换条路继续走</td></tr>
+  <tr><td>⑥ 资源利用率高</td><td>不为任何一条「连接」占着资源</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 反过来，虚电路的五条特点全是「有状态」的推论：要建立、要拆除、路径固定、故障敏感、首部可以省地址。</b>
+  <u>把表 4.1 的七行也套进这个框架，你会发现整张表就是「有状态 vs 无状态」的一次展开——<b>记一个词，答一整张表。</b></u></div>
 
   <div class="key"><span class="tag">必记 · 数据报服务的六个特点</span>
   <b>① 无须建立连接</b>，随时可发、随时可收。<br>
@@ -556,6 +591,20 @@
   ⭐ <b>书上还说了一句很重要的话</b>：<u>「读者应理解 IP 首部各字段的意义和功能，但<b>无须死记首部格式</b>，若题目需要通常会直接给出。」</u>
   <b>这个原则对 ch5 的 TCP/UDP 首部同样适用</b>——<u>把力气花在「哪个字段单位是几」上，而不是背图。</u></div>
 
+  <div class="link"><span class="tag">知识串联 · 「字段单位不是 1 字节」这件事，组原里天天遇到</span>
+  <span class="hub">编码</span> <b>IP 首部里三个长度字段单位各异，这在《组成原理》里是常态而非例外</b>：
+  <div class="tabwrap"><table>
+  <tr><th>场景</th><th>字段/地址的单位</th><th>换算</th></tr>
+  <tr><td><b>IP 首部长度</b>（本节）</td><td><b>4B（一个字）</b></td><td>字段值 × 4 ＝ 字节数</td></tr>
+  <tr><td><b>IP 片偏移</b>（本节）</td><td><b>8B</b></td><td>字段值 × 8 ＝ 字节数</td></tr>
+  <tr><td><b>组原：按字寻址的机器</b></td><td><b style="color:var(--red)">1 个字</b></td><td>地址 × 字长 ＝ 字节地址</td></tr>
+  <tr><td><b>组原：Cache 的块号</b></td><td><b>1 个块</b></td><td>块号 × 块大小 ＝ 起始字节</td></tr>
+  <tr><td><b>OS：页号</b></td><td><b>1 个页面</b></td><td>页号 × 页面大小 ＝ 起始地址</td></tr>
+  <tr><td><b>OS/组原：磁盘的扇区号</b></td><td><b>1 个扇区（512B）</b></td><td>扇区号 × 512 ＝ 字节偏移</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 六处的失分方式完全相同：<u>忘了乘那个系数</u>。</b>
+  <u>做题时的通用自查：看到一个「号」或「偏移」，先问一句「它以什么为单位」。</u></div>
+
   <div class="mine"><span class="tag">我的补讲 · 「4B / 1B / 8B」这三个单位，是本章计算题最大的失分点</span>
   <b>书上说 X</b>：三个长度字段的单位分别是 4B、1B、8B。<br>
   <b>潜台词是 Y</b>：<u>命题人知道你会算分片，所以他不在算法上为难你，<b>而在单位上为难你</b></u>——
@@ -616,6 +665,20 @@
   </table></div>
   <b style="color:var(--red)">⭐ 最后一行是「反向题」，2021 真题就是这么问的（给一片求原报）——很多人只练正向，一遇反向就懵。</b>
   <b>🐍 复算记录：2021 真题的那一片数据长 <u>796B</u>、<b>MF＝1</b>；2018 真题原报分成 <b>2 片</b>、第二片偏移 <b>97</b>（＝776÷8）——两题都与书答吻合。</b></div>
+
+  <div class="link"><span class="tag">知识串联 · 片偏移以 8B 为单位，是一次典型的「用精度换位宽」</span>
+  <span class="hub">编码</span> <b>为什么片偏移不直接用字节数？算一笔账就明白了</b>：
+  <pre class="fml">IP 数据报最大 65535B ⟹ 若片偏移直接记字节，需要 16 位
+  但首部里留给片偏移的只有 13 位（另外 3 位给了标志）
+
+  13 位能表示 0 ~ 8191 ⟹ 8192 × 8B = 65536B  ✔ 刚好够覆盖 65535B
+
+  ⟹ 代价：偏移只能是 8 的倍数 ⟹ 【除最后一片外，每片数据长度必须是 8 的倍数】</pre>
+  <b style="color:var(--red)">⟹ 那条「⌊(MTU−20)/8⌋×8」的向下取整，根子就在这 3 位标志占走的空间上。</b><br>
+  <span class="hub">分块与映射</span> <b>「用更粗的粒度换更短的字段」在 408 里到处都是</b>：
+  <u>组原的 Cache 用「块」而不是「字节」做映射单位；OS 的页表用「页」而不是「字节」做映射单位；
+  磁盘用「扇区/簇」而不是「字节」做分配单位</u>——
+  <b style="color:var(--red)">四者的代价也一模一样：粒度变粗 ⟹ 末尾会有浪费（内部碎片 / 最后一片不足 8B 的部分）。</b></div>
 
   <div class="key"><span class="tag">必记 · 分片三步法（本章第一条母公式，闭着眼睛也要会）</span>
   <pre class="fml">第 1 步 每片最大数据 = ⌊(MTU − 20) / 8⌋ × 8      ← 必须是 8 的倍数
@@ -730,6 +793,17 @@
   <b>前缀长度不再限于 1/2/3 位，而是 0～32 任选</b>；<u>于是「查表」也从「看头几位」升级成了 4.2.4 的<b>最长前缀匹配</b>。</u>
   <b style="color:var(--red)">分类编址 → CIDR 的这次演化，用一句话概括就是：从定长前缀码变成了变长前缀码。</b></div>
 
+  <div class="mine"><span class="tag">我的补讲 · 分类编址已经「退出历史舞台」，为什么还要考？</span>
+  <b>书上末尾那句「近年来随着无分类编址的广泛应用，这种传统分类的 IP 地址已逐渐退出历史舞台」，
+  常让人产生「那还背它干什么」的疑问。三条理由</b>：
+  <ol>
+  <li><b style="color:var(--red)">它是理解 CIDR 的台阶</b>：<u>不知道「A 类默认 /8、B 类 /16、C 类 /24」，就体会不到 CIDR「前缀可任意长」的价值</u>。</li>
+  <li><b style="color:var(--red)">真题里仍然大量出现</b>：<u>题干常写「某单位有一个 C 类地址块」，你必须立刻知道那是 /24、有 254 个可用地址</u>。</li>
+  <li><b>私有地址块的描述依赖它</b>：<u>「172.16.0.0/12 相当于 16 个连续的 <b>B 类</b>网络」——不懂 B 类就读不懂这句话</u>。</li>
+  </ol>
+  <b>⟹ 结论：<u>分类编址作为「地址分配制度」已死，作为「描述地址规模的语言」还活着。</u></b>
+  <b style="color:var(--red)">背它的目的不是拿它去划子网，而是听懂题干。</b></div>
+
   <div class="key"><span class="tag">必记 · 五类地址的首位模式与第一字节范围</span>
   <div class="tabwrap"><table>
   <tr><th>类</th><th>首位模式</th><th>第一字节范围</th><th>网络号位数</th><th>主机号位数</th></tr>
@@ -753,6 +827,40 @@
   <b style="color:var(--red)">⚠️ 第 2 步是全章最高频的失分点</b>：<u>教材 15 题的干扰项就是「末字节是 255 所以是广播地址」——
   <b>在 /23 这样的掩码下，x.x.1.255 可能只是一台<u>普通主机</u>；反过来在 /26 下，x.x.x.63 才是广播地址</b></u>。
   <b>🐍 我复算过 11 道涉及子网/广播地址的教材题，全部吻合；错的人错的几乎都在这一步。</b></div>
+
+  <div class="link"><span class="tag">知识串联 · 「全 0 表示本身、全 1 表示全体」是一条跨越三科的编码惯例</span>
+  <span class="hub">编码惯例</span> <b>五个特殊地址里有四个都在用同一条惯例，认出它就不用逐条背</b>：
+  <div class="tabwrap"><table>
+  <tr><th>模式</th><th>本章的例子</th><th>别处的同类</th></tr>
+  <tr><td><b>全 0 ＝ 「这个/本身」</b></td><td>主机号全 0 ＝ <b>本网络</b>；32 位全 0 ＝ <b>本主机</b></td><td>组原里全 0 常表示「无效/空」；OS 里 0 号进程/空指针</td></tr>
+  <tr><td><b>全 1 ＝ 「全体」</b></td><td>主机号全 1 ＝ <b>本网广播</b>；32 位全 1 ＝ <b style="color:var(--red)">受限广播</b></td><td><b>ch3 的 MAC 广播地址 FF-FF-FF-FF-FF-FF</b>；组原里全 1 掩码表示「全选」</td></tr>
+  <tr><td><b>专留一段做自测</b></td><td><b>127.×.×.× 环回</b></td><td><b>IPv6 的 ::1</b>；组原里的自检模式</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 惯例记住后，「为什么每网主机数要减 2」也就不用背了——首尾两个值被这条惯例征用了。</b><br>
+  <span class="hub">编码惯例</span> ⚠️ <b>唯一打破惯例的是 <u>/31</u></b>（新标准的点对点链路）：
+  <u>它<b>不保留</b>网络地址与广播地址，两个地址全给接口用</u>——
+  <b>因为一条点对点链路上「广播」和「单播」是一回事，惯例在这里失去了意义。</b>
+  <b style="color:var(--red)">（⚠️ 但统考真题仍用 /30 的旧口径，见 4.2.2。）</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 0.0.0.0 与 255.255.255.255 是一对，别只记一个</span>
+  <b>2017 真题考的是 0.0.0.0，但它和 255.255.255.255 是配套出现的，一起记才不容易混</b>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>0.0.0.0</th><th>255.255.255.255</th></tr>
+  <tr><td><b>含义</b></td><td><b>本网络上的本主机</b></td><td><b>受限广播地址</b></td></tr>
+  <tr><td><b>能作源地址吗</b></td><td><b style="color:var(--red)">只能作源</b></td><td>不能</td></tr>
+  <tr><td><b>能作目的地址吗</b></td><td><b style="color:var(--red)">不能</b></td><td><b style="color:var(--red)">只能作目的</b></td></tr>
+  <tr><td><b>典型场景</b></td><td><b>DHCP Discover / Request 的源地址</b>（客户还没有 IP）</td><td><b>DHCP 四步报文的目的地址</b></td></tr>
+  <tr><td><b>路由器会转发吗</b></td><td>—</td><td><b style="color:var(--red)">不会</b>（「受限」二字的含义：仅在本网络内广播）</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 两者恰好在 DHCP 的第一步里同时出现：<code>S = 0.0.0.0 , D = 255.255.255.255</code>——一个只能当源、一个只能当目的，配得严丝合缝。</b>
+  <u>⚠️ 再加上 4.5 的 D 类多播地址「只能作目的」，就凑齐了三个「单向地址」，教材 04 题正是把它们放在一道里考。</u></div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：ICANN 与地址分配的行政体系</span>
+  书上提到 <u>IP 地址的分配由<b>互联网名字与数字分配机构（ICANN）</b>统一管理</u>。
+  <b>ICANN 的组织架构、五大区域注册机构（RIR）、地址申请流程等，考纲完全没有涉及</b>，看过即可。
+  <b style="color:var(--red)">唯一需要留下的印象是「地址是被<u>集中分配</u>的、且分配时讲究连续」</b>——
+  <u>这一点到 4.2.2 讲<b>路由聚合</b>时会突然变得重要：<b>只有连续分配的地址块才聚合得起来</b>。</u>
+  <b>换句话说，这段行政背景唯一的考试价值，是解释了「为什么现实中的地址块常常恰好能聚合」。</b></div>
 
   <div class="key"><span class="tag">必记 · 五个特殊 IP 地址（不能用作普通主机地址）</span>
   <div class="tabwrap"><table>
@@ -836,6 +944,22 @@
   ⭐ <b>第二个推论同样值钱</b>：<u>既然路由器每个接口都在<b>不同的网络</b>里，那么「一台路由器连了 k 个网段」就意味着<b>要划出 k 个子网</b></u>——
   <b>点对点链路两端也是两个接口，因此那条链路本身也算<u>一个网络</u>，需要一个 /30 地址块</b>（见下文）。
   <b style="color:var(--red)">很多人算子网时漏掉的正是「路由器之间那条线也要一个子网」。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「路由器至少有两个 IP」这句话，是数子网时的第二把尺</span>
+  <b>前面讲过「数子网＝数广播域」，这句话给了另一个等价的数法</b>：
+  <pre class="fml">路由器的【每个已启用接口】都在一个不同的网络里
+   ⟹ 一台路由器接了 k 条线，就意味着有 k 个不同的网络
+
+  校验方法：把所有路由器的已用接口数加起来，
+           减去【两台路由器共享的那条点对点链路被数了两次】的重复量
+           = 网络（子网）总数</pre>
+  <div class="tabwrap"><table>
+  <tr><th>拓扑</th><th>接口数合计</th><th>去重</th><th>子网数</th></tr>
+  <tr><td>1 台路由器接 3 个部门</td><td>3</td><td>—</td><td><b>3</b></td></tr>
+  <tr><td>2 台路由器各接 2 个部门 + 互连 1 条线</td><td>3 + 3 ＝ 6</td><td><b style="color:var(--red)">互连线被两端各数一次 ⟹ 减 1</b></td><td><b>5</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 两把尺子（数广播域 / 数接口去重）互为校验，综合题开局用两种方法各数一遍，几乎不会漏。</b>
+  <u>2019 真题的答案就是这么验出来的：设备 1 是路由器、有 3 个接口 ⟹ 三个网络（LAN1、LAN2、与 R 之间的 /30 链路）。</u></div>
 
   <div class="link"><span class="tag">知识串联 · IP 地址 vs MAC 地址：408 最经典的一组跨层对照</span>
   <span class="hub">寻址</span> <b>「④ IP 是逻辑地址，与 MAC 无关」这句话，把 ch3 与本章缝在了一起</b>：
@@ -955,6 +1079,29 @@
 
   <p><b>无分类域间路由选择 CIDR</b> 是一种基于<b>可变长子网掩码</b>的地址分配与路由聚合机制，用来消除 A/B/C 类地址的限制、提升地址空间利用率。<b>核心思想：不再区分网络类别，改用「网络前缀」标识网络部分</b>，前缀长度（掩码中连续 1 的个数）可任意指定，<u>不再局限于 8/16/24 位</u>。</p>
 
+  <div class="link"><span class="tag">知识串联 · CIDR 与 NAT 谁更「治本」？三种方案的定位一次说清</span>
+  <span class="hub">地址耗尽</span> <b>4.3 开头会正式回答这个问题，但在 4.2 就该先立起这张表</b>：
+  <div class="tabwrap"><table>
+  <tr><th>方案</th><th>做法</th><th>治标还是治本</th><th>副作用</th></tr>
+  <tr><td><b>CIDR / VLSM</b></td><td><b>按需切块，减少浪费</b></td><td><b>治标</b>（延缓）</td><td>要求地址<b>连续分配</b>才能聚合</td></tr>
+  <tr><td><b>NAT</b></td><td><b>多台共用一个公网 IP</b></td><td><b>治标</b>（延缓）</td><td><b style="color:var(--red)">破坏端到端透明性；外部无法主动连入</b></td></tr>
+  <tr><td><b>IPv6</b></td><td><b>地址加长到 128 位</b></td><td><b style="color:var(--red)">治本</b></td><td>与 IPv4 <b>不兼容</b>，只能靠双协议栈/隧道过渡</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 书上原话：<u>「前两种方法只是延缓了 IPv4 的使用寿命，只有第三种能从根本上解决 IP 地址耗尽问题」</u>——这是一道现成的选择题。</b>
+  <u>⭐ 三个方案分别落在 4.2.2、4.2.3、4.3 三节，正好是本章的一条主线：<b>先省着用，再挤着用，最后换掉。</b></u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「地址块总数一定是 2 的幂」——这条能一秒排掉错误选项</span>
+  <b>书上说 X</b>：CIDR 地址块的地址总数一定是 2 的整数次幂。<br>
+  <b>潜台词是 Y</b>：<u>凡是选项里出现<b>不是 2 的幂</b>的「地址总数」，或者<b>不是 2<sup>n</sup>−2</b> 的「可用主机数」，一律可以直接排除</u>。
+  <div class="tabwrap"><table>
+  <tr><th>选项里的数</th><th>判定</th></tr>
+  <tr><td>256 / 128 / 64 / 32 / 16 / 8 / 4</td><td><b>可能是「地址总数」</b>✔</td></tr>
+  <tr><td><b>254 / 126 / 62 / 30 / 14 / 6 / 2</b></td><td><b style="color:var(--red)">可能是「可用主机数」</b>✔</td></tr>
+  <tr><td>100 / 200 / 50 / 60</td><td><b style="color:var(--red)">两者都不可能</b> ✗（既不是 2 的幂，也不是 2<sup>n</sup>−2）</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 考场上先扫一眼四个选项的数值形态，往往能直接砍掉一半。</b>
+  <u>⚠️ 唯一的例外是题目问「<b>还能再连多少台</b>」——那是在 2<sup>n</sup>−2 的基础上又减去了已用数，结果可以是任意数（如 2018 真题的 45）。</u></div>
+
   <div class="mine"><span class="tag">我的补讲 · CIDR 题的四个标准问法，答案都从同一组数推出来</span>
   <b>拿到「a.b.c.d/n」，先算出<u>三个数</u>，四类问法就都能答</b>：
   <pre class="fml">主机位 h = 32 − n        块大小 = 2^h        怪字节 = 256 − (块大小 mod 256)
@@ -972,6 +1119,14 @@
   </table></div>
   <b style="color:var(--red)">⚠️ 第二问的变体最坑：「该网络<u>还能再连多少台</u>主机」——要在 2<sup>h</sup>−2 的基础上<u>再减去已用的主机数和路由器接口数</u>。</b>
   <u>2018 真题就是这么问的：126 − 80 − 1 ＝ <b>45</b>（🐍 已复算，与书答吻合）。</u></div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：CIDR 名字里的「域间路由选择」是怎么回事</span>
+  <b>CIDR 全称「无分类<u>域间路由选择</u>」（Classless Inter-Domain Routing）</b>，
+  <u>名字里的「域间路由选择」指的是它最初的动机——<b>压缩主干网路由表</b>，而不是「给单位划子网」</u>。
+  <b>这段命名由来与它的历史（1993 年 RFC1519）不会出题。</b>
+  <b style="color:var(--red)">但它提醒了一件对做题有用的事</b>：<u>CIDR 有<b>两个面孔</b>——
+  对外是<b>聚合</b>（少几条路由），对内是<b>划分</b>（多切几个子网）</u>；
+  <b>书上把它们概括为「外部聚合、内部细分」，这八个字才是要记的部分。</b></div>
 
   <div class="key"><span class="tag">必记 · 斜线记法与地址块的四件事</span>
   <b>CIDR 结构：IP 地址 ::= {&lt;网络前缀&gt;, &lt;主机号&gt;}</b>，写作 <b>「IP 地址/前缀长度」</b>。
@@ -1055,6 +1210,21 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   </table></div>
   <b style="color:var(--red)">⟹ 三者的收益都来自「地址空间的<u>连续性</u>」：相邻的东西往往去同一个地方，于是可以打包处理。</b>
   <u>这也解释了为什么<b>地址分配必须连续</b>——不连续就聚合不了，ISP 分配地址块时最看重的就是这一点。</u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 聚合与「最长前缀匹配」是一对矛盾，考试专挑矛盾处下手</span>
+  <b>这两件事在本章相邻的两小节里出现，方向却相反</b>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>路由聚合</th><th>最长前缀匹配</th></tr>
+  <tr><td><b>方向</b></td><td><b style="color:var(--red)">把前缀变<u>短</u></b>（多条合一条）</td><td><b style="color:var(--red)">优先选前缀<u>长</u>的那条</b></td></tr>
+  <tr><td><b>目的</b></td><td>压缩路由表规模</td><td>保证转发精确</td></tr>
+  <tr><td><b>谁在用</b></td><td>上游路由器（对外通告时）</td><td>每台路由器（查表时）</td></tr>
+  </table></div>
+  <b>⟹ 两者<u>不矛盾</u>，因为它们发生在不同的时刻：<b style="color:var(--red)">聚合是「怎么把表建小」，最长匹配是「表建好后怎么查」。</b></b><br>
+  <b style="color:var(--red)">⚠️ 但命题人偏要制造矛盾场景，这就是 2013 综合真题的设计</b>：
+  <u>表里既有一条聚合出来的 <b>/23</b>，又有一条更具体的 <b>/25</b>，两条都能匹配同一个目的地址</u>
+  ⟹ <b>必须走 /25</b>（<u>更具体的优先，聚合路由让位</u>）。
+  <b>这种「例外路由」在真实网络里非常常见：先聚合一大块，再对其中个别小块单独开一条更长前缀的路由。</b>
+  <b>🐍 该题裁决过程已复算，与书答吻合。</b></div>
 
   <div class="key"><span class="tag">必记 · 路由聚合三步法（本章第三条母套路）</span>
   <pre class="fml">第 1 步 找出这些网络地址【完全相同】的前几段，原样保留
@@ -1283,6 +1453,20 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b>无须保留网络地址与广播地址</b>，两个地址全部可用，实现零浪费。</u><br>
   <b style="color:var(--red)">⟹ 考场上一律按 /30 作答；/31 只在题目明确提到「新标准」时才用。</b></div>
 
+  <div class="mine"><span class="tag">我的补讲 · 2025 最新真题：变长子网 + 卫星链路 + GBN，三章合考</span>
+  <b>这是目前最新的一道综合真题（本章 4.2 综 18），也是<u>跨章程度最高</u>的一道</b>：
+  <div class="tabwrap"><table>
+  <tr><th>问</th><th>考的是哪一章</th><th>要点</th></tr>
+  <tr><td>①</td><td><b>ch1 / ch2</b></td><td><b style="color:var(--red)">卫星链路的传播时延</b>——单程 ≈ 数百 ms，是本题所有计算的底数</td></tr>
+  <tr><td>②</td><td><b style="color:var(--red)">ch3（GBN）</b></td><td>由 RTT 与发送时延反推<b>发送窗口 W<sub>s</sub></b> 与序号位数 <b>k</b></td></tr>
+  <tr><td>③</td><td><b>本章 4.2.2</b></td><td><b>变长子网划分</b>：按各部门需求切块、写出 CIDR 与地址范围</td></tr>
+  </table></div>
+  <b>🐍 复算记录：本题的关键数字是 <b>400 ms</b>（往返）与 <b>W<sub>s</sub> ≥ 8、k ＝ 4</b>，与书答吻合。</b><br>
+  <b style="color:var(--red)">⟹ 这道题印证了王道复习提示那句话：「结合第 3 章、第 5 章、第 6 章出综合题的概率很大」。</b>
+  <u>它也说明一件事：<b>本章的子网划分几乎从不单独出大题，总是和别的章拼在一起</b>——
+  所以复习时不能只练「切子网」，还要保证 ch3 的窗口计算不掉链子。</u><br>
+  ⭐ <b>同一模子的另外两道：<u>2022（设备选型 + <b>ch3 最短帧长</b> + DHCP + <b>ch3 802.11</b>）· 2019（设备选型 + NAT + 广播地址 + <b>ch3 冲突域</b>）</u>。</b></div>
+
   <div class="mine"><span class="tag">我的补讲 · 「点对点链路也是一个网络」，这是子网题最常见的漏项</span>
   <b>书上说 X</b>：点对点链路分配一个 /30 地址块。<br>
   <b>潜台词是 Y</b>：<u>一条只连了两个路由器接口、上面一台主机都没有的线，<b>在 IP 的世界里也是一个完整的「网络」</b></u>——
@@ -1316,6 +1500,18 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   ⭐ <b>记忆钩子：三块的大小依次是 <u>1 个 A 类 · 16 个 B 类 · 256 个 C 类</u></b>，
   <u>三个数字 1 / 16 / 256 正好是 2<sup>0</sup> / 2<sup>4</sup> / 2<sup>8</sup>，与三个前缀 /8 /12 /16 一一对应（8+0＝8、12+4＝16、16+8＝24，都补齐到各自类别的网络号长度）。</u></div>
 
+  <div class="link"><span class="tag">知识串联 · 「可重用地址」的思想，在 OS 与组原里叫「虚拟地址空间」</span>
+  <span class="hub">虚拟化</span> <b>私有地址能在无数个专用网里重复使用，这件事的结构和你早就学过的东西一模一样</b>：
+  <div class="tabwrap"><table>
+  <tr><th>场景</th><th>内部用什么地址</th><th>对外怎么呈现</th><th>谁做翻译</th></tr>
+  <tr><td><b>NAT 专用网</b>（本节）</td><td><b>私有 IP</b>（各网可重复）</td><td>一个<b>全球 IP</b></td><td><b style="color:var(--red)">NAT 路由器 + 转换表</b></td></tr>
+  <tr><td><b>OS 的进程</b></td><td><b>虚拟地址</b>（每个进程都从 0 开始）</td><td>物理内存的某些页框</td><td><b style="color:var(--red)">MMU + 页表</b></td></tr>
+  <tr><td><b>组原的逻辑地址</b></td><td>逻辑地址</td><td>物理地址</td><td>地址转换部件</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 三者的结构完全同构：<u>内部各用各的一套编号（可重复）＋ 一张转换表 ＋ 一个负责翻译的中间件</u>。</b>
+  <u>连「表满了怎么办」「表项什么时候回收」这些工程问题都一样。</u>
+  <b>⭐ 想不起 NAT 表长什么样时，就想页表：<b>内网 IP:端口 ≈ 虚页号，全球 IP:端口 ≈ 页框号。</b></b></div>
+
   <div class="key"><span class="tag">必记 · 三个私有 IP 地址块（<span style="color:var(--red)">172 那一行是经典陷阱</span>）</span>
   <div class="tabwrap"><table>
   <tr><th>地址块</th><th>范围</th><th>相当于</th></tr>
@@ -1347,6 +1543,17 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   ③ 「ICMP 没有端口号，NAT 怎么办」——<u>用 ICMP 报文里的标识符字段代替端口</u>（了解即可）。</b>
   <u>⭐ 因为要看端口，NAT 才成了 408 里唯一一个「跨层」的网络层设备。</u></div>
 
+  <div class="mine"><span class="tag">我的补讲 · 动态 NAT 与静态映射，考的是「谁先发起连接」</span>
+  <b>书上把两者分开讲，差别只有一处：<u>映射表项是怎么产生的</u></b>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>动态 NAT</th><th>静态映射</th></tr>
+  <tr><td><b>表项怎么建</b></td><td><b style="color:var(--red)">内网主机主动外连时自动创建</b>，一段时间后自动清除</td><td><b style="color:var(--red)">管理员手工配置</b>，长期有效</td></tr>
+  <tr><td><b>谁能先发起</b></td><td><b>只能内网先发起</b></td><td><b style="color:var(--red)">外网可以主动访问内网</b></td></tr>
+  <tr><td><b>典型用途</b></td><td>员工上网</td><td><b>内网的 Web／FTP 服务器对公网提供服务</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 判据一句话：<u>「外网要能主动找进来」⟹ 必须静态映射</u>；「只是内网出去逛」⟹ 动态就够。</b>
+  <b>2020 综合真题正是拿这一条出题：题干把 Web 服务器放在 NAT 之后，问要做什么配置——答案必须写「<u>在 NAT 转换表中手工配置公网 IP+端口 到 内网 IP+端口 的静态映射</u>」。</b></div>
+
   <div class="key"><span class="tag">必记 · NAT 的四步（图 4.9，2020 综合真题就是把这四步做了两遍）</span>
   <b>场景</b>：家庭宽带获得全球 IP <b>138.76.29.7</b>，内部主机 10.0.0.1／2／3，网关 LAN 侧 10.0.0.4；
   主机 <b>10.0.0.1</b> 用源端口 3345 访问 Web 服务器 <b>128.119.40.186:80</b>。
@@ -1372,6 +1579,20 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   </table></div>
   <b style="color:var(--red)">⟹ 第二条是 2020 真题的题眼：题目让内网 Web 服务器对公网提供服务，答案必须提到「在 NAT 表中<u>手工配置静态映射</u>」。</b>
   <u>⭐ 顺带记一句反直觉的结论：<b>NAT 「提升安全性」和「破坏透明性」是同一件事的两面</b>——外面进不来，既是保护，也是限制。</u></div>
+
+  <div class="link"><span class="tag">知识串联 · NAT 让「网络层设备」这个标签第一次失效</span>
+  <span class="hub">分层</span> <b>408 里判断「某设备工作在哪一层」，靠的是「它读写到第几层的首部」。NAT 打破了这条整齐的划分</b>：
+  <div class="tabwrap"><table>
+  <tr><th>设备</th><th>读写到哪层首部</th><th>标签</th></tr>
+  <tr><td>集线器</td><td>不读任何首部</td><td>物理层</td></tr>
+  <tr><td>交换机</td><td><b>链路层首部（MAC）</b></td><td>数据链路层</td></tr>
+  <tr><td>普通路由器</td><td><b>网络层首部（IP、TTL、检验和）</b></td><td>网络层</td></tr>
+  <tr style="background:var(--amber-soft)"><td><b>NAT 路由器</b></td><td><b style="color:var(--red)">网络层首部 + 传输层首部（端口号）</b></td><td><b style="color:var(--red)">网络层，但功能涉及传输层</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 这是全书唯一一个需要加限定语的设备标签，书上灰框专门为它写了一句话，值得原样记住。</b><br>
+  <span class="hub">分层</span> <b>顺带一提，同样「越界」的还有 ch5 会讲的防火墙与 ch6 的应用层网关</b>——
+  <u>凡是要做「策略判断」的中间设备，都会往上层多看几眼</u>；
+  <b>而纯粹「转发」的设备（交换机、普通路由器）才严格守住自己那一层。</b></div>
 
   <div class="key"><span class="tag">必记 · 书上灰框：普通路由器 vs NAT 路由器（<span style="color:var(--red)">高频考点，原话背下来</span>）</span>
   <b>① 普通路由器转发 IP 分组时，<u>不会改变</u>其源 IP 地址和目的 IP 地址。</b><br>
@@ -1476,6 +1697,15 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <u>书上补了一句：特定主机路由与默认路由的匹配<b>本质上已包含在第 3 步里</b>，单列只是为了强调优先级与典型场景。</u><br>
   ⚠️ <b style="color:var(--red)">转发表不提供到目的网络的完整路径，仅指明「下一跳路由器」，分组逐跳转发直至抵达目的网络。</b></div>
 
+  <div class="mine"><span class="tag">我的补讲 · 「分组仅占用当前链路的资源」——数据报省钱省在哪</span>
+  <b>书上在 4.1.3 讲数据报时说了一句「传输过程中，分组仅占用当前链路的资源」，到 4.2.4 才真正落地</b>：<br>
+  <b>潜台词是 Y</b>：<u>虚电路要在<b>全程每个节点</b>都留一条表项、并保持到通信结束；
+  数据报<b>什么都不留</b>——转发完这一跳，路由器就把它忘干净了</u>。
+  <b style="color:var(--red)">这就是「无状态」与「有状态」的区别，也是数据报网络能做到「路由器简单廉价」的根本原因。</b><br>
+  <b>所以能考 Z</b>：<b>① 问「为什么数据报网络的路由器故障适应能力强」——<u>因为它没保存任何连接状态，换条路继续转发即可</u>；
+  ② 问「虚电路为什么对故障敏感」——<u>因为状态存在中间节点上，节点一挂状态就没了，必须重建</u>。</b>
+  <u>⭐ 把「有无状态」这一条抓住，表 4.1 里「路由选择」「分组顺序」「故障适应性」三行就都能推出来，不用死记。</u></div>
+
   <div class="key"><span class="tag">必记 · 书上灰框：下一跳的 IP <u>不会</u>被填进分组首部（<span style="color:var(--red)">跨层串联的关键句</span>）</span>
   <b>从转发表得到下一跳路由器的 IP 地址后，<u>并不会把该地址填入待转发分组的首部</u></b>，
   <b style="color:var(--red)">而是通过 ARP 解析出对应的 MAC 地址，填入<u>链路层帧首部</u>作为目的地址。</b>
@@ -1513,6 +1743,28 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
     <figure class="fig"><img src="图/NETch4/NET4_f10_ARP工作原理.png" alt="fig410">
   <figcaption><b>图 4.10 ARP 的工作原理</b>。左侧主机 <b>A（166.1.128.2/17，AA-BB-CC-DD-EE-33）</b>，右侧主机 <b>B（166.1.150.1/17，AA-BB-CC-DD-EE-66）</b>，中间一台交换机，下方还挂着两台无关主机。⭐ <b>看图要抓住箭头的「粗细差别」</b>：<u>① 标着 <b>ARP 请求</b> 的箭头<b style="color:var(--red)">从 A 射向了图中<u>每一台</u>主机</b>（包括下面那两台无关的）——这就是<b>广播</b>；② 标着 <b>ARP 响应</b> 的箭头<b style="color:var(--red)">只有 B → A 这一条</b>——这就是<b>单播</b></u>。<b>两侧的文字框写着请求与响应的内容</b>：请求 ＝「我的 IP 是 166.1.128.2、MAC 是 …-33，<b>我想知道 166.1.150.1 的 MAC</b>」，响应 ＝「我的 IP 是 166.1.150.1，我的 MAC 是 …-66」。<b style="color:var(--red)">⚠️ 顺带看清一件事：A 与 B 的前缀都是 /17，166.1.128.2 与 166.1.150.1 在同一个网络里——ARP 只有在这个前提下才用得上。</b></figcaption></figure>
+
+  <div class="link"><span class="tag">知识串联 · ARP 请求的目的 MAC 是 FF-FF-FF-FF-FF-FF——这个数你在 ch3 见过</span>
+  <span class="hub">广播</span> <b>全 1 的 MAC 地址是 ch3 3.6 讲以太网 MAC 帧时定义的<u>广播地址</u></b>：
+  <u>ARP 直接<b>借用</b>了链路层已有的广播能力，自己一行广播代码都没写</u>——
+  <b style="color:var(--red)">这是「上层协议借用下层机制」的一个标准案例，与 DHCP 借用 UDP 的广播是同一手法。</b><br>
+  <span class="hub">地址判别</span> <b>ch3 还讲过 MAC 地址第一字节最低位的 <u>I/G 位</u></b>：
+  <u>0 ＝ 单播、1 ＝ 组播；全 1 的 FF-FF-… 自然属于组播的极端情形（广播）</u>
+  ⟹ <b>4.5 讲多播 MAC 时那个固定前缀 <code>01-00-5E</code>，第一字节 01 的最低位正是 1，说明它是<b style="color:var(--red)">组播地址</b></b>——
+  <u>三处内容在这一位上对齐了。</u><br>
+  <span class="hub">冲突域/广播域</span> <b>而「ARP 只能在广播域内工作」这条限制，直接来自 ch3 3.8 与本章 4.7.1 的那张设备表</b>：
+  <b style="color:var(--red)">路由器隔离广播域 ⟹ ARP 请求出不去 ⟹ 跨网必须靠 IP 逐跳转发。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · ARP 请求里为什么要带上「我自己的 IP 和 MAC」？</span>
+  <b>看清请求分组的内容</b>：<u>「我的 IP 是 166.1.128.2，<b>我的 MAC 是 AA-BB-CC-DD-EE-33</b>，我想知道 166.1.150.1 的 MAC」</u>——
+  <b>为什么要主动报上自己的 MAC？</b><br>
+  <b>潜台词是 Y</b>：<b style="color:var(--red)">因为 B 马上就要回话给 A，它得知道往哪儿回</b>；
+  <u>如果请求里不带 A 的 MAC，B 就只能<b>再广播一次 ARP 去问 A 的 MAC</b>——一次问答变成两次，而且可能无限套娃。</u><br>
+  <b>顺带解释了那个「顺手存下来」的动作</b>：<u>B 既然已经从请求里拿到了 A 的 IP↔MAC，<b>不存白不存</b></u>
+  ⟹ <b style="color:var(--red)">这就是书上「主机 B 将主机 A 的 IP 与 MAC 的映射写入自己的 ARP 缓存」那一句的动机。</b><br>
+  <b>所以能考 Z</b>：<b>① 「一次 ARP 问答后，几台主机的缓存被更新了」——<u>两台（A 和 B 各一条）</u>；
+  ② 「ARP 响应为什么能用单播」——<u>因为请求里已经带了请求方的 MAC</u>；
+  ③ 「局域网上其他主机收到 ARP 请求后会怎样」——<u>发现问的不是自己，<b>丢弃</b></u>（<b style="color:var(--red)">注意：它们一般不会因此更新缓存</b>）。</b></div>
 
   <div class="key"><span class="tag">必记 · ARP 的三步与两个「广播/单播」</span>
   <b>每台主机和路由器都维护一个 <u>ARP 高速缓存</u>（ARP 表）</b>，存放<b>本局域网内</b>各主机与路由器接口的 IP↔MAC 映射；
@@ -1579,6 +1831,24 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b style="color:var(--red)">⟹ IP 分组每经过一个路由器，外层 MAC 帧的源/目的地址都会更新为当前链路两端设备的接口 MAC；而 IP 地址始终不变——除非经过 NAT 路由器。</b>
   <u>整个 ARP 过程<b>对用户完全透明</b>，系统自动完成，用户无须也无法干预。</u></div>
 
+  <div class="mine"><span class="tag">我的补讲 · 综合题问「某条链路上帧的四个地址」，答题模板在这</span>
+  <b>2015、2019、2022 三道综合真题都有这么一问。<u>四个地址</u>要一次答全，别漏</b>：
+  <div class="tabwrap"><table>
+  <tr><th>要答的</th><th>怎么定</th><th>随跳变吗</th></tr>
+  <tr><td><b>源 IP</b></td><td>发起通信的那台主机</td><td><b style="color:var(--red)">不变</b>（除非过 NAT）</td></tr>
+  <tr><td><b>目的 IP</b></td><td>最终目的主机</td><td><b style="color:var(--red)">不变</b>（除非过 NAT）</td></tr>
+  <tr><td><b>源 MAC</b></td><td><b>这条链路上「上游那台设备」的接口</b></td><td><b>每跳都变</b></td></tr>
+  <tr><td><b>目的 MAC</b></td><td><b>这条链路上「下游那台设备」的接口</b></td><td><b>每跳都变</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⭐ 答题时的机械动作：先在图上把这条链路的<u>两个端点</u>圈出来 ⟹ 左端是源 MAC，右端是目的 MAC；
+  IP 那两个直接抄题干的起点和终点。</b>
+  <pre class="fml">典型问法：「H1 → H4 途中，链路 2 上的帧其源/目的 MAC 分别是什么？」
+
+  链路 2 的两个端点 = R1 的出接口 L2 与 R2 的入接口 L3
+  ⟹ 源 MAC = L2 的 MAC ，目的 MAC = L3 的 MAC
+  ⟹ 源 IP = H1 ，目的 IP = H4        （全程不变）</pre>
+  ⚠️ <b>最后一跳的目的 MAC 才是目的主机 H4 的；<u>前面每一跳的目的 MAC 都是某个路由器接口</u>。</b></div>
+
   <div class="mine"><span class="tag">我的补讲 · 「IP 不变、MAC 逐跳变」是本章最高频的一句话，但它有两个例外</span>
   <b>书上说 X</b>：IP 地址端到端不变，MAC 地址逐跳改变。<br>
   <b>潜台词是 Y</b>：<u>这句话是<b>默认规则</b>，而 408 的选择题专挑<b>例外</b>下手</u>。<b>例外恰好两个，都要记住</b>：
@@ -1607,6 +1877,20 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <h3>4.2.6　动态主机配置协议 DHCP　<span class="exam">考点追踪：DHCP 发现报文的作用（2022）· DHCP 报文的地址分析（2015、2022、2025）</span></h3>
 
   <p><b>DHCP</b> 用于给主机<b>动态分配 IP 地址</b>，提供<b>即插即用的联网机制</b>。<b style="color:var(--red)">DHCP 是应用层协议，基于 UDP</b>——<u>这一句与「ARP 是网络层协议」形成对照，是最常考的层次判断</u>。</p>
+
+  <div class="link"><span class="tag">知识串联 · 那四项配置，正好对应本章四个不同的知识点</span>
+  <span class="hub">配置项</span> <b>「IP / 掩码 / 默认网关 / DNS」这四项不是随便凑的，每一项都在解决一个具体问题</b>：
+  <div class="tabwrap"><table>
+  <tr><th>配置项</th><th>解决什么问题</th><th>本章哪一节</th></tr>
+  <tr><td><b>IP 地址</b></td><td>我是谁</td><td>4.2.2</td></tr>
+  <tr><td><b>子网掩码</b></td><td><b style="color:var(--red)">对方和我在不在同一个网</b>（决定直接交付还是间接交付）</td><td>4.2.2</td></tr>
+  <tr><td><b>默认网关</b></td><td><b>不在同一个网时，交给谁</b></td><td>4.2.2 / 4.2.4</td></tr>
+  <tr><td><b>DNS 服务器</b></td><td>只知道域名时，去哪问 IP</td><td><b>ch6 应用层</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 前三项全是网络层的事，第四项是应用层的事——但它们由同一个 DHCP 报文一次性发下来。</b>
+  <u>这也从侧面印证了「DHCP 是应用层协议」：<b>只有应用层才有资格同时管这么多层的参数</b>。</u><br>
+  <span class="hub">配置项</span> <b>⭐ 顺带记 4.3 的一条对照：<u>IPv6 支持即插即用（自动配置地址），因此通常不需要 DHCP</u></b>
+  ——<b>「不需要 DHCP」这句话在 IPv6 那节是一个考点，回到这里看就更有意味：它把这四项里的前三项自己解决了。</b></div>
 
   <div class="key"><span class="tag">必记 · 连网主机需要配置的四项</span>
   <b>① IP 地址　② 子网掩码　③ 默认路由器的 IP 地址（默认网关）　④ 域名服务器（DNS）的 IP 地址</b>
@@ -1702,12 +1986,41 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <tr><td><b>源点抑制</b></td><td>因<b>拥塞而丢弃</b>数据报时，请求源点降低发送速率。<u>⚠️ 脚注：最新标准 [RFC6633] <b>已不再使用</b>源点抑制报文</u></td></tr>
   </table></div></div>
 
+  <div class="mine"><span class="tag">我的补讲 · Traceroute 是怎么把整条路径「问」出来的？</span>
+  <b>书上只写了一句「逐步增大 TTL」，展开来看是本章最漂亮的一个机制</b>：
+  <pre class="fml">发第 1 个探测包，TTL = 1
+    ⟹ 第 1 跳路由器把 TTL 减为 0 ⟹ 丢弃 + 回一个【时间超过】ICMP
+    ⟹ 从这个 ICMP 的【源 IP】就知道了第 1 跳是谁
+
+发第 2 个探测包，TTL = 2  ⟹ 第 2 跳回报 ⟹ 知道第 2 跳是谁
+发第 3 个探测包，TTL = 3  ⟹ …………
+
+一直到某个包真的抵达目的主机（回的不再是「时间超过」）⟹ 路径走完</pre>
+  <b style="color:var(--red)">⟹ 三个知识点在这里合流：4.2.1 的 TTL 字段 · 4.2.7 的「时间超过」报文 · ICMP 报文里带着<u>源 IP</u> 这一事实。</b><br>
+  <b>所以能考 Z</b>：<b>① 「Traceroute 用的是哪种 ICMP 报文」——<u>时间超过</u>（不是回送请求，那是 PING）；
+  ② 「探测到第 n 跳需要把 TTL 设成多少」——<u>n</u>；
+  ③ <b style="color:var(--red)">2024 综合真题的变体：「要让分组能穿过整条路径，TTL 至少设为多少」——<u>数出路径上的路由器台数即可</u>（该题答案是至少 16）。</b></b>
+  <u>🐍 复算记录：2014 真题的 TTL 从 64 经 3 跳后是 <b>61</b>；2024 真题需至少设 <b>16</b>——两题都与书答吻合。</u></div>
+
   <div class="key"><span class="tag">必记 · 四种「不发」ICMP 差错报告的情形（必背，考过多次）</span>
   <b>① 对 <u>ICMP 差错报告报文本身</u>，不再发送</b>（<u>否则会无限循环</u>）。<br>
   <b>② 对<u>第一个数据报片之后的所有后续分片</u>，不发送</b>（<u>一个原始数据报只报一次</u>）。<br>
   <b>③ 对目的地址为<u>多播或广播地址</u>的数据报，不发送</b>（<u>否则会引发差错报文风暴</u>）。<br>
   <b>④ 对具有<u>特殊地址（如 127.0.0.0 或 0.0.0.0）</u>的数据报，不发送。</b><br>
   <b style="color:var(--red)">⟹ 四条的共同动机只有一个：<u>防止差错报文本身把网络压垮</u>。理解了这一点，四条就不用硬背。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · PING 与 Traceroute 的四点对照（选择题就在这四行里挑）</span>
+  <div class="tabwrap"><table>
+  <tr><th></th><th>PING</th><th>Traceroute / Tracert</th></tr>
+  <tr><td><b>用哪种 ICMP</b></td><td><b style="color:var(--red)">回送请求与回答</b>（询问报文）</td><td><b style="color:var(--red)">时间超过</b>（差错报告报文）</td></tr>
+  <tr><td><b>回报文由谁发</b></td><td><b>目的主机</b></td><td><b>沿途每一台路由器</b></td></tr>
+  <tr><td><b>测的是什么</b></td><td><b>连通性</b>（顺带得到往返时延）</td><td><b>整条路径经过了哪些路由器</b></td></tr>
+  <tr><td><b>关键手法</b></td><td>发一个、等一个</td><td><b>逐步增大 TTL</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⚠️ 两个最常被混的点</b>：
+  <b>① PING 用的是<u>询问</u>报文，不是差错报文</b>（<u>它没出错，只是在问「你在吗」</u>）；
+  <b>② 「时间戳请求和回答」也是询问报文，用来<u>估算往返时延</u></b>——<u>与 PING 顺带报出的时延是两回事，别张冠李戴</u>。<br>
+  ⭐ <b>一句话记法：<u>PING 问「通不通」，Traceroute 问「怎么走」；前者用询问报文，后者<b>故意制造</b>差错报文。</u></b></div>
 
   <div class="key"><span class="tag">必记 · 两种询问报文与 ICMP 的两个典型应用</span>
   <b>询问报文两种</b>：<b>① 回送请求和回答</b>（测试目的主机是否可达、获取状态）；<b>② 时间戳请求和回答</b>（估算往返时延）。<br>
@@ -1718,6 +2031,21 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <tr><td><b>Traceroute / Tracert（路由跟踪）</b></td><td><b>ICMP <u>时间超过</u>报文</b></td><td><b style="color:var(--red)">逐步增大 TTL</b>（1, 2, 3…），让沿途每一跳路由器依次因 TTL 归零而回报，从而追踪出完整路径</td></tr>
   </table></div>
   ⭐ <b>Traceroute 是 TTL 字段最漂亮的一个应用，也是把 4.2.1 与 4.2.7 串起来的那根线。</b></div>
+
+  <div class="link"><span class="tag">知识串联 · 四个协议的层次，用「它依赖谁的地址」一把尺量到底</span>
+  <span class="hub">分层</span> <b>王道给的判据是「看它使用或依赖哪一层的地址/端口信息」。把本章四个协议一次量完</b>：
+  <div class="tabwrap"><table>
+  <tr><th>协议</th><th>依赖什么信息</th><th>被谁封装</th><th style="color:var(--red)">属于哪层</th></tr>
+  <tr><td><b>ARP</b></td><td><b>IP 地址</b>（要把它翻译成 MAC）</td><td>链路层帧</td><td><b style="color:var(--red)">网络层</b></td></tr>
+  <tr><td><b>ICMP</b></td><td><b>IP 转发过程中的差错</b></td><td>IP 数据报</td><td><b style="color:var(--red)">网络层</b></td></tr>
+  <tr><td><b>IGMP</b></td><td>IP 多播组</td><td>IP 数据报（协议字段 2）</td><td><b style="color:var(--red)">IP 的组成部分</b>（不算独立协议）</td></tr>
+  <tr><td><b>DHCP</b></td><td><b>UDP 端口</b></td><td>UDP 报文</td><td><b style="color:var(--red)">应用层</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 第二列决定层次，第三列<u>不</u>决定层次——ARP 被链路层封装却是网络层的，ICMP 被 IP 封装也仍是网络层的。</b><br>
+  <span class="hub">分层</span> <b>这把尺子到 4.4 还要再用一次</b>：
+  <u><b>RIP</b> 依赖 UDP 端口 520 ⟹ 应用层；<b>BGP</b> 依赖 TCP 端口 179 ⟹ 应用层；
+  <b style="color:var(--red)">OSPF 直接坐在 IP 上、没有端口 ⟹ 网络层</b>。</u>
+  <b>⟹ 六个协议、一把尺子，这是本章「层次判断题」的通解。</b></div>
 
   <div class="mine"><span class="tag">我的补讲 · ICMP 那道十几年不变的判断题，考的是「封装」与「层次」的区别</span>
   <b>书上说 X</b>：ICMP 报文封装在 IP 数据报中传送，但它是网络层协议、不是高层协议。<br>
@@ -1744,6 +2072,23 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第4章_网络层.pdf#page=55">📄 p.181</a>
   <h2>4.3　IPv6　<span style="font-size:.8rem;color:var(--muted)">5 页 · 9 题 · 1 真题（2023）· 半小时就能吃透的一节</span></h2>
 
+  <div class="mine"><span class="tag">我的补讲 · IPv4 与 IPv6 的十行对照表（一张表答完所有对比题）</span>
+  <b>2023 那道真题的四个选项全部落在这张表里，其余年份若再考也跑不出去</b>：
+  <div class="tabwrap"><table>
+  <tr><th>项</th><th>IPv4</th><th>IPv6</th></tr>
+  <tr><td><b>地址长度</b></td><td>32 位（4B）</td><td><b style="color:var(--red)">128 位（16B）</b>，空间是 IPv4 的 <b>2<sup>96</sup></b> 倍</td></tr>
+  <tr><td><b>首部长度</b></td><td><b>可变</b>，20～60B（4B 整数倍）</td><td><b style="color:var(--red)">固定 40B</b></td></tr>
+  <tr><td><b>首部字段数</b></td><td>12 个</td><td><b>8 个</b>（<u>字段更少、首部更长</u>）</td></tr>
+  <tr><td><b>首部检验和</b></td><td><b>有</b>（只查首部，每跳重算）</td><td><b style="color:var(--red)">取消</b></td></tr>
+  <tr><td><b>谁能分片</b></td><td><b>源主机或中间路由器</b></td><td><b style="color:var(--red)">只有源主机</b>；路由器遇到过大分组 ⟹ <b>丢弃 + 回「分组太大」ICMP</b></td></tr>
+  <tr><td><b>选项</b></td><td>放在首部可变部分</td><td>放在<b>有效载荷</b>里的扩展首部</td></tr>
+  <tr><td><b>TTL</b></td><td>叫 TTL</td><td>叫 <b>跳数限制</b>（<b style="color:var(--red)">作用完全相同</b>）</td></tr>
+  <tr><td><b>地址类型</b></td><td>单播 / 多播 / <b>广播</b></td><td>单播 / 多播 / <b style="color:var(--red)">任播</b>（<b>没有广播</b>）</td></tr>
+  <tr><td><b>自动配置</b></td><td>靠 <b>DHCP</b></td><td><b>即插即用，通常不需要 DHCP</b></td></tr>
+  <tr><td><b>QoS</b></td><td>区分服务字段（基本不用）</td><td><b>通信量类 + 流标号</b>，支持资源预分配</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⭐ 表里加红的六处，就是命题人取材的全部位置。</b></div>
+
   <div class="mine"><span class="tag">我的补讲 · 这 5 页怎么读：它是「地址不够用」这条故事线的结局</span>
   <b>IPv4 地址已于 <u>2011 年 2 月耗尽</u>。为解决这个问题一共采取了三种措施</b>：
   <b>① CIDR（让分配更合理）· ② NAT（省着用公网地址）· ③ IPv6（换一套地址空间）。</b>
@@ -1754,6 +2099,19 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b>读法：<u>不要精雕细刻，但也别跳过</u>——记住下面五条硬结论 + 会做缩写还原，这 5 页就到手了。</b></div>
 
   <h3>4.3.1　IPv6 的特点　<span class="exam">考点追踪：IPv6 的特点（2023）</span></h3>
+
+  <div class="mine"><span class="tag">我的补讲 · 十个特点里，只有四条会被单独出题——其余六条读懂即可</span>
+  <b>按考试价值给这十条排个序，别平均用力</b>：
+  <div class="tabwrap"><table>
+  <tr><th>优先级</th><th>特点</th><th>为什么</th></tr>
+  <tr style="background:var(--amber-soft)"><td><b>必背</b></td><td><b>① 128 位，空间是 IPv4 的 2<sup>96</sup> 倍</b></td><td><b style="color:var(--red)">2023 真题的Ⅰ项就在这设坑（96 vs 2<sup>96</sup>）</b></td></tr>
+  <tr style="background:var(--amber-soft)"><td><b>必背</b></td><td><b>⑧ 只有源主机能分片</b></td><td>与 IPv4 <b>正好相反</b>；<u>路由器遇到过大分组 ⟹ <b>丢弃 + 回「分组太大」ICMP</b></u>（教材 06 题）</td></tr>
+  <tr style="background:var(--amber-soft)"><td><b>必背</b></td><td><b>⑨ 首部固定 40B</b></td><td><b style="color:var(--red)">2023 真题的Ⅱ项在这设坑（说成「可变」）</b></td></tr>
+  <tr style="background:var(--amber-soft)"><td><b>必背</b></td><td><b>⑥ 即插即用 ⟹ 通常不需要 DHCP</b></td><td>与 4.2.6 形成对照，是现成的判断题</td></tr>
+  <tr><td>理解</td><td>③④⑤ 扩展首部与选项</td><td>知道「<b>选项挪进了有效载荷</b>、<b>路由器不处理扩展首部</b>」即可</td></tr>
+  <tr><td>扫读</td><td>②⑦⑩ 层次、预分配、安全性</td><td>没有单独出过题</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⚠️ 另外单记一条没写进十点、却最常考的：<u>IPv6 取消了首部检验和</u>（教材 02、05 两题都在考它）。</b></div>
 
   <div class="key"><span class="tag">必记 · IPv6 的十个特点（加粗的四条几乎每次考到 IPv6 都出现）</span>
   <b>① <span style="color:var(--red)">更大的地址空间——这是最重要的</span></b>：地址从 <b>32 位增大到 128 位（16B）</b>，
@@ -1831,12 +2189,50 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
   <h3>4.3.3　IPv6 地址</h3>
 
+  <div class="link"><span class="tag">知识串联 · 单播 / 多播 / 广播 / 任播，四种通信方式一次辨清</span>
+  <span class="hub">通信方式</span> <b>四个词在 408 里分散出现，集中对照一次就不会混</b>：
+  <div class="tabwrap"><table>
+  <tr><th>方式</th><th>一对几</th><th>发给谁</th><th>IPv4</th><th>IPv6</th></tr>
+  <tr><td><b>单播</b></td><td>1 对 1</td><td>唯一指定的接收方</td><td>A/B/C 类</td><td>有</td></tr>
+  <tr><td><b>多播</b></td><td>1 对多</td><td><b>所有加入该组的接口</b></td><td><b>D 类</b></td><td>有（<b>FF00::/8</b>）</td></tr>
+  <tr><td><b>广播</b></td><td>1 对全体</td><td><b>本网络的<u>所有</u>主机</b></td><td>主机号全 1 / 255.255.255.255</td><td><b style="color:var(--red)">没有</b>（由多播替代）</td></tr>
+  <tr><td><b>任播</b></td><td><b style="color:var(--red)">1 对「一组里最近的那一个」</b></td><td><b>「一址多用、就近交付」</b></td><td><b style="color:var(--red)">没有</b></td><td><b style="color:var(--red)">IPv6 新增</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 两个「没有」是最常考的：<u>IPv4 没有任播，IPv6 没有广播</u>。</b>
+  <u>⭐ 任播与多播的差别只在最后一步：<b>多播发给组里的<u>所有人</u>，任播只发给<u>最近的一个</u></b>——
+  两者的地址都标识「一组接口」，投递策略却相反。</u></div>
+
   <div class="key"><span class="tag">必记 · 三种目的地址类型（<span style="color:var(--red)">IPv6 没有广播地址</span>）</span>
   <b>① 单播</b>：传统的点对点通信，发给唯一指定的接收方。<br>
   <b>② 多播</b>：一点对多点，发给所有加入该多播组的接口。<br>
   <b>③ <span style="color:var(--red)">任播（Anycast）——IPv6 新增的地址类型</span></b>：<b>「一址多用、就近交付」</b>；
   <u>任播地址标识<b>一组</b>接口，但网络只把数据报交付给其中<b>路由距离最近的那一个</b></u>。<br>
   ⚠️ <b style="color:var(--red)">IPv6 没有广播地址</b>——<u>广播的功能由「多播」承担了</u>。<b>这是一道现成的判断题。</b></div>
+
+  <div class="link"><span class="tag">知识串联 · 「省前导零」与「双冒号只能用一次」，都是编码唯一性的要求</span>
+  <span class="hub">编码</span> <b>两条缩写规则背后是同一个原则：<u>压缩必须可逆</u></b>。
+  <div class="tabwrap"><table>
+  <tr><th>规则</th><th>为什么这么定</th><th>违反了会怎样</th></tr>
+  <tr><td><b>只省<u>前导</u>零，不省结尾零</b></td><td>每组固定 4 位，<b style="color:var(--red)">缺的位只可能在前面补</b>，才能唯一还原</td><td><code>89A</code> 若允许当结尾省略，就分不清是 <code>089A</code> 还是 <code>89A0</code></td></tr>
+  <tr><td><b><code>::</code> 只能出现一次</b></td><td>还原时靠「8 − 现有组数」倒推省了几组，<b style="color:var(--red)">出现两次就无法分配这些零到底属于哪一处</b></td><td><code>1A22::120D::72A2::00C0</code> <b>直接非法</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 这与《数据结构》哈夫曼编码要求「前缀码」是同一类要求：编码方案必须能被唯一解码。</b>
+  <u>也与组原里「浮点数规格化」的动机相同——<b>同一个值只允许一种写法，比较和还原才不会出错。</b></u><br>
+  <b>🐍 复算佐证：<code>ipaddress</code> 模块对含两个 <code>::</code> 的地址直接抛出「非法地址」异常，与规则完全一致。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · IPv6 那三道计算题的共同套路：先数组数</span>
+  <b>03、04 两题看起来一个判合法、一个做还原，其实第一步完全相同——<u>数组数</u></b>：
+  <div class="tabwrap"><table>
+  <tr><th>题型</th><th>第一步</th><th>判据</th></tr>
+  <tr><td><b>判断写法是否合法</b></td><td>数 <code>::</code> 出现几次</td><td><b style="color:var(--red)">≥2 次 ⟹ 直接非法</b>（03 题的 C）</td></tr>
+  <tr><td><b>缩写 → 完整</b></td><td>数现有组数 k</td><td><code>::</code> 代表 <b>8 − k</b> 个全零组</td></tr>
+  <tr><td><b>完整 → 缩写</b></td><td>数<b>最长的那串连续全零组</b></td><td><b style="color:var(--red)">只把<u>最长</u>的那一串换成 <code>::</code></b>，其余照写</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⚠️ 第三行是很多人没注意到的方向</b>：<u>若地址中有两处不相邻的全零串，<b>只能压缩其中一处</b>（通常选最长的那处）</u>——
+  <b>这与「<code>::</code> 只能用一次」是同一条规则的正向表述。</b><br>
+  ⭐ <b>再加一个手写时的保险动作：<u>还原完数一遍，必须正好 8 组、每组 4 位</u></b>；
+  <u>缩写完也数一遍，把 <code>::</code> 摊开后必须还是 8 组。</u>
+  <b>🐍 <code>ipaddress</code> 复算佐证：<code>8::D0:123:CDEF:89A</code> ⟹ <code>0008:0000:0000:0000:00D0:0123:CDEF:089A</code>，与书答一致。</b></div>
 
   <div class="key"><span class="tag">必记 · 冒号十六进制记法与两条缩写规则（<span style="color:var(--red)">本节唯一要动手的题型</span>）</span>
   <b>把 128 位分成 <u>8 组</u>，每组 <u>16 位（4 个十六进制数）</u>，组间用冒号分隔</b>，
@@ -1885,6 +2281,16 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
   <h3>4.3.4　从 IPv4 向 IPv6 过渡　<span class="exam">考点追踪：IPv4 向 IPv6 过渡的策略（2023）</span></h3>
 
+  <div class="link"><span class="tag">知识串联 · 双协议栈与隧道，是「不兼容升级」的两种通用解法</span>
+  <span class="hub">兼容</span> <b>任何一次「新旧不兼容」的升级，都只有这两条路可走，408 里的例子不止一处</b>：
+  <div class="tabwrap"><table>
+  <tr><th>解法</th><th>本节</th><th>本质</th><th>别处的同类</th></tr>
+  <tr><td><b>两套都装</b></td><td><b>双协议栈</b>（一台机器同时跑 IPv4 与 IPv6）</td><td><b style="color:var(--red)">在端点做兼容</b>；靠 DNS 决定用哪套</td><td>组原里 <b>CISC 处理器兼容旧指令集</b>；OS 里同时支持新旧文件系统</td></tr>
+  <tr><td><b>把新的包进旧的</b></td><td><b>隧道技术</b>（IPv6 报文塞进 IPv4 数据报的数据部分）</td><td><b style="color:var(--red)">在中途做伪装</b>；中间设备完全无感</td><td><b>ch3 的 PPP/VPN 封装</b>；<b>4.6 移动 IP 的隧道</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 一句话区分：<u>双协议栈是「两边都会说两种语言」，隧道是「把新语言装进旧信封里寄」。</u></b>
+  <u>⭐ 2023 真题的Ⅲ项就是把这两个名词并列列出来让你判断对错——<b>答案是对的，两者都是标准过渡策略。</b></u></div>
+
   <div class="key"><span class="tag">必记 · 两种过渡策略（2023 真题的正确项之一）</span>
   <u>过渡<b>只能逐步演进</b>，并确保新部署的 IPv6 系统<b>向后兼容</b>——能接收、转发 IPv4 数据报并为其选路。</u>
   <div class="tabwrap"><table>
@@ -1925,6 +2331,32 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
   <p>路由选择协议的核心是<b>路由算法</b>，即生成路由表各表项的计算方法。目的很明确：<b>给定一组路由器及其互连链路，找到从源路由器到目的路由器的最佳路径</b>。<u>「最佳」通常指<b>费用最低</b>，而费用可根据<b>跳数、带宽、延迟</b>等因素定义</u>。</p>
 
+  <div class="mine"><span class="tag">我的补讲 · 「最佳 ＝ 费用最低，而费用可以是任何东西」——这句话是 4.4 的总纲</span>
+  <b>书上说 X</b>：「最佳」路径通常指费用最低，<u>该费用可根据<b>跳数、带宽、延迟</b>等因素定义</u>。<br>
+  <b>潜台词是 Y</b>：<b style="color:var(--red)">「最短路径」这四个字在不同协议里指的<u>不是同一件事</u></b>——
+  <u>算法（Dijkstra／Bellman-Ford）是共用的，<b>换掉的只是边上那个数字的含义</b></u>：
+  <div class="tabwrap"><table>
+  <tr><th>协议</th><th>边权是什么</th><th>于是「最短」＝</th></tr>
+  <tr><td><b>RIP</b></td><td><b style="color:var(--red)">跳数</b>（每台路由器算 1）</td><td>经过的路由器最少</td></tr>
+  <tr><td><b>OSPF</b></td><td><b style="color:var(--red)">管理员配的代价</b>（可反映带宽、时延）</td><td>总代价最低</td></tr>
+  <tr><td><b>BGP</b></td><td><b>不是数字，是策略</b>（LOCAL-PREF、AS 数…）</td><td><b style="color:var(--red)">「比较好」而非最优</b></td></tr>
+  </table></div>
+  <b>所以能考 Z</b>：<b>① 「RIP 选的路径一定时延最短吗」——<u>不一定，但一定跳数最少</u>（书上原话）；
+  ② 「OSPF 名叫最短路径优先，是不是说别的协议不找最短路径」——<u>不是，只是度量标准不同</u>（书上开篇就澄清了这一点）。</b></div>
+
+  <div class="link"><span class="tag">知识串联 · 静态 vs 动态，是 408 里最常见的一组权衡</span>
+  <span class="hub">静态 vs 动态</span> <b>同一组权衡，三科各出现过一次以上，连优缺点的措辞都几乎一样</b>：
+  <div class="tabwrap"><table>
+  <tr><th>场景</th><th>静态方案</th><th>动态方案</th></tr>
+  <tr><td><b>本节：路由</b></td><td>手工配置，<b>简单、开销小</b>，<b style="color:var(--red)">不能适应变化</b></td><td>协议自动更新，<b>能适应变化</b>，<b style="color:var(--red)">复杂、开销大</b></td></tr>
+  <tr><td><b>4.1.5：拥塞控制</b></td><td><b>开环</b>：静态策略，<b>不依赖实时反馈</b></td><td><b>闭环</b>：检测 + 反馈 + 调整</td></tr>
+  <tr><td><b>OS：内存分配</b></td><td>固定分区，简单但有内部碎片</td><td>动态分区，灵活但有外部碎片与管理开销</td></tr>
+  <tr><td><b>OS：链接</b></td><td>静态链接，装入即可运行</td><td>动态链接，省空间但运行时有开销</td></tr>
+  <tr><td><b>组原：指令</b></td><td>静态流水线调度</td><td>动态调度（乱序执行）</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 五行的结论完全一致：<u>静态＝简单+低开销+不灵活；动态＝灵活+复杂+高开销</u>。</b>
+  <u>做题时若遇到没见过的「静态/动态 XX」，直接套这句话，八成能选对。</u></div>
+
   <div class="key"><span class="tag">必记 · 静态路由 vs 动态路由</span>
   <div class="tabwrap"><table>
   <tr><th></th><th>静态路由算法</th><th>动态路由算法</th></tr>
@@ -1948,6 +2380,20 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b>运行方式</b>：<u>每个节点<b>定期向所有邻居</b>发送自己的距离向量；收到邻居的新向量后更新副本、按公式重算自己的向量；
   <b style="color:var(--red)">若自己的向量变了就立即再向所有邻居发送</b>（没变就不发）。</u></div>
 
+  <div class="mine"><span class="tag">我的补讲 · DV 题最容易犯的一个错：直接拿邻居的向量去比大小</span>
+  <b>正确动作</b>：<b style="color:var(--red)">每条邻居向量要<u>整体加上「我到这个邻居的链路代价」</u>之后，再逐目的取最小。</b>
+  <pre class="fml">设 E 有三个邻居 A、B、C，链路代价分别是 c(E,A)=9、c(E,B)=10、c(E,C)=12
+  收到 DV_A = (…), DV_B = (…), DV_C = (…)
+
+  ❌ 错法：直接在 DV_A / DV_B / DV_C 里挑最小 —— 忘了加链路代价
+  ✅ 对法：先算 DV_A + 9 、 DV_B + 10 、 DV_C + 12 三个向量
+          再【逐个目的】在这三个向量里取最小
+          最后把「到自己」那一格填 0</pre>
+  <b style="color:var(--red)">⚠️ 2021 真题的错误选项 <code>9, 10, 12, 6</code> 正是「直接抄了 E 到四个邻居的链路距离」造出来的</b>——
+  <u>它连加法都没做，就把 c(E,·) 当成了结果。</u>
+  <b>🐍 复算记录：2021 真题的正确结果是 <b>9, 20, 28, 20</b>；教材 22 题的结果是 <b>(11,6,0,3,5,8)</b>——两题都与书答吻合。</b><br>
+  ⭐ <b>自查口诀：<u>「先加后取小，自己填零」</u>——三个动作缺一不可。</b></div>
+
   <div class="mine"><span class="tag">我的补讲 · DV 迭代题的做题模板：一张 3×3 的表，逐轮填</span>
   <b>书上说 X</b>：图 4.16 用三节点网络 <code>x —2— y —1— z</code>、<code>x —7— z</code> 演示了两轮迭代。<br>
   <b>潜台词是 Y</b>：<u>这类题<b>永远只考三件事</b></u>——
@@ -1964,6 +2410,17 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   ⚠️ <b style="color:var(--red)">「更新报文的大小与网络节点数成正比」——这一句是 DV 的致命缺陷，也是它与 LS 对比时的第一条。</b>
   <u>最常见的 DV 协议就是 <b>RIP</b>，它用<b>跳数</b>作为费用度量。</u></div>
 
+  <div class="link"><span class="tag">知识串联 · 洪泛法的三个问题，三科给了同一族答案</span>
+  <span class="hub">洪泛</span> <b>「把消息发给所有邻居，邻居再发给它的所有邻居」听起来很暴力，它必须回答三个问题</b>：
+  <div class="tabwrap"><table>
+  <tr><th>问题</th><th>OSPF 的答案</th><th>别处的同类答案</th></tr>
+  <tr><td><b>怎么不无限转发？</b></td><td><b style="color:var(--red)">不回传给刚发来的那台</b> ＋ <b>LSA 带 32 位序号去重</b></td><td>ch3 交换机的<b>生成树</b>；IP 的 <b>TTL</b>；ch6 P2P 查询的跳数限制</td></tr>
+  <tr><td><b>怎么知道谁的信息更新？</b></td><td><b>序号越大越新</b>；LSA 有 <b>60 分钟</b>最大生存期</td><td>组原 Cache 的<b>脏位/时间戳</b>；OS 的<b>版本号</b></td></tr>
+  <tr><td><b>怎么确认收到了？</b></td><td><b style="color:var(--red)">LSAck 分组</b>（OSPF 自己实现的确认）</td><td>ch3 的 ACK 帧；ch5 的 TCP 确认</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 三个答案合起来，才让「洪泛」从一个暴力手段变成一个可用的协议。</b>
+  <u>做题时若看到「OSPF 会不会因为洪泛而形成广播风暴」这类问法，就按第一行答。</u></div>
+
   <div class="key"><span class="tag">必记 · 链路状态算法（LS）的两项任务与三个优点</span>
   <b>链路状态 ＝ 「本路由器与哪些邻居相连，以及对应链路的代价」。</b>
   <b style="color:var(--red)">LS 要求每个节点都掌握完整的全网拓扑图</b>，为此每个节点做两件事：
@@ -1974,6 +2431,19 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b>② 拓扑完整 ⟹ 本地即可算出全局最优，<u>收敛快且无环</u>；</b><br>
   <b>③ <span style="color:var(--red)">链路状态报文只含本节点的直连链路信息，报文大小与网络总规模无关</span> ⟹ 大网中扩展性更好。</b><br>
   <b>典型的 LS 算法就是 <u>OSPF</u>。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 两种算法的「收敛」含义不同，答题时别混用这个词</span>
+  <b>「收敛」在 4.4 出现了很多次，但在 DV 和 LS 里指的不是同一件事</b>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>DV（RIP）的收敛</th><th>LS（OSPF）的收敛</th></tr>
+  <tr><td><b>指什么</b></td><td><b style="color:var(--red)">经过若干轮交换，所有节点的距离向量不再变化</b></td><td><b style="color:var(--red)">所有节点的链路状态数据库 LSDB 一致</b></td></tr>
+  <tr><td><b>怎么达成</b></td><td><b>迭代</b>：一轮一轮逼近</td><td><b>同步</b>：洪泛把事实传遍，各自算一次即可</td></tr>
+  <tr><td><b>可能出的问题</b></td><td><b style="color:var(--red)">无穷计数 ⟹ 慢收敛</b></td><td>洪泛期间可能短暂不一致，但<b>不会震荡</b></td></tr>
+  <tr><td><b>典型耗时</b></td><td>坏消息要 <b>12 轮 × 30s ≈ 6 分钟</b></td><td><b>秒级</b>（链路一变就立即洪泛 + 重算）</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 答题时说清楚是「距离向量收敛」还是「数据库同步」，比笼统说一句「收敛了」更容易拿分。</b>
+  <u>⭐ 2024 综合真题问「RIP 至少需要多少秒才能全网获知某条路由」，考的就是第一列——<b>数清要传几跳，每跳 30 秒。</b>
+  🐍 该题两问的答案分别是 <b>30s</b> 与 <b>60s</b>，与书答吻合。</u></div>
 
   <div class="mine"><span class="tag">我的补讲 · DV 与 LS 的对比，本质是「信息传得远还是传得广」</span>
   <b>书上说 X</b>：DV 只与直接邻居交换、发的是完整距离向量（与节点数成正比）；LS 洪泛给全网、但每条报文只含局部信息。<br>
@@ -1989,6 +2459,37 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b>所以能考 Z</b>：<b>凡问「为什么大网用 OSPF 不用 RIP」，答两条——<u>① 报文大小与规模无关；② 不会无穷计数、收敛快</u>。</b>
   <b style="color:var(--red)">⟹ 一句话记法：<u>DV 是「跟邻居打听，消息层层转」，LS 是「大家把自己那块拼图发给所有人，各自拼出全图」。</u></b></div>
 
+  <div class="mine"><span class="tag">我的补讲 · 4.4 的 27 道选择题，按考点归类只有六类</span>
+  <b>归类之后，刷题就有了顺序（按每类的题量降序）</b>：
+  <div class="tabwrap"><table>
+  <tr><th>类</th><th>典型题</th><th>要练到什么程度</th></tr>
+  <tr style="background:var(--amber-soft)"><td><b>① 三协议属性对照</b></td><td>类型 / 算法 / 传递协议 / 交换对象</td><td><b style="color:var(--red)">表 4.6 六行倒背如流</b></td></tr>
+  <tr style="background:var(--amber-soft)"><td><b>② DV 算法计算</b></td><td>22 题、2021 真题</td><td><b>「先加后取小，自己填零」三个动作不能少</b></td></tr>
+  <tr><td><b>③ RIP 更新规则</b></td><td>综合 02、2024 真题</td><td><b style="color:var(--red)">第二条（下一跳同则无条件更新）必须能说出理由</b></td></tr>
+  <tr><td><b>④ 无穷计数 / 收敛时间</b></td><td>25 题（2016）、2024 真题</td><td><b>「不可达不等于直接置 16」</b></td></tr>
+  <tr><td><b>⑤ BGP 概念与选路</b></td><td>2013、2024 真题</td><td><b>四级优先顺序 + eBGP/iBGP + 四种报文</b></td></tr>
+  <tr><td><b>⑥ 借道其他章的计算</b></td><td>23 题（存储转发流水线）</td><td><b style="color:var(--red)">T ＝ (k+m−1)·r，段数 ＝ 路由器数 + 1</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ ①② 两类占了本节题量的一半以上，且都是「练一次就永远会」的类型——优先刷。</b>
+  <u>③④ 属于「理解了才不会错」，要读懂本节那两段推演；⑤ 是纯记忆；⑥ 只有一道但每年可能换皮出现。</u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 一道被大多数人做错的「存储转发流水线」题（教材 23）</span>
+  <b>这道题挂在 4.4 里，考的却是 ch1 的母公式，而且是本章唯一一道纯计算的选择题</b>：
+  <pre class="fml">题设：主机 A 经【4 个路由器】向 B 发送数据，共 1000 个分组，
+     每段链路上单个分组的发送时延为 0.08ms（忽略传播与处理时延）
+
+链路段数 k = 路由器数 + 1 = 5        分组数 m = 1000
+
+  T = (k + m − 1) × r = (5 + 1000 − 1) × 0.08 = 1004 × 0.08 = 80.32 ms
+      └─ 流水线填满用 (k−1) 段，之后每段吐出一个 ─┘</pre>
+  <b style="color:var(--red)">⚠️ 两个干扰项的来历（值得单独记）</b>：
+  <b>「80.08」＝ 只算了 1 段链路的存储转发（<u>漏了「4 个路由器 ＝ 5 段」</u>）；
+  「80.64」＝ 把段数错算成 8。</b><br>
+  <b>🐍 复算：0.08×5 ＋ 0.08×999 ＝ <b>80.32 ms</b>，与书答吻合。</b><br>
+  ⭐ <b style="color:var(--red)">这条公式 <code>T ＝ (k+m−1)·r</code> 就是网络 ch1 的<u>唯一母公式</u>，也是《组成原理》流水线的那条</b>——
+  <u>在 ch1 它算「一个报文经 k 段链路」，在这里它算「1000 个分组经 5 段链路」，<b>换了身衣服又考了一次</b>。</u>
+  <b>⚠️ 两个易错点：分组数按「数据部分」算；<u>链路段数 ＝ 路由器数 + 1</u>。</b></div>
+
   <div class="link"><span class="tag">知识串联 · 这一节其实是《数据结构》第 6 章的应用题</span>
   <span class="hub">最短路径</span> ⭐ <b>DV ＝ Bellman-Ford，LS ＝ Dijkstra，两个算法你在《数据结构》ch6 图里都手算过</b>：
   <u>连「最优子结构」这句话都是同一句</u>。<b>408 复盘中心的<a href="../模拟器_图算法.html" style="color:var(--accent)">图算法八合一模拟器</a>里就有 Dijkstra 的逐步演示，
@@ -2002,6 +2503,17 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <h3>4.4.2　分层次的路由选择协议</h3>
 
   <p>互联网采用<b>自适应的分布式路由选择协议</b>。由于规模庞大、且许多联网单位不愿对外暴露内部网络细节，因此采用<b>分层次</b>的路由选择协议：把整个互联网划分为许多较小的<b>自治系统 AS</b>，每个 AS 对外表现为<b>单一且一致的路由选择策略</b>，而<b>AS 的管理者有权自主决定内部使用什么协议</b>（RIP 或 OSPF）。</p>
+
+  <div class="link"><span class="tag">知识串联 · 自治系统 ＝ 网络世界的「行政区划」</span>
+  <span class="hub">分层</span> <b>为什么要有 AS？书上给了两条理由，其实是一条技术理由 + 一条非技术理由</b>：
+  <div class="tabwrap"><table>
+  <tr><th>理由</th><th>说的是什么</th><th>类比</th></tr>
+  <tr><td><b>技术</b>：互联网规模太大</td><td><b style="color:var(--red)">全网跑一个路由算法，表会爆炸、也永远收敛不了</b></td><td><b>OS 的多级页表</b>：一级表装不下就分级</td></tr>
+  <tr><td><b>非技术</b>：许多单位<u>不愿对外暴露内部网络细节</u></td><td>各 AS 自主决定内部用什么协议，对外只呈现<b>单一且一致的策略</b></td><td><b>模块的封装/信息隐藏</b>：只暴露接口，不暴露实现</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 第二条理由到 BGP 那里会变成「路由选择必须考虑政治、安全或经济因素」，进而解释了 LOCAL-PREF 为什么由管理员手工设定。</b><br>
+  <span class="hub">分层</span> <b>而「域内 vs 域间」的分工，与 ch6 DNS 的「本地域名服务器 vs 根/顶级域名服务器」结构完全一致</b>：
+  <u>本地的事本地解决，跨域的事交给专门的跨域机制</u>——<b>两处连「边界节点身兼二职」这一点都一样。</b></div>
 
   <div class="key"><span class="tag">必记 · IGP 与 EGP（两个词、两句话）</span>
   <div class="tabwrap"><table>
@@ -2021,6 +2533,29 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
   <p><b>RIP 是一种分布式的、基于距离向量的路由选择协议</b>，是 IGP 中最早得到广泛应用的协议之一。</p>
 
+  <div class="mine"><span class="tag">我的补讲 · 「跳数 16 ＝ 不可达」，这个 16 有三层含义</span>
+  <b>书上只说「最多 15 个路由器，16 表示不可达」，但这个数在题目里有三种考法</b>：
+  <div class="tabwrap"><table>
+  <tr><th>考法</th><th>要答什么</th></tr>
+  <tr><td><b>① 16 是什么意思</b></td><td><b style="color:var(--red)">不可达</b>，<u>不是「跳数为 16 的可达路径」</u>——教材 24 题的三个错项全是这么造的</td></tr>
+  <tr><td><b>② 为什么要有这个上限</b></td><td><b style="color:var(--red)">给无穷计数封顶</b>：坏消息会让距离一路爬升，没有上限就永远停不下来</td></tr>
+  <tr><td><b>③ 这个上限的代价是什么</b></td><td><b>限制了网络规模 ⟹ RIP 只适用于小型自治系统</b>（这是 RIP 的第一条缺点）</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⚠️ 还有一个更细的坑（2016 真题）：<u>路由器检测到某网络不可达时，<b>不是直接把距离置 16</b></u></b>——
+  <u>它要先<b>用邻居的距离向量重算</b>，看看有没有别的路可走；只有当所有邻居也都到不了时，才会一路爬到 16。</u>
+  <b>🐍 复算：2016 那道题的答案是 R2 ＝ <b>3</b>（不是 16），书上把它明标为「易错点」。</b></div>
+
+  <div class="link"><span class="tag">知识串联 · RIP 的三问三答，是描述任何一个「交换类协议」的通用模板</span>
+  <span class="hub">协议描述</span> <b>「和谁交换 / 交换什么 / 何时交换」这三问，可以直接拿去问 OSPF 和 BGP，答案就是表 4.6 的后三行</b>：
+  <div class="tabwrap"><table>
+  <tr><th>三问</th><th>RIP</th><th>OSPF</th><th>BGP</th></tr>
+  <tr><td><b>和谁交换</b></td><td>直接相邻的路由器</td><td><b style="color:var(--red)">本 AS 中的所有路由器</b>（洪泛）</td><td>相邻的 BGP 对等方</td></tr>
+  <tr><td><b>交换什么</b></td><td><b>自己的整张路由表</b></td><td><b>与相邻路由器的链路状态</b></td><td><b style="color:var(--red)">首次整表，之后只发变化</b></td></tr>
+  <tr><td><b>何时交换</b></td><td><b>每 30 秒 + 拓扑变化时</b></td><td><b style="color:var(--red)">仅在链路状态变化时</b></td><td>变化时；<b>每 60 秒发 Keepalive 保活</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 把三问三答当模板用，表 4.6 就不用死背了——它的六行里有三行正是这三问的答案。</b>
+  <u>另外三行（类型 / 算法 / 传递协议）各只有一个词，单独记即可。</u></div>
+
   <div class="key"><span class="tag">必记 · RIP 的五条规定与三问三答</span>
   <b>五条规定</b>：<br>
   <b>① 用<u>跳数</u>衡量距离：<span style="color:var(--red)">到直连网络的距离规定为 1</span>，每经过一个路由器跳数加 1。</b><br>
@@ -2037,6 +2572,24 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   </table></div>
   <b>⭐ <span style="color:var(--red)">RIP 是应用层协议，使用 UDP 传送（端口 520）</span></b>；
   ⚠️ <b>RIP 选的路径<u>不一定时延最短，但一定跳数最少</u></b>——<u>因为它只看跳数。</u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · RIP 综合题的答题格式：一张三列表，逐行判定</span>
+  <b>凡是「R6 收到 R4 的报文后路由表变成什么」这类题，卷面就写成一张表，每行标出<u>依据哪条规则</u></b>：
+  <pre class="fml">卷面格式（照抄即可）：
+
+  第1步：把 R4 发来的表 距离全部 +1、下一跳全部改为 R4
+
+  第2步：逐行比对，写清依据
+   ┌────────┬──────────┬──────────────────────────┐
+   │ 目的网络 │ 处理结果  │ 依据                      │
+   ├────────┼──────────┼──────────────────────────┤
+   │ Net1   │ 新增      │ 原表中没有该网络            │
+   │ Net2   │ 更新      │ 下一跳相同 ⟹ 无条件更新     │
+   │ Net3   │ 更新      │ 下一跳不同，但新距离 2 &lt; 4  │
+   └────────┴──────────┴──────────────────────────┘</pre>
+  <b style="color:var(--red)">⚠️ 「依据」那一列必须写出来</b>——<u>阅卷是找采分点，只写结果而不写依据，会丢掉一半的分</u>。
+  <b>尤其是 Net2 那一行：<b style="color:var(--red)">距离从 3 变成 5（变大了）仍要更新</b>，不写依据几乎必被当成算错。</b><br>
+  <b>🐍 复算佐证：教材综合 02 里也有一格是「N2 变 16」，同样属于「下一跳相同 ⟹ 无条件更新」——<u>连不可达都照抄</u>。</b></div>
 
   <div class="key"><span class="tag">必记 · RIP 的距离向量更新算法（<span style="color:var(--red)">2024 综合真题的第一问</span>）</span>
   <b>收到相邻路由器 X 发来的 RIP 报文后</b>：
@@ -2057,6 +2610,31 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b style="color:var(--red)">⚠️ 第二条是全节最容易错的一条：下一跳相同就<u>无条件</u>更新，<b>哪怕距离变大</b>。</b>
   <u>理由：下一跳没变，说明这条信息就是从这条路上来的<b>最新</b>消息，必须以最新为准；<b>只有下一跳不同时才去比距离</b>。</u></div>
 
+  <div class="link"><span class="tag">知识串联 · RIP 的「以最新为准」，是分布式系统的一条通用原则</span>
+  <span class="hub">局部决策</span> <b>更新规则第二条（下一跳相同就无条件替换，哪怕距离变大）看起来反直觉，其实是必需的</b>：
+  <u>因为 R6 到 Net2 的路本来就是<b>借 R4 走的</b>——R4 说「我到 Net2 变远了」，
+  那 R6 借它走当然也跟着变远，<b style="color:var(--red)">这不是「更差的选择」，而是「同一条路的最新真相」</b>。</u><br>
+  <span class="hub">局部决策</span> <b>这条原则在 408 别处的样子</b>：
+  <u>《操作系统》Cache 一致性里的「写回后其他副本必须失效」；组原里「同一地址的最新写入覆盖旧值」；
+  数据库里的「同一主键以最后一次更新为准」</u>——
+  <b style="color:var(--red)">共同点：判断「要不要更新」时，先看<u>来源是否相同</u>，来源相同就无条件采信；来源不同才比较优劣。</b><br>
+  <span class="hub">局部决策</span> ⚠️ <b>如果把这条规则记成「只在更短时才更新」，会产生一个可观察的错误</b>：
+  <u>模拟「坏消息传播」时距离会卡在 6/7 反复震荡，<b>永远爬不到 16</b></u>——
+  <b>这正是我做 Python 复算时踩过的坑，也是检验你有没有真正理解这条规则的试金石。</b></div>
+
+  <div class="link"><span class="tag">知识串联 · 「距离 +1、下一跳改成 X」这一步，就是 Bellman-Ford 的松弛操作</span>
+  <span class="hub">最短路径</span> <b>《数据结构》ch6 讲 Bellman-Ford 时，核心动作叫<u>松弛（relax）</u></b>：
+  <pre class="fml">数据结构里的写法：   if d[u] + w(u,v) &lt; d[v] then d[v] = d[u] + w(u,v)
+
+RIP 里的写法：       把 X 发来的每条距离都 +1（即加上 w(我,X)＝1）
+                    再与自己表里的值比较，更小就替换
+
+  ⟹ 完全是同一件事：【邻居的距离 + 到邻居的代价】与【我现有的距离】比大小</pre>
+  <b style="color:var(--red)">⟹ 唯一的差别是 RIP 多了一条「下一跳相同则无条件更新」的规则</b>——
+  <u>这是纯算法版本没有的，因为算法里不需要考虑「消息可能过时」的问题，而分布式协议必须考虑。</u><br>
+  <span class="hub">最短路径</span> <b>⭐ 复盘中心的<a href="../模拟器_图算法.html" style="color:var(--accent)">图算法八合一模拟器</a>里有 Bellman-Ford 与 Dijkstra 的逐步演示</b>——
+  <u>4.4 的 DV 迭代题卡住时，去那里跑一遍同构的图，比读文字快得多。</u></div>
+
   <div class="key"><span class="tag">必记 · 书上主例：R6 收到 R4 的路由表后怎么改（表 4.4 → 表 4.5）</span>
   <div class="tabwrap"><table>
   <tr><th>目的网络</th><th>R6 原表</th><th>R4 发来</th><th>加 1 改下一跳后</th><th style="color:var(--red)">R6 更新后</th><th>依据</th></tr>
@@ -2066,6 +2644,30 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   </table></div>
   <b>🐍 已按三条规则逐项复算：更新后 R6 的表 ＝ Net1&lt;4,R4&gt; · Net2&lt;5,R4&gt; · Net3&lt;2,R4&gt;，与表 4.5(b) 完全吻合。</b><br>
   <u>「加 1 并把下一跳改为 X」这一步的含义是：<b>R6 可以通过 R4 到达这些网络，但距离比 R4 自己到达它们的距离大 1。</b></u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「好消息快、坏消息慢」的不对称，根子在哪一条规则上</span>
+  <b>为什么同样是 30 秒一轮，好消息一轮传一跳、坏消息却要爬 12 轮？</b>
+  <div class="tabwrap"><table>
+  <tr><th></th><th>好消息（距离变小）</th><th>坏消息（距离变大）</th></tr>
+  <tr><td><b>邻居会不会「教坏」我</b></td><td><b>不会</b>——邻居报的距离更大，<u>按第三条规则「更短才换」直接被拒</u></td><td><b style="color:var(--red)">会</b>——邻居手里还留着一条经过我的旧路由，报回来我却看不出这是我自己的旧消息</td></tr>
+  <tr><td><b>传播形态</b></td><td><b>单向扩散</b>，一轮一跳，无回环</td><td><b style="color:var(--red)">来回震荡</b>，每轮只把距离抬高 1</td></tr>
+  <tr><td><b>什么时候停</b></td><td>所有人都更新完就停</td><td><b>爬到 16（不可达）才停</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 根子在于 <u>DV 算法「只知距离、不知路径」</u>：R1 无法判断 R2 报来的那条路<b>是不是从自己这儿绕回去的</b>。</b>
+  <u>（对照：LS 算法因为掌握全图，一眼就能看出那是个环，所以<b>不会有无穷计数</b>——这正是 LS 三大优点的第一条。）</u><br>
+  ⭐ <b>顺带解释一个常见疑问：<u>为什么不干脆把周期缩短</u>？</b>
+  <b>因为缩短周期只会让 12 轮来得快一点，<u>并不能消除震荡本身</u></b>；<b style="color:var(--red)">真正的解法是换算法（OSPF）或加辅助机制（水平分割）。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · RIP 三条缺点，各自被后面的哪个东西「治」了</span>
+  <b>把 RIP 的三条缺点与 OSPF 的对应设计连起来看，就明白 OSPF 为什么长成那样</b>：
+  <div class="tabwrap"><table>
+  <tr><th>RIP 的缺点</th><th>OSPF 的对策</th></tr>
+  <tr><td><b>① 网络规模受限（最大 15 跳）</b></td><td><b style="color:var(--red)">代价可任意设，没有跳数上限</b>；再大就划<b>区域</b></td></tr>
+  <tr><td><b>② 交换整张路由表，规模越大开销越大</b></td><td><b style="color:var(--red)">只发自己的链路状态，报文大小与网络规模无关</b></td></tr>
+  <tr><td><b>③ 坏消息传播得慢（无穷计数）</b></td><td><b style="color:var(--red)">每个节点掌握全图，一眼看出环路 ⟹ 不会无穷计数；且只在变化时触发更新，收敛快</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ OSPF 的三大优点（LS 算法那三条）与 RIP 的三条缺点是<u>一一对应</u>的——这不是巧合，OSPF 就是冲着这三条来的。</b>
+  <u>⭐ 答题时若被问「为什么大型网络用 OSPF 不用 RIP」，直接把这张表念一遍，三条理由齐全。</u></div>
 
   <div class="key"><span class="tag">必记 · RIP 的优缺点　<span class="exam">2024</span></span>
   <b>优点</b>：<b>① 实现简单、开销小、收敛过程较快；② <span style="color:var(--red)">「好消息传播得快」</span></b>——<u>发现更短的路由后，更新信息会迅速传遍所有路由器。</u><br>
@@ -2098,6 +2700,33 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
   <p><b>OSPF 是分布式链路状态算法的典型代表，采用 Dijkstra 最短路径算法。</b><u>名字里虽有「最短路径优先」，但这<b>不意味着其他协议不用最短路径原则</b>——AS 内使用的所有路由协议都在找最短路径，<b>只是「最短」的度量标准不同</b></u>（<b>RIP 量跳数，OSPF 量代价</b>）。</p>
 
+  <div class="mine"><span class="tag">我的补讲 · 那句书上灰框，是「层次判断题」最锋利的一把刀</span>
+  <b>原话</b>：<u>「<b>用 UDP 传送</b>」是指把协议数据作为 <b>UDP 报文的数据部分</b>；
+  「<b>直接使用 IP 数据报传送</b>」是指把协议数据<b>直接作为 IP 数据报的数据部分</b>。</u><br>
+  <b>潜台词是 Y</b>：<b style="color:var(--red)">这句话在教你怎么<u>看封装层数</u>来定协议层次</b>：
+  <pre class="fml">RIP 报文：  [ 以太网帧 [ IP 数据报 [ UDP 报文 [ RIP 报文 ] ] ] ]
+                                   └── 多了一层 UDP ⟹ RIP 在传输层【之上】⟹ 应用层
+
+OSPF 分组： [ 以太网帧 [ IP 数据报 [ OSPF 分组 ] ] ]
+                                └── 【没有】传输层 ⟹ OSPF 就在网络层
+
+BGP 报文：  [ 以太网帧 [ IP 数据报 [ TCP 报文 [ BGP 报文 ] ] ] ]  ⟹ 应用层</pre>
+  <b>所以能考 Z</b>：<b>① 「OSPF 使用的下层协议是什么」——<u>IP</u>（2017 真题）；
+  ② 「RIP 使用的下层协议是什么」——<u>UDP</u>；③ 「BGP 呢」——<u>TCP</u>。</b>
+  <b style="color:var(--red)">⚠️ 注意题目问的是「下层协议」而不是「属于哪层」，两个问题的答案不一样，别答串。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「洪泛」不等于「无脑广播」——那半句括号是区别所在</span>
+  <b>书上写洪泛时加了一个括号：<u>「每个相邻路由器再将该信息转发给它的所有邻居（<b>但不再回传给刚刚发送信息的路由器</b>）」</u>。</b>
+  <b>潜台词是 Y</b>：<b style="color:var(--red)">这半句括号是「洪泛」能成立的全部技术含量</b>——
+  <u>去掉它，一条 LSA 会在任意一条链路上来回弹射，永不停止。</u>
+  <pre class="fml">无这条规则：A →B ，B 又发回 A，A 再发给 B …… 无限循环
+有这条规则：A →B ，B 只发给【除 A 之外】的邻居 ⟹ 信息单向扩散，会终止
+
+  再加上【LSA 带 32 位序号】去重 ⟹ 即使拓扑有环也不会重复处理</pre>
+  <b>所以能考 Z</b>：<b>① 「OSPF 洪泛会不会引起广播风暴」——<u>不会</u>，有这两条机制；
+  ② 「OSPF 向谁发送信息」——<b style="color:var(--red)">本自治系统中的<u>所有</u>路由器</b>（注意：<u>动作</u>是发给相邻路由器，<u>结果</u>是全区域都收到，题目问的通常是结果）。</b><br>
+  <u>⭐ 这条「不回传给来源」的规则，与 ch3 交换机的生成树、IP 的 TTL 一样，都是<b>防环</b>手段的一种。</u></div>
+
   <div class="key"><span class="tag">必记 · OSPF vs RIP 的四个主要区别（<span style="color:var(--red)">2024 直接考这张表</span>）</span>
   <div class="tabwrap"><table>
   <tr><th>#</th><th>OSPF</th><th>RIP</th></tr>
@@ -2110,6 +2739,19 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <u>「<b>用 UDP 传送</b>」是指把协议数据作为 <b>UDP 报文的数据部分</b>；「<b>直接使用 IP 数据报传送</b>」是指把协议数据<b>直接作为 IP 数据报的数据部分</b>。
   <b>RIP 报文属于前者。</b></u></div>
 
+  <div class="mine"><span class="tag">我的补讲 · 五项优势里，只有第 ④ 条会单独出选择题</span>
+  <b>五条并列摆着，但考试的关注度极不均匀</b>：
+  <div class="tabwrap"><table>
+  <tr><th>优势</th><th>考试关注度</th><th>为什么</th></tr>
+  <tr style="background:var(--amber-soft)"><td><b>④ 支持可变长子网掩码和无分类编址</b></td><td><b style="color:var(--red)">高</b></td><td><b>它是 RIP 的短板</b>：<u>RIP 报文里<b>不带掩码</b>，所以支持不了 VLSM</u>——两协议对比题必考这一条</td></tr>
+  <tr><td><b>② 等代价路径可负载分担</b></td><td>中</td><td>「RIP 能不能负载均衡」是常见判断句（<b>不能</b>）</td></tr>
+  <tr><td><b>⑤ LSA 带 32 位序号，越大越新</b></td><td>中</td><td>它是<b>洪泛去重</b>的机制，与「不回传给刚发来的那台」配套</td></tr>
+  <tr><td>① 每条路由可设不同代价</td><td>低</td><td>属于「OSPF 比 RIP 灵活」的泛泛表述</td></tr>
+  <tr><td>③ 分组具备鉴别功能</td><td>低</td><td>了解即可</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⭐ 第 ④ 条值得回头和 4.2.2 那句「路由器交换路由信息时必须同时通告网络地址<u>和子网掩码</u>」对上</b>——
+  <u>那一句当时看着像废话，到这里才显出分量：<b>带不带掩码，决定了一个路由协议支不支持 VLSM。</b></u></div>
+
   <div class="key"><span class="tag">必记 · OSPF 另外五项优势</span>
   <b>① 支持对每条路由设置<u>不同的代价</u></b>（可针对不同业务类型算差异化路径）；<br>
   <b>② 多条等代价路径时可实现<u>负载分担（负载均衡）</u></b>；<br>
@@ -2118,6 +2760,19 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b>⑤ 每条链路状态通告都带一个 <u>32 位序号</u>，序号越大表示状态越新。</b><br>
   <u>所有路由器最终构建出一致的<b>链路状态数据库 LSDB</b>，再各自用 Dijkstra 算出路由表。</u><br>
   📌 <b style="color:var(--red)">书上灰框，极易被忽略但很能出题：Dijkstra 虽能算出完整的最优路径，但路由表中<u>不存整条路径，只存「下一跳」</u>——只有到了下一跳，才能确定再下一跳怎么走。</b></div>
+
+  <div class="link"><span class="tag">知识串联 · OSPF 的区域，是「分层」在同一个 AS 内部又做了一次</span>
+  <span class="hub">分层</span> <b>注意这里出现了<u>三级</u>结构，很多人只记得两级</b>：
+  <pre class="fml">整个互联网
+   └── 自治系统 AS        ← 第一级分层（4.4.2，靠 BGP 连接）
+        └── 区域 Area     ← 第二级分层（本节，靠主干区域连接）
+             └── 网络     ← 具体的子网</pre>
+  <b style="color:var(--red)">两级分层的动机完全一样：把「洪泛/交换」的范围关进一个小盒子，让开销不随全局规模增长。</b>
+  <u>AS 之间不交换内部细节，区域之间也不交换内部细节——<b>连做法都一样：都由边界节点做「翻译和汇总」。</b></u><br>
+  <span class="hub">分层</span> <b>「必须经过主干区域」这条约束，与 ch6 DNS「必须经过根/顶级域」、
+  OS 多级页表「必须先查一级表」是同一种<u>强制中转</u>设计</b>：
+  <b style="color:var(--red)">牺牲一点路径最优性，换来结构简单与无环。</b>
+  <u>（若允许区域之间直连，就可能出现区域间的环路——这正是主干区域存在的技术理由。）</u></div>
 
   <div class="key"><span class="tag">必记 · OSPF 的区域划分（图 4.19）</span>
   <b>为支持大规模网络，OSPF 把一个 AS 划分为若干<u>区域（Area）</u>。</b>
@@ -2132,6 +2787,19 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
     <figure class="fig"><img src="图/NETch4/NET4_f19_OSPF划分区域.png" alt="fig419">
   <figcaption><b>图 4.19 OSPF 划分区域举例</b>。一个大椭圆是<b>自治系统 AS</b>，里面套着四个小椭圆：<b>主干区域 0.0.0.0</b>（含 R3、R5、R6、R7、R4）与三个普通区域——<b>0.0.0.1</b>（R1、R2，挂网1/网2/网3）、<b>0.0.0.2</b>（R8，挂网4/网5）、<b>0.0.0.3</b>（R9，挂网6/网7/网8）。顶上一条线标着「<b>至其他自治系统</b>」，从 <b>R6</b> 引出。⭐ <b style="color:var(--red)">看图要认出两类特殊路由器</b>：<u>① <b>区域边界路由器</b>＝ 同时踩在两个椭圆边界上的那几台（<b>R3、R4、R7</b>）——每个区域至少有一台；② <b>自治系统边界路由器</b>＝ 通往外部 AS 的那台（<b>R6</b>），它在<u>主干区域</u>里</u>。<b>再顺着图走一遍跨区域路径：从区域 0.0.0.1 的网 1 出发 → R3（本地区域边界）→ 主干区域 → R4（目的区域边界）→ 区域 0.0.0.2 的网 4</b>——<b style="color:var(--red)">「必须经过主干区域」这条规则在图上是看得见的：三个普通区域彼此<u>没有任何直接连线</u>。</b></figcaption></figure>
 
+  <div class="link"><span class="tag">知识串联 · OSPF 的五种分组，就是一次完整的「数据库同步」协议</span>
+  <span class="hub">同步</span> <b>把五种分组按时间顺序连起来，会发现它和你熟悉的几个流程同构</b>：
+  <div class="tabwrap"><table>
+  <tr><th>OSPF 阶段</th><th>用什么分组</th><th>同构的场景</th></tr>
+  <tr><td><b>发现对方</b></td><td>Hello</td><td>TCP 三次握手的第一步；ARP 请求</td></tr>
+  <tr><td><b>交换目录（只发摘要）</b></td><td><b style="color:var(--red)">DD</b></td><td><b>git fetch 先比对提交列表</b>；OS 里先比对版本号再决定是否复制</td></tr>
+  <tr><td><b>按需索取缺的</b></td><td><b>LSR</b></td><td><b style="color:var(--red)">只传差异，不传全量</b>——与 BGP「首次全表、之后只发变化」是同一个思路</td></tr>
+  <tr><td><b>传送内容</b></td><td>LSU（内含 LSA）</td><td>数据传输</td></tr>
+  <tr><td><b>确认</b></td><td>LSAck</td><td>ch3 的 ACK 帧、ch5 的 TCP 确认</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 「先比摘要、再传差异」是这套设计的精髓</b>：<u>书上明说「若采用全网广播所有路由器的完整链路状态信息，则会带来巨大的通信开销」</u>
+  ——<b>DD + LSR 这两步的存在，就是为了省掉那笔开销。</b></div>
+
   <div class="key"><span class="tag">必记 · OSPF 的五种分组（记住谁问谁答）</span>
   <div class="tabwrap"><table>
   <tr><th>#</th><th>分组</th><th>作用</th></tr>
@@ -2144,6 +2812,28 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b>⭐ 五种分组正好串成一条完整的剧情：<u>Hello 找到人 → DD 对目录 → LSR 要细节 → LSU 给细节 → LSAck 回执</u>。</b>
   <u>这样记比逐条背名字快得多。</u></div>
 
+  <div class="mine"><span class="tag">我的补讲 · 四个时间常数背后有两条比例关系，比死记数字管用</span>
+  <b>把本章所有协议的「心跳 / 判死」时间放在一起，规律立刻显现</b>：
+  <div class="tabwrap"><table>
+  <tr><th>协议</th><th>心跳间隔</th><th>判死时间</th><th>倍数</th></tr>
+  <tr><td><b>OSPF</b></td><td><b>10 s</b>（Hello）</td><td><b>40 s</b></td><td><b style="color:var(--red)">4 倍</b></td></tr>
+  <tr><td><b>RIP</b></td><td><b>30 s</b>（周期更新）</td><td><b>180 s</b></td><td><b style="color:var(--red)">6 倍</b></td></tr>
+  <tr><td><b>BGP</b></td><td><b>60 s</b>（Keepalive）</td><td><b>180 s</b></td><td><b style="color:var(--red)">3 倍</b></td></tr>
+  <tr><td><b>OSPF 的 LSA</b></td><td><b>30 分钟</b>（刷新）</td><td><b>60 分钟</b>（最大生存期）</td><td><b>2 倍</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 规律：判死时间总是心跳间隔的若干倍，<u>留出「丢几次心跳也不误判」的余量</u>。</b>
+  <u>书上明写 BGP 那一组是「Keepalive 间隔为保持时间的 1/3」——其余三组照此理解即可。</u><br>
+  ⭐ <b>记忆钩子（只记四个心跳数）：<u>OSPF 10 秒、RIP 30 秒、BGP 60 秒</u>，一个比一个慢一档</b>；
+  <b>判死时间：OSPF ×4、RIP ×6、BGP ×3。</b>
+  <u>⚠️ 另外记住那句常被出题的话：<b>网络中传送的大多数 OSPF 分组都是问候分组</b>（因为它 10 秒一轮，最频繁）。</u></div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：LSDB 初始同步的四步握手细节</span>
+  书上把「链路状态数据库的初始同步」写得很细：
+  <u>先用<b>数据库描述分组</b>交换 LSA 摘要 → 用<b>链路状态请求分组</b>索取缺失或过期的 LSA → 对方用<b>链路状态更新分组</b>发来 → 接收方回<b>链路状态确认分组</b></u>。
+  <b>这四步的具体报文交互次序、状态机（Down / Init / 2-Way / ExStart / Exchange / Loading / Full）从未在统考中出现</b>，理解即可、不必背。
+  <b style="color:var(--red)">要留下的只有一句话</b>：<u><b>先比摘要、再传差异</b>——目的是避免「全网广播所有路由器的完整链路状态」带来的巨大开销</u>（书上原话）。
+  <b>五种分组的名称与各自作用（见上文表格）才是考点；这段流程只是把它们串起来的剧情。</b></div>
+
   <div class="key"><span class="tag">必记 · OSPF 的四个时间常数（<span style="color:var(--red)">经常直接问数字</span>）</span>
   <div class="tabwrap"><table>
   <tr><th>常数</th><th>值</th><th>含义</th></tr>
@@ -2153,6 +2843,19 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <tr><td><b>LSA 刷新周期</b></td><td><b>30 分钟</b></td><td>最初生成该 LSA 的路由器定期刷新，防止 LSA 丢失或异常</td></tr>
   </table></div>
   ⚠️ <b>书上补了一句常被拿去出题的话：<u>网络中传送的大多数 OSPF 分组都是问候分组</u></b>（<u>因为它每 10 秒就要发一轮，而其余四种只在拓扑变化时才出现</u>）。</div>
+
+  <div class="mine"><span class="tag">我的补讲 · OSPF 的「区域」与「AS」容易混，一句话分开</span>
+  <b>两个词都表示「一个范围」，但层级和作用完全不同</b>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>自治系统 AS</th><th>区域 Area</th></tr>
+  <tr><td><b>谁划的</b></td><td><b>互联网整体的行政划分</b>（一个 ISP、一所大学各是一个 AS）</td><td><b style="color:var(--red)">OSPF 在一个 AS <u>内部</u>再划的</b></td></tr>
+  <tr><td><b>为了什么</b></td><td>各自治、不暴露内部细节；<b>限制路由算法的规模</b></td><td><b style="color:var(--red)">限制<u>洪泛</u>的范围</b></td></tr>
+  <tr><td><b>靠什么互连</b></td><td><b>BGP</b>（边界路由器）</td><td><b>主干区域 0.0.0.0</b>（区域边界路由器）</td></tr>
+  <tr><td><b>跨越时的规则</b></td><td>eBGP 会话</td><td><b style="color:var(--red)">必须经过主干区域</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 层级关系：<u>互联网 ⊃ AS ⊃ 区域 ⊃ 网络</u>。「区域」是 OSPF 特有的概念，RIP 和 BGP 里都没有。</b><br>
+  ⚠️ <b>由此还能推出一个常被问的点：<u>「自治系统边界路由器」与「区域边界路由器」不是一回事</u></b>——
+  <b>前者通往<u>别的 AS</u>（图 4.19 里的 R6，位于主干区域）；后者只是连接<u>本 AS 内两个区域</u>（R3、R4、R7）。</b></div>
 
   <div class="mine"><span class="tag">我的补讲 · OSPF 的可靠性是自己做的，这一点和 BGP 形成绝妙对照</span>
   <b>书上说 X</b>：OSPF 用 LSU 洪泛、用 LSAck 确认；BGP 走 TCP。<br>
@@ -2174,11 +2877,38 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
   <p><b>BGP 是不同自治系统的路由器之间交换路由信息的协议，是一种外部网关协议。</b><u>RIP 和 OSPF 都只能在一个 AS 内工作；<b>若没有 BGP，全世界数以万计的 AS 就都是一个个彼此孤立的「孤岛」</b></u>。</p>
 
+  <div class="mine"><span class="tag">我的补讲 · 「路径向量」是第三种算法，别把它归进 DV 或 LS</span>
+  <b>书上说 X</b>：BGP 采用路径向量路由选择协议，<u>它与距离向量（RIP）和链路状态（OSPF）<b>都有很大区别</b></u>。<br>
+  <b>潜台词是 Y</b>：<u>「路径向量」＝ <b>距离向量的升级版：不只报「多远」，还报「经过了谁」</b></u>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>距离向量（RIP）</th><th>路径向量（BGP）</th></tr>
+  <tr><td><b>报文里带什么</b></td><td>只有<b>距离</b>（跳数）</td><td><b style="color:var(--red)">完整的 AS-PATH（经过了哪些 AS）</b></td></tr>
+  <tr><td><b>能不能发现环路</b></td><td><b style="color:var(--red)">不能</b> ⟹ 无穷计数</td><td><b style="color:var(--red)">能</b>：<u>看到 AS-PATH 里已经有自己的 ASN，就知道兜圈子了，直接丢弃</u></td></tr>
+  <tr><td><b>选路依据</b></td><td>纯数字比大小</td><td><b>四级策略</b>（偏好 → 跳数 → 热土豆 → 标识符）</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 「不能兜圈子」这个要求，正是靠 AS-PATH 这个「路径」实现的——这就是它叫「路径向量」的原因。</b><br>
+  <b>所以能考 Z</b>：<b>① 三协议算法对照题里，BGP 那一格<u>只能填「路径向量」</u>；
+  ② 问「BGP 怎么避免环路」——<u>检查 AS-PATH 里有没有自己</u>；
+  ③ 问「AS-PATH 指明了经过哪些路由器吗」——<b>不，只指明经过哪些 <u>AS</u></b>（书上专门强调）。</b></div>
+
   <div class="key"><span class="tag">必记 · BGP 为什么不追求「最佳路由」（两条理由 + 一句结论）</span>
   <b>① 互联网规模太大</b>——AS 之间的路由选择非常困难，每个主干网路由器表中的项目数都极其庞大，<u><b>要寻找最佳路由是很不现实的</b></u>。<br>
   <b>② <span style="color:var(--red)">AS 之间的路由选择必须考虑政治、安全或经济等因素</b></span>（<u>这是 IGP 完全不需要考虑的</u>）。<br>
   <b style="color:var(--red)">⟹ 结论：BGP 只能力求寻找一条<u>能够到达目的网络且比较好的路由（不能兜圈子）</u>，<u>而并非寻找一条最佳路由</u>。</b><br>
   <b>BGP 采用<u>路径向量</u>路由选择协议</b>（<u>与 DV、LS 都不同，是第三种</u>）；<b style="color:var(--red)">BGP 是应用层协议，基于 TCP 实现（端口 179）</b>。</div>
+
+  <div class="link"><span class="tag">知识串联 · NEXT-HOP 为什么要「解析」？因为它跨了 AS 的边界</span>
+  <span class="hub">跨域</span> <b>普通路由表里的「下一跳」拿来就能用，BGP 的 NEXT-HOP 却要再翻译一次。差别在这</b>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>IGP 的下一跳</th><th>BGP 的 NEXT-HOP</th></tr>
+  <tr><td><b>指向谁</b></td><td><b>本 AS 内、与我直连</b>的路由器</td><td><b style="color:var(--red)">邻居 AS 的边界路由器</b>（可能离我好几跳）</td></tr>
+  <tr><td><b>能直接用吗</b></td><td><b>能</b>，ARP 一下就发出去了</td><td><b style="color:var(--red)">不能</b>，我根本到不了它</td></tr>
+  <tr><td><b>怎么办</b></td><td>—</td><td><b>先找到「本 AS 里通往它的那个出口」，再用 IGP 算到出口的下一跳</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 这就是「NEXT-HOP 解析 + IGP 查找」两步的由来，也是 BGP 与 IGP 必须配合工作的技术原因。</b><br>
+  <span class="hub">分层</span> <b>换个说法：<u>BGP 给的是「战略方向」，IGP 给的是「战术路线」</u></b>——
+  <u>与 OS 里「长程调度决定哪个作业进内存、短程调度决定哪个进程上 CPU」的两级分工同构</u>：
+  <b>上一级定大方向，下一级定具体一步。</b></div>
 
   <div class="key"><span class="tag">必记 · BGP 路由的两个关键属性</span>
   <pre class="fml">BGP 路由 = &lt;前缀, BGP 属性&gt; = &lt;前缀, AS-PATH, NEXT-HOP&gt;</pre>
@@ -2187,6 +2917,34 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b style="color:var(--red)">⟹ BGP 路由指出经过哪些 <u>AS</u>，但<u>不指明</u>具体经过哪些路由器。</b><br>
   <b>NEXT-HOP（下一跳）</b>：接收该路由的路由器去往目的网络时应使用的下一跳地址；
   <u>通常是<b>通告此路由的邻居 AS 的边界路由器上、与本 AS 直连的那个接口 IP</b>，即 AS-PATH 中第一个 AS 的入口点。</u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 为什么 AS 内部也要跑 BGP？一句话：把外部消息传遍全家</span>
+  <b>这是本节最容易被略过、却直接对应 2024 真题的一个点。</b>
+  <u>设想没有 iBGP 会怎样</u>：
+  <pre class="fml">AS2 的边界路由器 R2 通过 eBGP 学到了「到网络 X 该怎么走」
+
+  ❌ 若不跑 iBGP：这条外部路由只有 R2 知道
+       ⟹ AS2 内部的 R3、R4、R5 收到目的为 X 的分组时【不知道该交给谁】
+       ⟹ 只能丢弃或走默认路由（可能绕远甚至丢包）
+
+  ✅ 跑 iBGP：R2 通过 iBGP 会话把这条路由告诉 AS2 内的每一台 BGP 路由器
+       ⟹ 全 AS 都知道「去 X 要先到 R2」</pre>
+  <b style="color:var(--red)">⟹ 书上那句「BGP 不仅用于 AS 之间的路由交换，还运行于 AS 内部，<u>以确保外部路由信息在整个 AS 中正确传播</u>」，说的就是这件事。</b><br>
+  <b>由此也能理解那条奇怪的要求</b>：<u><b>AS 内任意两台 BGP 路由器之间都要建立 iBGP 会话，但不要求物理直连</b></u>
+  ——<b style="color:var(--red)">因为 iBGP 学来的路由<u>不会被再次转发给其他 iBGP 对等方</u>（防环），所以只能靠「两两全连」来保证人人都收到。</b>
+  <u>（会话是 TCP 连接，跨几跳都行，所以「不要求物理直连」。）</u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · BGP 用 TCP，带来了三个「顺便得到」的好处</span>
+  <b>「BGP 基于 TCP（端口 179）」这句话若只当成一个要背的数字就太亏了。用了 TCP 意味着</b>：
+  <div class="tabwrap"><table>
+  <tr><th>顺便得到</th><th>于是 BGP 可以</th></tr>
+  <tr><td><b>可靠传输</b></td><td><b style="color:var(--red)">不必自己实现确认与重传</b>（对照 OSPF 要自己写 LSAck）</td></tr>
+  <tr><td><b>有序字节流</b></td><td><b>路由更新不会乱序到达</b>，「先撤销后新增」这类顺序敏感的操作才安全</td></tr>
+  <tr><td><b>长连接</b></td><td><b style="color:var(--red)">「半永久」的会话 ⟹ 首次发全表、之后只发增量</b>，省下大量带宽</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 第三条最关键：<u>正因为连接一直在，BGP 才敢做「增量更新」；RIP 用无连接的 UDP，只能每 30 秒把整张表重发一遍。</u></b>
+  <b>这一条对照直接对应表 4.6 最后一行（交换内容），是「传递协议」与「交换内容」两行之间的因果关系。</b><br>
+  <u>⚠️ 顺带记住那个配套机制：<b>保持时间计时器</b>——每收到任意 BGP 报文就重置为 0，<b>180 秒内没收到任何报文就认为对等方失效、关闭连接</b>。</u></div>
 
   <div class="key"><span class="tag">必记 · eBGP 与 iBGP　<span class="exam">2024</span></span>
   <b>一个 AS 中有两类路由器：<u>边界路由器</u>与<u>内部路由器</u>。</b>
@@ -2217,6 +2975,31 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <u>2013 与 2024 两道综合真题都在考这个「BGP 给方向、IGP 给下一跳」的分工。</u><br>
   ⭐ <b>一句话记法：<u>BGP 负责「出了本 AS 该往哪个 AS 走」，IGP 负责「在本 AS 内部怎么走到出口」</u>——两者接力，缺一不可。</b></div>
 
+  <div class="link"><span class="tag">知识串联 · 「热土豆」是自私的局部最优，它的代价你在 OS 里见过</span>
+  <span class="hub">局部决策</span> <b>热土豆算法的字面意思是「烫手，赶紧扔出去」——<u>让分组以最少的转发次数离开本 AS</u></b>。
+  <b style="color:var(--red)">注意它优化的是「本 AS 的开销」，而不是「端到端的总开销」。</b>
+  <div class="tabwrap"><table>
+  <tr><th>特征</th><th>本节的热土豆</th><th>别处的同类</th></tr>
+  <tr><td><b>目标</b></td><td><b>让<u>自己</u>的成本最小</b></td><td>OS 里进程只顾自己抢 CPU；组原里 Cache 只顾自己命中率</td></tr>
+  <tr><td><b>结果</b></td><td><b style="color:var(--red)">同一 AS 内不同路由器选出不同的 BGP 路由</b>（R1 选路由 2、R2 选路由 1）</td><td>局部最优 ≠ 全局最优</td></tr>
+  <tr><td><b>怎么算</b></td><td><b>要用 IGP（RIP/OSPF）算「我到各出口有多远」</b></td><td>—</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 这里出现了本章最漂亮的一次「协议接力」：BGP 定不下来时，<u>反过来求助于 IGP</u>。</b>
+  <u>与 4.4.5 图 4.20 那个「NEXT-HOP 解析 + IGP 查找」是同一种接力——<b>BGP 管方向，IGP 管距离。</b></u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 四条原则的排序不是随意的：从「人的意志」到「机器的兜底」</span>
+  <b>把四条原则按「谁说了算」重新读一遍，顺序就变得非常自然，根本不用背</b>：
+  <div class="tabwrap"><table>
+  <tr><th>顺序</th><th>原则</th><th>谁说了算</th></tr>
+  <tr><td>1</td><td><b>LOCAL-PREF 最高</b></td><td><b style="color:var(--red)">管理员</b>（政治 / 经济策略）——<u>人的意志最优先</u></td></tr>
+  <tr><td>2</td><td><b>AS-PATH 最短</b></td><td><b>全局的客观事实</b>（经过几个 AS）</td></tr>
+  <tr><td>3</td><td><b>热土豆</b></td><td><b style="color:var(--red)">本 AS 的局部利益</b>（谁离出口近）</td></tr>
+  <tr><td>4</td><td><b>BGP 标识符最小</b></td><td><b>纯粹的兜底</b>——<u>没有任何意义，只是为了让结果确定</u></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 一句话：<u>先听人的、再看全局、再顾自己、最后掷骰子（但要保证大家掷出同一个数）。</u></b>
+  <b>第 4 条的存在理由是「<u>必须有唯一确定的结果</u>」——若没有兜底规则，不同路由器可能选出不同路由而形成环路。</b><br>
+  <u>⭐ 这个「用一个任意但确定的规则打破平局」的手法，在 408 别处也见过：<b>ch3 以太网的二进制指数退避用随机数打破平局；OS 里同优先级进程按 PID 排序。</b></u></div>
+
   <div class="key"><span class="tag">必记 · BGP 路由选择的四条原则（<span style="color:var(--red)">按优先级从高到低，顺序必背</span>）</span>
   <div class="tabwrap"><table>
   <tr><th>优先级</th><th>原则</th><th>说明与书上给的反例</th></tr>
@@ -2230,6 +3013,23 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
     <figure class="fig"><img src="图/NETch4/NET4_f21_23_BGP选路三例.png" alt="fig421-23">
   <figcaption><b>图 4.21 / 4.22 / 4.23——BGP 选路前三条原则的三个例子，竖排在一起对照看。</b><br><b>【上·图 4.21 本地偏好】</b> AS1 里 R1 与 R2 通过 iBGP 相连：<b>R1 走「高速链路」到 AS2，标 <code>LOCAL-PREF ＝ 300</code></b>；<b>R2 走「低速链路」到 AS3，标 <code>LOCAL-PREF ＝ 200</code></b>；AS2、AS3 都能到 AS4。<u>300 &gt; 200 ⟹ <b>所有发往 AS4 的流量都从 R1 离开</b></u>。<b style="color:var(--red)">⚠️ 图上那条低速链路即使完全空闲、高速链路已经过载，BGP 也不会自动分流——这是 LOCAL-PREF 的代价。</b><br><b>【中·图 4.22 AS 跳数】</b> 从 AS1 到 AS5 有两条弧：<b>上弧经 AS2→AS3（标「经过 2 个 AS」）</b>，<b>下弧只经 AS4（标「优先选择经过 1 个 AS 的 BGP 路由」）</b> ⟹ 选下弧。<b style="color:var(--red)">⚠️ 但请看图上的 AS4——它被画成一朵<u>塞满了路由器的大灰云</u>，内部要转发好多跳。这就是书上那句「AS 跳数最少的路由未必是最好的」的图证。</b><br><b>【下·图 4.23 热土豆】</b> AS1 内 <b>R1—R2—R3</b> 与 <b>R1—R4</b>，<u>各段开销都标着 <b>1</b></u>；<b>路由 1 经 R3→AS2→AS3</b>，<b>路由 2 经 R4→AS4→AS3</b>。<u>两条路由的偏好与 AS 数都相同 ⟹ 各路由器<b>各自选「离本 AS 出口最近」的那条</b></u>：<b>R1 到 R4 只要 1 跳 ⟹ 选路由 2；R2 到 R3 只要 1 跳 ⟹ 选路由 1</b>。<b style="color:var(--red)">⭐ 同一个 AS 里的两台路由器选了不同的 BGP 路由——这正是热土豆算法「结果因路由器而异」的含义。</b><br>🔍 <b style="color:var(--red)">顺带记一处书误</b>：<u>图 4.23 里两条路由的标注印成了「<b>BPG</b> 路由 1／2」，正文里写的是「BGP 路由 1／2」——<b>是图上把 BGP 拼成了 BPG</b></u>（dpi 400 复核过）。<b>不影响做题，看到别以为是新名词。</b></figcaption></figure>
+
+  <div class="mine"><span class="tag">我的补讲 · 「撤销可以多条、新增只能一条」——这条冷知识考过</span>
+  <b>书上关于 Update 报文有一句很容易滑过去的话</b>：
+  <u><b style="color:var(--red)">撤销路由可以一次撤销多条，但新增路由时，每个更新报文只能增加一条。</b></u><br>
+  <b>潜台词是 Y</b>：<u>为什么不对称？因为<b>撤销只需要给出前缀</b>（一行地址就够），
+  而<b>新增要带上完整的属性集</b>（AS-PATH、NEXT-HOP、LOCAL-PREF……），<b style="color:var(--red)">不同路由的属性各不相同，没法合并在一个报文里</b></u>。<br>
+  <b>所以能考 Z</b>：<b>选择题问「一个 BGP Update 报文能撤销几条、能新增几条」——<u>撤销多条、新增一条</u>。</b><br>
+  ⭐ <b>顺带把 BGP 的「省流量」设计一并记住</b>：
+  <b style="color:var(--red)">刚建立会话时交换<u>完整</u>路由表，此后<u>只在变化时发送更新部分</u></b>——
+  <u>这与 RIP「不管变没变，每 30 秒把整张表再发一遍」形成鲜明对照，也是表 4.6 最后一行的内容。</u></div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：BGP 会话建立时「协商协议参数」协商了什么</span>
+  书上说两个路由器建立 TCP 连接后，<u>「必须首先交换 <b>Open</b> 报文，以相互识别对方，并<b>协商一些协议参数</b>」</u>。
+  <b>具体协商哪些参数（BGP 版本号、AS 号、保持时间、可选能力集…）属于协议实现细节，统考从不涉及。</b>
+  <b style="color:var(--red)">要留下的是那条流程本身</b>：<u><b>建 TCP 连接 → 交换 Open → 接受方回 Keepalive → 会话建立 → 首次交换完整路由表 → 之后只发变化</b></u>——
+  <b>这条链上每一步都可能被拿去出「顺序题」，但里面的参数内容不会。</b>
+  <u>同理，BGP 属性除了 AS-PATH 与 NEXT-HOP、LOCAL-PREF 之外还有很多种，书上只点名了这三个，其余不必扩展。</u></div>
 
   <div class="key"><span class="tag">必记 · BGP 的四种报文与两个时间常数　<span class="exam">2024</span></span>
   <b>刚启动时会话两端交换<u>完整的 BGP 路由表</u>；此后<u>仅在路由发生变化时发送更新部分</u></b>（<u>节省带宽、降低处理开销</u>）。
@@ -2245,6 +3045,17 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <u>每收到任意 BGP 报文，保持时间计时器就重置为 0；若在保持时间内没收到任何 BGP 报文，就认为对等方失效、关闭连接。</u><br>
   <u>建立流程：<b>先建 TCP 连接 → 交换 Open 报文（相互识别、协商参数）→ 接受方返回 Keepalive 报文 → 会话建立</b>。</u></div>
 
+  <div class="link"><span class="tag">知识串联 · 三协议 ＝ 三种「信息传播模式」的教科书样本</span>
+  <span class="hub">信息传播</span> <b>抛开网络的外衣，三个协议其实示范了三种在图上传播信息的通用模式</b>：
+  <div class="tabwrap"><table>
+  <tr><th>模式</th><th>代表</th><th>特征</th><th>你在哪还见过</th></tr>
+  <tr><td><b>只跟邻居说，说的是「我的结论」</b></td><td><b>RIP（DV）</b></td><td>迭代收敛、可能震荡</td><td><b>Bellman-Ford</b>；OS 的分布式死锁检测</td></tr>
+  <tr><td><b>跟所有人说，说的是「我的原始事实」</b></td><td><b>OSPF（LS）</b></td><td>各自算全图、快且无环</td><td><b>Dijkstra</b>；广播式一致性</td></tr>
+  <tr><td><b>跟邻居说，说的是「我的结论 + 走过的路」</b></td><td><b style="color:var(--red)">BGP（路径向量）</b></td><td>能查环、能按策略选</td><td>带路径记录的图遍历</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 三者的差别可以压缩成一个问题：<u>「我发出去的信息里，包含<b>结论</b>、<b>事实</b>，还是<b>结论加路径</b>？」</u></b>
+  <u>答出这一句，表 4.6 的「路由算法」「交换节点」「交换内容」三行就全推出来了。</u></div>
+
   <div class="key"><span class="tag">必记 · ⭐⭐ 表 4.6 三种路由协议的比较（<span style="color:var(--red)">本章最该默写的一张表</span>）</span>
   <div class="tabwrap"><table>
   <tr><th>协议</th><th style="color:var(--amber)">RIP</th><th style="color:var(--blue)">OSPF</th><th style="color:var(--green)">BGP</th></tr>
@@ -2257,6 +3068,21 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   </table></div>
   <b style="color:var(--red)">⭐ 六行里最常单独出题的是第三行（传递协议）与第五行（交换节点）。</b>
   <u>第三行的记法：<b>「RIP 走 U（UDP）、OSPF 走 I（IP）、BGP 走 T（TCP）」——UIT 三个字母，按 R-O-B 的顺序念一遍就记住了。</b></u></div>
+
+  <div class="link"><span class="tag">知识串联 · 三协议的端口/协议号，与 ch5、ch6 的号码表一起背</span>
+  <span class="hub">端口</span> <b>408 里要记的号码不多，集中在一张表里一次解决</b>：
+  <div class="tabwrap"><table>
+  <tr><th>协议</th><th>号码</th><th>类型</th><th>出自</th></tr>
+  <tr><td><b>RIP</b></td><td><b>UDP 520</b></td><td>端口</td><td>本章 4.4.3</td></tr>
+  <tr><td><b>OSPF</b></td><td><b style="color:var(--red)">IP 协议号 89</b></td><td><b style="color:var(--red)">不是端口</b></td><td>本章 4.4.4</td></tr>
+  <tr><td><b>BGP</b></td><td><b>TCP 179</b></td><td>端口</td><td>本章 4.4.5</td></tr>
+  <tr><td><b>TCP / UDP</b></td><td><b>IP 协议号 6 / 17</b></td><td>协议号</td><td>本章 4.2.1</td></tr>
+  <tr><td><b>IGMP</b></td><td><b>IP 协议号 2</b></td><td>协议号</td><td>本章 4.5.4</td></tr>
+  <tr><td><b>DNS / HTTP / FTP</b></td><td>53 / 80 / 20、21</td><td>端口</td><td>ch6</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⚠️ 表里最容易记混的是第 2、4、5 行：<u>它们是「IP 首部协议字段的值」，不是端口号</u></b>——
+  <b>凡是直接坐在 IP 上的协议（OSPF、TCP、UDP、IGMP、ICMP）都用协议号；坐在 TCP/UDP 上的才用端口号。</b>
+  <u>⭐ 这也是一个反向判据：<b>一个协议若有「端口号」，它就一定在传输层之上。</b></u></div>
 
   <div class="mine"><span class="tag">我的补讲 · 三协议对照表的「反向出题法」：命题人只会这四种换法</span>
   <b>把表 4.6 的每一格拆开，能造出的错误选项其实只有四类</b>，认出套路就不会被绕：
@@ -2271,6 +3097,19 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b>题目问「向谁发送信息」时，OSPF 的标准答案是「本自治系统中的所有路由器」。</b><br>
   ⭐ <b>我的自测法：把表 4.6 蒙住协议名那一行，只看六个属性，能不能倒着说出是哪个协议。</b>
   <u>做得到，这一节的选择题就基本满分了。</u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 4.4 的三道综合真题，各考一个不同的层面</span>
+  <b>三道题放在一起看，能看出命题人对这一节的完整期待</b>：
+  <div class="tabwrap"><table>
+  <tr><th>真题</th><th>考的层面</th><th>核心动作</th></tr>
+  <tr><td><b>2013</b>（4.4 综 04）</td><td><b>地址层面</b></td><td>路由聚合（<b>194.17.20.0/23</b>）＋ 最长前缀匹配裁决（<b style="color:var(--red)">/23 与 /25 撞车 ⟹ 走 E0</b>）＋ BGP 概念</td></tr>
+  <tr><td><b>2014</b>（4.4 综 05）</td><td><b style="color:var(--red)">算法层面</b></td><td><b>Dijkstra 手算</b>（王道明标「数据结构与计网组合题」）＋ 路由聚合（<b>192.1.6.0/23</b>）＋ <b>TTL 递减（64−3＝61）</b></td></tr>
+  <tr><td><b>2024</b>（4.4 综 06）</td><td><b>协议层面</b>（五问）</td><td><b>RIP 收敛耗时</b>（30s / 60s）＋ <b>eBGP vs iBGP 会话</b>＋ <b>Update 报文</b>＋ <b>热土豆选路</b>＋ <b style="color:var(--red)">TTL 至少设 16</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 一句话概括三年的走向：<u>从「算地址」走向「算图」，再走向「问协议细节」</u>。</b>
+  <b>2024 那道五问题是最新也是最全面的一道，把 4.4 从头到尾扫了一遍，值得单独精做两遍。</b><br>
+  <b>🐍 三道题的关键数字我都复算过</b>：<u>综 03 的 R6 路由表（N1/N2＝10、N3＝7、N4＝8，下一跳全是 R3）· 综 04 的 /23 与 /25 裁决 ·
+  综 05 的 TTL＝61 · 综 06 的 TTL 至少 16</u>——<b>全部与书答吻合。</b></div>
 
   <div class="link"><span class="tag">知识串联 · 路由协议这一节，往三个方向各伸出一根线</span>
   <span class="hub">端口</span> <b>RIP 走 UDP 520、BGP 走 TCP 179 → ch5 传输层</b>：
@@ -2309,6 +3148,43 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
   <h3>4.5.2　IP 多播地址</h3>
 
+  <div class="mine"><span class="tag">我的补讲 · 多播的三条「注意事项」，其实各自连着别的章节</span>
+  <b>那三条并列的注意事项，来源完全不同，分开记才不会糊成一团</b>：
+  <div class="tabwrap"><table>
+  <tr><th>注意事项</th><th>它的来源</th></tr>
+  <tr><td><b>① 多播也是尽最大努力交付</b></td><td><b>继承自 IP 本身</b>（4.1 那条「四件坏事」对多播同样成立）</td></tr>
+  <tr><td><b>② 多播地址只能作目的地址</b></td><td><b style="color:var(--red)">因为「一组接口」不可能是发送者</b>——<u>与 0.0.0.0「只能作源地址」正好构成一对反例</u>（教材 04 题把两者放在同一道里考）</td></tr>
+  <tr><td><b>③ 对多播数据报不产生 ICMP 差错报文</b></td><td><b style="color:var(--red)">正是 4.2.7「四种不发 ICMP」的第 ③ 条</b>——<u>否则一个坏的多播分组会引来成百上千个差错报文</u></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 第 ② 条最值得记成一句对偶：<u>「0.0.0.0 只能当源，D 类地址只能当目的」</u>——教材 04 题的四个选项就是围着这句话转的。</b>
+  <u>⭐ 顺带一提：<b>多播地址不能作源地址</b>，也意味着<b>你没法「回复」一个多播分组的发送者组</b>——这是多播只能配 UDP、配不了 TCP 的另一半理由。</u></div>
+
+  <div class="link"><span class="tag">知识串联 · 多播 ＝ 「在分岔处才复制」，这个思想别处也有</span>
+  <span class="hub">延迟复制</span> <b>「分组在传输路径上<u>仅当遇到分岔节点时</u>才被复制并转发」，这句话的思想叫<u>尽可能晚地复制</u></b>：
+  <div class="tabwrap"><table>
+  <tr><th>场景</th><th>怎么「晚复制」</th><th>省下了什么</th></tr>
+  <tr><td><b>IP 多播</b>（本节）</td><td><b style="color:var(--red)">同一份数据在共享路径上只传一次，到分岔口才复制</b></td><td>上游链路的带宽</td></tr>
+  <tr><td><b>OS 的写时复制（COW）</b></td><td><b>fork 后父子进程共享页面，<u>真正写的时候才复制</u></b></td><td>内存与复制时间</td></tr>
+  <tr><td><b>组原的 Cache 写回法</b></td><td><b>改了先只记脏位，<u>被替换时才写回主存</u></b></td><td>访存次数</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 三者的共同判据：<u>只要「多份副本目前还完全一样」，就没必要真的做出多份来。</u></b>
+  <u>而它们的共同代价也一样：<b>需要额外的机制来判断「什么时候必须复制了」</b>——多播靠转发树的分岔点，COW 靠写保护中断，Cache 靠脏位。</u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 多播的「省」到底省在哪一段？一个数字算给你看</span>
+  <b>图 4.24 的 90 个 vs 1 个容易给人错觉，好像多播省掉了 89/90。<u>实际省的是「上游那几段」</u></b>：
+  <pre class="fml">拓扑：服务器 ── R1 ──┬── R2 ── 30 台
+                       ├── R3 ── 30 台
+                       └── R4 ── 30 台
+
+ 单播：服务器→R1 段要跑 90 份；R1→R2/R3/R4 每段跑 30 份；最后一跳各跑 30 份
+ 多播：服务器→R1 段只跑 1 份；R1→R2/R3/R4 每段 1 份；最后一跳在局域网上【硬件多播】1 份
+
+ ⟹ 省得最多的是【最上游、最靠近源】的那一段（90 → 1）
+    越往下游，两者差距越小；到了最后一跳的局域网上，两者都是「发一次」</pre>
+  <b style="color:var(--red)">⟹ 这解释了为什么多播对「视频服务器」这种<u>单源多收</u>的场景收益最大：瓶颈恰好在服务器出口那一段。</b><br>
+  <b>所以能考 Z</b>：<b>教材 01 题问「用多个单播仿真一个多播」的说法——
+  <u>带宽：一个多播所需带宽<b>小于</b>多个单播之和 ✔；时延：<b style="color:var(--red)">路由器的时延会很大，而处理一个多播分组的时延很小</b> ⟹ 「时延基本相同」是<b>错</b>的</u>（答案 D）。</b></div>
+
   <div class="key"><span class="tag">必记 · 多播地址的四条与「三个注意」</span>
   <b>① 多播数据报的<u>源地址是源主机的 IP 地址，目的地址是 IP 多播地址</u>。</b><br>
   <b>② <span style="color:var(--red)">IP 多播地址就是 IPv4 的 D 类地址</span></b>：前四位 <code>1110</code>，范围 <b>224.0.0.0 ～ 239.255.255.255</b>，
@@ -2321,6 +3197,18 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   ⭐ <b style="color:var(--red)">多播机制仅适用于 UDP</b>——<u>TCP 是面向连接的，建立的是一对一的端到端连接，无法支持一对多。</u></div>
 
   <h3>4.5.3　在局域网上进行硬件多播（本节唯一的计算点）</h3>
+
+  <div class="link"><span class="tag">知识串联 · 32:1 的映射，与 Cache／散列表是同一个「冲突 → 二次校验」结构</span>
+  <span class="hub">分块与映射</span> <b>把三处放在一起，「为什么收到帧还要再过滤一次」就成了常识</b>：
+  <div class="tabwrap"><table>
+  <tr><th>场景</th><th>怎么映射</th><th>冲突后靠什么区分</th></tr>
+  <tr><td><b>多播 IP → MAC</b>（本节）</td><td><b style="color:var(--red)">28 位挤进 23 位，丢掉高 5 位</b></td><td><b style="color:var(--red)">IP 层再用目的 IP 过滤一次</b></td></tr>
+  <tr><td><b>主存块 → Cache 行</b>（组原）</td><td>取地址的中间几位做行号</td><td><b>比对标记位（Tag）</b></td></tr>
+  <tr><td><b>关键字 → 散列槽</b>（数据结构）</td><td>H(key) mod m</td><td><b>比较关键字本身</b></td></tr>
+  <tr><td><b>虚页 → 页框</b>（OS）</td><td>页表映射</td><td>页表项唯一，<b>不冲突</b>（这是反例：一对一映射就不需要二次校验）</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 通用结论：<u>只要映射是「多对一」的，接收端就必须保留原始信息做二次校验</u>。</b>
+  <u>前三行都是多对一，所以都需要；第四行是一对一，所以不需要——这条对照能帮你判断任何一个新场景要不要二次校验。</u></div>
 
   <div class="key"><span class="tag">必记 · IP 多播地址 → 多播 MAC 的映射规则（要能手算）</span>
   <b>IANA 保留的以太网多播地址范围是 <u>01-00-5E-00-00-00 ～ 01-00-5E-7F-FF-FF</u></b>：
@@ -2355,6 +3243,43 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
   <h3>4.5.4　IGMP 与多播路由协议</h3>
 
+  <div class="link"><span class="tag">知识串联 · IGMP 的「只管本地」，与 ARP 的「只管本网」是同一种设计</span>
+  <span class="hub">作用域</span> <b>本章有三个协议都被明确限定了作用范围，值得并排记</b>：
+  <div class="tabwrap"><table>
+  <tr><th>协议</th><th>作用范围</th><th>范围之外的事谁管</th></tr>
+  <tr><td><b>ARP</b>（4.2.5）</td><td><b>本局域网（广播域）</b></td><td>跨网靠 IP 逐跳转发</td></tr>
+  <tr><td><b>IGMP</b>（本节）</td><td><b style="color:var(--red)">本地子网</b>——<u>不知道组的总成员数，也不知道成员分布在哪些网络</u></td><td><b>多播路由选择协议</b>（负责在路由器之间通告组成员关系）</td></tr>
+  <tr><td><b>DHCP</b>（4.2.6）</td><td>本网（靠广播找服务器）</td><td>跨网需要 DHCP 中继代理（了解即可）</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 三者的共同模式：<u>「本地协议 + 跨域协议」搭档工作</u>——本地那个靠广播，跨域那个靠路由器之间的协议。</b>
+  <u>这与 4.4 的「IGP + EGP」是同一种分工，只是换了个场景。</u><br>
+  <span class="hub">封装</span> <b>另注意 IGMP 的定位：<u>封装在 IP 数据报里（协议字段 2），但它是「IP 协议的一个组成部分」，不算独立协议</u></b>
+  ——<b style="color:var(--red)">这与 ICMP「封装在 IP 里但仍是网络层协议」是同一族说法，用同一把尺子（看它依赖什么信息）就能量出来。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 多播转发树：为什么「同一个组、不同源」要建不同的树</span>
+  <b>书上最后那句「不同的多播组对应不同的转发树；同一个多播组，若源主机不同，则对应的转发树也不同」，
+  一读就过，其实很值得停一下</b>：
+  <b>潜台词是 Y</b>：<u>因为转发树是<b>以源主机为根</b>的</u>——
+  <b style="color:var(--red)">根一换，整棵树的形状就变了，哪怕叶子（组成员）完全相同。</b>
+  <pre class="fml">组 G 有成员 {A, B, C}
+
+  源是 S1 ⟹ 树根 = S1 ⟹ 一套分岔路径
+  源是 S2 ⟹ 树根 = S2 ⟹ 另一套分岔路径      （成员没变，树变了）
+
+  ⟹ 多播路由表项的键其实是【(源, 组)】这一对，而不只是【组】</pre>
+  <b>所以能考 Z</b>：<b>① 判断题「同一个多播组共用一棵转发树」——<u>错</u>，要看源；
+  ② 「多播路由选择要做什么」——<u>构造以源主机为根的多播转发树，使每个分组在每条链路上仅传送一次</u>（书上原话）。</b><br>
+  ⭐ <b style="color:var(--red)">「每条链路只传一次 + 路由器不会收到重复分组」这两句，正是「树无环」的两个直接推论</b>——
+  <u>与教材 02 题「为避免路由环路应构造多播转发树」是同一件事的正反两说。</u></div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：多播路由选择协议有哪些</span>
+  书上说「连接到局域网上的多播路由器还必须和互联网上的其他多播路由器协同工作……<u>这就需要使用<b>多播路由选择协议</b></u>」，
+  <b>但<u>没有点名任何一个具体协议</u>（DVMRP、MOSPF、PIM 等一个都没提）。</b>
+  <b style="color:var(--red)">考纲对 IP 多播的要求只有「多播的概念」与「IP 多播地址」两项</b>，
+  <u>因此具体的多播路由协议<b>不在考查范围内</b>，不必自行扩充。</u>
+  <b>这一节真正要练的只有两样：<b style="color:var(--red)">D 类地址的范围与性质</b>，以及 <b style="color:var(--red)">IP → MAC 的 32:1 映射手算</b>。</b>
+  <u>其余（IGMP 两阶段、转发树）读懂结论即可，不必深挖机制。</u></div>
+
   <div class="key"><span class="tag">必记 · IGMP 的三条限定 + 两个阶段</span>
   <b>三条限定</b>：<br>
   <b>① IGMP 让<u>连接到本地局域网的多播路由器</u>知道：本局域网上是否有主机加入或退出了某个多播组。</b><br>
@@ -2384,6 +3309,33 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第4章_网络层.pdf#page=86">📄 p.212</a>
   <h2>4.6　移动 IP　<span style="font-size:.8rem;color:var(--muted)">2 页 · 3 题 · 0 真题 · 只有「三角路由」一个硬点</span></h2>
 
+  <div class="mine"><span class="tag">我的补讲 · 三个实体、两个地址、一条隧道——移动 IP 只有这三样东西</span>
+  <b>这 2 页内容可以压缩成一张对照表，考前扫一眼就够</b>：
+  <div class="tabwrap"><table>
+  <tr><th>类别</th><th>成员</th><th>一句话职责</th></tr>
+  <tr><td rowspan="3"><b>三个实体</b></td><td><b>移动节点</b></td><td>拥有<b>永久地址</b>、到处跑</td></tr>
+  <tr><td><b>归属代理</b></td><td><b style="color:var(--red)">截获</b>发往移动节点的分组，<b>封装进隧道</b>转发</td></tr>
+  <tr><td><b>外地代理</b></td><td><b>分配转交地址</b> ＋ <b>通知归属代理</b> ＋ <b style="color:var(--red)">解封装</b>后交给移动节点</td></tr>
+  <tr><td rowspan="2"><b>两个地址</b></td><td><b>永久地址（归属地址）</b></td><td><b style="color:var(--red)">永远不变</b>；应用程序只用它</td></tr>
+  <tr><td><b>转交地址</b></td><td><b>随移动而变</b>；<u>只在三个实体之间使用，应用程序不用</u></td></tr>
+  <tr><td><b>一条隧道</b></td><td>归属代理 → 外地代理</td><td><b>封装 → 转发 → 拆封</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 三道教材题正好各考一样：01 考实体职责（注册要通知<u>归属</u>代理）· 02 考两个地址（永久固定、转交变）· 03 考隧道造成的三角路由。</b>
+  <u>把这张表记住，这 2 页就到手了。</u></div>
+
+  <div class="link"><span class="tag">知识串联 · 移动 IP 的「地址不变」，是为了迁就上层的一个假设</span>
+  <span class="hub">端口与连接</span> <b>整节 2 页的存在理由，可以压成一条依赖链</b>：
+  <pre class="fml">ch5：TCP 连接由【源IP, 源端口, 目的IP, 目的端口】四元组唯一标识
+   ⟹ IP 一变，四元组就变了 ⟹ 内核认为这是【另一条连接】⟹ 原连接作废
+
+  ⟹ 于是：只要能让 IP 不变，TCP 就察觉不到主机在移动
+       ⟹ 这正是移动 IP 的全部目标：【对上层应用完全透明】</pre>
+  <b style="color:var(--red)">⟹ 书上那句「若用户关机后从家中移至办公室、通过 DHCP 拿到新 IP，<u>不属于移动 IP 的范畴</u>」，
+  原因就在这——<b>IP 变了，上层的假设被打破了</b>。</b><br>
+  <span class="hub">分层</span> <b>换个角度看，这是一次典型的「下层为了迁就上层的假设而额外做工作」</b>：
+  <u>网络层本来完全可以让地址随位置变（那才自然），但因为传输层把 IP 写进了连接标识，网络层只好用归属代理 + 隧道把这个假设维持住。</u>
+  <b>分层带来的耦合，代价就在这里。</b></div>
+
   <div class="key"><span class="tag">必记 · 移动 IP 的定义与三种功能实体</span>
   <b>移动 IP ＝ 允许移动主机在切换网络接入点时，<u>仍保持其永久 IP 地址不变</u>的网络协议机制。</b>
   <u>目标：不论移动主机当前在哪个网络，发往它的分组都能被自动、透明地正确投递；<b>该机制对上层应用（如 TCP 连接）完全透明</b>。</u>
@@ -2401,6 +3353,26 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <u>若要在移动过程中维持 TCP 传输，就必须保证该连接在漫游期间持续有效；<b>而 TCP 连接由「源 IP + 源端口 + 目的 IP + 目的端口」四元组标识，IP 一变连接立刻作废</b></u>
   ⟹ <b style="color:var(--red)">「让 IP 地址保持不变」正是移动 IP 存在的全部理由。</b>
   <b>⟹ 判断题记法：<u>IP 变了 ＝ 不是移动 IP；IP 没变而位置变了 ＝ 才是移动 IP。</u></b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 三角路由的代价，与它「为什么还这么设计」</span>
+  <b>三角路由绕了远路，为什么不让 B 直接把分组发到转交地址？</b>
+  <div class="tabwrap"><table>
+  <tr><th>方案</th><th>问题</th></tr>
+  <tr><td><b>让 B 直接发到转交地址</b></td><td><b style="color:var(--red)">B 必须知道 A 现在在哪</b>——可 A 随时在移动，B 每次都得先查一遍；<u>更要命的是：<b>B 用的目的 IP 就变了，A 的 TCP 连接会断</b></u></td></tr>
+  <tr><td><b>三角路由（现行方案）</b></td><td><b>绕远，多一段时延</b>；归属代理成为<b style="color:var(--red)">单点</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 结论：三角路由的绕远，是为了换取「<u>通信者完全不必知道 A 在哪</u>」这件事——
+  而这正是移动 IP 的设计目标（<u>「对上层应用完全透明」</u>）。</b><br>
+  <b>所以能考 Z</b>：<b>① 「B 需要知道 A 的当前位置吗」——<u>不需要，只用永久地址即可</u>（书上原话）；
+  ② 「为什么发送方向可以直达」——<u>因为 A 发出去的分组，源地址用永久地址就够了，<b>没有任何一方需要为它做转换</b></u>。</b>
+  <u>⭐ 一去一回的不对称，本质上是「<b>找人难、找路易</b>」——这与 ch6 DNS 要先解析域名、再直接连 IP 是同一种不对称。</u></div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：书上那个「大学毕业交换家庭地址」的类比</span>
+  书上用了一个生活化的例子引入移动 IP：<u>大学毕业时不知道将来的通信地址，于是彼此<b>交换家庭地址（永久地址）</b>；
+  日后寄信只需寄到家庭地址，<b>再由家人代为转交</b></u>。
+  <b>这个类比本身当然不会考</b>，但它把三个术语一次对应好了，读一遍能省不少记忆力：
+  <b style="color:var(--red)">家庭地址 ＝ 永久地址（归属地址）· 家人 ＝ 归属代理 · 转交 ＝ 隧道转发 · 你现在的住处 ＝ 转交地址。</b>
+  <u>⭐ 顺着这个类比还能自然得出三角路由：<b>信必须先到家里、再由家人转寄给你；而你寄出去的信，直接从你现在的住处寄走就行。</b></u></div>
 
   <div class="key"><span class="tag">必记 · 移动 IP 通信流程五步（<span style="color:var(--red)">第 ③④ 两步就是「三角路由」</span>）</span>
   <u>每个移动站有一个<b>永久地址（归属地址）</b>，它最初所在的网络叫<b>归属网络</b>；<b>永久地址与归属网络的关联固定不变</b>。
@@ -2471,12 +3443,50 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
   <h3>4.7.1　冲突域和广播域　<span class="exam">考点追踪：网络设备对冲突域和广播域的影响（2010、2020）</span></h3>
 
+  <div class="mine"><span class="tag">我的补讲 · 「LAN 在逻辑上等同于一个广播域」——这句话是设备选型题的题眼</span>
+  <b>书上这句轻描淡写的话，是 2019、2022 两道综合真题第一问的<u>唯一依据</u></b>：
+  <pre class="fml">题目给你：一组主机的网络前缀是 X，另一组是 Y（X ≠ Y）
+          问中间该放什么设备
+
+推理：X ≠ Y ⟹ 它们属于【两个不同的网络】
+     ⟹ 「一个 LAN = 一个广播域」⟹ 它们必须在【两个不同的广播域】里
+     ⟹ 只有【能分隔广播域】的设备才行
+     ⟹ 交换机不行（不分隔广播域）⟹ 必须是【路由器】</pre>
+  <b style="color:var(--red)">⟹ 整个推理只用了两个事实：① LAN ≡ 广播域；② 只有路由器分隔广播域。</b><br>
+  <b>反过来的问法也常见</b>：<b>「若中间放的是交换机，会怎样」——<u>两组主机会处于同一个广播域，但网络前缀不同 ⟹ 它们互相判定为「不在同一网」⟹ 都要发给网关，而网关不存在 ⟹ 通信失败</u>。</b>
+  <u>⭐ 这正好把 4.7.1 与 4.2.2 的「直接交付 / 间接交付」接上了。</u></div>
+
   <div class="key"><span class="tag">必记 · 两个「域」的定义与所属层次</span>
   <b>冲突域</b> ＝ <b>连接到同一物理介质上的所有节点的集合</b>，这些节点之间存在<b>介质争用</b>现象。
   <b style="color:var(--red)">在 OSI 参考模型中，冲突域属于<u>第 1 层（物理层）</u>的概念。</b><br>
   <b>广播域</b> ＝ <b>能够接收同一广播帧的所有节点的集合</b>。
   <b style="color:var(--red)">在 OSI 参考模型中，广播域属于<u>第 2 层（数据链路层）</u>的概念。</b><br>
   ⭐ <b>通常所说的<u>局域网 LAN 在逻辑上等同于一个广播域</u>；路由器用于连接不同的 LAN，即<u>分隔不同的广播域</u>。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「域」的层次为什么一个是第 1 层、一个是第 2 层？</span>
+  <b>书上给了两句看着很怪的话：<u>冲突域属于第 1 层（物理层）的概念，广播域属于第 2 层（数据链路层）的概念</u>。</b>
+  <b>潜台词是 Y</b>：<u>这两句其实在说<b>「冲突」和「广播」这两件事分别发生在哪一层」</b></u>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>冲突</th><th>广播</th></tr>
+  <tr><td><b>是什么现象</b></td><td><b style="color:var(--red)">两路信号在介质上叠加</b>——纯粹的电信号问题</td><td><b style="color:var(--red)">一个「目的地址为 FF-FF-FF-FF-FF-FF 的<u>帧</u>」被所有人收下</b>——是帧层面的事</td></tr>
+  <tr><td><b>所以属于</b></td><td><b>物理层</b>（第 1 层）</td><td><b>数据链路层</b>（第 2 层）</td></tr>
+  <tr><td><b>谁能挡住它</b></td><td>能<b>看懂帧、按端口转发</b>的设备就能挡 ⟹ <b>第 2 层及以上</b></td><td>能<b>看懂 IP、不转发广播帧</b>的设备才能挡 ⟹ <b style="color:var(--red)">第 3 层</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 规律浮出来了：<u>要挡住第 n 层的现象，设备至少得在第 n+1 层工作。</u></b>
+  <b>这一句同时解释了三行表格，比死记「集线器不分隔、交换机分隔冲突域、路由器都分隔」有用得多。</b></div>
+
+  <div class="link"><span class="tag">知识串联 · 「广播风暴」这个词，把 4.7.1 与 ch3、4.1.5 连了起来</span>
+  <span class="hub">广播域</span> <b>教材 01 题问「要控制网络上的<u>广播风暴</u>，可以采用什么方法」，答案是<b>用路由器将网络分段</b>。
+  这个词值得展开一下</b>：
+  <div class="tabwrap"><table>
+  <tr><th>问题</th><th>答案</th></tr>
+  <tr><td><b>广播风暴是什么</b></td><td>广播帧在一个过大的广播域里泛滥，<b style="color:var(--red)">占满带宽、耗尽主机 CPU</b></td></tr>
+  <tr><td><b>为什么交换机治不了</b></td><td><b>它不分隔广播域</b>——广播帧照转不误</td></tr>
+  <tr><td><b>为什么路由器能治</b></td><td><b style="color:var(--red)">它不转发目的地址为 255.255.255.255 的广播分组</b>，广播被挡在一个网段之内</td></tr>
+  <tr><td><b>还有别的办法吗</b></td><td><b>划 VLAN</b>（ch3 3.6.4）——把一台交换机切成多个广播域</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 「广播风暴」本质上是 4.1.5 说的<u>拥塞</u>在链路层的一种特例：到达率远超处理能力，只是这次的洪水是广播帧。</b>
+  <u>三章在这里合流：ch3 提供广播机制、本章 4.7.1 提供隔离手段、4.1.5 提供「为什么必须隔离」的理论框架。</u></div>
 
   <div class="key"><span class="tag">必记 · ⭐⭐ 三层设备对照表（与 ch3 3.8 同源，两章合并记一次）</span>
   <div class="tabwrap"><table>
@@ -2488,6 +3498,19 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b>⟹ 规律一句话：<span style="color:var(--red)">层次越高，隔离能力越强</span>——物理层什么都不隔，链路层隔冲突域，网络层连广播域一起隔。</b><br>
   ⚠️ <b style="color:var(--red)">唯一的例外是 VLAN</b>：<u>交换机在划分 VLAN 之后<b>可以</b>分隔广播域</u>（见 ch3 3.6.4 与本章 2024 真题）。
   <b>凡题干里出现「无 VLAN 功能的交换机」这句话，就是在提醒你按上表的默认行答；出现「支持 VLAN」，就要另算。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · VLAN 是这张表唯一的例外，但它的例外方式很讲究</span>
+  <b>「交换机不分隔广播域」这条铁律，遇到 VLAN 就要打个补丁。补丁的边界要说清楚</b>：
+  <div class="tabwrap"><table>
+  <tr><th>情形</th><th>广播域个数</th><th>依据</th></tr>
+  <tr><td><b>普通交换机（无 VLAN）</b></td><td><b>1 个</b>（整台机器连同下挂全部主机）</td><td>4.7.1 的默认规则</td></tr>
+  <tr><td><b>划了 n 个 VLAN 的交换机</b></td><td><b style="color:var(--red)">n 个</b></td><td><b>VLAN 之间的广播互不可见</b>（ch3 3.6.4）</td></tr>
+  <tr><td><b>冲突域呢</b></td><td colspan="2"><b style="color:var(--red)">与 VLAN 无关</b>，仍是「每端口一个」——<u>VLAN 只影响广播域，不影响冲突域</u></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⚠️ 最后一行是最容易被忽略的：很多人一看到 VLAN 就把两种域一起改，其实<u>只有广播域会变</u>。</b><br>
+  <b>做题时的判据很明确</b>：<b>题干写「无 VLAN 功能的交换机」（2019 真题的原话）⟹ 按默认规则；
+  题干提到 VLAN 划分 ⟹ 广播域按 VLAN 数算。</b>
+  <u>⭐ 2024 那道真题（本章 71 题）考的就是 VLAN 场景，与 2019 的「无 VLAN」正好构成正反两面。</u></div>
 
   <div class="mine"><span class="tag">我的补讲 · 数冲突域/广播域的三步法（每年都有一道，闭眼也要数对）</span>
   <b>书上说 X</b>：三层设备各自能不能分隔两种域。<br>
@@ -2510,6 +3533,40 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
     <figure class="fig"><img src="图/NETch4/NET4_f27_路由器体系结构.png" alt="fig427">
   <figcaption><b>图 4.27 路由器体系结构</b>。<b>一条水平虚线把整张图切成上下两半</b>，右侧还标着两个大括号：<b>上半 ＝「路由选择」</b>，里面是「<b>路由选择处理机</b>」盒子，盒子里装着<b>路由选择协议</b>与<b>路由表</b>；<b>下半 ＝「分组转发」</b>，左边一列<b>输入端口</b>、右边一列<b>输出端口</b>，中间是<b>交换结构</b>，交换结构里画着「<b>分组处理</b>」与「<b>转发表</b>」。⭐ <b style="color:var(--red)">最该盯的是端口里那三个小方块 <code>1 → 2 → 3</code>（输入端口）与 <code>3 → 2 → 1</code>（输出端口）</b>——<u>左上角的图例告诉你 <b>1＝物理层、2＝数据链路层、3＝网络层</b></u>：<b>进来时自下而上层层剥（1→2→3），出去时自上而下层层包（3→2→1）</b>。<b style="color:var(--red)">这正是「路由器的每个端口都包含三层处理模块」那句话的图示，也是它能互连异构网络的原因。</b><b>另外注意上下两半之间那个<u>双向空心箭头</u>：路由表算好后要下发成转发表，而路由协议分组也要从数据平面上交给处理机——这就是 4.1.4 说的控制平面与数据平面。</b></figcaption></figure>
 
+  <div class="link"><span class="tag">知识串联 · 路由器的「输入端口 → 交换结构 → 输出端口」，就是一台微型计算机</span>
+  <span class="hub">控制与数据</span> <b>把路由器的结构和《组成原理》的 CPU 并排放，对应关系一目了然</b>：
+  <div class="tabwrap"><table>
+  <tr><th>路由器（本节）</th><th>CPU（组原 ch5）</th><th>共同点</th></tr>
+  <tr><td><b>路由选择处理机</b></td><td><b>控制器</b></td><td><b style="color:var(--red)">决定「做什么」，不搬数据</b></td></tr>
+  <tr><td><b>交换结构</b></td><td><b>数据通路（内部总线 + 多路选择器）</b></td><td><b style="color:var(--red)">负责把数据从一处搬到另一处</b></td></tr>
+  <tr><td><b>转发表</b></td><td>控制信号 / 微程序</td><td>由上层算好后<b>下发</b>给数据通路执行</td></tr>
+  <tr><td><b>端口缓冲区</b></td><td>寄存器 / 缓冲寄存器</td><td>吸收速率差；<b>满了就丢/阻塞</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 书上那句「交换结构本身就是一个<u>在路由器中的网络</u>」，在组原里的对应说法是「数据通路是芯片里的一张小网」。</b><br>
+  <span class="hub">队列与调度</span> <b>端口缓冲区溢出丢包 ＝ OS 里「缓冲池满了就阻塞/丢弃」＝ 组原里「I/O 缓冲区溢出」</b>
+  ——<u>三处的判据都是同一句：<b>到达率持续大于服务率，队列必然无界增长，只能丢。</b></u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「普通数据分组 vs 路由协议分组」——路由器内部的一次分流</span>
+  <b>书上有一句容易滑过去的话</b>：<u>「若收到的分组为<b>普通数据分组</b>，则查转发表、经交换结构送到输出端口；
+  <b>若为路由协议分组（如 RIP、OSPF 报文），则交由路由选择处理机处理</b>。」</u><br>
+  <b>潜台词是 Y</b>：<b style="color:var(--red)">路由器内部有一个「分流」动作——绝大多数分组走数据平面（快、硬件），少数走控制平面（慢、软件）。</b>
+  <div class="tabwrap"><table>
+  <tr><th>分组类型</th><th>走哪条路</th><th>速度</th></tr>
+  <tr><td><b>普通数据分组</b></td><td><b>输入端口 → 交换结构 → 输出端口</b>（数据平面）</td><td><b style="color:var(--red)">快，可用专用硬件</b></td></tr>
+  <tr><td><b>路由协议分组</b>（RIP/OSPF/BGP）</td><td><b>上交路由选择处理机</b>（控制平面）</td><td>慢，软件处理</td></tr>
+  </table></div>
+  <b>所以能考 Z</b>：<b>① 这解释了「转发表可用硬件、路由表由软件维护」（4.7.3）；
+  ② 也解释了为什么 <u>OSPF 报文要用 IP 首部的协议字段 89 标识</u>——<b style="color:var(--red)">路由器正是靠这个字段把它分流到控制平面的</b>。</b>
+  <u>⭐ 这个「快路径 / 慢路径」的分流，在《组成原理》里叫「常见情况快速化」，在 OS 里叫「快速路径与慢速路径」。</u></div>
+
+  <div class="bg"><span class="tag">背景 · 考试不碰：交换结构的三种实现方式</span>
+  <b>书上把「交换结构」讲成一个整体（「路由器内部连接输入与输出端口的高速通路」「一个在路由器中的网络」），
+  没有展开它的三种经典实现（<u>基于内存、基于总线、基于互连网络/交叉开关</u>）。</b>
+  <b style="color:var(--red)">既然书上没讲，统考也没考过，就不必去别处补</b>——
+  <u>知道「它负责把分组从输入端口搬到输出端口，是数据平面的核心」就够了。</u>
+  <b>同样属于「知道存在即可」的还有那句提醒：<u>路由器的物理端口通常<b>兼具输入和输出</b>功能，图 4.27 把它们分开画只是为了方便理解</u></b>——
+  <b style="color:var(--red)">这一句唯一的作用是防止你在数接口时把一个物理口数成两个。</b></div>
+
   <div class="key"><span class="tag">必记 · 路由器的两大部分（图 4.27）</span>
   <b>从结构上看，路由器由<u>路由选择（控制平面）</u>与<u>分组转发（数据平面）</u>两部分构成。</b>
   <div class="tabwrap"><table>
@@ -2530,6 +3587,33 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
     <figure class="fig"><img src="图/NETch4/NET4_f28_简单网络拓扑.png" alt="fig428">
   <figcaption><b>图 4.28 一个简单的网络拓扑</b>——下面那张表 4.7 的四行，每一行都能在这张图上指出来。<b>左边</b>：一朵「互联网」云与一朵「<b>局域网1（202.114.3.0/24）</b>」云，都接在 <b>R2</b> 上（R2 的 <b>L1 ＝ 131.34.6.1/16</b> 通互联网，<b>E1</b> 接局域网 1，<b>L0 ＝ 202.114.2.2/24</b>）。<b>右边</b>：<b>R1</b>（<b>L0 ＝ 202.114.2.1/24</b> 与 R2 对接，<b>E1</b> 接「<b>局域网2（202.114.1.0/24）</b>」）。⭐ <b>对着图读 R1 的路由表</b>：<u>第 1 行 202.114.1.0 走 <b>E1</b>「直连」——就是右边那朵云；第 2 行 202.114.2.0 走 <b>L0</b>「直连」——就是 R1 与 R2 之间那段线本身；第 3 行 202.114.3.0 下一跳 <b>202.114.2.2</b>——那正是 R2 的 L0 口；第 4 行 <b style="color:var(--red)">0.0.0.0/0.0.0.0 也指向 202.114.2.2</b>——去互联网的一切都交给 R2</u>。<b style="color:var(--red)">⟹ 「直连的写接口、非直连的写对端 IP、剩下的全丢给默认路由」，一张四行表就把综合题要写的格式全示范完了。</b></figcaption></figure>
 
+  <div class="link"><span class="tag">知识串联 · 「层次越高越慢」，与组原的存储层次是同一条曲线</span>
+  <span class="hub">层次</span> <b>设备的转发时延随层次递增，这个规律在《组成原理》里有一条几乎同形的曲线</b>：
+  <div class="tabwrap"><table>
+  <tr><th>网络设备（本节）</th><th>时延</th><th>组原存储层次</th><th>速度</th></tr>
+  <tr><td>集线器（第 1 层）</td><td><b>最小</b></td><td>寄存器</td><td><b>最快</b></td></tr>
+  <tr><td>交换机（第 2 层）</td><td>几十 μs</td><td>Cache</td><td>快</td></tr>
+  <tr><td><b>路由器（第 3 层）</b></td><td><b style="color:var(--red)">几千 μs</b></td><td>主存 / 外存</td><td><b style="color:var(--red)">慢</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⚠️ 但两条曲线的<u>成因不同</u>，别混为一谈</b>：
+  <u>组原是「容量越大、离 CPU 越远、越慢」；本节是「<b>要理解的协议层次越深、要做的处理越多、越慢</b>」。</u><br>
+  <span class="hub">层次</span> <b>不过两者的应对手法倒是一样的：<u>都靠「让绝大多数请求走快路径」</u></b>——
+  <b>组原靠 Cache 命中率，路由器靠「转发表用硬件实现、只有路由协议分组才上交软件处理」（4.7.2）。</b></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 传输时延排序：路由器 &gt; 交换机 &gt; 集线器（别被「更高级」骗了）</span>
+  <b>教材 06 题的 A 项就是这个陷阱：很多人凭直觉觉得「路由器更高级，所以更快」。</b>
+  <b style="color:var(--red)">恰恰相反——层次越高，要处理的东西越多，单台设备的转发时延越大。</b>
+  <div class="tabwrap"><table>
+  <tr><th>设备</th><th>要做的工作</th><th>典型转发时延</th></tr>
+  <tr><td><b>集线器</b></td><td><b>只放大/整形比特</b>，不看内容</td><td><b style="color:var(--red)">最小</b></td></tr>
+  <tr><td><b>交换机 / 网桥</b></td><td>收帧 → 查 MAC 地址表 → 转发</td><td><b>几十 μs</b></td></tr>
+  <tr><td><b>路由器</b></td><td><b>解封装 → 查路由表（最长前缀匹配）→ TTL 减 1 → 重算检验和 → 重新封装</b></td><td><b style="color:var(--red)">几千 μs</b></td></tr>
+  </table></div>
+  <b>所以能考 Z</b>：<b>① 「三种设备转发时延排序」——<u>路由器 &gt; 交换机 &gt; 集线器</u>；
+  ② 「为什么路由器慢」——把上表第三行那一串动作念一遍就是答案；
+  ③ 反过来「集线器为什么快」——<u>它压根不理解帧，谈不上处理</u>。</b><br>
+  <u>⭐ 这也是 ch3 讲「直通式交换 vs 存储转发式交换」时同一条逻辑的延伸：<b>看得越深，越慢。</b></u></div>
+
   <div class="key"><span class="tag">必记 · 标准路由表的四个字段（<span style="color:var(--red)">按历年统考真题的口径</span>）</span>
   <b>目的网络 IP 地址　·　子网掩码　·　下一跳 IP 地址　·　接口</b>
   <u>（⚠️ 与 4.2.2 提到的「三项核心信息」相比多了一个<b>接口</b>——统考综合题要求填的表通常是<b>四列</b>。）</u>
@@ -2543,6 +3627,30 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b>这是书上表 4.7（图 4.28 拓扑中 R1 的路由表），<u>最后一行就是指向互联网的默认路由</u>。</b>
   <b style="color:var(--red)">⭐ 写路由表的两条格式规矩：① 直连网络的下一跳写「直连／直接交付」而不是某个 IP；② 默认路由写在最后一行（前缀最短、优先级最低）。</b></div>
 
+  <div class="mine"><span class="tag">我的补讲 · 「路由表 vs 转发表」在本章出现两次，两次的侧重不同</span>
+  <b>4.1.2 讲过一次，4.7.3 又讲一次——不是重复，是加深</b>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>4.1.2 的说法</th><th>4.7.3 的说法（更细）</th></tr>
+  <tr><td><b>侧重</b></td><td>路由表侧重<b>拓扑计算</b>；转发表使<b>查找最优化</b></td><td>加了<b style="color:var(--red)">实现方式</b>：路由表<b>由软件维护</b>，转发表<b>可用专用硬件</b></td></tr>
+  <tr><td><b>内容</b></td><td>没细说</td><td>路由表<b>四字段</b>（含掩码、接口）；转发表<b>网络前缀 + 下一跳</b>，可配默认路由</td></tr>
+  <tr><td><b>归属</b></td><td>没提</td><td><b style="color:var(--red)">路由表 ＝ 控制平面，转发表 ＝ 数据平面</b>（与 4.1.4 SDN 接上）</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 若题目只问「区别」，答第一行就够；若问「为什么要分成两张表」，答第一行 + 第三行：<u>一张为「算得准」优化，一张为「查得快」优化，正好对应控制平面与数据平面的分工。</u></b>
+  <u>书上也提醒：讨论原理时往往不区分，笼统叫「路由表」——<b>只有并列摆出来问区别时才需要较真。</b></u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 本章的三处「表」，别搞混了</span>
+  <b>4.7 一节里连续出现三个带「表」字的东西，考试专挑这个下手</b>：
+  <div class="tabwrap"><table>
+  <tr><th>表</th><th>在哪一层/谁维护</th><th>装什么</th><th>本章位置</th></tr>
+  <tr><td><b>路由表</b></td><td><b>路由选择处理机（软件）</b></td><td>目的网络、掩码、下一跳、接口</td><td>4.7.3</td></tr>
+  <tr><td><b>转发表</b></td><td><b style="color:var(--red)">数据平面（可用硬件）</b></td><td>网络前缀、下一跳</td><td>4.7.3</td></tr>
+  <tr><td><b>ARP 表（高速缓存）</b></td><td>主机与路由器的<b>每个接口</b></td><td><b>IP ↔ MAC</b>，有 20 分钟生存期</td><td>4.2.5</td></tr>
+  <tr><td colspan="4"><b>（再加两个别处的）</b>：<b>NAT 转换表</b>（4.2.3，内外地址端口映射）· <b style="color:var(--red)">MAC 地址表</b>（ch3 交换机，MAC ↔ 端口）</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⚠️ 最常混的一对是「路由表」与「交换机的 MAC 地址表」</b>：
+  <u>前者在<b>网络层</b>、按<b>网络号</b>查、由<b>路由协议</b>建；后者在<b>链路层</b>、按 <b>MAC</b> 查、靠<b>自学习</b>建。</u>
+  <b>题干若说「靠自学习建立」，那一定是交换机的 MAC 地址表，不是路由表。</b></div>
+
   <div class="key"><span class="tag">必记 · ⭐⭐ 路由表 vs 转发表（本节最该背的一段）</span>
   <b>转发表由路由表得出，表项与路由表项有直接对应关系，但两者的<u>设计目标不同</u></b>：
   <div class="tabwrap"><table>
@@ -2555,6 +3663,19 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <b style="color:var(--red)">「转发」是<u>单个路由器</u>根据转发表把收到的 IP 数据报从合适端口送出的过程，属于<u>数据平面</u>操作；
   「路由选择」是<u>多个路由器协同工作</u>，通过路由协议交换拓扑信息、运行路由算法动态生成路由表的过程，属于<u>控制平面</u>操作。</b><br>
   <u>⟵ 这与 4.1.4 SDN 的「数据平面 / 控制平面」是同一组概念——<b>本章开头讲的抽象，在本章结尾落了地</b>。</u></div>
+
+  <div class="link"><span class="tag">知识串联 · 那五步，把 ch1 到 ch4 的四章内容走了一遍</span>
+  <span class="hub">封装</span> <b>五步模板之所以值钱，是因为它是一条<u>纵贯四章的竖线</u></b>：
+  <div class="tabwrap"><table>
+  <tr><th>步</th><th>动作</th><th>用到哪一章</th></tr>
+  <tr><td>①</td><td><b>掩码 AND 判断同网</b></td><td><b>本章 4.2.2</b></td></tr>
+  <tr><td>②</td><td><b>ARP 查网关 MAC，封装成帧</b></td><td><b>本章 4.2.5 ＋ ch3 的 MAC 帧格式</b></td></tr>
+  <tr><td>③</td><td><b>路由器解封装、查路由表</b></td><td><b>本章 4.2.4 / 4.7.3</b></td></tr>
+  <tr><td>④</td><td><b>再 ARP、再封装，发到目的网段</b></td><td><b>本章 4.2.5 ＋ ch3</b></td></tr>
+  <tr><td>⑤</td><td><b>目的主机解封装取出数据报</b></td><td><b>ch1 的分层与封装模型</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 一次完整的跨网通信，就是「判断 → 解析 → 封装 → 转发 → 解封装」的循环。</b>
+  <u>把这条竖线走顺了，ch5 讲 TCP 时你只需要在两端再加一层「进程到进程」，整个 408 网络部分就串通了。</u></div>
 
   <div class="mine"><span class="tag">我的补讲 · 「跨子网通信 + ARP」五步答题模板（综合题的通用卷面）</span>
   <b>书上说 X</b>（4.7 综合题 01）：H1 向不同子网的 H2 发一个 IP 数据报的完整过程。<br>
@@ -2576,6 +3697,18 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
 
     <figure class="fig"><img src="../练习系统/图/NETch4/n47_zh03_2019.png" alt="q2019">
   <figcaption><b>2019 统考真题的拓扑（本章 4.7 综 03）</b>。顶上是 <b>Internet</b>，接 <b>路由器 R</b>（上口 <b>101.1.2.10</b>、下口 <b>192.168.1.253/30</b>）；R 往下接<b>设备 1</b>（三个接口 IF1／IF2／IF3），设备 1 的 IF2、IF3 分别接<b>设备 2</b> 与<b>设备 3</b>，两台设备下面各挂两台主机：<b>H1 192.168.1.2/26、H2 192.168.1.3/26（网关 192.168.1.1）</b>；<b>H3 192.168.1.66/26、H4 192.168.1.67/26（网关 192.168.1.65）</b>。⭐ <b style="color:var(--red)">解题的第一眼要落在两个网关地址上</b>：<u>192.168.1.<b>1</b> 与 192.168.1.<b>65</b> 明摆着是<b>两个不同的 /26 子网</b>（.0/26 与 .64/26）</u> ⟹ <b>能把它们分开的只能是路由器 ⟹ 设备 1 是路由器，设备 2、3 是交换机。</b><b>第二眼落在 <code>/30</code> 上</b>：<u>R 的下口占了 .253，那条链路上只剩 <b>.254</b> 给设备 1 的 IF1</u>。<b>整道题的四问就是顺着这两眼展开的。</b></figcaption></figure>
+
+  <div class="link"><span class="tag">知识串联 · 4.7 与 ch3 3.8 的分工：同一张表，两个视角</span>
+  <span class="hub">设备</span> <b>两章都讲设备，但侧重点不同，合起来才完整</b>：
+  <div class="tabwrap"><table>
+  <tr><th></th><th>ch3 3.8 数据链路层设备</th><th>本章 4.7 网络层设备</th></tr>
+  <tr><td><b>主角</b></td><td><b>网桥 / 交换机</b>（外加中继器、集线器、网卡）</td><td><b>路由器</b></td></tr>
+  <tr><td><b>讲得细的</b></td><td><b style="color:var(--red)">MAC 地址表的自学习、直通式 vs 存储转发、生成树</b></td><td><b style="color:var(--red)">路由器的体系结构、路由表四字段、转发算法</b></td></tr>
+  <tr><td><b>共有的</b></td><td colspan="2"><b>冲突域 / 广播域表</b>——<u>两章各考一次，答案完全相同</u></td></tr>
+  <tr><td><b>真题</b></td><td>2009、2013、2014、2015、2016（+2021）</td><td>2010、2012、2020、<b>2019 综合</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 两章的设备真题加起来有 <u>10 道</u>，而它们共用的知识点只有一张三行表——这是全书性价比最高的一处重叠。</b>
+  <u>⭐ 复习建议：读到这里时，直接把 ch3 3.8 那一节翻出来对照读一遍，两章的设备内容一次性收口。</u></div>
 
   <div class="mine"><span class="tag">我的补讲 · 2019 综合真题拆开看，它把本章四个考点串成了一道题</span>
   <b>题干骨架</b>：R 是路由器（下口 <b>192.168.1.253/30</b>），下面接「设备 1」，设备 1 再分出两支接「设备 2」「设备 3」；
@@ -2608,6 +3741,33 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第4章_网络层.pdf#page=97">📄 p.223</a>
   <h2>4.8　本章小结及疑难点</h2>
 
+  <div class="mine"><span class="tag">我的补讲 · 五条「不保证」，与 ch5 的 TCP 机制一一对应</span>
+  <b>这是全章最后一次、也是最重要的一次前后呼应</b>：
+  <div class="tabwrap"><table>
+  <tr><th>IP 不保证什么</th><th>TCP 用什么兜住（ch5）</th></tr>
+  <tr><td>① 不保证无差错到达</td><td><b>检验和（覆盖数据）＋ 重传</b></td></tr>
+  <tr><td>② 不保证规定时间内交付</td><td><b>超时重传定时器</b>（<u>只能改善，不能保证实时性</u>）</td></tr>
+  <tr><td>③ <b style="color:var(--red)">不保证按序交付</b></td><td><b style="color:var(--red)">序号 + 接收缓冲区排序</b></td></tr>
+  <tr><td>④ <b style="color:var(--red)">不保证不重复</b></td><td><b style="color:var(--red)">序号去重</b></td></tr>
+  <tr><td>⑤ 会在首部出错或缓存满时丢弃</td><td><b>确认 + 重传</b>；缓存满则由<b>流量控制与拥塞控制</b>预防</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 「TCP 的每一个机制，都在补 IP 的某一条不保证」——这句话可以直接写在 ch5 的第一页上。</b>
+  <u>反过来也成立：<b>凡是 IP 已经保证的（如首部正确性），TCP 就不必重复做</b>——这正是 IPv6 敢取消首部检验和的同一条思路。</u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「不主动丢弃」这四个字，是 IP 为自己做的唯一辩护</span>
+  <b>五条「不保证」里，前四条都在说 IP 做不到什么，<u>只有第 ⑤ 条是在说它做到了什么</u></b>：
+  <b style="color:var(--red)">「不主动丢弃数据报，仅在首部检验和出错、或缓存满而无法处理时才丢弃。」</b><br>
+  <b>潜台词是 Y</b>：<u>这句话划出了一条清晰的责任边界</u>——
+  <div class="tabwrap"><table>
+  <tr><th>丢包原因</th><th>责任方</th><th>能不能避免</th></tr>
+  <tr><td><b>首部检验和出错</b></td><td>传输过程中出的差错</td><td><b>不能</b>——这是必须丢的（首部都读不对了，转发到哪都不知道）</td></tr>
+  <tr><td><b>缓存满</b></td><td><b style="color:var(--red)">拥塞</b></td><td><b style="color:var(--red)">能</b>——这正是 4.1.5 拥塞控制与 ch5 TCP 拥塞控制要解决的</td></tr>
+  <tr><td>其他（心情不好、随机丢弃）</td><td>—</td><td><b>IP 承诺不会这么干</b></td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 由此推出本章最常考的一条结论：<u>凡是交付到目的主机的 IP 数据报，其<b>首部一定是没有差错的</b></u>（有错的早在半路被丢了）。</b>
+  <b>⚠️ 但注意后半句：<u>IP 只保证首部完整，<b>不保证数据部分正确</b></u>——这正是 2012 真题第Ⅲ项的刀口
+  （「对首部差错检验」对，「确保 IP 分组不丢失」错）。</b></div>
+
   <div class="key"><span class="tag">必记 · 疑难点 1：「尽最大努力交付」到底包含哪五条</span>
   <b>① 不保证 IP 数据报<u>无差错</u>地到达目的主机；</b><br>
   <b>② 不保证在<u>规定时间内</u>交付；</b><br>
@@ -2618,6 +3778,18 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <u>由此推出一条常考结论：<b>凡交付给目的主机的 IP 数据报，其首部都是<u>没有差错</u>的（有错早被丢了）</b>
   ⟹ <b>IP 层可确保首部完整性，但不保证数据部分正确、也不保证传输可靠</b>；若应用需要可靠传输，交给 TCP。</u></div>
 
+  <div class="link"><span class="tag">知识串联 · 「代理应答」这一手，在 408 里出现了三次</span>
+  <span class="hub">代理</span> <b>「本人不在，由别人代答/代收」这个模式，本章内外各出现了一次半</b>：
+  <div class="tabwrap"><table>
+  <tr><th>场景</th><th>谁代理</th><th>代理什么</th></tr>
+  <tr><td><b>跨网 ARP</b>（4.8 疑难点 2）</td><td><b>默认网关（路由器）</b></td><td>代替远端主机应答 ARP，<b style="color:var(--red)">返回自己接口的 MAC</b></td></tr>
+  <tr><td><b>移动 IP</b>（4.6）</td><td><b>归属代理</b></td><td><b style="color:var(--red)">代替移动节点截获发给它的分组</b>，再隧道转发过去</td></tr>
+  <tr><td><b>NAT</b>（4.2.3）</td><td><b>NAT 路由器</b></td><td>代替内网主机<b>以自己的名义</b>与外界通信</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 三者的共同结构：<u>一个「中间人」用<b>自己的地址</b>顶替真正的目标，再在内部做转换/转发。</u></b>
+  <u>代价也一样：<b>外部看不到真正的目标</b>——这既是安全性的来源（NAT），也是三角路由（移动 IP）与「ARP 缓存里没有远端主机」的来源。</u><br>
+  <span class="hub">代理</span> <b>ch6 还会见到第四次：<u>Web 代理服务器</u></b>——<b>代替客户去取网页，并把结果缓存下来。</b></div>
+
   <div class="key"><span class="tag">必记 · 疑难点 2：ARP 请求的对象不在本网时，谁来应答？（<span style="color:var(--red)">2015 真题的理论依据</span>）</span>
   <div class="tabwrap"><table>
   <tr><th>情形</th><th>谁应答</th><th>返回谁的 MAC</th></tr>
@@ -2626,6 +3798,21 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   </table></div>
   <b>⟹ 这就是 4.2.5 那张「ARP 四种典型情况」表的第 2 行，换了个问法。</b>
   <u>考场判据依旧是那一句：<b>ARP 永远只解析「我这一跳要交给谁」的 MAC。</b></u></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 全章的一句话总纲：分层地址让世界可扩展</span>
+  <b>疑难点 3 的那句「IP 地址的抽象性屏蔽了底层网络差异，是互联网可扩展性的基础」，
+  是整章 97 页的<u>总纲</u>。把它拆成因果链，全章的结构就清楚了</b>：
+  <pre class="fml">IP 地址是【分层的】（网络号 + 主机号）
+  ⟹ 路由表可以只按【网络号】记，而不必记每一台主机
+       ⟹ 表项数量从「主机量级」降到「网络量级」        （4.2.2 的四个特点之①）
+  ⟹ 相邻的网络号还能进一步【聚合】成更短的前缀
+       ⟹ 表项再降一个量级                          （4.2.2 路由聚合）
+  ⟹ 大量网络还能划进【自治系统】，AS 之间只交换汇总信息
+       ⟹ 全球路由表才勉强装得下                     （4.4.2 分层路由）
+
+对照：MAC 地址是【平面的】⟹ 上面每一步都做不了 ⟹ 只能用于一跳之内</pre>
+  <b style="color:var(--red)">⟹ 「为什么不能用 MAC 做全球寻址」这个问题，答案就在这条链上：<u>不是因为 MAC 太短，而是因为它不分层。</u></b>
+  <u>⭐ 这条链同时把 4.2.2、4.2.5、4.4.2、4.7.3、4.8 五处内容串成了一句话，是本章最值得写在扉页上的结论。</u></div>
 
   <div class="key"><span class="tag">必记 · 疑难点 3：为什么路由表里放的是 IP 而不是 MAC？（<span style="color:var(--red)">整个网络部分最核心的一句设计哲学</span>）</span>
   <b>问题</b>：数据报首部只有源和目的 IP，没写下一跳，怎么转发？<br>
@@ -2636,6 +3823,18 @@ IP 地址  = 10000000.00001110.0010|0000.00000101
   <u>理由两条：<b>① IP 地址的抽象性屏蔽了底层网络差异，是互联网可扩展性的基础</b>；
   <b>② 硬件地址是<u>平面化</u>的，若路由表直接用它，表项数量将剧增、管理复杂，反而得不偿失。</b></u><br>
   ⭐ <b>把这两条与 4.2.2「IP 地址是分等级的、MAC 地址是平面的」对上，整章的设计哲学就闭环了。</b></div>
+
+  <div class="link"><span class="tag">知识串联 · 「实现了几层」是判断设备类型的通用尺子</span>
+  <span class="hub">设备</span> <b>把这把尺子对着 408 里的所有互连设备量一遍，4.7.1 那张表就不用背了</b>：
+  <div class="tabwrap"><table>
+  <tr><th>设备</th><th>实现到第几层</th><th>因此它能做什么</th></tr>
+  <tr><td><b>中继器 / 集线器</b></td><td>1</td><td>只能放大整形比特；<b style="color:var(--red)">连接的必须是同种介质、同种编码</b></td></tr>
+  <tr><td><b>网桥 / 交换机</b></td><td>1–2</td><td>能识别帧和 MAC ⟹ <b>可连不同的链路层技术？部分可以</b>；<b style="color:var(--red)">能分隔冲突域，不能分隔广播域</b></td></tr>
+  <tr><td><b>路由器</b></td><td><b>1–3</b></td><td><b style="color:var(--red)">能解封装再重新封装 ⟹ 可互连底层技术完全不同的网络（以太网 ↔ PPP）</b>；两种域都能分隔</td></tr>
+  <tr><td><b>网关</b></td><td><b>3 以上</b></td><td>连接<b>高层协议不同</b>的网络</td></tr>
+  </table></div>
+  <b style="color:var(--red)">⟹ 「能屏蔽第 n 层及以下的差异」这条规律，在 4.1.1（01/03 两题）第一次出现，到这里第三次出现，是全章复现最多的一条。</b>
+  <u>三次出现的位置：<b>4.1.1 中继系统四层表 · 4.7.1 冲突域/广播域表 · 4.8 疑难点 4</b>——一次比一次具体。</u></div>
 
   <div class="key"><span class="tag">必记 · 疑难点 4：「路由器实现了三层」是什么意思</span>
   <b>指路由器<u>具备处理这三层协议的能力</u></b>：
