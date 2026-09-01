@@ -261,3 +261,16 @@ details.chlog>div{margin-top:8px;font-size:.82rem;line-height:1.85;overflow-wrap
 .attrbar .seg{display:block;min-width:3px}
 .attrlegend{display:flex;flex-wrap:wrap;gap:14px;font-size:.85rem}
 .attrlegend .dot{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+/* 真题年份封存徽章（engine.js 工具条）——封存绝不静默：题变少必须看得见 */
+.sealbadge{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;
+  padding:3px 9px;border-radius:99px;text-decoration:none;
+  background:#3a2420;border:1px solid #b04a3a;color:#e08b7a;white-space:nowrap}
+.sealbadge:hover{background:#4a2c26;border-color:#d06a55}
+
+/* ⚠️ 2026-09-01：数构老页面（7/24 建）的 .verdict 公告块与 <footer> 里写了
+   无空格的斜杠年份串（如 2009×2/2010×2/…/2025×2，实测 118–137 字符不可断），
+   375px 下把整页 scrollWidth 顶到 981。这两块不在 .q 内，拿不到题干的换行兜底。
+   （表格无辜：那张排序趟数表本来就是 .qtab，早已是 overflow-x 容器。）
+   修法同 CLAUDE.md 记录的既有结论：给长串加 overflow-wrap:anywhere。 */
+.verdict,.wrap>footer{overflow-wrap:anywhere;word-break:break-word}

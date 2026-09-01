@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>真题年份封存 · 408 四科共享</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .why{background:var(--card);border:1px solid var(--line);border-left:4px solid #b04a3a;
+       border-radius:8px;padding:14px 16px;margin:16px 0;font-size:.9rem;line-height:1.75}
+  .why b{color:#b04a3a}
+  .yrgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-top:14px}
+  .yr{border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;
+      background:var(--bg);transition:.12s;user-select:none}
+  .yr:hover{border-color:#3d6a8a}
+  .yr .y{font-size:1.15rem;font-weight:700;letter-spacing:.5px}
+  .yr .n{font-size:.76rem;color:var(--dim);margin-top:3px}
+  .yr.sealed{background:#3a2420;border-color:#b04a3a}
+  .yr.sealed .y{color:#e08b7a}
+  .yr.sealed .n::after{content:' · 🔒 已封存';color:#e08b7a}
+  .yr.done{border-style:dashed;opacity:.72}
+  .yr.done .n::before{content:'⚠️ 做过 ';color:#a5732a}
+  .sumbar{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:16px;
+          padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:8px;font-size:.88rem}
+  .sumbar b{font-size:1.1rem}
+  .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  table.yv{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:10px}
+  table.yv th,table.yv td{border:1px solid var(--line);padding:5px 8px;text-align:center;white-space:nowrap}
+  table.yv th{background:var(--card)}
+  table.yv td.l{text-align:left}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 数构</a>
+  <a class="back" href="组原_index.html">组原</a>
+  <a class="back" href="OS_index.html">OS</a>
+  <a class="back" href="网络_index.html">网络</a>
+  <header>
+    <h1>🔒 真题年份封存</h1>
+    <div class="sub">四科共享一份设置 · 被封存年份的题从<b>所有</b>入口（章节页 / 真题场 / 错题本 / 随机抽题）自动隐藏</div>
+  </header>
+
+  <div class="why">
+    <b>为什么需要这个：</b>2009–2025 十七年真题<b>已经全部拆散按章排进四科题库</b>了。
+    也就是说——<b>你按章刷题，就等于在基础阶段把所有真题都做完了</b>，
+    到冲刺期想做整卷模考时，17 套卷子全是见过的，模考就失去意义。<br>
+    每年真题约 <b>47 道</b>（数构 13 + 组原 13 + OS 12 + 网络 9），正好是一整张 408 卷。
+    <b>现在封存 2–3 年，就是给自己留 2–3 套干净的模考卷。</b><br>
+    建议封存 <b>2022、2024</b>（风格最接近当下，且都不是你已大量接触的年份）；
+    2025 年因解析 PDF 不可靠、答案已由本站独立复算，留着当最后一套压轴也可以。
+  </div>
+
+  <div class="sumbar" id="sumbar">载入中…</div>
+
+  <div class="acts">
+    <button class="tbtn primary" id="rec">🔒 一键封存推荐年份（2022 · 2024）</button>
+    <button class="tbtn" id="clr">🔓 全部解封</button>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h2>点击年份切换封存状态</h2>
+    <div class="yrgrid" id="grid"></div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h2>各年份分科题量</h2>
+    <div class="tabwrap"><table class="yv" id="yv"></table></div>
+  </div>
+
+  <footer>
+    封存状态存在浏览器 localStorage（键 <code>kaoyan408_sealed_years_v1</code>），四科共享、换页不丢。<br>
+    ⚠️ 封存<b>不会</b>删除任何题目，随时可解封。已经做过的年份封存了也救不回——所以要趁早封。
+  </footer>
+</div>
+
+<script src="data_ds.js"></script>
+<script src="engine.js"></script>
+<script>
+/* 四科题库分别载入统计：本页要看全量，所以直接 fetch 四个 data 文件里的 exam 字段。
+   engine.js 只挂了数构（data_ds.js），另外三科用轻量正则扫，避免同时载入 9MB。 */
+const SUBJ=[['data_ds.js','数构'],['data_co.js','组原'],['data_os.js','OS'],['data_net.js','网络']];
+const REC=[2022,2024];
+let YEARDATA={}; // {year:{数构:n,...}}
+let DONE={};     // {year:做过的题数}
+
+/* 已做过的年份：扫四科的 attempts 记录不够细（只存 wrongIds），改用错题本 + 已答记录粗判。
+   这里用各科 <key>_attempts_v1 里出现过的 scope 名做提示，做不到逐题精确，只作预警。 */
+function loadDone(){
+  ['ds','co','os','net'].forEach(k=>{
+    try{
+      const w=JSON.parse(localStorage.getItem(k+'_wrong_v1')||'{}');
+      Object.keys(w).forEach(qid=>{ DONE[qid]=true; });
+    }catch(e){}
+  });
+}
+
+async function scan(){
+  loadDone();
+  for(const [f,name] of SUBJ){
+    let txt='';
+    try{ txt=await (await fetch(f)).text(); }catch(e){ continue; }
+    const re=/exam\s*:\s*(\d{4})/g; let m;
+    while((m=re.exec(txt))){
+      const y=+m[1];
+      YEARDATA[y]=YEARDATA[y]||{};
+      YEARDATA[y][name]=(YEARDATA[y][name]||0)+1;
+    }
+  }
+  render();
+}
+
+function totalOf(y){return Object.values(YEARDATA[y]||{}).reduce((a,b)=>a+b,0);}
+
+function render(){
+  const sealed=SubjApp.sealedYears();
+  const years=Object.keys(YEARDATA).map(Number).sort();
+  const g=document.getElementById('grid'); g.innerHTML='';
+  years.forEach(y=>{
+    const d=document.createElement('div');
+    d.className='yr'+(sealed.includes(y)?' sealed':'');
+    d.innerHTML='<div class="y">'+y+'</div><div class="n">'+totalOf(y)+' 题</div>';
+    d.onclick=()=>{
+      const s=SubjApp.sealedYears();
+      const i=s.indexOf(y);
+      if(i>=0)s.splice(i,1); else s.push(y);
+      SubjApp.setSealedYears(s); render();
+    };
+    g.appendChild(d);
+  });
+
+  const nSealed=sealed.length;
+  const hidden=sealed.reduce((a,y)=>a+totalOf(y),0);
+  const all=years.reduce((a,y)=>a+totalOf(y),0);
+  document.getElementById('sumbar').innerHTML=
+     '真题总量 <b>'+all+'</b> 道 / '+years.length+' 年'
+    +' &nbsp;·&nbsp; 已封存 <b style="color:#e08b7a">'+nSealed+'</b> 年（<b style="color:#e08b7a">'+hidden+'</b> 道隐藏）'
+    +' &nbsp;·&nbsp; 可刷 <b style="color:#7ab87a">'+(all-hidden)+'</b> 道'
+    +(nSealed?'':' &nbsp;·&nbsp; <span style="color:#a5732a">⚠️ 当前没有封存任何年份，冲刺期将无干净卷可用</span>');
+
+  // 分科表
+  const t=document.getElementById('yv');
+  let h='<tr><th>年份</th><th>数构</th><th>组原</th><th>OS</th><th>网络</th><th>合计</th><th>状态</th></tr>';
+  years.forEach(y=>{
+    const d=YEARDATA[y];
+    h+='<tr><td class="l"><b>'+y+'</b></td>'
+      +['数构','组原','OS','网络'].map(k=>'<td>'+(d[k]||0)+'</td>').join('')
+      +'<td><b>'+totalOf(y)+'</b></td>'
+      +'<td>'+(sealed.includes(y)?'<span style="color:#e08b7a">🔒 封存</span>':'可刷')+'</td></tr>';
+  });
+  t.innerHTML=h;
+}
+
+document.getElementById('rec').onclick=()=>{
+  const s=SubjApp.sealedYears();
+  REC.forEach(y=>{ if(!s.includes(y))s.push(y); });
+  SubjApp.setSealedYears(s); render();
+  SubjApp.toast('已封存 '+REC.join(' / '));
+};
+document.getElementById('clr').onclick=()=>{
+  if(!confirm('确定全部解封？封存的年份会重新出现在各章节页和真题场里。')) return;
+  SubjApp.setSealedYears([]); render();
+};
+scan();
+</script>
+</body>
+</html>

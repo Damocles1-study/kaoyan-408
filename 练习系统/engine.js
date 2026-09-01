@@ -57,14 +57,29 @@ function isAnsCode(q){return !!q.code && !q.codeStem;}
 function veilOn(){const v=load(LS_CV,true);return v!==false;}
 function setVeil(v){save(LS_CV,!!v);}
 
+/* ---------- 真题年份封存（跨科共享） ----------
+   问题：2009–2025 十七年真题已全部拆散按章排进四科题库（每年约 47 道 ＝ 数构13+组原13+OS12+网络9，
+   正好一整张 408 卷）。按章刷题会在基础阶段就把所有真题做完，冲刺期再无干净卷子可模考。
+   方案：封存若干年份，被封存年份的题从**所有**入口（章节页/真题场/错题本/随机抽题）自动隐藏，
+   留到冲刺期解封做整卷。
+   ⚠️ 键**不带 META.key 前缀**——一张卷子横跨四科，只在某一科封存毫无意义，必须跨科共享。
+   ⚠️ 绝不静默隐藏：每个页面的工具条都会显示「🔒 已封存 N 年 · 本页隐藏 M 题」，
+   否则用户会以为题库缺题。 */
+const LS_SEAL='kaoyan408_sealed_years_v1';
+function sealedYears(){const v=load(LS_SEAL,[]);return Array.isArray(v)?v.map(Number).filter(y=>y):[];}
+function setSealedYears(arr){save(LS_SEAL,[...new Set((arr||[]).map(Number).filter(y=>y))].sort());}
+function isSealed(q){const s=sealedYears();return s.length>0 && q.exam!=null && s.indexOf(Number(q.exam))>=0;}
+/* 过滤器：peek=true 时旁路（封存设置页要能看到全量统计） */
+function dropSealed(list,peek){return peek?list:list.filter(q=>!isSealed(q));}
+
 /* ---------- 题池 ---------- */
-function pool(scope){
-  if(!scope)return DATA.slice();
-  if(scope.type==='chapter')return DATA.filter(q=>q.ch===scope.ch);
-  if(scope.type==='exam')return DATA.filter(q=>q.exam!=null);
-  if(scope.type==='wrong'){const w=wrongBook();return DATA.filter(q=>w[q.id]&&!w[q.id].res);}
-  if(scope.type==='all')return DATA.slice();
-  return DATA.slice();
+function pool(scope,peek){
+  if(!scope)return dropSealed(DATA.slice(),peek);
+  if(scope.type==='chapter')return dropSealed(DATA.filter(q=>q.ch===scope.ch),peek);
+  if(scope.type==='exam')return dropSealed(DATA.filter(q=>q.exam!=null),peek);
+  if(scope.type==='wrong'){const w=wrongBook();return dropSealed(DATA.filter(q=>w[q.id]&&!w[q.id].res),peek);}
+  if(scope.type==='all')return dropSealed(DATA.slice(),peek);
+  return dropSealed(DATA.slice(),peek);
 }
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -147,6 +162,16 @@ function mount(cfg){
     if(state.items.some(isAnsCode))
       h+='<button class="tbtn" id="btnCodeVeil">'+(veilOn()?'💻 参考代码：遮住':'💻 参考代码：直接显示')+'</button>';
     h+='<span class="spacer"></span>';
+    /* 封存徽章：让「题变少了」永远是可见的、可解释的，而不是像题库缺题 */
+    {const sy=sealedYears();
+     if(sy.length){
+       /* ⚠️ 隐藏数必须拿「同一 scope 的全量 vs 过滤后」相减。
+          不能用 state.items——真题场等页面会 random+slice，拿抽样后的数去减会得出荒谬的大数。 */
+       const hid=pool(cfg.scope,true).length-pool(cfg.scope).length;
+       /* ⚠️ 封存页是四科共享的单一文件，不带 PFX 前缀（组原_封存设置.html 并不存在）。 */
+       h+='<a class="sealbadge" href="封存设置.html" title="点击管理封存年份">🔒 已封存 '+sy.join('/')
+         +(hid>0?' · 本页隐藏 '+hid+' 题':'')+'</a>';
+     }}
     h+='<span class="hint" id="modeHint"></span>';
     h+='<button class="tbtn primary" id="btnSettle">'+(state.mode==='exam'?'✅ 交卷判分':'📊 结算这组')+'</button>';
     h+='</div>';
@@ -442,5 +467,8 @@ function toast(msg){let t=$('.toast');if(!t){t=document.createElement('div');t.c
 
 /* 对外仍叫 DSApp（数构八章的页面都在调它，不改），SubjApp 是科目无关的新名字，组原/OS/网络新页面用它。 */
 window.SubjApp = window.DSApp = {mount,renderStats,buildReport,pool,attempts,wrongBook,attrBook,toast,
-  meta:()=>META, chapters:()=>META.chapters, byId};
+  meta:()=>META, chapters:()=>META.chapters, byId,
+  /* 真题年份封存（跨科共享，供 封存设置.html 调用） */
+  sealedYears, setSealedYears, isSealed,
+  allData:()=>DATA.slice()};
 })();
