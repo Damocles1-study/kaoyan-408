@@ -23,6 +23,9 @@
   table.nx{width:auto;min-width:60%}
   table.nx td,table.nx th{text-align:center;font-family:var(--mono);padding:4px 10px;white-space:nowrap}
   table.nx td.h{background:var(--accent-soft);color:var(--accent);font-family:var(--sans)}
+  /* 回炉轮补：公式框自己横滚，长串（0000001 之类）不顶出页面横滚 */
+  .fml{overflow-x:auto}
+  .key,.mine,.trap,.bg,.link,.notekeep,figcaption,p,td,th{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -30,15 +33,22 @@
   <a class="back" href="../index.html">← 返回 408 复盘中心</a>
   <header>
     <h1>精读版 · 第 4 章　串（KMP）</h1>
-    <div class="sub">王道《数据结构》第 4 章（书内 p.109–123，全书最短的一章）正文重排 · 只留考点骨架 · 每节一键跳回原书页 · 配 <a href="../模拟器_KMP.html" style="color:var(--accent)">KMP 步进器</a> 边读边动手</div>
+    <div class="sub">王道《数据结构》第 4 章（书内 p.109–123，全书最短的一章）正文重排 · 只留考点骨架 · 每节一键跳回原书页 · 配 <a href="../模拟器_KMP.html" style="color:var(--accent)">KMP 步进器</a> 边读边动手 · <a href="#s43" style="color:var(--accent)"><b>直达 4.3 手算总攻</b></a></div>
   </header>
 
   <div class="legend">
-    <b>怎么读这一页：</b>正文是书上的内容，我只做了<b>结构重排和取舍</b>。三种色块：
-    <span class="swatch" style="background:var(--blue)"></span><b style="color:var(--blue)">我的补讲</b>、
-    <span class="swatch" style="background:var(--amber)"></span><b style="color:var(--amber)">必记结论</b>、
-    <span class="swatch" style="background:var(--red)"></span><b style="color:var(--red)">陷阱</b>。
-    右侧 <span class="pg" style="float:none;margin:0">📄 p.N</span> 点开跳到原书对应页。本章的字符对齐示意我<b>重画成了 HTML</b>（扫描件那几张在暗色下发白且看不清），只有块链存储图是从原书直接裁的。
+    <b>怎么读这一页：</b>正文是书上的内容，我只做了<b>结构重排和取舍</b>；批注分五色，对应「筛 → 挖 → 串」三个动作：
+    <span class="swatch" style="background:var(--amber)"></span><b style="color:var(--amber)">必记结论</b>（书上就有、必须记住）、
+    <span class="swatch" style="background:var(--blue)"></span><b style="color:var(--blue)">我的补讲</b>（挖潜台词：<i>书上说 X → 真正在说 Y → 所以能考 Z</i>）、
+    <span class="swatch" style="background:var(--red)"></span><b style="color:var(--red)">陷阱</b>、
+    <span class="swatch" style="background:var(--green)"></span><b style="color:var(--green)">知识串联</b>（这个点在别章、别科的哪里还会出现）、
+    <span class="swatch" style="background:var(--line)"></span><b style="color:var(--muted)">背景灰化</b>（明确授权你 3 分钟带过的段落——<b>全是重点就等于没有重点</b>）。<br>
+    右侧 <span class="pg" style="float:none;margin:0">📄 p.N</span> 点开跳到原书对应页；它是<b>溯源锚点</b>（想看原书排版和多余例子时用），<b>不是「这里我没写，你自己去看」</b>——考点内容本页已经讲全。<br>
+    本章的字符对齐示意我<b>重画成了 HTML</b>（扫描件那几张在暗色下发白且看不清），只有块链存储图是从原书直接裁的。<br>
+    <b><a href="#s43">4.3 手算总攻</a>是我加的一节</b>（书上没有），里面的综合题按<b>「大题三层」</b>写：
+    <b style="color:var(--purple)">💭 思路</b>（动手前看／卡壳时看）→
+    <b style="color:var(--accent)">✍️ 考场卷面</b>（自己写完再对照）→
+    <b>📌 批注</b>（对照完校对）。<b>看完思路就合上页面自己写，别直接翻卷面。</b>
   </div>
 
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=1">📄 p.109</a>
@@ -46,15 +56,42 @@
   <p><b>考纲内容</b>：<b>字符串模式匹配</b>——统考大纲对本章只有这七个字。（本章为大纲第 6 章内容，王道根据读者建议单独成章。）</p>
   <p><b>王道的复习提示</b>：重点是理解 <b>KMP 算法的原理、next 数组和 nextval 数组的推导过程</b>。手工计算 next 数组时，可先求出部分匹配值表再进行转换，也可直接依据递推公式求解。</p>
 
-  <div class="mine"><span class="tag">我的补讲 · 这一章的性价比是全书最高的</span>
+  <div class="mine"><span class="tag">我的补讲 · 这一章的考点窄到只剩一个动作</span>
     15 页正文、14 道课后题，考点却窄得只剩一个：<b>把 next / nextval 算对，把比较次数数对</b>。<br>
     统考真题在本章只出过三种形态，全都能用同一套手算解决：<b>2015</b>（失配后 i、j 的新值）、<b>2019</b>（比较次数）、<b>2024</b>（nextval 的最长滑动距离）。<br>
-    另外注意王道给 4.1 节打了 ✱ 号并加脚注「本节不在统考大纲范围，仅供学习参考」——串的定长顺序/堆分配/块链三种存储<b>不会单独出题</b>，扫一眼记住结论即可，火力全压 4.2。
+    另外注意王道给 4.1 节打了 ✱ 号并加脚注「本节不在统考大纲范围，仅供学习参考」——串的定长顺序/堆分配/块链三种存储<b>不会单独出题</b>，扫一眼记住结论即可，火力全压 4.2。<br>
+    <b>⚠️ 这一块原先的标题写的是「性价比是全书最高的」，回炉时跑脚本查了八章真题分布，那句话是错的</b>：论「分数 ÷ 页数」，ch8 排序 0.68、ch5 树 0.61、ch7 查找 0.61 都远高于本章的 0.20（下一块有全表）。<b>本章真正的优势不是性价比，是「一次投入就到顶」——只有一个动作要练，练完就不用再回来。</b>
   </div>
 
+
+  <div class="mine"><span class="tag">我的补讲 · 全书真题密度最低的一章，恰恰是最便宜的 2 分</span>
+    <b>书上说</b>：本章是大纲第 6 章内容、王道单独成章，考纲只有「字符串模式匹配」七个字。<br>
+    <b>潜台词是</b>：我把练习系统八章的 <code>exam</code> 年份跑了一遍——<b>本章十七年只考过 3 次（2015、2019、2024），是八章里出现年份最少的一章</b>，真题密度 3÷15 = <b>0.20 道/页</b>，其余七章是 0.32～0.68。折算成期望收益，本章约 <b>6 分 ÷ 17 年 ≈ 0.35 分/年</b>。<br>
+    <div class="tabwrap"><table>
+      <tr><th>章</th><th>页数</th><th>真题数</th><th>考过的年份数</th><th>真题/页</th></tr>
+      <tr><td>ch3 栈队列与数组</td><td>46</td><td>27</td><td>17（零缺口）</td><td>0.59</td></tr>
+      <tr><td>ch5 树</td><td>70</td><td>43</td><td>17（零缺口）</td><td>0.61</td></tr>
+      <tr><td>ch8 排序</td><td>62</td><td>42</td><td>17（零缺口）</td><td>0.68</td></tr>
+      <tr><td>ch1 绪论</td><td>13</td><td>7</td><td>7</td><td>0.54</td></tr>
+      <tr><td><b>ch4 串（本章）</b></td><td><b>15</b></td><td><b>3</b></td><td><b>3</b>（最少）</td><td><b>0.20</b>（最低）</td></tr>
+    </table></div>
+    <b>所以能考</b>：这不是「可以不看」的理由，是<b>「只用一个下午、只练一件事」的理由</b>——三道真题（2015 问失配后的 i、j；2019 问比较次数；2024 问最长滑动距离）<b>用的是同一张手算表</b>，把 next / nextval 那张表算对，三种问法一次通吃。<b>只要考，就是白拿的 2 分；不练，就是白丢的 2 分。</b>本章唯一该投的时间在 <a href="#s43">4.3 手算总攻</a>。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 串就是「元素被限定为字符」的线性表</span>
+    <span class="hub">→ 数构 ch2</span> 串的逻辑结构与线性表完全同构，<b>ch2 的顺序表/单链表的一切结论对串原样成立</b>——所以本章不用重学存储结构，只需记「差别在操作单位：线性表按<b>单个元素</b>操作，串按<b>子串</b>操作」。<br>
+    <span class="hub">→ 组原 ch2</span> 字符与字符串在机器里就是一段连续字节（ASCII 一字符一字节、汉字两字节），组原考的「字符串在内存中怎么放、大端小端影不影响字符顺序」正是本章「定长顺序存储」的硬件视角。<br>
+    <span class="hub">→ 网络 ch6</span> 应用层的 HTTP 请求行、SMTP 命令、DNS 域名，本质全是字符串；网络里「按 CRLF 切分首部」的动作就是本章的<b>模式匹配 + 求子串</b>。<br>
+    <b>一句话记牢：串是线性表的特例，不是新结构；本章真正的新东西只有 KMP 一个。</b>
+  </div>
   <h2>4.1　串的定义和实现<span style="font-size:.8rem;color:var(--muted)">（✱ 大纲外，扫读）</span></h2>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=1">📄 p.109–110</a>
 
+
+  <div class="bg"><span class="tag">背景 · 这一整节 3 分钟带过</span>
+    王道给 4.1 打了 ✱ 号并加脚注「本节不在统考大纲范围，仅供学习参考」。<b>4.1 的三小节里，只有下面四句话会以「一句话选择题」的形式出现</b>：空格串 ≠ 空串、模式匹配 = 定位运算 Index、最小操作子集是哪五个、串与线性表的区别在操作单位。<br>
+    其余内容（三种存储结构的完整代码、块链的块长权衡、串的十种基本操作函数名）<b>统考从未单独出过题</b>，看懂即可，<b>一个字都不用背、一行代码都不用默写</b>。
+  </div>
   <h3>4.1.1　串的定义</h3>
   <p><b>串（string）</b>是由零个或多个字符组成的有限序列，记为 S = '<i>a</i>₁<i>a</i>₂…<i>a</i><sub>n</sub>'（n ≥ 0）。其中 S 是串名，单引号括起的字符序列是<b>串的值</b>；串中字符的个数 n 称为<b>串的长度</b>，n = 0 时称为<b>空串</b>（用 ∅ 表示）。</p>
   <ul>
@@ -68,12 +105,25 @@
     由一个或多个<b>空格</b>组成的串称为<b>空格串</b>，<b>空格串不是空串</b>——它的长度等于其中空格字符的个数。这是概念题最爱设的坑。
   </div>
 
+
+  <div class="mine"><span class="tag">我的补讲 · 书上没给的那一列：子串到底有多少个</span>
+    <b>书上说</b>：子串是串中任意多个<b>连续</b>字符组成的子序列。<br>
+    <b>潜台词是</b>：「连续」意味着一个子串由<b>起点和终点两个位置</b>唯一确定，于是计数就变成了组合问题——长度为 n 的串，非空子串（按<b>位置</b>数，不去重）共 <b>C(n,2) + n = n(n+1)/2</b> 个，<b>加上空串则为 n(n+1)/2 + 1</b>。<br>
+    <b>所以能考</b>：这类题只有一个坑——<b>问的是「子串」还是「真子串」、含不含空串</b>。三种口径的答案分别是 n(n+1)/2 + 1（含空串与自身）、n(n+1)/2（非空、含自身）、n(n+1)/2 − 1（非空真子串）。<b>另外注意「按位置数」与「按互异串值数」不同</b>：<code>aaa</code> 按位置有 6 个非空子串，按互异值只有 3 个（<code>a</code>、<code>aa</code>、<code>aaa</code>），题干说「不同的子串」时要按值去重。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 「空」与「空格」的区分，四科都在考同一件事</span>
+    <span class="hub">→ 组原 ch2</span> 空格是 ASCII <code>0x20</code>（一个实实在在的字符），串结束符 <code>'\0'</code> 是 <code>0x00</code>——<b>「有一个值为 0 的字符」和「一个字符都没有」在机器里是两件事</b>，这正是空格串 ≠ 空串的物理根源。<br>
+    <span class="hub">→ OS ch4</span> 文件系统里「空文件（长度 0）」与「只含空白的文件（长度 &gt; 0）」的区分同理，目录项里记的是<b>长度字段</b>而不是内容。<br>
+    <span class="hub">→ 网络 ch3</span> 数据链路层的<b>字符填充</b>要在数据里遇到定界符 SOH/EOT 时插 ESC 转义——同样是「数据里的字符」与「起结构作用的字符」必须分开，否则透明传输就废了。<br>
+    <b>一句话记牢：长度 0 才叫空；只要占了一个字符位，哪怕它是空格，串长就 ≥ 1。</b>
+  </div>
   <div class="key"><span class="tag">必记结论 · 串和线性表的关系</span>
     串的<b>逻辑结构与线性表极为相似</b>，区别仅在于<b>数据对象被限定为字符集</b>；但<b>基本操作差别很大</b>：线性表通常以<b>单个元素</b>为操作单位（查/插/删某个元素），而串一般以<b>子串</b>为操作单位（查/插/删一个子串）。
   </div>
 
   <h3>4.1.2　串的基本操作</h3>
-  <table>
+  <div class="tabwrap"><table>
     <tr><th>操作</th><th>含义</th></tr>
     <tr><td><code>StrAssign(&amp;T,chars)</code></td><td>赋值：把串 T 赋值为 chars</td></tr>
     <tr><td><code>StrCopy(&amp;T,S)</code></td><td>复制：把串 S 复制给串 T</td></tr>
@@ -84,11 +134,22 @@
     <tr><td><code>Concat(&amp;T,S1,S2)</code></td><td>联接：T 返回 S1 与 S2 联接而成的新串</td></tr>
     <tr><td><code>Index(S,T)</code></td><td><b>定位（＝模式匹配）</b>：返回 T 在 S 中首次出现的位置，不存在返回 0</td></tr>
     <tr><td><code>ClearString(&amp;S)</code> / <code>DestroyString(&amp;S)</code></td><td>清空 / 销毁</td></tr>
-  </table>
+  </table></div>
   <div class="key"><span class="tag">必记结论 · 最小操作子集</span>
     <b>StrAssign（赋值）、StrCompare（比较）、StrLength（求长）、Concat（联接）、SubString（求子串）</b> 这五种操作构成串类型的<b>最小操作子集</b>——它们<b>无法用其他串操作实现</b>；其余操作（除 ClearString 和 DestroyString 外）均可基于该子集实现。
   </div>
 
+
+  <div class="mine"><span class="tag">我的补讲 · 「最小操作子集」这五个的潜台词，就是 4.2 存在的理由</span>
+    <b>书上说</b>：赋值、比较、求长、联接、求子串这五种操作构成最小操作子集，<b>它们无法用其他串操作实现</b>，其余操作均可基于该子集实现。<br>
+    <b>潜台词是</b>：「其余操作均可基于该子集实现」这句话里就包含了 <b>Index（模式匹配）</b>——它确实可以用「反复 SubString 取出长度为 m 的子串 + StrCompare 比一次」写出来。<b>也就是说模式匹配从来不是「能不能做」的问题，那是早就解决了的；4.2 整节讨论的只有一件事：怎么做得更快。</b>而那个「反复取子串再比一次」的朴素实现，正是 4.2.1 的暴力匹配（n−m+1 次取子串 × 每次最多 m 次比较 = O(mn)）。<br>
+    <b>所以能考</b>：① 直接问最小操作子集是哪五个（漏掉 SubString 是最常见错法）；② 问「下列哪个操作不能由其余操作实现」；③ 概念题把 <b>SubString（取）和 Index（找）</b> 对调——<b>求子串是给位置要内容，模式匹配是给内容要位置</b>，方向相反（课后题 4.2-1 考的就是这一条）。
+  </div>
+
+  <div class="bg"><span class="tag">背景 · 这张操作表不用背函数名</span>
+    十个函数名里，统考只在概念题里点过 <b>Index / SubString</b> 两个（考它们谁是「找」谁是「取」），以及<b>五个最小操作子集成员</b>。<br>
+    <code>StrAssign</code>/<code>StrCopy</code>/<code>ClearString</code>/<code>DestroyString</code> 这类<b>看一眼就懂的操作，连认都不用刻意认</b>——考场上它们只会以中文「赋值/复制/清空/销毁」出现。
+  </div>
   <h3>4.1.3　串的存储结构</h3>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=2">📄 p.110–111</a>
   <h4>1. 定长顺序存储表示</h4>
@@ -106,11 +167,36 @@ typedef struct{
   <p>仍以<b>地址连续</b>的存储单元存放字符序列，但空间在程序<b>运行时用 malloc() 动态申请</b>，free() 释放。这样就取消了串长上限的硬性规定。</p>
   <h4>3. 块链存储表示</h4>
   <p>类似线性表的链式存储，每个结点可存放<b>一个或多个字符</b>，每个结点称为一个<b>块</b>，整个链表称为<b>块链结构</b>。最后一块存不满时通常用 “#” 补齐。</p>
+
+  <div class="mine"><span class="tag">我的补讲 · 三种存储结构里，KMP 只能跑在第一种上</span>
+    <b>书上说</b>：串有定长顺序存储、堆分配存储、块链存储三种表示，块链的块可大可小，最后一块用 “#” 补齐。<br>
+    <b>潜台词是</b>：书把三者并列讲，但<b>本章后面 12 页的 KMP 代码，从头到尾用的都是 <code>SString</code>（定长顺序存储）</b>，原因很硬：KMP 的主循环要不断做 <code>S.ch[i]</code> 和 <code>T.ch[j]</code> 这种<b>随机下标访问</b>，还要在失配时把 j 一步跳到 <code>next[j]</code>——<b>这两个动作都要求 O(1) 随机存取</b>。堆分配（<code>HString</code>）也是地址连续的，同样满足；<b>唯独块链做不到</b>：跳到第 j 个字符要顺着指针走，j←next[j] 这一跳就从 O(1) 退化成 O(m)，KMP 的全部优势荡然无存。<br>
+    <b>所以能考</b>：概念题问「下列哪种存储结构不适合模式匹配 / 为什么串的模式匹配一般采用顺序存储」，答案的关键词就是<b>「随机存取」</b>而不是「省空间」。这条也解释了为什么 4.1 三种存储讲完，4.2 一个字都不再提块链。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 「连续 / 链接 / 分块」是贯穿四科的同一组三选一</span>
+    <span class="hub">→ 数构 ch2</span> 定长顺序 ↔ 顺序表（随机存取、要预估容量）；块链 ↔ 单链表（插删方便、无随机存取）；<b>堆分配 ↔ 动态扩容的顺序表</b>（<code>malloc</code> 换来「不设上限」，代价是每次扩容要搬数据）。<br>
+    <span class="hub">→ OS ch3</span> 定长顺序 ↔ 固定分区分配（简单、有<b>内部碎片</b>）；堆分配 ↔ 动态分区分配（按需申请、产生<b>外部碎片</b>）——串的「截断」与内存的「装不下」是同一个故障。<br>
+    <span class="hub">→ OS ch4</span> 文件的三种物理结构一一对应：<b>连续分配（≈定长顺序，支持随机访问但要连续大块）· 链接分配（≈块链，只能顺序访问）· 索引分配（≈给块链加一张索引表，把随机访问买回来）</b>。<br>
+    <span class="hub">→ 组原 ch3</span> Cache 的「块」和块链的「块」是同一个权衡：<b>块大 → 存储密度高、一次搬得多，但块内浪费也大；块小 → 灵活，但管理开销（指针 / 标记位）占比高。</b><br>
+    <b>一句话记牢：连续换随机存取，链接换插删灵活，索引花一点空间把两样都买回来——四科问的都是这一句。</b>
+  </div>
   <figure>
     <img src="图/图4-1_串的块链存储.png" alt="串值的链式存储方式：块大小为 4 与块大小为 1 的两种链表">
     <figcaption>图 4.1　串值的链式存储方式（裁自王道 p.111）。块大，则存储密度高、但插删要在块内移动字符；块为 1 时最灵活，存储密度最低。</figcaption>
   </figure>
 
+
+  <div class="link"><span class="tag">知识串联 · 最后一块用 “#” 补齐 ＝ 内部碎片</span>
+    <span class="hub">→ OS ch3 / ch4</span> 块链把最后一块填不满的位置补成 “#”，这些被占用却存不了有效数据的空间，<b>就是 OS 里的「内部碎片」</b>（固定分区分配、页式管理的最后一页、文件系统按簇分配的最后一簇，全是同一回事）。<br>
+    <span class="hub">→ 组原 ch3</span> Cache 按整块换入，块内没用上的字节同样是被占着的；这也是「块越大、内部浪费越大」的由来。<br>
+    <b>一句话记牢：凡是「按固定大小的块来分配」，就一定有最后一块填不满的浪费——名字叫内部碎片，四科通用。</b>
+  </div>
+
+  <div class="bg"><span class="tag">背景 · 这三段结构体代码不用默写</span>
+    <code>SString</code> / <code>HString</code> 的定义在后面的 KMP 代码里只被<b>用到</b>、从不被<b>考到</b>；块链的结点定义书上连代码都没给。<br>
+    <b>需要留下的只有三句话</b>：定长顺序有 MAXLEN 上限、超出叫<b>截断</b>；堆分配用 <code>malloc</code> 运行时申请、因而<b>取消了长度上限</b>；块链的块长是「存储密度 vs 插删代价」的权衡。
+  </div>
   <h2>4.2　串的模式匹配<span style="font-size:.8rem;color:var(--muted)">（考纲全部火力）</span></h2>
 
   <h3>4.2.1　简单的模式匹配算法（暴力匹配）</h3>
@@ -139,10 +225,44 @@ typedef struct{
     这也是「暴力匹配<b>平均</b>接近 O(m+n)、<b>最坏</b>才是 O(mn)」的由来——选择题问复杂度按<b>最坏</b>答（课后题 4.2-3）。
   </div>
 
+
+  <div class="mine"><span class="tag">我的补讲 · 那个「280 次」的最坏用例，我把 KMP 的数也跑出来了</span>
+    <b>书上说</b>：模式串 <code>0000001</code> 配主串「前 45 个字符全为 0」，暴力匹配总比较次数达 40×7 = 280 次。<br>
+    <b>潜台词是</b>：书只给了暴力的数，没给对照组，这个例子就只剩「吓唬人」的作用。我把同一对串用王道的 KMP 代码跑了一遍：<b>KMP 只要 85 次</b>（省 70%），而且 <b>nextval 版还是 85 次，一次也省不下来</b>——因为 <code>0000001</code> 的失配永远发生在最后那个 <code>1</code> 上，而 <code>nextval[7] = next[7] = 6</code>，塌陷规则在这一位上根本不触发。<br>
+    <div class="tabwrap"><table>
+      <tr><th>S = 45 个 <code>0</code> + <code>1</code>，T = <code>0000001</code></th><th>比较次数</th><th>备注</th></tr>
+      <tr><td>暴力匹配</td><td><b>280</b></td><td>= 40 趟 × 7 次，i 回溯 39 次（书上给的数）</td></tr>
+      <tr><td>KMP（next）</td><td><b>85</b></td><td>i 全程不回溯（我跑出来的）</td></tr>
+      <tr><td>KMP（nextval）</td><td><b>85</b></td><td>与 next 完全相同——nextval 不是永远更快</td></tr>
+    </table></div>
+    <b>所以能考</b>：这张表同时钉死三件事——① 暴力的最坏形态就是<b>「模式串前 m−1 位与主串大段重复、只有末位不同」</b>（编题人造 O(mn) 用例只有这一种套路）；② <b>KMP 的收益来自 i 不回溯，不是来自 nextval</b>；③ <b>nextval 只在「退过去还是同一个字符」时才省</b>，别背成「nextval 一定更快」（这一条在 4.2.3 我会用 2019 真题再钉一次）。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 「平均接近 O(m+n)」是道分叉题，问法决定答案</span>
+    <b>书上说</b>：暴力匹配最坏 O(mn)，但实际应用中<b>平均</b>时间往往接近 O(m+n)，因此至今仍被广泛采用。<br>
+    <b>潜台词是</b>：<b>同一个算法在同一本书里有两个复杂度，它们服务于两种不同的问法</b>——问「时间复杂度是多少」默认答<b>最坏</b> O(mn)；问「为什么暴力法仍被广泛使用 / 实际效率如何」才答<b>平均</b>接近 O(m+n)。<br>
+    <b>所以能考</b>：课后题 4.2-3（双空题）问「简单模式匹配算法的时间复杂度」，答案是 <b>O(mn)</b> 而不是 O(m+n)——<b>看到「时间复杂度」四个字没有任何修饰语，一律按最坏答</b>。同理 KMP 那一空要填 <b>O(m+n)</b> 而不是 O(n)：<b>那个 O(m) 是求 next 数组的开销，漏掉它是这一空的标准错法。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 「指针回溯」＝ 同一份数据被反复读，四科都在躲这件事</span>
+    <span class="hub">→ 组原 ch3</span> 主串指针 i 回溯意味着<b>刚读过的字符还要再读一遍</b>；组原用 Cache 的<b>时间局部性</b>来兜底（刚访问过的还在 Cache 里，重读代价小）——但那是「让重复变便宜」，KMP 走的是另一条路：<b>让重复根本不发生</b>。<br>
+    <span class="hub">→ OS ch5</span> 从键盘/网络这类<b>流式设备</b>读来的数据一旦读过就没了，<b>想回溯就必须先缓冲</b>——这就是 KMP「i 不回溯」的真正工程价值：它让匹配可以边读边做，缓冲区只需 O(m) 而不是 O(n)。<br>
+    <span class="hub">→ 网络 ch5</span> TCP 接收方只能顺序交付、发送方要回退就得<b>重传</b>（GBN 的「回退 N 帧」正是回溯的代价）——<b>网络花重传的钱，KMP 花 next 表的空间，买的是同一样东西：不回头。</b><br>
+    <b>一句话记牢：数据只让它过一遍，是四科共同的性能信条。</b>
+  </div>
   <h3>4.2.2　KMP 算法</h3>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=4">📄 p.112–116</a>
   <span class="exam">考点追踪：KMP 算法中指针变化 / 比较次数的分析（2015、2019）</span>
 
+
+  <div class="link"><span class="tag">知识串联 · next 表 ＝ 预计算的跳转表 ＝「空间换时间」枢纽</span>
+    KMP 的做法可以抽象成一句话：<b>先花 O(m) 时间、O(m) 空间，把「万一在这里失配该跳到哪」提前算成一张表，运行时只查表不推理。</b>这个套路在四科里反复出现：<br>
+    <span class="hub">→ OS ch3</span> <b>快表 TLB</b>：把页表项预先缓存起来，命中就一次访存拿到帧号，不必再走一遍多级页表。<br>
+    <span class="hub">→ 组原 ch3</span> <b>Cache</b> 与<b>页表</b>同理；组原 ch5 的<b>微程序控制器</b>更直白——把每条指令的控制信号提前烧成控存里的表，取指后查表即可。<br>
+    <span class="hub">→ 网络 ch4</span> <b>路由表 / ARP 缓存</b>：转发时不重新计算路径，只查表；表是路由协议在后台预先算好的。<br>
+    <span class="hub">→ 数构 ch7</span> <b>散列表</b>是同族的极端形态——用空间把「查找」压到 O(1)。<br>
+    <b>一句话记牢：凡是「同一个推理会被重复做很多遍」，就把它算一次存成表——next 数组是这条原理在字符串上的实例。</b>
+  </div>
   <p>先看暴力匹配哪里浪费了。主串 <code>ababcabcacbab</code>、模式串 <code>abcac</code>：</p>
   <div class="strfig">
     <div class="cap">第三趟：比到 i=7、j=5 失配。已匹配的 <code>abca</code> 是模式串的前缀——这个信息暴力法直接扔了。</div>
@@ -159,10 +279,16 @@ typedef struct{
     <li><b>部分匹配值（PM）</b>：该串<b>前缀与后缀的最长相等长度</b>。</li>
   </ul>
   <p>以 <code>ababa</code> 为例：<code>a</code>→0；<code>ab</code> 前缀{a}∩后缀{b}=∅→0；<code>aba</code> 前缀{a,ab}∩后缀{a,ba}={a}→1；<code>abab</code>→{ab}→2；<code>ababa</code>→{a,aba}，取最长→3。故 <code>ababa</code> 的部分匹配值为 <b>00123</b>。</p>
+
+  <div class="mine"><span class="tag">我的补讲 · 「真」前后缀这一个字，是 PM 表最高频的错源</span>
+    <b>书上说</b>：前缀是「<b>除最后一个字符外</b>」的所有头部子串，后缀是「<b>除第一个字符外</b>」的所有尾部子串。<br>
+    <b>潜台词是</b>：这两句定义里的「除…外」，就是数学上的「<b>真</b>子串」——<b>整个串本身既不算自己的前缀，也不算自己的后缀</b>。所以 <code>aa</code> 的最长相等前后缀是 <code>a</code>（长 <b>1</b>），<b>不是 2</b>；<code>aaa</code> 是 2 不是 3。<br>
+    <b>所以能考</b>：全同串是本条的重灾区——<code>aaaaa</code> 的 PM 必须是 <b>0,1,2,3,4</b>（每一位都比位号小 1），若你写成 0,1,2,3,<b>5</b> 或 1,2,3,4,5，说明把整串算进去了。<b>自检口诀：PM[j] ≤ j−1 恒成立，PM 表里第 j 位的值绝不可能等于 j。</b>（自编手算特训第 2 题 <code>aaaaa</code> 就是专门练这一条的。）
+  </div>
   <p>同法求得模式串 <code>abcac</code> 的部分匹配值表（PM 表）：</p>
-  <table class="nx"><tr><td class="h">编号</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+  <div class="tabwrap"><table class="nx"><tr><td class="h">编号</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
     <tr><td class="h">S</td><td>a</td><td>b</td><td>c</td><td>a</td><td>c</td></tr>
-    <tr><td class="h">PM</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr></table>
+    <tr><td class="h">PM</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr></table></div>
   <div class="key"><span class="tag">必记结论 · 右滑公式</span>
     <div class="fml">右滑位数 ＝ 已匹配的字符数 − 对应的部分匹配值</div>
     第一趟：在第 3 位失配，已匹配 2 个字符 <code>ab</code>，查表 PM=0 → 右滑 2−0 = <b>2</b> 位。<br>
@@ -180,10 +306,16 @@ typedef struct{
     ② PM 表最后一个元素右移后被移出丢弃：它本该供「下一个字符」使用，而已经没有下一个字符了。<br>
     <b>⚠️ 以上讨论均假设串的编号从 1 开始；若编号从 0 开始，则 next 数组整体减 1。</b>
   </div>
-  <table class="nx"><tr><td class="h">编号</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+  <div class="tabwrap"><table class="nx"><tr><td class="h">编号</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
     <tr><td class="h">S</td><td>a</td><td>b</td><td>c</td><td>a</td><td>c</td></tr>
-    <tr><td class="h">next</td><td>0</td><td>1</td><td>1</td><td>1</td><td>2</td></tr></table>
+    <tr><td class="h">next</td><td>0</td><td>1</td><td>1</td><td>1</td><td>2</td></tr></table></div>
 
+
+  <div class="mine"><span class="tag">我的补讲 · 「右移一位」不是记忆口诀，是下标错位的必然结果</span>
+    <b>书上说</b>：next[j] = PM[j−1] + 1，即 next 数组 = PM 表整体右移一位再整体加 1。<br>
+    <b>潜台词是</b>：为什么是 j−1 而不是 j？<b>因为「在第 j 位失配」这件事，只告诉了你前 j−1 个字符是匹配的</b>——第 j 位本身是失败的，它携带的信息一点用都没有。所以能拿来找相等前后缀的素材，只有<b>前 j−1 个字符</b>，于是查的是 PM[j−1]。<b>「右移一位」就是「用前一位的信息」的表格说法。</b>再 +1 则是因为 PM 记的是<b>长度</b>、next 记的是<b>位置</b>：保住了长度为 L 的前缀，下一个要比的就是第 L+1 位。<br>
+    <b>所以能考</b>：理解这一层之后，两个边界值就不用背了——<b>next[1]=0</b>（第 1 位失配，前面 0 个字符匹配，无信息可用，只能整体右滑一位）、<b>next[2]=1</b>（前面只有 1 个字符匹配，而单字符没有真前后缀，PM[1]=0，故 next[2]=1）。同理也解释了「PM 表最后一位为什么被丢弃」：它本该供第 m+1 位使用，而模式串没有第 m+1 位——<b>除非你要统计「出现了几次」，那时就真得把 next[m+1] 补出来</b>（见本章末思维拓展题）。
+  </div>
   <h4>3. 手算 next 的两种方法</h4>
   <div class="mine"><span class="tag">我的补讲 · 考场上「一种算、一种验」</span>
     <b>Ⅰ. PM 右移法（快）：</b>写出 PM 表 → 右移一位、首位补 0 → 即得 next。<br>
@@ -193,6 +325,15 @@ typedef struct{
   </div>
   <p>仍以 <code>abcac</code> 为例（下标为字符编号）：第 1 个字符失配 → next[1]=0；第 2 个字符失配 → next[2]=1（<b>next[1]=0、next[2]=1 是固定规则</b>）；第 3 个失配 → 下次比较位置为 1，即 next[3]=1，相当于右滑 2 位；第 4 个失配 → next[4]=1，右滑 3 位；第 5 个失配 → 前面已匹配 <code>abca</code>，其中 <code>a</code> 首尾相等，下次从第 2 个字符比，即 next[5]=2，右滑 3 位。</p>
 
+
+  <div class="mine"><span class="tag">我的补讲 · 三条硬约束：不用重算，也能判出 next 表对不对</span>
+    <b>书上说</b>：next[1]=0、next[2]=1 是固定规则，其余按 PM 右移或递推求。<br>
+    <b>潜台词是</b>：这几条规则同时也是<b>校验器</b>——手算完不必重算一遍，用三条约束扫一眼就能发现绝大多数错误：<br>
+    ① <b>next[1] 必为 0、next[2] 必为 1</b>（位序从 0 时为 −1 和 0）；<br>
+    ② <b>相邻两位最多涨 1：next[j+1] ≤ next[j] + 1</b>（多匹配一个字符，最长相等前后缀最多也只能长 1 位）；<b>但可以暴跌</b>（如自编特训 6 <code>abaabaaab</code> 的 next 末两位是 5 → 2）；<br>
+    ③ <b>next 数组的长度必须正好等于串长 m</b>。<br>
+    <b>所以能考</b>：课后题 4.2-6（求 <code>ababaaababaa</code> 的 next）四个选项——<b>用约束 ③ 先数长度</b>：串长 12，A 只有 11 个数、D 有 13 个数，<b>两秒毙掉两项</b>；再用约束 ① 看第 2 位，B 的第 3 位是 2 意味着前两位 <code>ab</code> 相等，显然不对。<b>一个字符都没算，答案已经只剩 C。</b>这类「四选一给整张表」的题，永远先查约束再动手算。
+  </div>
   <h4>4. next 的推理公式（了解即可）</h4>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=7">📄 p.115–116</a>
   <p>设主串为 's₁s₂…s<sub>n</sub>'、模式串为 'p₁p₂…p<sub>m</sub>'。当 s<sub>i</sub> 与 p<sub>j</sub> 失配时，若应改与 p<sub>k</sub>（k＜j）比较，则模式串前 k−1 个字符必须满足</p>
@@ -205,6 +346,20 @@ typedef struct{
     <b>「其他情况」是什么？</b>——已匹配部分不存在任何相等的真前后缀（k 只能取 1），此时模式串整体滑到当前失配位置，从第 1 个字符重新比，故 next[j]=1。
   </div>
 
+
+  <div class="bg"><span class="tag">背景 · 形式化定义不用背，但它下面那三个「为什么」要会说</span>
+    <code>next[j] = max{k | 1&lt;k&lt;j 且 p₁…p<sub>k−1</sub> = p<sub>j−k+1</sub>…p<sub>j−1</sub>}</code> 这一串符号<b>不需要默写</b>——考场上没有任何一道题要你写出这个集合表达式，你只要会用 PM 右移法把表算出来就行。<br>
+    <b>但紧接着的那个 .mine 里三个「为什么」要能用中文说清楚</b>：课后综合题 4.2-综1 问的正是「为什么 j=1 取 0 / 为什么取 max{k} / 其他情况是什么」——<b>那是一道简答题，考的是理解不是符号</b>。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 「i 不回溯」＝ 数据只过一遍，这是四科都在追求的「在线」形态</span>
+    KMP 的主循环里 i 只增不减，意味着<b>主串可以是一条「读过就没了」的流</b>——不必整串先存进内存，也不必支持回退。这个性质在别的三科里对应着一整类设计：<br>
+    <span class="hub">→ OS ch5</span> <b>单缓冲 / 双缓冲</b>存在的理由就是「设备送来的数据只来一次」；缓冲区大小只需容下一次处理的量（对应 KMP 的 O(m)），而不是整条流。<br>
+    <span class="hub">→ 网络 ch5</span> TCP 向上交付的是<b>字节流</b>，接收方按序交付、不能倒着读；应用层要在流里找边界（如 HTTP 的 CRLF），用的正是「边收边匹配、不回头」的算法形态。<br>
+    <span class="hub">→ 组原 ch3</span> 顺序访问的介质（磁带、突发传输的 Cache 行填充）同样只支持单向推进，回退的代价极高。<br>
+    <span class="hub">→ 数构 ch2</span> 单链表题里「只允许扫一遍」的限制是同一个约束的教学版（快慢指针求中间结点、一趟求倒数第 k 个）。<br>
+    <b>一句话记牢：题干里出现「只能扫一遍 / 不能回退 / 空间 O(1)」，考的就是「把该记的东西记在有限的状态里」——KMP 记的是 j，链表题记的是快慢两个指针。</b>
+  </div>
   <h4>5. KMP 的代码实现</h4>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=8">📄 p.116–117</a>
   <pre class="code">void get_next(SString T,int next[]){
@@ -232,6 +387,12 @@ int Index_KMP(SString S,SString T,int next[]){
     if(j&gt;T.length) return i-T.length;    // 匹配成功
     else return 0;
 }</pre>
+
+  <div class="mine"><span class="tag">我的补讲 · <code>next[i]=j</code> 里为什么是 i 不是 j——默写时最常写反的一行</span>
+    <b>书上说</b>：<code>get_next</code> 的核心是 <code>++i; ++j; next[i]=j;</code>，注释写「若 p<sub>i</sub>=p<sub>j</sub>，则 next[j+1]=next[j]+1」。<br>
+    <b>潜台词是</b>：这段代码里 <b>i 是「正在填表的位置」、j 是「已经确认的最长相等前后缀长度」</b>，两个指针的含义完全不同。<b>先 <code>++i; ++j;</code> 再赋值，说明填的是<u>新的</u> i 位、用的是<u>新的</u> j 值</b>——即「前 i−1 个字符的最长相等前后缀长度是 j−1，所以第 i 位失配时该从第 j 位重来」。写成 <code>next[j]=i</code> 或忘了 <code>++</code> 就直接把表填错位。<br>
+    <b>所以能考</b>：<b>统考不考写 KMP 代码</b>（王道自己在思维拓展题里写明「统考应不会考 KMP 算法题」），但<b>会考读代码</b>——给出 <code>get_next</code> 问「循环体执行几次 / 某处的 j 是什么含义 / 把某一行改掉会怎样」。记住这条对照就够用：<b>i 是下标、j 是长度，二者恰好错开一位，这正是「PM 右移一位」在代码里的样子。</b>
+  </div>
   <div class="key"><span class="tag">必记结论 · KMP 与暴力匹配的唯一区别</span>
     两段主循环长得几乎一样，<b>关键区别只在 else 分支</b>：暴力是 <code>i=i-j+2; j=1;</code>（主串指针回溯），KMP 是 <code>j=next[j];</code>（<b>i 保持不变</b>）。<br>
     特别地，当 j=0 时 i 和 j 同时加 1——即模式串首字符失配，下一轮从主串第 i+1 个位置开始。<b>这一步不产生字符比较</b>，数比较次数时千万别多数。
@@ -241,20 +402,41 @@ int Index_KMP(SString S,SString T,int next[]){
     实测两组数据：<code>aabaaaba</code>×<code>aaab</code>，暴力 10 次 vs KMP 9 次（几乎没差）；<code>aabaabaabaac</code>×<code>aabaac</code>，暴力 24 次 vs KMP 14 次（省 42%）。差距取决于模式串自身的重复程度。
   </div>
 
+
+  <div class="link"><span class="tag">知识串联 · 递推法求 next ＝「拿自己刚算出的结果去算下一个」</span>
+    递推法 <code>k = next[j−1]</code> 的实质是：<b>求第 j 位时，前面所有位的答案已经现成可用</b>，所以整张表只需一趟 O(m) 扫描，不必对每一位重新找前后缀（那样是 O(m²)）。<br>
+    <span class="hub">→ 数构 ch8</span> <b>直接插入排序</b>是同一个句式：「前 i−1 个已经有序」，所以第 i 个只需往前插，不必重排。<br>
+    <span class="hub">→ 数构 ch2</span> 单链表题里大量出现的「一趟扫描 + 边走边维护一个已算好的量」（求中间结点的快慢指针、求倒数第 k 个）也是这个套路。<br>
+    <span class="hub">→ 数构 ch5</span> 树的性质递推（结点数 / 高度 / 度的关系）同样靠「子问题答案已知」。<br>
+    <b>一句话记牢：看见「前面已经算好」，就该想到这一趟能做到 O(n)；看见「每次都从头找」，多半是 O(n²) 可优化。</b>
+  </div>
   <h3>4.2.3　KMP 算法的进一步优化：nextval</h3>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=9">📄 p.117–118</a>
   <span class="exam">考点追踪：nextval 数组的计算（2024）</span>
   <p>模式串 <code>aaaab</code> 与主串 <code>aaabaaaab</code> 匹配时暴露了 next 的缺陷：</p>
-  <table class="nx"><tr><td class="h">j</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+  <div class="tabwrap"><table class="nx"><tr><td class="h">j</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
     <tr><td class="h">模式串</td><td>a</td><td>a</td><td>a</td><td>a</td><td>b</td></tr>
     <tr><td class="h">next[j]</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
-    <tr><td class="h">nextval[j]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>4</td></tr></table>
+    <tr><td class="h">nextval[j]</td><td>0</td><td>0</td><td>0</td><td>0</td><td>4</td></tr></table></div>
   <p>当 i=4、j=4 时主串字符 <code>b</code> 与模式串 <code>a</code> 失配。若用 next，还要依次拿 p₃、p₂、p₁ 与 s₄ 比三次——可这三个位置上的字符都是 <code>a</code>，与刚失配的 p₄ 一模一样，<b>必然还是失配</b>。</p>
   <div class="key"><span class="tag">必记结论 · nextval 的修正规则</span>
     问题根源：<b>不应出现 p<sub>j</sub> = p<sub>next[j]</sub></b>。因为 p<sub>j</sub> ≠ s<sub>i</sub> 时，下一轮要用 p<sub>next[j]</sub> 与同一个 s<sub>i</sub> 比；若二者相同，结果必定仍是失配。<br>
     修正做法：<b>不断把 next[j] 替换为 next[next[j]]</b>，直到找到某个位置 k 使 p<sub>j</sub> ≠ p<sub>k</sub> 或 k=0 为止。等价的逐位写法：<br>
     <b>若 p<sub>j</sub> 与 p<sub>next[j]</sub> 相同 → nextval[j] = nextval[next[j]]（连锁塌陷）；否则 nextval[j] = next[j]。</b><br>
     <b>匹配算法本身一个字都不用改</b>，只是把 next 换成 nextval。
+  </div>
+
+  <div class="mine"><span class="tag">我的补讲 · 修正必须<u>从左往右</u>，因为它引用的是已修正的自己</span>
+    <b>书上说</b>：若 p<sub>j</sub> 与 p<sub>next[j]</sub> 相同，则 <b>nextval[j] = nextval[next[j]]</b>；否则 nextval[j] = next[j]。<br>
+    <b>潜台词是</b>：注意右边写的是 <b>nextval</b>[next[j]] 而不是 next[next[j]]——<b>它引用的是自己表里更左边、已经修正完的那一格</b>。这就强制了两件事：① <b>必须从 j=1 往右逐位做</b>，跳着算或从右往左算都会取到还没修正的值；② 修正会<b>连锁塌陷</b>——一格塌到 0，后面指向它的都跟着塌到 0（<code>aaaaa</code> 的 nextval 全 0 就是这么来的）。<br>
+    <b>所以能考</b>：手算题里最典型的错法就是<b>拿 next 直接套一遍</b>（写成 next[next[j]]）。举例 <code>ababab</code>：next = 0,1,1,2,3,4；j=5 时 p₅=a、p<sub>next[5]=3</sub>=a 相同 → 应取 <b>nextval[3]=0</b>；若误取 next[3]=1，就会得到 0,1,0,1,<b>1</b>,1 而不是正确的 <b>0,1,0,1,0,1</b>（自编手算特训第 4 题）。
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 连锁塌陷 ＝ 路径压缩：把「多跳几次」提前压成「一跳到位」</span>
+    <span class="hub">→ 数构 ch5.5.2</span> <b>并查集的路径压缩</b>是同一个动作：Find 时把沿途结点直接挂到根上，下次一步到根，不必再逐级往上爬。<b>nextval 就是 next 的路径压缩</b>——把「退到 next[j] 还是失配、再退到 next[next[j]]」这条注定要走的链，提前压成一步。<br>
+    <span class="hub">→ OS ch3</span> <b>多级页表 vs 快表</b>：多级页表要逐级访存（相当于沿着 next 一格格退），TLB 命中则一步拿到帧号（相当于 nextval 一跳到底）。<br>
+    <span class="hub">→ 组原 ch3</span> 多级 Cache 的逐级下探同理，命中越靠前越省。<br>
+    <b>一句话记牢：能预知「这一跳注定白跳」的时候，就把它在预处理阶段跳掉——nextval、路径压缩、TLB 是同一个念头的三种长相。</b>
   </div>
   <pre class="code">void get_nextval(SString T,int nextval[]){
     int i=1, j=0;
@@ -269,13 +451,191 @@ int Index_KMP(SString S,SString T,int next[]){
             j=nextval[j];
     }
 }</pre>
+
+  <div class="mine"><span class="tag">我的补讲 · nextval 省下的到底是哪几次？——我把三对串都跑了一遍</span>
+    <b>书上说</b>：不应出现 p<sub>j</sub> = p<sub>next[j]</sub>，因为退过去还是拿同一个字符跟同一个 s<sub>i</sub> 比，<b>必然仍是失配</b>。<br>
+    <b>潜台词是</b>：这句话精确界定了 nextval 的收益边界——<b>它只省「注定失败的比较」，一次也不多省</b>。所以「nextval 比 next 快」这句话是<b>有条件的</b>，条件就是模式串里得真的存在 p<sub>j</sub> = p<sub>next[j]</sub> 的位置，而且失配还得恰好发生在那儿。我把三对串用同一份代码跑了一遍：<br>
+    <div class="tabwrap"><table>
+      <tr><th>主串 × 模式串</th><th>暴力</th><th>KMP(next)</th><th>KMP(nextval)</th><th>nextval 省了多少</th></tr>
+      <tr><td><code>aabaaaba</code> × <code>aaab</code>（课后题 4.2-7/8）</td><td>10</td><td>9</td><td><b>7</b></td><td><b>省 2 次</b>（在 S[3] 上白比的 T[2]、T[1] 全免了）</td></tr>
+      <tr><td><code>abaabaabcabaabc</code> × <code>abaabc</code>（<b>2019 真题</b>）</td><td>15</td><td>10</td><td><b>10</b></td><td><b>一次也没省</b></td></tr>
+      <tr><td><code>aabaabaabaac</code> × <code>aabaac</code>（课后综合题 4.2-综2）</td><td>24</td><td>14</td><td><b>14</b></td><td><b>一次也没省</b></td></tr>
+    </table></div>
+    2019 与综2 为什么白改？两题的失配都发生在模式串<b>最后一位</b>（<code>c</code>），而 <code>c</code> 与它 next 指向的那个字符<b>本来就不同</b>，塌陷规则压根不触发，<b>nextval[6] = next[6]</b>。<br>
+    我另外做了随机对拍（字母表 {a,b}，主串长 1–14、模式串长 1–6，共 20 万组）：<b>nextval 的比较次数从未多于 next</b>——41.8% 的用例更少、58.2% 完全相同。<b>同一批测试里 KMP 的比较次数也从未多于暴力法</b>（41.1% 更少、58.9% 相同）。<br>
+    <b>所以能考</b>：① 概念题问「改用 nextval 后比较次数一定减少吗」——答<b>不一定，只能保证不增加</b>；② 计算题给同一对串分别问 next 版和 nextval 版（4.2-7 与 4.2-8 就是这么成对出的），<b>两问答案可能相同，别因为「改进了」就硬凑一个更小的数</b>；③ 2019 真题即使误用 nextval 去算也仍得 10，<b>这是本章唯一一处「算错了方法还能蒙对」的地方，别把它当成经验</b>。
+  </div>
   <div class="trap"><span class="tag">陷阱 · 2024 真题就藏在这张表里</span>
     问「S 向右滑动的<b>最长</b>距离」时，必须把<b>每一位</b>的 j − nextval[j] 都算出来再取最大值。以 2024 真题 S=<code>aabaab</code>（位序从 0）为例：<br>
     next = −1, 0, 1, 0, 1, 2；nextval = −1, −1, 1, −1, −1, 1；j−nextval = 1, 2, 1, <b>4</b>, <b>5</b>, 4 → 最长是 <b>5</b>（j=4 处），只看最后一位会误答 4。
   </div>
 
+
+  <div class="bg"><span class="tag">背景 · <code>get_nextval</code> 这段代码不用默写</span>
+    统考不考 KMP 的算法设计题（王道自己在思维拓展题里写明这一点），<b>这段代码只需能读懂两行</b>：<code>if(T.ch[i]!=T.ch[j]) nextval[i]=j; else nextval[i]=nextval[j];</code> ——它就是上面那条修正规则的代码形态，<b>和手算规则一一对应</b>。<br>
+    <b>把手算规则练熟即可，代码看过就行。</b>
+  </div>
+
+  <h2 id="s43">4.3　手算总攻<span style="font-size:.8rem;color:var(--muted)">（本章唯一的拿分动作 · 书上没有这一节，我加的）</span></h2>
+  <p>本章 15 页正文、21 道练习，<b>最终只落到一件事上：拿到一个模式串，30 秒内把 PM / next / nextval 三行算对，再按题目问法取值。</b>这一节把三道统考真题、六个可默写模板、审题词典和一道完整的综合题卷面集中在一起——<b>考前只看这一节就够。</b></p>
+
+  <h3>4.3.1　三道统考真题并排：同一张表，三种问法</h3>
+  <div class="tabwrap"><table>
+    <tr><th>年份</th><th>模式串</th><th>问什么</th><th>位序</th><th>要算到哪一步</th><th>答案</th><th>唯一的分辨点</th></tr>
+    <tr><td><b>2015</b></td><td><code>abaabc</code></td><td>失配在 i=j=5 时，<b>下次的 i、j</b></td><td><b>从 0</b>（题干写 s[i]≠t[j]）</td><td>只需 <b>next</b></td><td><b>i=5, j=2</b>（C）</td><td><b>i 不回溯</b>——四个选项里只有 C 保住 i=5；若误按位序 1 算会得 j=3 而选错</td></tr>
+    <tr><td><b>2019</b></td><td><code>abaabc</code><br><span style="color:var(--red)">（与 2015 同一个串）</span></td><td>到匹配成功为止的<b>比较次数</b></td><td><b>从 0</b></td><td>next <b>+ 逐趟记账</b></td><td><b>10</b>（B）</td><td>失配那一次<b>也算</b>；6 + 4 = 10。少数失配那次得 8，把 j 归零那步也数则得 11</td></tr>
+    <tr><td><b>2024</b></td><td><code>aabaab</code></td><td>向右滑动的<b>最长</b>距离</td><td><b>从 0</b></td><td>next → <b>nextval</b> → 逐位 j−nextval[j] <b>取 max</b></td><td><b>5</b>（A）</td><td>是<b>遍历取最大</b>不是问最后一位：j−nextval = 1,2,1,4,<b>5</b>,4，只看末位会误答 4（B）</td></tr>
+  </table></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 三道真题的共同结构，比三道题本身值钱</span>
+    <b>书上说</b>：（王道只在两处标了考点追踪：2015、2019 在 4.2.2，2024 在 4.2.3。）<br>
+    <b>潜台词是</b>：把三道并排后，它们的骨架完全一致——<b>「给一个 6 位模式串 → 你把 next（或 nextval）算出来 → 从表里取一个值」</b>。差别只在<b>取哪个值</b>：2015 取 next[失配位]、2019 把每趟比较数加起来、2024 把每一位的 j−nextval[j] 取最大。更巧的是 <b>2015 与 2019 用的是同一个模式串 <code>abaabc</code></b>，连表都不用换。<br>
+    <b>所以能考</b>：<b>本章的复习动作因此可以压缩成一句话——把「算表」练成肌肉记忆，把「取值」练成三选一。</b>可能的第四种问法我也一并列出，都在同一张表里：「右滑几位」= j−next[j]（4.2-9 考过）、「改用 nextval 后比较几次」= 换表重数（4.2-8 考过）、「哪个选项是这个串的 next」= 用三条硬约束秒杀（4.2-6 考过）。<b>没有第五种。</b>
+  </div>
+
+  <h3>4.3.2　六个可默写模板</h3>
+  <div class="key"><span class="tag">模板 ① · PM 表（一切的地基）</span>
+    <div class="fml">PM[j] ＝ 前 j 个字符这一段的「最长相等<b>真</b>前后缀」长度</div>
+    逐位写，从 j=1 到 m。约束：<b>PM[1] 恒为 0</b>；<b>PM[j] ≤ j−1</b>；相邻最多涨 1。<br>
+    例 <code>aabaac</code>：a→0 ｜ aa→<code>a</code>=1 ｜ aab→0 ｜ aaba→<code>a</code>=1 ｜ aabaa→<code>aa</code>=2 ｜ aabaac→0。<b>PM = 0,1,0,1,2,0</b>。
+  </div>
+  <div class="key"><span class="tag">模板 ② · PM → next（右移法，快）</span>
+    <div class="fml">next[1] = 0；next[j] = PM[j−1] + 1　（位序从 1）</div>
+    操作上就是：<b>PM 表整体右移一位、首位补 0，再整体加 1</b>（末位 PM 丢弃）。<br>
+    接上例：PM = 0,1,0,1,2,<s>0</s> → 右移补 0 得 −,0,1,0,1,2 → 加 1 并令首位为 0 → <b>next = 0,1,2,1,2,3</b>。<br>
+    <b>位序从 0 时整表减 1</b>：next = −1,0,1,0,1,2。
+  </div>
+  <div class="key"><span class="tag">模板 ③ · 递推法求 next（稳，用来验算）</span>
+    令 k = next[j−1]，比较 p<sub>j−1</sub> 与 p<sub>k</sub>：<br>
+    · <b>相等</b> → next[j] = k + 1；<br>
+    · <b>不等</b> → k ← next[k]，继续比；<b>一直退到 k = 0 就填 next[j] = 1</b>。<br>
+    验上例 j=4：k=next[3]=2，p₃=<code>b</code> ≠ p₂=<code>a</code> → k←next[2]=1，p₃=<code>b</code> ≠ p₁=<code>a</code> → k←next[1]=0 → <b>next[4]=1</b> ✓ 与模板 ② 一致。<br>
+    <b>两法结果必须相同——这是考场上唯一的自检手段，30 秒。</b>
+  </div>
+  <div class="key"><span class="tag">模板 ④ · next → nextval（塌陷）</span>
+    <b>从左往右</b>逐位做，nextval[1] = 0（位序 0 时为 −1）：<br>
+    · p<sub>j</sub> <b>=</b> p<sub>next[j]</sub>　→　nextval[j] = <b>nextval</b>[next[j]]（引用已修正的值，会连锁）；<br>
+    · p<sub>j</sub> <b>≠</b> p<sub>next[j]</sub>　→　nextval[j] = next[j]（原样保留）。<br>
+    接上例 <code>aabaac</code>：next=0,1,2,1,2,3 → <b>nextval = 0,0,2,0,0,3</b>。
+  </div>
+  <div class="key"><span class="tag">模板 ⑤ · 数比较次数（逐趟记账）</span>
+    画一张小表，一趟一行，最后把「本趟比较数」竖着加起来：<br>
+    <div class="tabwrap"><table>
+      <tr><th>趟</th><th>本趟起始 i / j</th><th>本趟比较数</th><th>失配处 j</th><th>next[j]</th></tr>
+      <tr><td>1</td><td>i=1, j=1</td><td>6</td><td>6</td><td>3</td></tr>
+      <tr><td>2</td><td>i=6, j=3</td><td>4</td><td>6</td><td>3</td></tr>
+      <tr><td>3</td><td>i=9, j=3</td><td>4</td><td>—（成功）</td><td>—</td></tr>
+      <tr><td colspan="2"><b>合计</b></td><td colspan="3"><b>14 次</b>（<code>aabaabaabaac</code> × <code>aabaac</code>）</td></tr>
+    </table></div>
+    <b>四条记账规矩</b>：① 相等则 i、j 同进，计 1 次；② <b>失配那一次也计 1 次</b>；③ 失配后 i 不动、j←next[j]，在<b>同一个 i</b> 上接着比（算新的一次）；④ <b>j 退到 0（位序 0 时为 −1）那一步走「i、j 同时加 1」分支，不产生比较、不计数</b>。<br>
+    <b>求 next 数组本身的开销不计入。</b>
+  </div>
+  <div class="key"><span class="tag">模板 ⑥ · 滑动距离</span>
+    <div class="fml">右滑位数 ＝ j − next[j]　（用 nextval 时换成 j − nextval[j]）</div>
+    等价说法：<b>已匹配字符数 − 对应的部分匹配值</b>。<br>
+    · 问<b>某一位</b>的滑动距离 → 直接代入（4.2-9）；<br>
+    · 问<b>最长 / 最短</b> → <b>必须逐位算完再取 max / min</b>（2024 真题）；<br>
+    · <b>该值与位序基准无关</b>：位序整体差 1，j 与 next[j] 同时差 1，减法里抵消。
+  </div>
+
+  <h3>4.3.3　审题词典：看见这句话，立刻做这件事</h3>
+  <div class="tabwrap"><table>
+    <tr><th>题干里出现</th><th>立刻做什么</th></tr>
+    <tr><td><code>s[i] ≠ t[j]</code>、给出具体下标（如 i=j=5）</td><td><b>位序从 0</b>：next[0] = −1、next[1] = 0</td></tr>
+    <tr><td>「第 j 个字符」「next[1]=0」</td><td><b>位序从 1</b>（王道正文与课后综合题都是这套）</td></tr>
+    <tr><td><b>「主串 T ⋯ 模式串 S」</b></td><td>⚠️ <b>2019 真题把两个名字对调了</b>（教材惯例是主串 S、模式串 T）。<b>先在题干上圈出谁是主串再动手</b>，认错了整题全错</td></tr>
+    <tr><td>「进行的<b>单个字符间</b>的比较次数」</td><td>用模板 ⑤ 逐趟记账。问的不是趟数、不是移动次数</td></tr>
+    <tr><td>「到匹配<b>成功</b>时为止」</td><td>成功那一次比较<b>也算</b>；匹配成功后立即停，不继续找下一处</td></tr>
+    <tr><td>「<b>修正后</b>的 next」「<b>改进</b>的 KMP」「进一步优化」</td><td>要先求 next 再塌陷成 nextval（模板 ④），不能拿 next 直接答</td></tr>
+    <tr><td>「向右滑动的<b>最长</b>距离」</td><td>逐位算 j − nextval[j] 再<b>取最大</b>；只算末位是命题人埋的坑</td></tr>
+    <tr><td>「下次开始匹配时 i 和 j 的值」</td><td><b>i 原样抄回来</b>，只改 j = next[j]；选项里让 i 变小的一律排除</td></tr>
+    <tr><td>「求 next 数组<b>并</b>给出匹配过程」</td><td>两问都要答：第 2 问必须<b>分趟写出 i、j 的值</b>，体现 i 不回溯（见 4.3.4）</td></tr>
+    <tr><td>四个选项都是一整张 next 表</td><td>先用三条硬约束毙选项（长度 = m、next[1]=0、next[2]=1、相邻最多涨 1），往往不用算就剩一个</td></tr>
+  </table></div>
+
+  <h3>4.3.4　完整卷面示范：求 next 并给出匹配过程（课后综合题 4.2-综2）</h3>
+  <p><b>题目</b>：设有字符串 S = <code>aabaabaabaac</code>，P = <code>aabaac</code>。1）求出 P 的 next 数组；2）若 S 作为主串、P 作为模式串，试给出 KMP 算法的匹配过程。</p>
+
+  <div class="think"><span class="th">💭 思路（动手前看／卡壳时看）</span>
+    <ol>
+      <li><b>先定位序基准。</b>题干说「next 数组」而没有出现 <code>s[i]</code> 这类下标写法，且这是教材课后题——<b>用位序从 1</b>，并在卷面第一行明写出来。这一句话是防止阅卷按另一套判错的保险。</li>
+      <li><b>第 1 问用两法互验。</b>PM 右移法算一遍（模板 ②），递推法验一遍（模板 ③）。<b>验算过程要写在卷面上</b>：它本身就是采分点，也说明你不是背的。</li>
+      <li><b>第 2 问的题眼是「过程」不是「结果」。</b>「给出匹配过程」四个字，考的就是<b>你知不知道 i 不回溯</b>。所以每一趟必须把 <b>i 和 j 的具体值</b>写出来；只写「next[6]=3 所以从第 3 位开始比」等于没答。</li>
+      <li><b>怎么分趟？</b>一次失配 = 一趟结束。P 的末位是 <code>c</code>，主串里 <code>aab</code> 反复出现——<b>可以预判失配总发生在 j=6（拿 <code>c</code> 去撞 <code>b</code>）</b>，每趟都退到 next[6]=3。看出这个周期性，三趟就顺下来了。</li>
+      <li><b>顺手多写一句比较次数。</b>题干没问，但既然已经逐趟走完，把 6+4+4=14 写上去只多花五秒，<b>是证明「我真走了一遍」的最强证据</b>。别急着算，等三趟排完再加。</li>
+    </ol>
+  </div>
+
+  <div class="paper"><span class="phead">✍️ 考场卷面（写完对照）<span class="score">⛳ 共 10 分</span></span>
+    <div class="step"><span class="k">解</span>以下位序均<b>从 1 开始</b>。<span class="pt">⛳ 1 分</span></div>
+    <div class="step"><span class="k">(1) 求 P 的 next 数组</span></div>
+    <div class="step">先求 P = <code>aabaac</code> 的部分匹配值表 PM（PM[j] 为前 j 个字符的最长相等真前后缀长度）：<span class="pt">⛳ 2 分</span>
+      <div class="tabwrap"><table class="nx">
+        <tr><td class="h">j</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+        <tr><td class="h">P</td><td>a</td><td>a</td><td>b</td><td>a</td><td>a</td><td>c</td></tr>
+        <tr><td class="h">PM</td><td>0</td><td>1</td><td>0</td><td>1</td><td>2</td><td>0</td></tr>
+      </table></div>
+    </div>
+    <div class="step">由 next[1] = 0、next[j] = PM[j−1] + 1（j ≥ 2）得<span class="pt">⛳ 2 分</span>
+      <div class="tabwrap"><table class="nx">
+        <tr><td class="h">j</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+        <tr><td class="h">next</td><td>0</td><td>1</td><td>2</td><td>1</td><td>2</td><td>3</td></tr>
+      </table></div>
+      即 <b>next = (0, 1, 2, 1, 2, 3)</b>　……（1）
+    </div>
+    <div class="step">（用递推法验算 j=4：k = next[3] = 2，p₃ = <code>b</code> ≠ p₂ = <code>a</code>，故 k ← next[2] = 1；p₃ = <code>b</code> ≠ p₁ = <code>a</code>，故 k ← next[1] = 0，得 next[4] = 1，与 (1) 式一致。）<span class="pt">⛳ 1 分</span></div>
+    <div class="step"><span class="k">(2) 匹配过程</span>设主串指针为 i、模式串指针为 j，初始 i = j = 1。</div>
+    <div class="step"><b>第一趟</b>：自 i=1、j=1 起逐位比较，P 的前 5 个字符与 S 的前 5 个字符相同；比至 <b>i=6、j=6</b> 时 s₆ = <code>b</code> ≠ p₆ = <code>c</code>，失配。本趟比较 <b>6</b> 次。<span class="pt">⛳ 1 分</span></div>
+    <div class="step"><b>第二趟</b>：由 (1) 式 next[6] = 3。<b>主串指针 i 不回溯，仍为 6</b>；模式串指针退至 j = 3，即用 p₃ 与 s₆ 继续比较。比至 <b>i=9、j=6</b> 时 s₉ = <code>b</code> ≠ p₆ = <code>c</code>，失配。本趟比较 <b>4</b> 次。<span class="pt">⛳ 2 分</span></div>
+    <div class="step"><b>第三趟</b>：仍有 next[6] = 3，<b>i 保持为 9</b>，j 退至 3，用 p₃ 与 s₉ 继续比较，此后连续相等，直至 j = 7 &gt; 6，<b>匹配成功</b>。本趟比较 <b>4</b> 次。<span class="pt">⛳ 1 分</span></div>
+    <div class="step">匹配成功时 i = 13，故模式串 P 在主串 S 中的起始位置为 i − m = 13 − 6 = <b>7</b>，即 S 的第 7 个字符处。全过程主串指针 i 单调不减（6 → 6 → 9 → 9 → 13），从未回溯，共进行单个字符比较 6 + 4 + 4 = <b>14</b> 次。</div>
+    <div class="fin">答：P 的 next 数组为 (0, 1, 2, 1, 2, 3)；KMP 匹配共分三趟，主串指针始终不回溯，最终在主串第 <b>7</b> 个字符处匹配成功，全过程共进行 <b>14</b> 次单个字符的比较。</div>
+  </div>
+
+  <div class="notekeep"><span class="nh">📌 批注（对照完校对）</span>
+    · <span class="dock">扣分点 1</span>：不写「以下位序从 1 开始」。阅卷若按位序 0 的标准去核，你的 next 整体差 1，会被判全错——<b>这一句话值的分比它占的字多得多</b>。<br>
+    · <span class="dock">扣分点 2</span>：第 2 问只写「next[6]=3，所以从模式串第 3 位继续比」而<b>不写 i 的值</b>。本题的采分核心就是「i 不回溯」，<b>i 的值不出现在卷面上，这一分就拿不到</b>。<br>
+    · <span class="dock">扣分点 3</span>：把「起始位置」答成 i 的最终值 13。<b>返回值是 i − m</b>，对应王道代码的 <code>return i-T.length;</code>。<br>
+    · <b>提速心算</b>：<code>aabaac</code> 只有 6 位，PM 两秒可写；发现主串是 <code>aab</code> 的三次重复 + <code>aac</code> 后，<b>失配位必然恒为 j=6</b>，三趟的 next 值都不用重查。<br>
+    · <b>若改问 nextval</b>：nextval = (0, 0, 2, 0, 0, 3)，<b>nextval[6] = next[6] = 3 未变</b>（p₆=<code>c</code> 与 p₃=<code>b</code> 本就不同，塌陷不触发），所以<b>比较次数仍是 14</b>，一次也省不下来——同一对串暴力法要 24 次。<br>
+    · <b>跨章卷面</b>：这种「分趟列出中间状态」的写法与 <b>ch8 排序题「写出每一趟的结果」</b>、<b>ch6 图题「写出每一步的 dist 数组」</b>是同一种卷面格式——<b>阅卷是找采分点，每趟单独起一行、把关键量写全，比写成一大段更容易得分</b>。
+  </div>
+
+  <h3>4.3.5　自编手算特训 · 六张标准答案（练完对答案用）</h3>
+  <p>练习系统里的 <code>4-特训1</code> ~ <code>4-特训6</code> 覆盖了 next 的六种典型形态。<b>建议做法：合上这张表，用模板 ② 算、用模板 ③ 验，两法一致再对答案。</b>下表三行均由程序独立生成。</p>
+  <div class="tabwrap"><table>
+    <tr><th>特训</th><th>模式串</th><th>形态</th><th>PM / next / nextval（位序从 1）</th><th>这张表在练什么</th></tr>
+    <tr><td>1</td><td><code>abcabcabd</code></td><td>周期串 + 末位打断</td><td>PM 0,0,0,1,2,3,4,5,0<br>next 0,1,1,1,2,3,4,5,6<br>nextval 0,1,1,0,1,1,0,1,6</td><td>周期串的 PM 一路 +1 递增，被末位异常字符<b>打断归零</b>；看出周期可直接顺推</td></tr>
+    <tr><td>2</td><td><code>aaaaa</code></td><td>全同串（next 上界）</td><td>PM 0,1,2,3,4<br>next 0,1,2,3,4<br>nextval 0,0,0,0,0</td><td><b>PM[j] = j−1 是上界</b>（真前后缀，不能取整串）；next 退化成每次只滑 1 位，而 nextval 全 0 一步到底——<b>2024 真题的原型</b></td></tr>
+    <tr><td>3</td><td><code>abcdef</code></td><td>全异串（next 下界）</td><td>PM 全 0<br>next 0,1,1,1,1,1<br>nextval 0,1,1,1,1,1</td><td>无任何相等前后缀 → next 全 1（首位 0），<b>nextval 与 next 完全相同</b>（塌陷从不触发）</td></tr>
+    <tr><td>4</td><td><code>ababab</code></td><td>两字符周期串</td><td>PM 0,0,1,2,3,4<br>next 0,1,1,2,3,4<br>nextval 0,1,0,1,0,1</td><td><b>连锁塌陷</b>的典型：j=3 时 p₃=p₁ → nextval[3]=nextval[1]=0，一路传染成 0,1,0,1,0,1</td></tr>
+    <tr><td>5</td><td><code>aabcaabca</code></td><td>含重复段的混合串</td><td>PM 0,1,0,0,1,2,3,4,5<br>next 0,1,2,1,1,2,3,4,5<br>nextval 0,0,2,1,0,0,2,1,0</td><td><b>最像真题的形态</b>（2015/2019 都是这个样子）；用递推法练「退到 0 就填 1」</td></tr>
+    <tr><td>6</td><td><code>abaabaaab</code></td><td>要退两次的串</td><td>PM 0,0,1,1,2,3,4,1,2<br>next 0,1,1,2,2,3,4,5,2<br>nextval 0,1,0,2,1,0,2,5,1</td><td>递推时 <b>k 要连退两次才落定</b>；也是「next 可以暴跌」的实例（末两位 5 → 2）</td></tr>
+  </table></div>
+
+  <div class="mine"><span class="tag">我的补讲 · 交卷前 30 秒的四条自检</span>
+    <b>书上说</b>：（书上没有自检清单，这是我从上表六张答案里反推出来的。）<br>
+    <b>潜台词是</b>：手算题唯一的风险是<b>算错而不自知</b>，而 next 表有四条恒成立的性质，扫一眼就能兜住绝大多数低级错误：<br>
+    ① <b>next[1] = 0、next[2] = 1</b>（位序 0 时为 −1、0）——六张表无一例外；<br>
+    ② <b>长度必须等于 m</b>；<br>
+    ③ <b>相邻最多涨 1</b>（next[j+1] ≤ next[j] + 1），<b>但可以暴跌</b>（特训 6 的 5 → 2、特训 1 的 5 → 6 是涨 1 的极限）；<br>
+    ④ <b>PM[j] ≤ j−1</b>，等号只在全同串处取到（特训 2）。<br>
+    <b>所以能考</b>：这四条不仅用于自检，还能直接<b>秒杀选择题</b>——课后题 4.2-6 就是靠 ② 和 ① 在不做任何计算的情况下毙掉三个选项的。<b>凡是「四个选项都是整张 next 表」的题，先查约束、再考虑算。</b>
+  </div>
+
+  <div class="link"><span class="tag">知识串联 · 「用不变量校验结果」＝ 校验码思想的手算版</span>
+    上面那四条自检（next[1]=0、长度 = m、相邻最多涨 1、PM[j] ≤ j−1）的本质是：<b>正确的结果必然满足某些冗余约束，于是不用重算也能查错。</b>四科里这套思想有正式的名字：<br>
+    <span class="hub">→ 组原 ch2</span> <b>奇偶校验 / 海明码 / CRC</b>——往数据里加冗余位，使合法数据必须满足某个等式，违反等式即知出错（海明码还能定位到位）。<br>
+    <span class="hub">→ 网络 ch3 / ch5</span> 数据链路层的 <b>CRC</b> 与传输层的 <b>检验和</b>是同一招在报文上的应用。<br>
+    <span class="hub">→ 数构 ch5</span> 二叉树的性质（n₀ = n₂ + 1、完全二叉树的高度公式）同样可以拿来<b>反查自己画的树对不对</b>。<br>
+    <b>一句话记牢：手算题的正确率不是靠算得慢，是靠算完用一条独立的约束回头验——这一条在四科的计算题里通用。</b>
+  </div>
   <h2>归纳总结</h2>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=15">📄 p.123</a>
+
+  <div class="bg"><span class="tag">背景 · 这段是书上的收束语，读一遍就够</span>
+    下面这段「归纳总结」把 KMP 的来龙去脉又复述了一遍，<b>没有新的考点</b>。真正要带走的东西已经在 <a href="#s43">4.3 手算总攻</a> 里了：三道真题的并排表、六个模板、审题词典。<b>这段读一遍确认自己讲得出来即可，不必抄不必背。</b>
+  </div>
   <p>学习 KMP 应从暴力匹配的低效性入手：<b>主串指针的回溯会导致大量重复比较</b>。实际上，已匹配的部分恰好是模式串的一个前缀，而每次回溯相当于把模式串与其自身的某个前缀反复比对。为提升效率，需要深入分析模式串<b>自身的结构</b>：当某个字符失配时，若已匹配部分存在一个与模式串前缀相等的后缀（最长相等前后缀），则可将模式串滑动至该前后缀对齐的位置（对齐部分显然无须重新比较），直接从主串当前失配位置继续匹配即可。KMP 的核心就是<b>预计算每个失配位置的最佳跳转位置</b>（如 next 数组），避免无效比较。</p>
 
   <div class="mine"><span class="tag">我的补讲 · 本章唯一要练的三件事</span>
@@ -285,13 +645,22 @@ int Index_KMP(SString S,SString T,int next[]){
     思维拓展题（统计模式串在主串中完全匹配的子串个数）书上标了「统考应不会考 KMP 算法题」，当作理解练习即可，写法见练习页 <code>4-思维拓展</code>。
   </div>
 
+
+  <div class="link"><span class="tag">知识串联 · 「在一长串数据里找一个模式」，四科各有各的实现</span>
+    <span class="hub">→ 数构 ch7</span> 查找一章找的是「某个<b>元素</b>在不在」（顺序查找 / 折半查找 / 散列），本章找的是「某个<b>连续片段</b>在不在」——<b>后者不能排序、不能折半，因为顺序本身就是要匹配的信息</b>，这正是必须另立 KMP 的原因。<br>
+    <span class="hub">→ OS ch4</span> 文件系统按文件名在目录里检索、通配符匹配，是模式匹配的直接应用。<br>
+    <span class="hub">→ 网络 ch6</span> HTTP 报文按 CRLF 切首部、按 <code>Content-Length</code> 取实体，都要在字节流里定位模式；防火墙的深度包检测更是把 KMP 类算法直接用在报文上——<b>而报文正是「读过就没了」的流，这就是「i 不回溯」在工程上真正被需要的场合</b>。<br>
+    <span class="hub">→ 组原 ch4</span> 部分 ISA 提供<b>串操作指令</b>（一条指令处理一段连续字节），对应本章「串以子串为操作单位」的硬件表达。<br>
+    <b>一句话记牢：查找问「有没有这个值」，匹配问「有没有这个顺序」——顺序不能被打乱，所以匹配永远只能顺着扫，优化的余地只在「怎么少扫几遍」。</b>
+  </div>
   <div class="outro">
     <b>接下来做什么：</b><br>
-    · <a href="../练习系统/第4章.html">第 4 章练习（21 题）</a> —— 12 道选择 + 2 道综合 + 思维拓展 + 6 道自编手算特训，含 2015/2019/2024 三道真题。<br>
-    · <a href="../模拟器_KMP.html">KMP 步进器</a> —— next/nextval 逐步生成、匹配过程单步回放（自动数比较次数）、手算自测判分。<br>
+    · <b>先把 <a href="#s43">4.3 手算总攻</a> 过一遍</b> —— 三道统考真题并排表、六个可默写模板、审题词典、一道完整卷面、六张特训标准答案。<b>考前只回看这一节。</b><br>
+    · <a href="../练习系统/第4章.html">第 4 章练习（21 题）</a> —— 12 道选择 + 2 道综合 + 思维拓展 + 6 道自编手算特训，含 2015／2019／2024 三道真题。<br>
+    · <a href="../模拟器_KMP.html">KMP 步进器</a> —— next／nextval 逐步生成、匹配过程单步回放（自动数比较次数）、手算自测判分。<br>
     · <a href="../练习系统/套路库.html">解题套路库 · 第 4 章</a> —— 6 张卡：求 next 双算法、nextval 塌陷、数比较次数四规矩、失配去向、位序判别、串的概念小坑。
   </div>
-  <footer>精读版 · 第 4 章｜正文取自王道《数据结构》p.109–123，结构重排与批注为 Claude 所加｜配图 1 张裁自原书，字符对齐示意为重画</footer>
+  <footer>精读版 · 第 4 章｜正文取自王道《数据结构》p.109–123，结构重排与批注为 Claude 所加｜配图 1 张裁自原书，字符对齐示意为重画｜2026-09-01 回炉轮：🔴 我的补讲 6→20 · 🔵 知识串联 0→11 · ⬜ 背景灰化 0→6，并新增「4.3 手算总攻」一节（三道真题并排 + 六模板 + 审题词典 + 大题三层卷面 + 六张特训答案）；表内所有 next／nextval／比较次数均经程序独立复算</footer>
 </div>
 </body>
 </html>
