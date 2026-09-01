@@ -104,7 +104,8 @@ window.TRICK_DATA = [
      +'所以：<b>先把新结点和「旧邻居」接好，最后再动老指针。</b>',
  tmpl:'<b>双链表 p 之后插 s（4 条，顺序不唯一但有约束）：</b><pre class="code">s-&gt;next = p-&gt;next;      // ① 先用旧值\ns-&gt;prior = p;\np-&gt;next-&gt;prior = s;     // ② 必须在 ③ 之前！\np-&gt;next = s;            // ③ 最后改 p-&gt;next</pre>'
      +'<b>双链表删 p（前驱后继手拉手）：</b><pre class="code">p-&gt;prior-&gt;next = p-&gt;next;\np-&gt;next-&gt;prior = p-&gt;prior;\nfree(p);</pre>'
-     +'<p class="note">双链表插入/删除都要改 <b>4 个</b>指针域（新结点 2 + 左右邻各 1），别记成 2 个。</p>',
+     +'<p class="note">双链表<b>插入</b>要改 <b>4 个</b>指针域（新结点的 prior 与 next + 左右邻各 1），别记成 2 个；'
+     +'<b>删除</b>只改 <b>2 个</b>（前驱的 next、后继的 prior）——被删结点自己的两个域随 free 一起没了，不用管。</p>',
  traps:['<b>2023 真题</b>的坑：题干已经先执行了 <code>s-&gt;next=p-&gt;next; p-&gt;next=s;</code>，此时 <code>p-&gt;next</code> 已经变成 s，要够到原后继只能走 <code>s-&gt;next</code>。',
         '<b>2021 真题</b>的坑：循环单链表删首元时，若首元恰好是尾结点，尾指针会悬空，必须补 <code>p=h</code>。',
         '如果插入位置<b>前后都已有指针</b>（如 q 是 p 的前驱），怎么写都不会断链——这时选项差异在别处。'],
