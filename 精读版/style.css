@@ -108,6 +108,39 @@ td pre.code{margin:0;font-size:.78rem}
 .exam{display:inline-block;font-size:.78rem;color:var(--purple);background:var(--purple-soft);
   border-radius:5px;padding:1px 7px;margin:4px 0}
 
+/* ===== 大题三层：想 → 写 → 校（2026-09-01 从数学一复盘中心移植，见项目根 CLAUDE.md 铁律）=====
+   408 的综合题同样是「需要写过程的题」，从计算机网络 ch6 起启用。 */
+/* ===== 大题三层：💭思路(.think) → ✍️卷面(.paper) → 📌批注(.notekeep) =====
+   学习时的真实顺序是「想 → 写 → 校」，三层各管一段，不许互相混装：
+   .think    做题**前**看：审题信号→选路→关键决策。只讲"为什么往这边走",不出现具体计算结果。
+             卡壳时先看这层,看完自己动手,别直接翻卷面。
+   .paper    做完**对照**：只写考场上真要落笔的字,⛳ 标采分点。
+   .notekeep 写完**校对**：定理边界、扣分点、心算技巧、跨章联系。这些字考场上不要落笔。 */
+.think{background:var(--purple-soft);border-left:4px solid var(--purple);border-radius:0 10px 10px 0;
+  padding:11px 15px;margin:12px 0;font-size:.87rem;line-height:1.9}
+.think .th{display:block;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--purple);margin-bottom:5px}
+.think ol{margin:4px 0 0 20px}
+.think li{margin:4px 0}
+.think b{color:var(--ink)}
+
+/* ===== 考场卷面（.paper）：可直接照抄的完整解答，不含任何教学口语 =====
+   规矩：正文只写"考场上真要落笔的字"；解释、动机、扣分点一律放到卡片下方的批注区。
+   ⛳ 每个采分点用 .pt 标出（阅卷老师的给分锚点），考前可只扫 .pt。            */
+.paper{background:var(--card);border:1px solid var(--line);border-left:3px double var(--accent);
+  border-radius:0 10px 10px 0;padding:12px 16px 14px;margin:12px 0;font-size:.9rem;line-height:1.95}
+.paper .phead{font-size:.72rem;font-weight:700;letter-spacing:.08em;color:var(--accent);
+  border-bottom:1px dashed var(--line);padding-bottom:5px;margin-bottom:9px}
+.paper .phead .score{float:right;font-weight:400;color:var(--muted);letter-spacing:0}
+.paper .step{margin:7px 0}
+.paper .step > .k{font-weight:700;color:var(--ink);margin-right:4px}
+.paper .pt{display:inline-block;font-size:.68rem;font-weight:700;color:var(--green);
+  background:var(--green-soft);border-radius:4px;padding:0 6px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+.paper .fin{border-top:1px dashed var(--line);margin-top:10px;padding-top:8px;font-weight:700}
+.notekeep{background:var(--bg);border-radius:8px;padding:9px 13px;margin:10px 0 2px;font-size:.85rem;line-height:1.85}
+.notekeep .nh{font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--muted);
+  display:block;margin-bottom:4px}
+.notekeep .dock{color:var(--red);font-weight:700}
+
 .outro{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:36px}
 .outro a{color:var(--accent)}
 footer{color:var(--muted);font-size:.82rem;text-align:center;margin-top:30px}
