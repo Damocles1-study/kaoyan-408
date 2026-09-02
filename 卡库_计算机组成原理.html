@@ -1168,6 +1168,17 @@ qb.addEventListener('click',quiz);fdiv.appendChild(qb);
 /* 标题里的张数自动跟着 K 走——以后加卡不用再改标题 */
 document.getElementById('ktot').textContent = K.length;
 renderGrid('all');
+/* 支持从「知识串联」页直接跳到某个分组：卡库_xxx.html#g_mem
+   分组键即 CH 的键名；渲染完成后再切筛选，避免与初始 renderGrid('all') 抢。 */
+if(location.hash.startsWith('#g_')){
+  const g=decodeURIComponent(location.hash.slice(3));
+  if(CH[g]){
+    const btns=Array.from(document.querySelectorAll('.fbtn'));
+    const b=btns[Object.keys(CH).indexOf(g)+1];   /* +1：第 0 个按钮是「全部」 */
+    if(b){btns.forEach(x=>x.classList.remove('on'));b.classList.add('on');renderGrid(g);}
+  }
+}
+
 </script>
 </body>
 </html>

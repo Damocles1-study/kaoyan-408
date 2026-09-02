@@ -84,7 +84,7 @@
     <span class="hub">→ 网络 ch6</span> 应用层的 HTTP 请求行、SMTP 命令、DNS 域名，本质全是字符串；网络里「按 CRLF 切分首部」的动作就是本章的<b>模式匹配 + 求子串</b>。<br>
     <b>一句话记牢：串是线性表的特例，不是新结构；本章真正的新东西只有 KMP 一个。</b>
   </div>
-  <h2>4.1　串的定义和实现<span style="font-size:.8rem;color:var(--muted)">（✱ 大纲外，扫读）</span></h2>
+  <h2 id="s4-1">4.1　串的定义和实现<span style="font-size:.8rem;color:var(--muted)">（✱ 大纲外，扫读）</span></h2>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=1">📄 p.109–110</a>
 
 
@@ -92,7 +92,7 @@
     王道给 4.1 打了 ✱ 号并加脚注「本节不在统考大纲范围，仅供学习参考」。<b>4.1 的三小节里，只有下面四句话会以「一句话选择题」的形式出现</b>：空格串 ≠ 空串、模式匹配 = 定位运算 Index、最小操作子集是哪五个、串与线性表的区别在操作单位。<br>
     其余内容（三种存储结构的完整代码、块链的块长权衡、串的十种基本操作函数名）<b>统考从未单独出过题</b>，看懂即可，<b>一个字都不用背、一行代码都不用默写</b>。
   </div>
-  <h3>4.1.1　串的定义</h3>
+  <h3 id="s4-1-1">4.1.1　串的定义</h3>
   <p><b>串（string）</b>是由零个或多个字符组成的有限序列，记为 S = '<i>a</i>₁<i>a</i>₂…<i>a</i><sub>n</sub>'（n ≥ 0）。其中 S 是串名，单引号括起的字符序列是<b>串的值</b>；串中字符的个数 n 称为<b>串的长度</b>，n = 0 时称为<b>空串</b>（用 ∅ 表示）。</p>
   <ul>
     <li><b>子串</b>：串中任意多个<b>连续</b>字符组成的子序列；包含该子串的串称为<b>主串</b>。</li>
@@ -122,7 +122,7 @@
     串的<b>逻辑结构与线性表极为相似</b>，区别仅在于<b>数据对象被限定为字符集</b>；但<b>基本操作差别很大</b>：线性表通常以<b>单个元素</b>为操作单位（查/插/删某个元素），而串一般以<b>子串</b>为操作单位（查/插/删一个子串）。
   </div>
 
-  <h3>4.1.2　串的基本操作</h3>
+  <h3 id="s4-1-2">4.1.2　串的基本操作</h3>
   <div class="tabwrap"><table>
     <tr><th>操作</th><th>含义</th></tr>
     <tr><td><code>StrAssign(&amp;T,chars)</code></td><td>赋值：把串 T 赋值为 chars</td></tr>
@@ -150,7 +150,7 @@
     十个函数名里，统考只在概念题里点过 <b>Index / SubString</b> 两个（考它们谁是「找」谁是「取」），以及<b>五个最小操作子集成员</b>。<br>
     <code>StrAssign</code>/<code>StrCopy</code>/<code>ClearString</code>/<code>DestroyString</code> 这类<b>看一眼就懂的操作，连认都不用刻意认</b>——考场上它们只会以中文「赋值/复制/清空/销毁」出现。
   </div>
-  <h3>4.1.3　串的存储结构</h3>
+  <h3 id="s4-1-3">4.1.3　串的存储结构</h3>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=2">📄 p.110–111</a>
   <h4>1. 定长顺序存储表示</h4>
   <pre class="code">#define MAXLEN 255
@@ -197,9 +197,9 @@ typedef struct{
     <code>SString</code> / <code>HString</code> 的定义在后面的 KMP 代码里只被<b>用到</b>、从不被<b>考到</b>；块链的结点定义书上连代码都没给。<br>
     <b>需要留下的只有三句话</b>：定长顺序有 MAXLEN 上限、超出叫<b>截断</b>；堆分配用 <code>malloc</code> 运行时申请、因而<b>取消了长度上限</b>；块链的块长是「存储密度 vs 插删代价」的权衡。
   </div>
-  <h2>4.2　串的模式匹配<span style="font-size:.8rem;color:var(--muted)">（考纲全部火力）</span></h2>
+  <h2 id="s4-2">4.2　串的模式匹配<span style="font-size:.8rem;color:var(--muted)">（考纲全部火力）</span></h2>
 
-  <h3>4.2.1　简单的模式匹配算法（暴力匹配）</h3>
+  <h3 id="s4-2-1">4.2.1　简单的模式匹配算法（暴力匹配）</h3>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=3">📄 p.111–112</a>
   <p><b>模式匹配</b>：在主串中查找与<b>模式串</b>（待搜索的字符串）完全相同的子串，并返回其首次出现的位置。</p>
   <pre class="code">int Index(SString S,SString T){
@@ -250,7 +250,7 @@ typedef struct{
     <span class="hub">→ 网络 ch5</span> TCP 接收方只能顺序交付、发送方要回退就得<b>重传</b>（GBN 的「回退 N 帧」正是回溯的代价）——<b>网络花重传的钱，KMP 花 next 表的空间，买的是同一样东西：不回头。</b><br>
     <b>一句话记牢：数据只让它过一遍，是四科共同的性能信条。</b>
   </div>
-  <h3>4.2.2　KMP 算法</h3>
+  <h3 id="s4-2-2">4.2.2　KMP 算法</h3>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=4">📄 p.112–116</a>
   <span class="exam">考点追踪：KMP 算法中指针变化 / 比较次数的分析（2015、2019）</span>
 
@@ -410,7 +410,7 @@ int Index_KMP(SString S,SString T,int next[]){
     <span class="hub">→ 数构 ch5</span> 树的性质递推（结点数 / 高度 / 度的关系）同样靠「子问题答案已知」。<br>
     <b>一句话记牢：看见「前面已经算好」，就该想到这一趟能做到 O(n)；看见「每次都从头找」，多半是 O(n²) 可优化。</b>
   </div>
-  <h3>4.2.3　KMP 算法的进一步优化：nextval</h3>
+  <h3 id="s4-2-3">4.2.3　KMP 算法的进一步优化：nextval</h3>
   <a class="pg" href="../../王道教材/数据结构_分章/王道数据结构_第4章_串与KMP.pdf#page=9">📄 p.117–118</a>
   <span class="exam">考点追踪：nextval 数组的计算（2024）</span>
   <p>模式串 <code>aaaab</code> 与主串 <code>aaabaaaab</code> 匹配时暴露了 next 的缺陷：</p>
@@ -479,7 +479,7 @@ int Index_KMP(SString S,SString T,int next[]){
   <h2 id="s43">4.3　手算总攻<span style="font-size:.8rem;color:var(--muted)">（本章唯一的拿分动作 · 书上没有这一节，我加的）</span></h2>
   <p>本章 15 页正文、21 道练习，<b>最终只落到一件事上：拿到一个模式串，30 秒内把 PM / next / nextval 三行算对，再按题目问法取值。</b>这一节把三道统考真题、六个可默写模板、审题词典和一道完整的综合题卷面集中在一起——<b>考前只看这一节就够。</b></p>
 
-  <h3>4.3.1　三道统考真题并排：同一张表，三种问法</h3>
+  <h3 id="s4-3-1">4.3.1　三道统考真题并排：同一张表，三种问法</h3>
   <div class="tabwrap"><table>
     <tr><th>年份</th><th>模式串</th><th>问什么</th><th>位序</th><th>要算到哪一步</th><th>答案</th><th>唯一的分辨点</th></tr>
     <tr><td><b>2015</b></td><td><code>abaabc</code></td><td>失配在 i=j=5 时，<b>下次的 i、j</b></td><td><b>从 0</b>（题干写 s[i]≠t[j]）</td><td>只需 <b>next</b></td><td><b>i=5, j=2</b>（C）</td><td><b>i 不回溯</b>——四个选项里只有 C 保住 i=5；若误按位序 1 算会得 j=3 而选错</td></tr>
@@ -493,7 +493,7 @@ int Index_KMP(SString S,SString T,int next[]){
     <b>所以能考</b>：<b>本章的复习动作因此可以压缩成一句话——把「算表」练成肌肉记忆，把「取值」练成三选一。</b>可能的第四种问法我也一并列出，都在同一张表里：「右滑几位」= j−next[j]（4.2-9 考过）、「改用 nextval 后比较几次」= 换表重数（4.2-8 考过）、「哪个选项是这个串的 next」= 用三条硬约束秒杀（4.2-6 考过）。<b>没有第五种。</b>
   </div>
 
-  <h3>4.3.2　六个可默写模板</h3>
+  <h3 id="s4-3-2">4.3.2　六个可默写模板</h3>
   <div class="key"><span class="tag">模板 ① · PM 表（一切的地基）</span>
     <div class="fml">PM[j] ＝ 前 j 个字符这一段的「最长相等<b>真</b>前后缀」长度</div>
     逐位写，从 j=1 到 m。约束：<b>PM[1] 恒为 0</b>；<b>PM[j] ≤ j−1</b>；相邻最多涨 1。<br>
@@ -538,7 +538,7 @@ int Index_KMP(SString S,SString T,int next[]){
     · <b>该值与位序基准无关</b>：位序整体差 1，j 与 next[j] 同时差 1，减法里抵消。
   </div>
 
-  <h3>4.3.3　审题词典：看见这句话，立刻做这件事</h3>
+  <h3 id="s4-3-3">4.3.3　审题词典：看见这句话，立刻做这件事</h3>
   <div class="tabwrap"><table>
     <tr><th>题干里出现</th><th>立刻做什么</th></tr>
     <tr><td><code>s[i] ≠ t[j]</code>、给出具体下标（如 i=j=5）</td><td><b>位序从 0</b>：next[0] = −1、next[1] = 0</td></tr>
@@ -553,7 +553,7 @@ int Index_KMP(SString S,SString T,int next[]){
     <tr><td>四个选项都是一整张 next 表</td><td>先用三条硬约束毙选项（长度 = m、next[1]=0、next[2]=1、相邻最多涨 1），往往不用算就剩一个</td></tr>
   </table></div>
 
-  <h3>4.3.4　完整卷面示范：求 next 并给出匹配过程（课后综合题 4.2-综2）</h3>
+  <h3 id="s4-3-4">4.3.4　完整卷面示范：求 next 并给出匹配过程（课后综合题 4.2-综2）</h3>
   <p><b>题目</b>：设有字符串 S = <code>aabaabaabaac</code>，P = <code>aabaac</code>。1）求出 P 的 next 数组；2）若 S 作为主串、P 作为模式串，试给出 KMP 算法的匹配过程。</p>
 
   <div class="think"><span class="th">💭 思路（动手前看／卡壳时看）</span>
@@ -601,7 +601,7 @@ int Index_KMP(SString S,SString T,int next[]){
     · <b>跨章卷面</b>：这种「分趟列出中间状态」的写法与 <b>ch8 排序题「写出每一趟的结果」</b>、<b>ch6 图题「写出每一步的 dist 数组」</b>是同一种卷面格式——<b>阅卷是找采分点，每趟单独起一行、把关键量写全，比写成一大段更容易得分</b>。
   </div>
 
-  <h3>4.3.5　自编手算特训 · 六张标准答案（练完对答案用）</h3>
+  <h3 id="s4-3-5">4.3.5　自编手算特训 · 六张标准答案（练完对答案用）</h3>
   <p>练习系统里的 <code>4-特训1</code> ~ <code>4-特训6</code> 覆盖了 next 的六种典型形态。<b>建议做法：合上这张表，用模板 ② 算、用模板 ③ 验，两法一致再对答案。</b>下表三行均由程序独立生成。</p>
   <div class="tabwrap"><table>
     <tr><th>特训</th><th>模式串</th><th>形态</th><th>PM / next / nextval（位序从 1）</th><th>这张表在练什么</th></tr>

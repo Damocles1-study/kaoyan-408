@@ -114,10 +114,10 @@
   <span class="hub">共享 ⟹ 半双工</span> 2.3 集线器"只能半双工、一个冲突域"，
   <b>直接生出 ch3 的 CSMA/CD</b>；<u>换成交换机后不冲突、可全双工，CSMA/CD 就退休了。</u></div>
 
-  <h2 style="border-top:2px solid var(--accent);padding-top:16px">2.1　通信基础</h2>
+  <h2 style="border-top:2px solid var(--accent);padding-top:16px" id="s2-1">2.1　通信基础</h2>
 
   <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第2章_物理层.pdf#page=1">📄 p.30</a>
-  <h3>2.1.1　基本概念</h3>
+  <h3 id="s2-1-1">2.1.1　基本概念</h3>
 
   <h4>1. 数据、信号与码元</h4>
 
@@ -271,7 +271,7 @@
   从 W 到 C 要经过 2·log₂V 或 log₂(1+S/N)，系数取决于调制方式和噪声。</u></div>
 
   <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第2章_物理层.pdf#page=2">📄 p.31</a>
-  <h3>2.1.2　信道的极限容量 <span style="font-size:.8rem;color:var(--red)">← 全章第一重心：12 页里 7 道真题落在这一节</span></h3>
+  <h3 id="s2-1-2">2.1.2　信道的极限容量 <span style="font-size:.8rem;color:var(--red)">← 全章第一重心：12 页里 7 道真题落在这一节</span></h3>
 
   <div class="key"><span class="tag">必记 · 失真的四个影响因素</span>
   任何实际的信道都不是理想的，信号在信道上传输时会不可避免地产生失真。
@@ -439,7 +439,7 @@
   <b>即每个码元所能可靠携带的比特数是有限的。</b></div>
 
   <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第2章_物理层.pdf#page=4">📄 p.33</a>
-  <h3>2.1.3　编码与调制</h3>
+  <h3 id="s2-1-3">2.1.3　编码与调制</h3>
 
   <div class="key"><span class="tag">必记 · 编码与调制的方向，以及四种组合</span>
   信号是数据的具体表示形式；数据无论是数字的还是模拟的，为了传输的目的，都要转换成信号。
@@ -686,9 +686,9 @@
   <b>四种方式的四个格子，靠这条命名规律就能对上号。</b></div>
 
   <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第2章_物理层.pdf#page=13">📄 p.42</a>
-  <h2 style="border-top:2px solid var(--accent);padding-top:16px">2.2　传输介质</h2>
+  <h2 style="border-top:2px solid var(--accent);padding-top:16px" id="s2-2">2.2　传输介质</h2>
 
-  <h3>2.2.1　双绞线、同轴电缆、光纤与无线传输介质</h3>
+  <h3 id="s2-2-1">2.2.1　双绞线、同轴电缆、光纤与无线传输介质</h3>
 
   <div class="key"><span class="tag">必记 · 两类传输介质</span>
   <b>传输介质</b>（也称传输媒体）是数据传输系统中<b>发送器和接收器之间的物理通路</b>。可分为两类：<br>
@@ -855,7 +855,7 @@
   <b>不会要求你代入计算</b>。</u>
   <b>记住量级和相对大小即可，把精力留给 2.1.2 的两个公式。</b></div>
 
-  <h3>2.2.2　物理层接口的特性</h3>
+  <h3 id="s2-2-2">2.2.2　物理层接口的特性</h3>
   <span class="exam">考点追踪 · 物理层接口的特性（2012、2018）</span>
 
   <div class="key"><span class="tag">必记 · 物理层的任务与四类特性</span>
@@ -913,7 +913,7 @@
   <b>那里的分类与本节完全同源</b>——<u>两科可以互相印证着记。</u></div>
 
   <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第2章_物理层.pdf#page=17">📄 p.46</a>
-  <h2 style="border-top:2px solid var(--accent);padding-top:16px">2.3　物理层设备</h2>
+  <h2 style="border-top:2px solid var(--accent);padding-top:16px" id="s2-3">2.3　物理层设备</h2>
 
   <div class="mine"><span class="tag">我的补讲 · 这 2 页一道真题都没有，但<u>千万别跳</u></span>
   <b>本节在王道的题库里是 0 道统考真题</b>——因为<b>物理层设备的两道真题（2010、2020）
@@ -921,7 +921,7 @@
   <u>但那两道题的知识底座，全在这 2 页的九句原文里。</u>
   <b>本节的正确读法是：把每一句都当成一张卡片背下来，因为它们后面全要用。</b></div>
 
-  <h3>2.3.1　中继器</h3>
+  <h3 id="s2-3-1">2.3.1　中继器</h3>
 
   <div class="key"><span class="tag">必记 · 中继器的原理与限制</span>
   <b>中继器的主要功能是整形、放大并转发信号</b>，以消除信号经过一长段电缆后产生的失真和衰减，
@@ -951,7 +951,7 @@
   <u>对比 <b>10Base-T</b> 的 T ＝ Twisted pair（双绞线，2013 真题用到），
   <b>Base 都表示基带传输</b>——这三个字母正好呼应 2.1.1 的基带传输。</u></div>
 
-  <h3>2.3.2　集线器</h3>
+  <h3 id="s2-3-2">2.3.2　集线器</h3>
 
   <div class="key"><span class="tag">必记 · 集线器的定义与行为</span>
   <b>集线器（Hub）实质上是一个<u>多端口的中继器</u>。</b>
@@ -1029,7 +1029,7 @@
   <u>2.1.1 的定义、2.2 的一根同轴电缆总线以太网、2.3.2 的集线器，三处同源。</u></div>
 
   <a class="pg" href="../../王道教材/计算机网络_分章/王道计算机网络_第2章_物理层.pdf#page=19">📄 p.48</a>
-  <h2 style="border-top:2px solid var(--accent);padding-top:16px">2.4　本章小结及疑难点 <span style="font-size:.8rem;color:var(--red)">← 四个疑难点全是分界线，必读</span></h2>
+  <h2 style="border-top:2px solid var(--accent);padding-top:16px" id="s2-4">2.4　本章小结及疑难点 <span style="font-size:.8rem;color:var(--red)">← 四个疑难点全是分界线，必读</span></h2>
 
   <h3>疑难点 1：传输介质属于物理层吗？它与物理层有何区别？</h3>
 

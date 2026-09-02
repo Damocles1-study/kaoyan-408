@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>408 知识串联 · 四科主线与跨科连接</title>
+<title>408 知识串联 · 一轮导航 × 六大跨科枢纽</title>
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
 mermaid.initialize({startOnLoad:true, theme:'neutral', flowchart:{curve:'basis'}});
@@ -40,33 +40,413 @@ mermaid.initialize({startOnLoad:true, theme:'neutral', flowchart:{curve:'basis'}
   header h1{font-family:var(--serif);font-size:1.6rem;line-height:1.35}
   header .sub{color:var(--muted);margin-top:6px;font-size:.9rem}
   section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:22px}
-  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-  h2 .n{font-size:.72rem;background:var(--accent);color:var(--card);border-radius:6px;padding:1px 7px}
+  h2{font-size:1.05rem;letter-spacing:.05em;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  h2 .n{font-size:.72rem;background:var(--accent);color:var(--card);border-radius:6px;padding:1px 7px;flex:none}
   .note{font-size:.85rem;color:var(--muted);margin-bottom:12px}
   .note b{color:var(--accent)}
   pre.mermaid{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;overflow-x:auto;display:flex;justify-content:center}
   table{border-collapse:collapse;width:100%;font-size:.88rem;margin-top:8px}
   th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
   th{background:var(--accent-soft);color:var(--accent);font-weight:600;white-space:nowrap}
-  .tblwrap{overflow-x:auto}
+  .tabwrap{overflow-x:auto}
   td a{color:var(--accent)}
   .ok{color:var(--green);font-weight:600}
   .gap{color:var(--red);font-weight:600}
   .hub{background:var(--amber-soft);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:10px 14px;font-size:.88rem;margin-top:12px}
   .hub b{color:var(--amber)}
   footer{color:var(--muted);font-size:.8rem;text-align:center;margin-top:30px}
+
+  /* ── 顶部横幅：一轮总账 ─────────────────────────── */
+  .banner{background:linear-gradient(135deg,var(--accent-soft),var(--card));border:1px solid var(--accent);
+          border-radius:14px;padding:18px 20px;margin-bottom:22px}
+  .banner h3{font-family:var(--serif);font-size:1.08rem;color:var(--accent);margin-bottom:10px}
+  .stats{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-size:.84rem;flex:1 1 132px}
+  .stat b{display:block;font-size:1.15rem;color:var(--accent);font-family:var(--serif);line-height:1.3}
+  .stat span{color:var(--muted)}
+  .gate{background:var(--red-soft);border-left:3px solid var(--red);border-radius:0 8px 8px 0;
+        padding:9px 13px;font-size:.87rem;margin-top:10px}
+  .gate b{color:var(--red)}
+
+  /* ── 一轮导航总表 ─────────────────────────────── */
+  table.chtab{font-size:.8rem}
+  table.chtab th{font-size:.76rem;white-space:nowrap;position:sticky;top:0}
+  table.chtab td{vertical-align:top}
+  table.chtab td.c1{white-space:nowrap}
+  table.chtab tr.subj td{background:var(--accent-soft);color:var(--accent);font-weight:700;
+                         font-size:.84rem;white-space:nowrap}
+  table.chtab .pgs{color:var(--muted);font-weight:400;font-size:.74rem}
+  table.chtab .mi{color:var(--red);font-weight:600}
+  table.chtab .li{color:var(--blue);font-weight:600}
+  table.chtab .zg{display:inline-block;background:var(--green-soft);color:var(--green);
+                  border-radius:5px;padding:0 5px;font-size:.72rem;font-weight:600;margin-top:2px}
+  table.chtab .day{white-space:nowrap;color:var(--purple);font-weight:600;font-size:.78rem}
+  table.chtab .core{font-size:.78rem;line-height:1.6}
+  table.chtab .hot{color:var(--red);font-weight:600}
+
+  /* ── 枢纽卡 ───────────────────────────────────── */
+  .hubcard{border:1px solid var(--line);border-left:4px solid var(--purple);border-radius:0 12px 12px 0;
+           padding:16px 18px;margin-bottom:18px;background:var(--bg)}
+  .hubcard h3{font-family:var(--serif);font-size:1.05rem;color:var(--purple);
+              display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:8px}
+  .hubcard h3 .hn{font-size:.7rem;background:var(--purple);color:var(--card);
+                  border-radius:6px;padding:2px 8px;flex:none;font-family:var(--sans)}
+  .hubcard h3 .tagline{font-size:.78rem;color:var(--muted);font-family:var(--sans);font-weight:400}
+  .gist{font-size:.87rem;background:var(--purple-soft);border-radius:8px;padding:9px 13px;margin-bottom:10px}
+  .gist b{color:var(--purple)}
+  table.hubtab{font-size:.82rem}
+  table.hubtab td:first-child{white-space:nowrap;font-weight:600;color:var(--accent)}
+  table.hubtab .src{display:block;font-size:.7rem;color:var(--muted);font-weight:400}
+  table.hubtab .alias{color:var(--ink)}
+  .howexam{margin-top:11px;background:var(--red-soft);border-left:3px solid var(--red);
+           border-radius:0 8px 8px 0;padding:10px 14px;font-size:.85rem}
+  .howexam b{color:var(--red)}
+
+  /* 长斜杠串 / 长英文串在窄屏顶出横滚——四科精读版都栽过，这里预先钉死 */
+  td,th,.gist,.howexam,.hub,.note,.stat,.gate{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
 <div class="wrap">
   <a class="back" href="index.html">◀ 返回 408 复盘中心</a>
   <header>
-    <h1>408 知识串联 · 四科主线与跨科连接</h1>
-    <div class="sub">408 的可怕不在单科,在于四科是同一台机器的四个剖面——串起来学,一份力气四科收钱;实线=科内依赖,虚线=跨科连接(综合题命题点)</div>
+    <h1>408 知识串联 · 一轮导航 × 六大跨科枢纽</h1>
+    <div class="sub">
+      这一页有两个身份：<b>上半页是一轮期间每天打开的导航面</b>（今天读哪章精读版、刷哪些真题）；
+      <b>下半页是四科的接线图</b>（同一个思想在四科各出现一次，串起来学一份力气四科收钱）。
+    </div>
   </header>
 
+  <!-- ══════════ 横幅：一轮总账 ══════════ -->
+  <div class="banner">
+    <h3>📅 P1 一轮 · 9/2 – 10/18 · 47 天</h3>
+    <div class="note" style="margin-bottom:4px">
+      408 这一科的书已经被读薄了：<b>一轮不碰王道原书，直接读精读版</b>；
+      <b>只刷 798 道统考真题</b>，2486 道课后题留给 P2 当弹药。
+      下面所有数字都是开页当天用脚本从 <code>data_*.js</code> / 卡库 / 套路库源文件现算的，不是手抄。
+    </div>
+    <div class="stats">
+      <div class="stat"><b>26 章</b><span>精读版 1382 页</span></div>
+      <div class="stat"><b>1806 / 932</b><span>🔴 挖 / 🔵 串 批注块</span></div>
+      <div class="stat"><b>3284 题</b><span>其中 798 道统考真题</span></div>
+      <div class="stat"><b>460 卡</b><span>四科套路库</span></div>
+      <div class="stat"><b>682 张</b><span>四科卡库</span></div>
+      <div class="stat"><b>7 节</b><span>数构「综合题总攻」</span></div>
+    </div>
+    <div class="gate">
+      <b>⛳ 全局唯一硬闸门 = 10/18</b>：408 四科一轮走完 + 数学 29 讲走完。顶不住时按
+      <b>削减顺序砍量、不砍闸门</b>——先砍真题量（只做 2015 年后），再砍 🟡 <code>.key</code> 扫读（只读 🔴 和 🔵），
+      <b>永远不砍</b>上午的数学块。
+    </div>
+  </div>
+
+  <!-- ══════════ 00 一轮导航 ══════════ -->
   <section class="card">
-    <h2><span class="n">01</span>数据结构:结构 × 算法两条腿</h2>
+    <h2><span class="n">00</span>一轮导航 · 26 章总表（每天打开这一张）</h2>
+    <p class="note">
+      <b>一章四步</b>：① 读精读版（🔴 逐块读 → 🔵 逐块读 → 🟡 扫读 → ⬜ 直接跳过；<span class="zg">总攻</span> 一个字都不许跳）
+      → ② 只刷该章统考真题 → ③ 错题当场进错题本打错因标签 → ④ 收工前翻该章套路卡 + 卡库（10 分钟）。<br>
+      <b>排期按页数加权分摊</b>（最大余额法，每章至少 1 天），不是按章平均——所以 139 页的 OS ch2 拿到 4 天，
+      17 页的组原 ch6 只有 1 天。<b>大题这一轮只读不写</b>：读「💭 思路 → ✍️ 卷面 → 📌 批注」三层样板，把卷面格式印进脑子。
+    </p>
+    <div class="tabwrap"><table class="chtab">
+      <tr>
+        <th>章（页数）</th><th>精读版 🔴/🔵</th><th>题库 题/真题</th>
+        <th>套路卡</th><th>卡库</th><th>本章重心（一句话）</th><th>排期</th>
+      </tr>
+
+      <tr class="subj"><td colspan="7">数据结构 · 45 分 · 393 页 · 813 题 / 220 真题 ·
+        <a href="练习系统/index.html">题库首页</a> · <a href="练习系统/真题场.html">真题场</a> ·
+        <a href="练习系统/错题本.html">错题本</a> · <a href="算法题_代码手册.html">算法题代码手册 42 模板</a></td></tr>
+      <tr><td class="c1"><a href="精读版/第1章.html">ch1 绪论</a><br><span class="pgs">13 页</span></td>
+          <td><span class="mi">🔴 21</span> / <span class="li">🔵 10</span></td>
+          <td><a href="练习系统/第1章.html">27 / 7</a></td>
+          <td><a href="练习系统/套路库.html">4 卡</a></td><td>—</td>
+          <td class="core">全书最薄的入口章：三要素 + 大 O。0.54 真题/页，快读过。</td>
+          <td class="day">9/2</td></tr>
+      <tr><td class="c1"><a href="精读版/第2章.html">ch2 线性表</a><br><span class="pgs">50 页</span></td>
+          <td><span class="mi">🔴 60</span> / <span class="li">🔵 30</span><br>
+              <a href="精读版/第2章.html#s2-4" class="zg">2.4 算法设计题总攻</a></td>
+          <td><a href="练习系统/第2章.html">88 / 16</a></td>
+          <td><a href="练习系统/套路库.html">12 卡</a></td>
+          <td><a href="卡库_数据结构.html#g_lin">线性表 4</a></td>
+          <td class="core"><span class="hot">原版对 35 道综合题（含 10 道真题）只字未提</span> ⟹ 2.4 总攻是本章最贵的一节。
+              ⚠️ 双链表插入改 4 个指针域、<b>删除只改 2 个</b>。</td>
+          <td class="day">9/3–9/4</td></tr>
+      <tr><td class="c1"><a href="精读版/第3章.html">ch3 栈与队列</a><br><span class="pgs">46 页</span></td>
+          <td><span class="mi">🔴 55</span> / <span class="li">🔵 28</span><br>
+              <a href="精读版/第3章.html#s35" class="zg">3.5 综合应用题总攻</a></td>
+          <td><a href="练习系统/第3章.html">101 / 27</a></td>
+          <td><a href="练习系统/套路库.html">10 卡</a></td>
+          <td><a href="卡库_数据结构.html#g_sq">栈·队列·串 6</a></td>
+          <td class="core">四科里<span class="hot">被引用次数最多的一章</span>——后面三科天天在用栈和队列，却都默认你已经会了。</td>
+          <td class="day">9/5–9/6</td></tr>
+      <tr><td class="c1"><a href="精读版/第4章.html">ch4 串（KMP）</a><br><span class="pgs">15 页</span></td>
+          <td><span class="mi">🔴 20</span> / <span class="li">🔵 11</span><br>
+              <a href="精读版/第4章.html#s43" class="zg">4.3 手算总攻</a></td>
+          <td><a href="练习系统/第4章.html">21 / 3</a></td>
+          <td><a href="练习系统/套路库.html">6 卡</a></td>
+          <td><a href="卡库_数据结构.html#g_sq">栈·队列·串 6</a></td>
+          <td class="core">真题密度 0.20/页、考过年份 3 年，<span class="hot">双双是八章最低</span> ⟹ 快读。
+              三道真题骨架完全一致，2015 与 2019 用的<b>是同一个模式串 abaabc</b>。</td>
+          <td class="day">9/7</td></tr>
+      <tr><td class="c1"><a href="精读版/第5章.html">ch5 树与二叉树</a><br><span class="pgs">70 页</span></td>
+          <td><span class="mi">🔴 92</span> / <span class="li">🔵 49</span><br>
+              <a href="精读版/第5章.html#s5-6" class="zg">5.6 算法设计题总攻</a></td>
+          <td><a href="练习系统/第5章.html">161 / 43</a></td>
+          <td><a href="练习系统/套路库.html">8 卡</a></td>
+          <td><a href="卡库_数据结构.html#g_tree">树 11</a></td>
+          <td class="core"><span class="hot">失分密度第一是 5.5 哈夫曼与并查集 0.86/页</span>，不是题量最大的 5.3 遍历（0.54）
+              ⟹ 顺序改成 <b>5.1 快读 → 5.2 + 5.5 吃透 → 5.4 背表 → 5.3 慢啃</b>。</td>
+          <td class="day">9/8–9/9</td></tr>
+      <tr><td class="c1"><a href="精读版/第6章.html">ch6 图</a><br><span class="pgs">70 页</span></td>
+          <td><span class="mi">🔴 95</span> / <span class="li">🔵 54</span><br>
+              <a href="精读版/第6章.html#s6-5" class="zg">6.5 综合题总攻</a></td>
+          <td><a href="练习系统/第6章.html">131 / 41</a></td>
+          <td><a href="练习系统/套路库.html">9 卡</a></td>
+          <td><a href="卡库_数据结构.html#g_graph">图 9</a></td>
+          <td class="core"><span class="hot">十道综合真题 ≈ 130 分，八章最多</span>；三道代码题全在 2021/2023/2024
+              连续三年、且是<b>同一个模子</b>（邻接矩阵按行按列数非零元素）。</td>
+          <td class="day">9/10–9/11</td></tr>
+      <tr><td class="c1"><a href="精读版/第7章.html">ch7 查找</a><br><span class="pgs">67 页</span></td>
+          <td><span class="mi">🔴 91</span> / <span class="li">🔵 48</span><br>
+              <a href="精读版/第7章.html#g76" class="zg">7.6 综合题总攻</a></td>
+          <td><a href="练习系统/第7章.html">136 / 41</a></td>
+          <td><a href="练习系统/套路库.html">10 卡</a></td>
+          <td><a href="卡库_数据结构.html#g_search">查找 8</a></td>
+          <td class="core">按题数四节均匀，<span class="hot">按页折算却是最短的 7.4 B 树一枝独秀</span>（13 页 12 真题 = 0.92/页，
+              一节覆盖 12 个年份）⟹ 顺序改成 <b>7.4 → 7.5 → 7.2 → 7.3</b>。</td>
+          <td class="day">9/12–9/13</td></tr>
+      <tr><td class="c1"><a href="精读版/第8章.html">ch8 排序</a><br><span class="pgs">62 页</span></td>
+          <td><span class="mi">🔴 79</span> / <span class="li">🔵 48</span><br>
+              <a href="精读版/第8章.html#s88" class="zg">8.8 综合题总攻</a></td>
+          <td><a href="练习系统/第8章.html">148 / 42</a></td>
+          <td><a href="练习系统/套路库.html">14 卡</a></td>
+          <td><a href="卡库_数据结构.html#g_sort">排序 14</a></td>
+          <td class="core"><span class="hot">只有 7 页的 8.6「比较及应用」是 1.57 真题/页——数构八章逐节量过的最高一节</span>
+              （一节覆盖 9 个年份、0 道综合真题）⟹ <b>读按教材顺序，刷与背从 8.6 开始</b>。</td>
+          <td class="day">9/14–9/15</td></tr>
+
+      <tr class="subj"><td colspan="7">计算机组成原理 · 45 分 · 327 页 · 709 题 / 221 真题 ·
+        <a href="练习系统/组原_index.html">题库首页</a> · <a href="练习系统/组原_真题场.html">真题场</a> ·
+        <a href="练习系统/组原_错题本.html">错题本</a> · <a href="计算题_公式模板手册.html">计算题公式模板手册 67 条</a></td></tr>
+      <tr><td class="c1"><a href="精读版/组原_第1章.html">ch1 系统概述</a><br><span class="pgs">19 页</span></td>
+          <td><span class="mi">🔴 28</span> / <span class="li">🔵 13</span></td>
+          <td><a href="练习系统/组原_第1章.html">36 / 13</a></td>
+          <td><a href="练习系统/组原_套路库.html">12 卡</a></td>
+          <td><a href="卡库_计算机组成原理.html#g_ov">系统概述 12</a></td>
+          <td class="core"><a href="精读版/组原_第1章.html#s1-3">1.3 性能指标</a>是全章<b>唯一需要动笔</b>的一节；
+              1.2.2 那一句是跨科枢纽「局部性 + 空间换时间」的起点。</td>
+          <td class="day">9/16</td></tr>
+      <tr><td class="c1"><a href="精读版/组原_第2章.html">ch2 数据表示与运算</a><br><span class="pgs">57 页</span></td>
+          <td><span class="mi">🔴 68</span> / <span class="li">🔵 34</span></td>
+          <td><a href="练习系统/组原_第2章.html">123 / 42</a></td>
+          <td><a href="练习系统/组原_套路库.html">18 卡</a></td>
+          <td><a href="卡库_计算机组成原理.html#g_num">数据表示与运算 27</a></td>
+          <td class="core"><a href="精读版/组原_第2章.html#s2-3">2.3 浮点数</a>是全章主战场；
+              <a href="精读版/组原_第2章.html#s2-3-4">2.3.4 数据的宽度和存储</a>第二高频。42 道真题 2009–2025 逐年全覆盖。</td>
+          <td class="day">9/17–9/18</td></tr>
+      <tr><td class="c1"><a href="精读版/组原_第3章.html">ch3 存储系统</a><br><span class="pgs">71 页</span></td>
+          <td><span class="mi">🔴 86</span> / <span class="li">🔵 43</span></td>
+          <td><a href="练习系统/组原_第3章.html">152 / 45</a></td>
+          <td><a href="练习系统/组原_套路库.html">20 卡</a></td>
+          <td><a href="卡库_计算机组成原理.html#g_mem">存储系统 37</a></td>
+          <td class="core"><a href="精读版/组原_第3章.html#s3-5">3.5 Cache</a>
+              <span class="hot">是全章乃至全书命题密度最高的一节</span>；
+              <a href="精读版/组原_第3章.html#s3-6">3.6 虚存</a>是 408 跨科枢纽的总闸（书两处脚注都叫你结合 OS 复习）。</td>
+          <td class="day">9/19–9/21</td></tr>
+      <tr><td class="c1"><a href="精读版/组原_第4章.html">ch4 指令系统</a><br><span class="pgs">47 页</span></td>
+          <td><span class="mi">🔴 58</span> / <span class="li">🔵 30</span></td>
+          <td><a href="练习系统/组原_第4章.html">83 / 27</a></td>
+          <td><a href="练习系统/组原_套路库.html">18 卡</a></td>
+          <td><a href="卡库_计算机组成原理.html#g_ins">指令系统 33</a></td>
+          <td class="core">失分密度第一是 <a href="精读版/组原_第4章.html#s4-2">4.2 寻址方式</a>（0.93 真题/页）；
+              但 <a href="精读版/组原_第4章.html#s4-3">4.3</a> 的 <span class="hot">7 道综合题全是统考真题</span>，按分值算它才是重心。</td>
+          <td class="day">9/22–9/23</td></tr>
+      <tr><td class="c1"><a href="精读版/组原_第5章.html">ch5 中央处理器</a><br><span class="pgs">79 页</span></td>
+          <td><span class="mi">🔴 101</span> / <span class="li">🔵 59</span></td>
+          <td><a href="练习系统/组原_第5章.html">156 / 43</a></td>
+          <td><a href="练习系统/组原_套路库.html">20 卡</a></td>
+          <td><a href="卡库_计算机组成原理.html#g_cpu">中央处理器 48</a></td>
+          <td class="core"><span class="hot">组原最大章，题量与真题量双第一</span>。失分密度 5.6 流水线 0.90/页；
+              但按分值 <a href="精读版/组原_第5章.html#s5-3">5.3 数据通路</a>（4 道 15 分综合真题）与 5.6 并列第一。</td>
+          <td class="day">9/24–9/26</td></tr>
+      <tr><td class="c1"><a href="精读版/组原_第6章.html">ch6 总线</a><br><span class="pgs">17 页</span></td>
+          <td><span class="mi">🔴 30</span> / <span class="li">🔵 13</span></td>
+          <td><a href="练习系统/组原_第6章.html">70 / 18</a></td>
+          <td><a href="练习系统/组原_套路库.html">14 卡</a></td>
+          <td><a href="卡库_计算机组成原理.html#g_bus">总线 26</a></td>
+          <td class="core"><span class="hot">真题密度全书第一</span>（6.2 = 1.14/页、6.1 = 1.11/页），
+              <b>但 18 道全是选择题、0 道综合真题</b> ⟹ 17 页博每年稳定 2 分，一次做透即可。全章只有两条分界线。</td>
+          <td class="day">9/27</td></tr>
+      <tr><td class="c1"><a href="精读版/组原_第7章.html">ch7 输入/输出系统</a><br><span class="pgs">37 页</span></td>
+          <td><span class="mi">🔴 45</span> / <span class="li">🔵 23</span></td>
+          <td><a href="练习系统/组原_第7章.html">89 / 33</a></td>
+          <td><a href="练习系统/组原_套路库.html">14 卡</a></td>
+          <td><a href="卡库_计算机组成原理.html#g_io">输入/输出系统 28</a></td>
+          <td class="core"><a href="精读版/组原_第7章.html#s7-3">7.3 I/O 方式</a> = 1.04 真题/页
+              且 <span class="hot">5 道综合真题 ≈ 75 分</span>，独占全章 27/37 页 ⟹ 按分值算是继 ch5 之后的全书第二重心。</td>
+          <td class="day">9/28–9/29</td></tr>
+
+      <tr class="subj"><td colspan="7">操作系统 · 35 分 · 359 页 · 780 题 / 205 真题 ·
+        <a href="练习系统/OS_index.html">题库首页</a> · <a href="练习系统/OS_真题场.html">真题场</a> ·
+        <a href="练习系统/OS_错题本.html">错题本</a> · <a href="PV_同步模板手册.html">PV 同步模板手册 26 模板</a></td></tr>
+      <tr><td class="c1"><a href="精读版/OS_第1章.html">ch1 系统概述</a><br><span class="pgs">36 页</span></td>
+          <td><span class="mi">🔴 44</span> / <span class="li">🔵 23</span></td>
+          <td><a href="练习系统/OS_第1章.html">88 / 27</a></td>
+          <td><a href="练习系统/OS_套路库.html">14 卡</a></td>
+          <td><a href="卡库_操作系统.html#g_ov">概述与中断 26</a></td>
+          <td class="core"><a href="精读版/OS_第1章.html#s1-3">1.3 运行环境</a>
+              <span class="hot">= 1.64 真题/页，四科逐节量过的最高一节</span>（11 页 18 真题），2011–2024 连考 14 年。
+              四条分界线：发生 vs 执行 · 硬件 vs OS 分工 · 中断回 i+1 vs 异常回 i · 指令属哪一态。</td>
+          <td class="day">9/30</td></tr>
+      <tr><td class="c1"><a href="精读版/OS_第2章.html">ch2 进程与线程</a><br><span class="pgs">139 页</span></td>
+          <td><span class="mi">🔴 180</span> / <span class="li">🔵 93</span></td>
+          <td><a href="练习系统/OS_第2章.html">277 / 74</a></td>
+          <td><a href="练习系统/OS_套路库.html">30 卡</a></td>
+          <td><a href="卡库_操作系统.html#g_proc">进程与调度 30</a> ·
+              <a href="卡库_操作系统.html#g_sync">同步与死锁 26</a></td>
+          <td class="core"><span class="hot">全书最大章（139 页，占 OS 的 39%）</span>。不能只看失分密度：
+              <a href="精读版/OS_第2章.html#s2-3">2.3</a> 仅 0.46 真题/页，<b>但每年必出一道 8 分 PV 大题</b>，投产比全章第一。
+              2.4 死锁只考两样：<code>m &gt; n(k−1)</code> 与银行家四步。</td>
+          <td class="day">10/1–10/4</td></tr>
+      <tr><td class="c1"><a href="精读版/OS_第3章.html">ch3 内存管理</a><br><span class="pgs">75 页</span></td>
+          <td><span class="mi">🔴 94</span> / <span class="li">🔵 46</span></td>
+          <td><a href="练习系统/OS_第3章.html">167 / 42</a></td>
+          <td><a href="练习系统/OS_套路库.html">22 卡</a></td>
+          <td><a href="卡库_操作系统.html#g_mem">内存管理 18</a> ·
+              <a href="卡库_操作系统.html#g_vm">虚拟内存 21</a></td>
+          <td class="core"><a href="精读版/OS_第3章.html#s3-2">3.2 虚拟内存</a>
+              <span class="hot">是绝对重心</span>（38 页 27 真题 + 8 道综合真题）；
+              2025 新考点「页框回收 / 内存映射文件」当年即考 3 道。本章是 408 四科交叉最密的一章。</td>
+          <td class="day">10/5–10/6</td></tr>
+      <tr><td class="c1"><a href="精读版/OS_第4章.html">ch4 文件管理</a><br><span class="pgs">54 页</span></td>
+          <td><span class="mi">🔴 70</span> / <span class="li">🔵 36</span></td>
+          <td><a href="练习系统/OS_第4章.html">110 / 34</a></td>
+          <td><a href="练习系统/OS_套路库.html">22 卡</a></td>
+          <td><a href="卡库_操作系统.html#g_fs">文件管理 32</a></td>
+          <td class="core"><a href="精读版/OS_第4章.html#s4-2">4.2</a>
+              <span class="hot">独占 37 页、28 道真题 + 全部 6 道综合真题（≈ 90 分）</span>——正文其实只有 28 页，
+              读起来比页数轻。</td>
+          <td class="day">10/7–10/8</td></tr>
+      <tr><td class="c1"><a href="精读版/OS_第5章.html">ch5 输入/输出管理</a><br><span class="pgs">55 页</span></td>
+          <td><span class="mi">🔴 71</span> / <span class="li">🔵 38</span></td>
+          <td><a href="练习系统/OS_第5章.html">138 / 28</a></td>
+          <td><a href="练习系统/OS_套路库.html">26 卡</a></td>
+          <td><a href="卡库_操作系统.html#g_io">I/O 管理 31</a></td>
+          <td class="core">按分值 <a href="精读版/OS_第5章.html#s5-3">5.3 磁盘</a>是第一重心（4 道综合真题里占 3 道）。
+              ⚠️ 两个坑：<b>C-SCAN 返程算不算距离，2024 算 / 2010 不算，两年官方口径不同</b>；
+              <b>n 块总时间 ≠ 稳态 × n</b>。</td>
+          <td class="day">10/9–10/10</td></tr>
+
+      <tr class="subj"><td colspan="7">计算机网络 · 25 分 · 303 页 · 982 题 / 152 真题 ·
+        <a href="练习系统/网络_index.html">题库首页</a> · <a href="练习系统/网络_真题场.html">真题场</a> ·
+        <a href="练习系统/网络_错题本.html">错题本</a></td></tr>
+      <tr><td class="c1"><a href="精读版/NET_第1章.html">ch1 体系结构</a><br><span class="pgs">29 页</span></td>
+          <td><span class="mi">🔴 45</span> / <span class="li">🔵 19</span></td>
+          <td><a href="练习系统/网络_第1章.html">126 / 14</a></td>
+          <td><a href="练习系统/网络_套路库.html">17 卡</a></td>
+          <td><a href="卡库_计算机网络.html#g_base">体系结构 30</a></td>
+          <td class="core"><b>1.1 五道真题全是计算、1.2 九道全是概念</b>——两节的复习方式完全不同。
+              计算侧只有一个母公式 <code>T=(k+m−1)·r</code>（<b>k 数链路段数，不是设备数</b>）。</td>
+          <td class="day">10/11</td></tr>
+      <tr><td class="c1"><a href="精读版/NET_第2章.html">ch2 物理层</a><br><span class="pgs">20 页</span></td>
+          <td><span class="mi">🔴 39</span> / <span class="li">🔵 13</span></td>
+          <td><a href="练习系统/网络_第2章.html">130 / 13</a></td>
+          <td><a href="练习系统/网络_套路库.html">19 卡</a></td>
+          <td><a href="卡库_计算机网络.html#g_phy">物理层 29</a></td>
+          <td class="core">全书最薄章。母公式只有两个（奈氏 <code>2W·log₂V</code> / 香农 <code>W·log₂(1+S/N)</code>）
+              ＋ 三句话口诀：<b>给状态数用奈氏 · 给信噪比用香农 · 都给取 min</b>。</td>
+          <td class="day">10/12</td></tr>
+      <tr><td class="c1"><a href="精读版/NET_第3章.html">ch3 数据链路层</a><br><span class="pgs">77 页</span></td>
+          <td><span class="mi">🔴 98</span> / <span class="li">🔵 47</span></td>
+          <td><a href="练习系统/网络_第3章.html">245 / 35</a></td>
+          <td><a href="练习系统/网络_套路库.html">31 卡</a></td>
+          <td><a href="卡库_计算机网络.html#g_dll">数据链路层 40</a></td>
+          <td class="core">两座山：<a href="精读版/NET_第3章.html#s3-4">3.4</a>（0.69/页，9 道要动笔算）与 3.6；
+              <a href="精读版/NET_第3章.html#s3-8">3.8 设备</a>投产比全章最高（9 页 5 真题）。
+              两条母公式 <code>U=min(1, N·T_D/T)</code> 与 <code>L=2τ·C</code>。</td>
+          <td class="day">10/13–10/14</td></tr>
+      <tr><td class="c1"><a href="精读版/NET_第4章.html">ch4 网络层</a><br><span class="pgs">97 页</span></td>
+          <td><span class="mi">🔴 125</span> / <span class="li">🔵 64</span></td>
+          <td><a href="练习系统/网络_第4章.html">197 / 44</a></td>
+          <td><a href="练习系统/网络_套路库.html">36 卡</a></td>
+          <td><a href="卡库_计算机网络.html#g_net">网络层 56</a></td>
+          <td class="core"><span class="hot">全书最大章，也是排期最紧的一格（97 页 / 2 天）</span>。
+              <a href="精读版/NET_第4章.html#s4-2">4.2 IPv4</a> 独占 44 页、吃掉本章 66% 的真题 ⟹ 绝对第一重心。
+              10 道综合真题 ≈ 150 分；2009–2025 十七年零缺口。</td>
+          <td class="day">10/15–10/16</td></tr>
+      <tr><td class="c1"><a href="精读版/NET_第5章.html">ch5 传输层</a><br><span class="pgs">43 页</span></td>
+          <td><span class="mi">🔴 56</span> / <span class="li">🔵 31</span></td>
+          <td><a href="练习系统/网络_第5章.html">144 / 27</a></td>
+          <td><a href="练习系统/网络_套路库.html">28 卡</a></td>
+          <td><a href="卡库_计算机网络.html#g_trans">传输层 41</a></td>
+          <td class="core"><a href="精读版/NET_第5章.html#s5-3">5.3 TCP</a> 独占 29 页，
+              <span class="hot">吃掉全章 67% 页数 / 70% 题量 / 85% 真题</span>。
+              ⚠️ <b>真题唯一缺口 2023 是假缺口</b>——那道题的真身挂在 ch6（见下方枢纽 ②）。</td>
+          <td class="day">10/17</td></tr>
+      <tr><td class="c1"><a href="精读版/NET_第6章.html">ch6 应用层</a><br><span class="pgs">37 页</span></td>
+          <td><span class="mi">🔴 55</span> / <span class="li">🔵 29</span></td>
+          <td><a href="练习系统/网络_第6章.html">140 / 19</a></td>
+          <td><a href="练习系统/网络_套路库.html">26 卡</a></td>
+          <td><a href="卡库_计算机网络.html#g_app">应用层 39</a></td>
+          <td class="core"><b>两个重心口径要分开说</b>：失分密度 = 6.4 电子邮件 0.71/页第一；
+              按分值 = <a href="精读版/NET_第6章.html#s6-5">6.5 万维网</a>第一（两道综合真题 ≈ 30 分，都是跨 ch3/ch4/ch5 的全栈题）。
+              408 精读版首个启用「大题三层」的章。</td>
+          <td class="day">10/18</td></tr>
+    </table></div>
+    <div class="hub">
+      <b>怎么用这张表：</b>每天开工先在「排期」列找到今天 → 点开该行的精读版链接读 →
+      点开题库链接只刷真题 → 收工前点开该行的套路卡与卡库。
+      <b>「本章重心」一列全部来自逐节量过的「页数 × 真题数」表，不是感觉</b>——
+      它多次推翻直觉（数构 ch8 的重心不是堆和快排，是只有 7 页的 8.6；数构 ch5 不是遍历，是哈夫曼）。
+    </div>
+  </section>
+
+  <!-- ══════════ 01 总纲 ══════════ -->
+  <section class="card">
+    <h2><span class="n">01</span>总纲：复习不能按章设防，要按考点设防</h2>
+    <p class="note">
+      这句话不是口号，它有三道<b>互为镜像</b>的统考真题作依据。建库时逐章读完 3284 道题，
+      这三道是最能说明问题的：<b>题目挂在哪一章，全凭编者一念之间；考点却不管这个。</b>
+    </p>
+    <div class="tabwrap"><table>
+      <tr><th>真题</th><th>王道把它归在</th><th>它实际在考</th><th>落点</th></tr>
+      <tr>
+        <td><b>2023 综 04</b><br>FTP 上传时间线</td>
+        <td>计算机网络 <b>应用层</b> 6.3</td>
+        <td><span class="gap">4 个问里有 3 个考 TCP</span>（传输层）——
+            它正是传输层 ch5「真题年份唯一缺口 2023」的真身</td>
+        <td><a href="精读版/NET_第6章.html#s6-3">精读版 NET 6.3</a> ·
+            <a href="练习系统/网络_第6章.html">题库 网络 ch6</a></td>
+      </tr>
+      <tr>
+        <td><b>2014 综</b><br>OSPF 链路状态表</td>
+        <td>题面给的是<b>计算机网络</b>的 OSPF 路由协议</td>
+        <td><span class="gap">三问全是数据结构</span>：可抽象为哪种逻辑结构 / 设计链式存储 / 按 Dijkstra 求最短路径</td>
+        <td><a href="精读版/第6章.html#s6-5">精读版 数构 6.5 总攻</a> ·
+            <a href="练习系统/第6章.html">题库 数构 ch6</a></td>
+      </tr>
+      <tr>
+        <td><b>2018 综</b><br>8 城市光缆 + TTL</td>
+        <td>题面给的是<b>计算机网络</b>的 TTL 跳数</td>
+        <td><span class="gap">实为图论题</span>：最小生成树 + 数跳数。问 TTL=5 够不够，<b>数错一个就答反</b></td>
+        <td><a href="精读版/第6章.html#s6-5">精读版 数构 6.5 总攻</a> ·
+            <a href="练习系统/第6章.html">题库 数构 ch6</a></td>
+      </tr>
+    </table></div>
+    <div class="hub">
+      <b>为什么这三道构成镜像：</b>2023 那道<b>挂在网络、考的是网络自己的下一层</b>；
+      2014 与 2018 两道<b>挂在网络、考的却是数据结构</b>。一个方向进、一个方向出，
+      两头都说明同一件事——<b>按章设防必然漏</b>。<br>
+      <b>⟹ 所以这一页的下半部分不按章组织，按<u>六个跨科枢纽</u>组织。</b>
+      一轮按章读（上面那张表），但每读完一科，回来把六个枢纽在该科的落点走一遍。
+    </div>
+  </section>
+
+  <!-- ══════════ 02–05 四科主线 ══════════ -->
+  <section class="card">
+    <h2><span class="n">02</span>数据结构：结构 × 算法两条腿</h2>
     <pre class="mermaid">
 flowchart LR
   A["线性表<br/>顺序·链式"] --> B["栈与队列"]
@@ -80,11 +460,19 @@ flowchart LR
   E -.ASL是全章唯一的度量衡.-> F
   A -.顺序vs链式的取舍贯穿全书.-> F
     </pre>
-    <div class="hub"><b>总纲:</b>每个结构只问三件事——怎么存(逻辑/物理)、怎么走(遍历)、多快(复杂度)。大题 41 题的本质是「在对的结构上套对的走法」,<a href="算法题_代码手册.html" style="color:var(--accent)">代码手册</a>的 28 个模板就是「走法」的全集。<br><b>当前主战场 = 排序（第8章，148 题已整章完成，42 道统考真题是全书真题密度之最）</b>:这一章与前七章的性格完全不同——前面考「这个结构长什么样」,本章考「<b>这个过程走到第几步是什么样</b>」,所以只有两根主线:<b>① 动手模拟一趟的结果（靠手）② 表 8.1 的五列（靠背）</b>。内部排序的分水岭是<b>「每趟能不能定死一个元素的最终位置」</b>——能的是<b>选择/交换家族</b>(冒泡、简单选择、堆形成全局有序;快排只定枢轴),不能的是插入、希尔、归并、基数(只造局部有序),这一问单独撑起 2009/2010/2012/2014/2019 五道真题。外部排序则只有一张地图:<b>减 I/O ⟹ 减趟数 S = ⌈log_k r⌉ ⟹ 要么增大 k(用<u>败者树</u>抵消内部变慢)、要么减小 r(用<u>置换-选择</u>);段长不等时用<u>最佳归并树</u></b>。<a href="练习系统/第8章.html" style="color:var(--accent)">148 道课后题</a>、<a href="练习系统/套路库.html" style="color:var(--accent)">14 张第8章套路卡</a>、<a href="模拟器_排序过程.html" style="color:var(--accent)">排序九合一 + 外排三件套模拟器</a>、<a href="精读版/第8章.html" style="color:var(--accent)">精读版第8章</a> 均已上线(<b>第8章整章完工,数据结构第1–8章全书就绪</b>);前一战场 查找(第7章):<a href="模拟器_查找.html" style="color:var(--accent)">查找四合一模拟器</a> + <a href="精读版/第7章.html" style="color:var(--accent)">精读版第7章</a> + <a href="练习系统/第7章.html" style="color:var(--accent)">136 道课后题</a>——全章度量衡只有一个 <b>ASL</b>,三个分母见 <a href="练习系统/套路库.html#C_T7-1" style="color:var(--accent)">套路卡 T7-1</a>。</div>
+    <div class="hub">
+      <b>总纲：</b>每个结构只问三件事——怎么存（逻辑/物理）、怎么走（遍历）、多快（复杂度）。
+      算法设计题的本质是「在对的结构上套对的走法」，<a href="算法题_代码手册.html">代码手册的 42 个模板</a>就是「走法」的全集。<br>
+      <b>八章的综合题都已各自成节</b>（<a href="精读版/第2章.html#s2-4">2.4</a> ·
+      <a href="精读版/第3章.html#s35">3.5</a> · <a href="精读版/第4章.html#s43">4.3</a> ·
+      <a href="精读版/第5章.html#s5-6">5.6</a> · <a href="精读版/第6章.html#s6-5">6.5</a> ·
+      <a href="精读版/第7章.html#g76">7.6</a> · <a href="精读版/第8章.html#s88">8.8</a>）——
+      这七节是回炉轮最贵的产出，一轮一个字都不许跳。
+    </div>
   </section>
 
   <section class="card">
-    <h2><span class="n">02</span>组成原理:从一个比特到一条流水线</h2>
+    <h2><span class="n">03</span>组成原理：从一个比特到一条流水线</h2>
     <pre class="mermaid">
 flowchart LR
   A["数据表示<br/>补码·IEEE754·校验"] --> B["运算方法与ALU"]
@@ -96,11 +484,16 @@ flowchart LR
   C -.Cache缺失与缺页共用局部性.-> E
   E -.中断机制是IO的地基.-> F
     </pre>
-    <div class="hub"><b>总纲:</b>组成就是「一条指令的一生」:取指(存储层次)→ 译码(指令系统)→ 执行(ALU/通路)→ 访存(Cache/虚存)→ 写回,流水线把一生切成五段重叠。做题时把自己当那条指令走一遍,比背结构图牢。</div>
+    <div class="hub">
+      <b>总纲：</b>组成就是「一条指令的一生」：取指（存储层次）→ 译码（指令系统）→ 执行（ALU/通路）→
+      访存（Cache/虚存）→ 写回，流水线把这一生切成五段重叠。做题时把自己当那条指令走一遍，比背结构图牢。<br>
+      <b>ch3 存储系统是全科的枢纽总闸</b>——<a href="精读版/组原_第3章.html#s3-8">3.8 那张「全章跨科枢纽总清单」</a>
+      是组原七章里唯一一张把六个枢纽逐条列全的表，读完 ch3 请对着它自查一遍。
+    </div>
   </section>
 
   <section class="card">
-    <h2><span class="n">03</span>操作系统:管理四种资源</h2>
+    <h2><span class="n">04</span>操作系统：管理四种资源</h2>
     <pre class="mermaid">
 flowchart LR
   A["进程与线程<br/>状态·切换"] --> B["调度<br/>FCFS/SJF/RR/优先级"]
@@ -112,11 +505,18 @@ flowchart LR
   B -.就绪队列=队列结构.-> A
   E -.页面置换与Cache替换同源.-> F
     </pre>
-    <div class="hub"><b>总纲:</b>OS 四大管理(CPU=进程调度、内存、文件、设备)全是同一句话:「资源少、进程多,怎么分才又快又不打架」。PV 大题=「打架」的形式化,银行家=「分不分」的形式化,置换算法=「腾谁」的形式化。</div>
+    <div class="hub">
+      <b>总纲：</b>OS 四大管理（CPU=进程调度、内存、文件、设备）全是同一句话：
+      「资源少、进程多，怎么分才又快又不打架」。PV 大题 = 「打架」的形式化，银行家 = 「分不分」的形式化，
+      置换算法 = 「腾谁」的形式化。<br>
+      <b>OS 是四科里跨科连线最密的一科</b>：<a href="精读版/OS_第1章.html#s1-3-3">1.3.3</a> 写着
+      「中断是 408 四科最大的枢纽」，<a href="精读版/OS_第3章.html#s3-2-9">3.2.9 地址翻译示例</a>
+      则是全书最强的一处跨科串联——<b>一道题串起 TLB（OS）→ 页表（OS）→ Cache（组原）三级</b>。
+    </div>
   </section>
 
   <section class="card">
-    <h2><span class="n">04</span>计算机网络:自底向上五层楼</h2>
+    <h2><span class="n">05</span>计算机网络：自底向上五层楼</h2>
     <pre class="mermaid">
 flowchart LR
   A["物理层<br/>码元·带宽·奈奎斯特/香农"] --> B["链路层<br/>成帧·CSMA/CD·交换机"]
@@ -127,38 +527,397 @@ flowchart LR
   C -.IP分片受链路层MTU牵制.-> B
   E -.DNS先行是一切应用的第0步.-> C
     </pre>
-    <div class="hub"><b>总纲:</b>网络只有一道大题:「一个数据包的旅行」——应用层出发,层层<b>封装</b>下楼,过交换机(看 MAC)、过路由器(看 IP、换 MAC),到对面层层<b>解封</b>上楼。任何协议题先问:它在哪层?看什么地址?</div>
+    <div class="hub">
+      <b>总纲：</b>网络只有一道大题：「一个数据包的旅行」——应用层出发，层层<b>封装</b>下楼，
+      过交换机（看 MAC）、过路由器（看 IP、换 MAC），到对面层层<b>解封</b>上楼。
+      任何协议题先问两件事：<b>它在哪层？看什么地址？</b><br>
+      ⚠️ 网络是四科里<b>最不能按章设防</b>的一科：ch4 与 ch6 是仅有的两个「一章就覆盖 17 年」的零缺口章，
+      而 ch5 的 2023「缺口」其实躺在 ch6 里（见 <a href="#hub2">枢纽 ② 滑动窗口</a>）。
+    </div>
   </section>
 
+  <!-- ══════════ 06 六大跨科枢纽 ══════════ -->
   <section class="card">
-    <h2><span class="n">05</span>跨科枢纽:一份力气四科收钱</h2>
-    <div class="tblwrap"><table>
-      <tr><th>枢纽思想</th><th>它在四科的分身(全是考点)</th></tr>
-      <tr><td><b>局部性原理</b></td><td>组成:Cache 命中的全部理由;OS:页面置换(LRU 赌的就是它)、TLB、<b>预调页与工作集</b>、磁盘预读;数构:顺序表缓存友好;网络:Web 缓存/CDN。<b>一条原理吃四科的题。</b></td></tr>
-      <tr><td><b>滑动窗口</b></td><td>链路层 GBN/SR 与 TCP 流量控制是<b>同一个协议的两次出场</b>——发送窗口/接收窗口/累计确认一套话术,学一次考两层。</td></tr>
-      <tr><td><b>中断</b></td><td>组成:中断的硬件流程(关中断→保存断点→找入口);OS:系统调用、进程切换、时钟中断全骑在它上面;I/O:程序查询→中断→DMA 的演进主线。</td></tr>
-      <tr><td><b>分块 + 映射</b></td><td>Cache 行 / 内存页 / 磁盘块 / 文件簇 / 网络分组(MTU)——全是「定长切块 + 地址映射」同一个动作。地址结构题(标记|组号|块内)与(页号|页内)与(网络号|主机号)是<b>三胞胎</b>。</td></tr>
-      <tr><td><b>队列与缓冲</b></td><td>数构:队列本体;OS:就绪队列、缓冲池、SPOOLing;组成:指令预取队列;网络:路由器排队与丢包(拥塞的物理根源)。</td></tr>
-      <tr><td><b>树</b></td><td>数构:二叉树/哈夫曼/B+树;OS:多级页表是树、目录树;文件系统与数据库索引=B+树;网络:交换机生成树协议(STP)。</td></tr>
-      <tr><td><b>栈</b></td><td>数构:栈本体、表达式求值、递归;组成/OS:函数调用栈、中断现场保存;编译递归下降。<b>「递归改非递归」大题=手工模拟调用栈。</b></td></tr>
-      <tr><td><b>流水/并行</b></td><td>组成:五段流水线与冒险;网络:连续 ARQ 本质是「发送流水线」;OS:多道程序=宏观并行。信道利用率公式和流水线吞吐率公式长得像不是巧合。</td></tr>
+    <h2><span class="n">06</span>六大跨科枢纽 · 一份力气四科收钱</h2>
+    <p class="note">
+      每张卡 = 一个思想 + 它在四科的分身 + <b>可点的落点</b>（精读版锚点 / 题库章 / 套路卡 / 卡库分组）
+      + <b>它会怎么考</b>。落点全部是真链接，点开就是那一节、那一张卡。<br>
+      <b>用法</b>：一轮按章读（第 00 节那张表），<b>每读完一科回到这里，把六张卡里属于该科的那一行走一遍</b>——
+      这一步只花十几分钟，但它是「按考点设防」唯一的落实方式。
+    </p>
+
+    <!-- 枢纽 ① -->
+    <article class="hubcard" id="hub1">
+      <h3><span class="hn">枢纽 ①</span>局部性原理
+        <span class="tagline">全 408 出现频率最高的一个词</span></h3>
+      <p class="gist"><b>一句话：</b>刚访问过的、以及它旁边的，马上还会被访问
+        ⟹ <b>把小而快的一层垫在大而慢的一层前面，就总是划算的</b>。
+        四科里凡是「加一层缓存」「一次搬一整块」「预先读进来」，赌的都是这一条。</p>
+      <div class="tabwrap"><table class="hubtab">
+        <tr><th>科</th><th>它在这科叫什么</th><th>落点（可点）</th></tr>
+        <tr><td>组原<span class="src">策源地</span></td>
+            <td class="alias">Cache 命中的<b>全部理由</b>；行缓冲、突发传输、预取队列</td>
+            <td><a href="精读版/组原_第3章.html#s3-5-1">精读版 3.5.1 程序访问的局部性原理</a> ·
+                <a href="精读版/组原_第3章.html#s3-8">3.8 全章枢纽总清单</a> ·
+                <a href="练习系统/组原_第3章.html">题库 ch3（152/45）</a> ·
+                <a href="练习系统/组原_套路库.html#C_TC3-16">套路 TC3-16 行优先 vs 列优先</a> ·
+                <a href="卡库_计算机组成原理.html#g_mem">卡库 存储系统 37 张</a></td></tr>
+        <tr><td>OS</td>
+            <td class="alias">页面置换（LRU 赌的就是它）、工作集、TLB、磁盘「提前读」</td>
+            <td><a href="精读版/OS_第3章.html#s3-2-1">精读版 3.2.1（本章至少用到它四次）</a> ·
+                <a href="精读版/OS_第3章.html#s3-2-4">3.2.4 页面置换</a> ·
+                <a href="精读版/OS_第5章.html#s5-3-3">5.3.3 磁盘调度</a> ·
+                <a href="练习系统/OS_套路库.html#C_TO3-18">套路 TO3-18 数组遍历的缺页次数</a> ·
+                <a href="卡库_操作系统.html#g_vm">卡库 虚拟内存 21 张</a></td></tr>
+        <tr><td>数构</td>
+            <td class="alias">顺序表比链表「实际快得多」；B 树「一个结点 = 一个磁盘块」；归并的顺序访问</td>
+            <td><a href="精读版/第2章.html#s2-2">精读版 2.2 顺序表</a> ·
+                <a href="精读版/第3章.html#s3-4">3.4 行优先</a> ·
+                <a href="精读版/第7章.html#s7-4">7.4 B 树</a> ·
+                <a href="精读版/第8章.html#s8-5-1">8.5.1 归并排序</a> ·
+                <a href="练习系统/第7章.html">题库 ch7</a></td></tr>
+        <tr><td>网络</td>
+            <td class="alias">交换表 / ARP 缓存（带老化时间的缓存）、Web 缓存与 CDN</td>
+            <td><a href="精读版/NET_第3章.html#s3-8">精读版 3.8 交换机自学习表</a> ·
+                <a href="精读版/NET_第4章.html#s4-2-5">4.2.5 ARP 缓存</a> ·
+                <a href="卡库_计算机网络.html#g_dll">卡库 数据链路层 40 张</a></td></tr>
+      </table></div>
+      <p class="howexam">⭐ <b>它会怎么考：</b>不考「什么是局部性」，考<b>算一个具体的数</b>。
+        最典型的两处：<b>组原 2019 综 03</b> 把 ch3 的 Cache 与 VIPT 搬进了 ch4 的题面里（跨章）；
+        <a href="精读版/OS_第3章.html#s3-2-9">OS 3.2.9 的地址翻译示例</a>
+        <b>一道题串起 TLB → 页表 → Cache 三级</b>，是全书最强的一处跨科串联，也是 408 综合题最爱的骨架。
+        ⚠️ 判据固定：<b>先问「命中哪一级」，再套那一级的平均访问时间公式</b>。</p>
+    </article>
+
+    <!-- 枢纽 ② -->
+    <article class="hubcard" id="hub2">
+      <h3><span class="hn">枢纽 ②</span>滑动窗口
+        <span class="tagline">同一个协议在两层各出场一次</span></h3>
+      <p class="gist"><b>一句话：</b>用<b>两个指针夹住一段还没确认的数据</b>，左边确认了就收，右边有空就发
+        ⟹ 发送窗口 / 接收窗口 / 累计确认<b>一套话术，学一次考两层</b>（链路层 GBN·SR，传输层 TCP）。</p>
+      <div class="tabwrap"><table class="hubtab">
+        <tr><th>科</th><th>它在这科叫什么</th><th>落点（可点）</th></tr>
+        <tr><td>网络<span class="src">主场</span></td>
+            <td class="alias">ch3 的 GBN / SR（以<b>帧</b>为单位）→ ch5 的 TCP（以<b>字节</b>为单位）</td>
+            <td><a href="精读版/NET_第3章.html#s3-4-1">精读版 3.4.1 滑动窗口机制</a> ·
+                <a href="精读版/NET_第3章.html#s3-4-3">3.4.3 信道利用率</a> ·
+                <a href="精读版/NET_第5章.html#s5-3-4">5.3.4 TCP 可靠传输（ch3 的加强版重播）</a> ·
+                <a href="精读版/NET_第5章.html#s5-3-5">5.3.5「窗口」的三种量纲</a> ·
+                <a href="练习系统/网络_套路库.html#C_TN3-10">套路 TN3-10 窗口约束反求</a> ·
+                <a href="练习系统/网络_套路库.html#C_TN3-8">TN3-8 三协议利用率排序</a> ·
+                <a href="卡库_计算机网络.html#g_trans">卡库 传输层 41 张</a></td></tr>
+        <tr><td>数构</td>
+            <td class="alias">循环队列 = <b>所有「有限缓冲区」的标准实现</b>；间隔 k 双指针</td>
+            <td><a href="精读版/第3章.html#s3-2-2">精读版 3.2.2 循环队列</a> ·
+                <a href="精读版/第2章.html#s2-4">2.4 总攻 · 模板③ 间隔 k 双指针</a> ·
+                <a href="练习系统/套路库.html#C_T3-5">套路 T3-5 循环队列三式</a> ·
+                <a href="卡库_数据结构.html#g_sq">卡库 栈·队列·串 6 张</a></td></tr>
+        <tr><td>OS</td>
+            <td class="alias">生产者-消费者的有界缓冲区（满了等 / 空了等，就是窗口的两端）</td>
+            <td><a href="精读版/OS_第2章.html#s2-3-1">精读版 2.3.1 同步与互斥</a> ·
+                <a href="PV_同步模板手册.html">PV 同步模板手册 26 模板</a> ·
+                <a href="卡库_操作系统.html#g_sync">卡库 同步与死锁 26 张</a></td></tr>
+        <tr><td>组原</td>
+            <td class="alias">写缓冲 / 行缓冲——「用队列吸收快慢两侧的速度差」</td>
+            <td><a href="精读版/组原_第3章.html#s3-5-6">精读版 3.5.6 写缓冲</a> ·
+                <a href="卡库_计算机组成原理.html#g_bus">卡库 总线 26 张</a></td></tr>
+      </table></div>
+      <p class="howexam">⭐ <b>它会怎么考：</b><b>2023 综 04（FTP 上传时间线）</b>是这一枢纽最好的证据——
+        王道把它归进<b>应用层 6.3</b>，可它<b>4 个问里有 3 个考 TCP</b>，
+        它同时就是传输层 ch5「真题年份唯一缺口 2023」的真身。
+        ⟹ 复习 TCP 时如果只翻 ch5，这道题<b>整道都会被漏掉</b>。
+        <a href="精读版/NET_第6章.html#s6-3">去看 NET 6.3</a> ·
+        <a href="练习系统/网络_第6章.html">刷 ch6 题库</a></p>
+    </article>
+
+    <!-- 枢纽 ③ -->
+    <article class="hubcard" id="hub3">
+      <h3><span class="hn">枢纽 ③</span>中断
+        <span class="tagline">OS 精读版原话：「中断是 408 四科最大的枢纽」</span></h3>
+      <p class="gist"><b>一句话：</b><b>停下手里的活 → 把现场压进栈 → 用一个号去查一张表 → 跳过去办 → 回来接着干。</b>
+        组原讲<b>硬件怎么做</b>，OS 讲<b>软件拿它干什么</b>，网络与 I/O 讲<b>谁来触发它</b>——三科讲的是同一件事的三段。</p>
+      <div class="tabwrap"><table class="hubtab">
+        <tr><th>科</th><th>它在这科叫什么</th><th>落点（可点）</th></tr>
+        <tr><td>组原<span class="src">硬件侧</span></td>
+            <td class="alias">异常与中断的响应过程、中断隐指令、中断向量表、程序中断方式 I/O</td>
+            <td><a href="精读版/组原_第5章.html#s5-5-1">精读版 5.5.1 基本概念</a> ·
+                <a href="精读版/组原_第5章.html#s5-5-3">5.5.3 响应过程（全章 🔵 最密的一节，九条跨科连线）</a> ·
+                <a href="精读版/组原_第7章.html#s7-3-2">7.3.2 程序中断方式</a> ·
+                <a href="练习系统/组原_套路库.html#C_TC5-15">套路 TC5-15 异常还是中断</a> ·
+                <a href="练习系统/组原_套路库.html#C_TC5-14">TC5-14 断点在哪 / 回哪</a> ·
+                <a href="卡库_计算机组成原理.html#g_io">卡库 输入/输出系统 28 张</a></td></tr>
+        <tr><td>OS<span class="src">软件侧</span></td>
+            <td class="alias">系统调用、进程切换、时钟中断驱动 RR、关中断实现临界区</td>
+            <td><a href="精读版/OS_第1章.html#s1-3-3">精读版 1.3.3 中断和异常</a> ·
+                <a href="精读版/OS_第1章.html#s1-3-4">1.3.4 系统调用（号 → 表，同一个套路）</a> ·
+                <a href="精读版/OS_第2章.html#s2-2-5">2.2.5 RR 靠时钟中断驱动</a> ·
+                <a href="精读版/OS_第2章.html#s2-3-2">2.3.2 关中断的三种身份</a> ·
+                <a href="练习系统/OS_套路库.html#C_TO1-4">套路 TO1-4 中断还是异常</a> ·
+                <a href="卡库_操作系统.html#g_ov">卡库 概述与中断 26 张</a></td></tr>
+        <tr><td>数构</td>
+            <td class="alias">栈的 LIFO——<b>凡是「嵌套」就用栈</b>：中断嵌套 ⟹ 现场保护栈；DFS 递归 ⟹ 工作栈</td>
+            <td><a href="精读版/第3章.html#s3-1">精读版 3.1 栈</a> ·
+                <a href="精读版/第6章.html#s6-3-1">6.3.1 DFS 的递归工作栈</a> ·
+                <a href="卡库_数据结构.html#g_sq">卡库 栈·队列·串 6 张</a></td></tr>
+        <tr><td>网络</td>
+            <td class="alias">网卡收到帧后<b>用中断通知主机</b>（改成轮询就是「程序查询方式」）</td>
+            <td><a href="精读版/NET_第3章.html#s3-6-2">精读版 3.6.2 以太网与网卡</a> ·
+                <a href="精读版/NET_第4章.html#s4-2-7">4.2.7 ICMP</a></td></tr>
+      </table></div>
+      <p class="howexam">⭐ <b>它会怎么考：</b>这一枢纽的分全在<b>「一字之差」</b>上，
+        OS <a href="精读版/OS_第1章.html#s1-3">1.3 运行环境</a>（<b>1.64 真题/页，四科最高</b>，2011–2024 连考 14 年）
+        整节都在切这几刀：<br>
+        ① <b>「发生」还是「执行」</b>——只有进程切换连「发生」都在内核态（<a href="练习系统/OS_套路库.html#C_TO1-1">TO1-1</a>）；
+        ② <b>硬件做什么 vs OS 做什么</b>——断点/PSW/模式位是硬件，通用寄存器/屏蔽字/向量表初始化是 OS
+        （<a href="练习系统/OS_套路库.html#C_TO1-2">TO1-2</a>，2015/2020/2022 同一把刀）；
+        ③ <b>中断回 i+1，异常回 i 重新执行</b>——<b>缺页是异常</b>。</p>
+    </article>
+
+    <!-- 枢纽 ④ -->
+    <article class="hubcard" id="hub4">
+      <h3><span class="hn">枢纽 ④</span>分块与映射
+        <span class="tagline">地址结构题的三胞胎</span></h3>
+      <p class="gist"><b>一句话：</b><b>定长切块 + 一张表把「逻辑号」翻译成「物理号」。</b>
+        Cache 行 / 内存页 / 磁盘块 / 文件簇 / 网络分组（MTU）是同一个动作；
+        而 <code>标记|组号|块内</code>、<code>页号|页内</code>、<code>网络号|主机号</code> 是<b>三胞胎</b>。</p>
+      <div class="tabwrap"><table class="hubtab">
+        <tr><th>科</th><th>它在这科叫什么</th><th>落点（可点）</th></tr>
+        <tr><td>组原</td>
+            <td class="alias">Cache 三种映射方式（直接 / 全相联 / 组相联）、地址划分、虚实地址变换</td>
+            <td><a href="精读版/组原_第3章.html#s3-5-3">精读版 3.5.3 映射方式（组相联是六年真题主场）</a> ·
+                <a href="精读版/组原_第3章.html#s3-5-6">3.5.6 Cache 容量计算</a> ·
+                <a href="练习系统/组原_套路库.html#C_TC3-13">套路 TC3-13 地址划分：先 ÷ 块大小，再 mod 组数</a> ·
+                <a href="练习系统/组原_套路库.html#C_TC3-19">TC3-19 页式是拼接、段式是相加</a> ·
+                <a href="卡库_计算机组成原理.html#g_mem">卡库 存储系统 37 张</a></td></tr>
+        <tr><td>OS</td>
+            <td class="alias">分页、多级页表、TLB、文件的「簇」、索引结点</td>
+            <td><a href="精读版/OS_第3章.html#s3-1-3">精读版 3.1.3 基本分页（全章地基）</a> ·
+                <a href="精读版/OS_第3章.html#s3-2-9">3.2.9 地址翻译示例 ⭐ 全书最强跨科串联</a> ·
+                <a href="精读版/OS_第4章.html#s4-2-6">4.2.6 文件物理结构（「簇」的取舍）</a> ·
+                <a href="练习系统/OS_套路库.html#C_TO3-1">套路 TO3-1 三步切位</a> ·
+                <a href="卡库_操作系统.html#g_mem">卡库 内存管理 18 张</a></td></tr>
+        <tr><td>数构</td>
+            <td class="alias">索引存储、分块查找、<b>除留余数法 = Cache 的直接映射，一字不差</b></td>
+            <td><a href="精读版/第7章.html#s7-2-3">精读版 7.2.3 分块查找（本枢纽的最小模型）</a> ·
+                <a href="精读版/第7章.html#s7-5-1">7.5 散列 · 除留余数法</a> ·
+                <a href="精读版/第3章.html#s3-4">3.4「下标 → 一维地址」</a> ·
+                <a href="练习系统/套路库.html#C_T7-3">套路 T7-3 分块查找 ASL</a> ·
+                <a href="卡库_数据结构.html#g_search">卡库 查找 8 张</a></td></tr>
+        <tr><td>网络</td>
+            <td class="alias">子网划分与路由聚合、IP 分片（片偏移以 8B 为单位）、多播地址 32:1 映射</td>
+            <td><a href="精读版/NET_第4章.html#s4-2-2">精读版 4.2.2 IPv4 地址（路由聚合 = 压缩表规模，同一笔账）</a> ·
+                <a href="精读版/NET_第4章.html#s4-5-3">4.5.3 多播 32:1 映射</a> ·
+                <a href="练习系统/网络_套路库.html#C_TN4-31">套路 TN4-31 多播地址 → MAC</a> ·
+                <a href="卡库_计算机网络.html#g_net">卡库 网络层 56 张</a></td></tr>
+      </table></div>
+      <p class="howexam">⭐ <b>它会怎么考：</b>这是 408 <b>综合大题的头号骨架</b>——
+        因为它天然要求「给一个地址，逐位切开，查若干张表」，一道题能同时压住两科。
+        样板就是 <a href="精读版/OS_第3章.html#s3-2-9">OS 3.2.9</a>：
+        <b>TLB（OS）→ 页表（OS）→ Cache（组原）三级串联</b>。
+        ⚠️ 最常丢分的一步是<b>切位顺序</b>：<b>先按块大小除、再按组数取模，顺序不能颠倒</b>
+        （<a href="练习系统/组原_套路库.html#C_TC3-13">TC3-13</a>）；
+        以及「行的位数 / 标记阵列 / 总容量」三种问法答案量级完全不同（<a href="练习系统/组原_套路库.html#C_TC3-14">TC3-14</a>）。</p>
+    </article>
+
+    <!-- 枢纽 ⑤ -->
+    <article class="hubcard" id="hub5">
+      <h3><span class="hn">枢纽 ⑤</span>队列与调度
+        <span class="tagline">数构精读版原话：「FIFO 在后面三科里换了六个名字，但公式都一样」</span></h3>
+      <p class="gist"><b>一句话：</b><b>资源只有一个、请求有很多 ⟹ 排队；怎么排就是调度策略。</b>
+        数构给出<b>容器</b>（队列本体），OS 与网络给出<b>策略</b>（先来先服务 / 最短优先 / 时间片轮转 / 优先级），
+        而<b>「拥塞」的物理实质就是队列排不过来</b>。</p>
+      <div class="tabwrap"><table class="hubtab">
+        <tr><th>科</th><th>它在这科叫什么</th><th>落点（可点）</th></tr>
+        <tr><td>数构<span class="src">容器</span></td>
+            <td class="alias">队列本体、循环队列、链式队列（<b>PCB 排的就是链队</b>）、BFS 用队列</td>
+            <td><a href="精读版/第3章.html#s3-2">精读版 3.2 队列</a> ·
+                <a href="精读版/第3章.html#s3-2-3">3.2.3 链式队列</a> ·
+                <a href="精读版/第6章.html#s6-3">6.3 遍历 = 队列与栈的正面对决</a> ·
+                <a href="练习系统/套路库.html#C_T3-5">套路 T3-5 循环队列</a> ·
+                <a href="卡库_数据结构.html#g_sq">卡库 栈·队列·串 6 张</a></td></tr>
+        <tr><td>OS<span class="src">策略</span></td>
+            <td class="alias">就绪队列与 CPU 调度、磁盘调度、缓冲池、SPOOLing</td>
+            <td><a href="精读版/OS_第2章.html#s2-2-5">精读版 2.2.5 CPU 调度算法</a> ·
+                <a href="精读版/OS_第5章.html#s5-3-3">5.3.3 磁盘调度 ⭐ 3 道综合真题全在这</a> ·
+                <a href="练习系统/OS_套路库.html#C_TO5-23">套路 TO5-23 交替编号治旋转延迟</a> ·
+                <a href="卡库_操作系统.html#g_proc">卡库 进程与调度 30 张</a></td></tr>
+        <tr><td>网络</td>
+            <td class="alias">路由器输出队列排满 = <b>拥塞</b>；分组交换的存储转发</td>
+            <td><a href="精读版/NET_第4章.html#s4-1-5">精读版 4.1.5 拥塞控制（三科同一件事）</a> ·
+                <a href="精读版/NET_第5章.html#s5-3">5.3 TCP 拥塞控制</a> ·
+                <a href="卡库_计算机网络.html#g_trans">卡库 传输层 41 张</a></td></tr>
+        <tr><td>组原</td>
+            <td class="alias">指令预取队列、总线仲裁（谁先用总线）、DMA 与 CPU 争访存</td>
+            <td><a href="精读版/组原_第7章.html#s7-3-3">精读版 7.3.3 DMA（「谁优先」的三个层面）</a> ·
+                <a href="精读版/组原_第6章.html#s6-1-1">6.1.1 总线的分类与仲裁</a> ·
+                <a href="卡库_计算机组成原理.html#g_bus">卡库 总线 26 张</a></td></tr>
+      </table></div>
+      <p class="howexam">⭐ <b>它会怎么考：</b>考的从来不是「队列是什么」，是<b>画一张时间表把顺序排出来</b>——
+        OS 的甘特图（周转时间 / 带权周转时间）、磁盘调度的移臂序列、网络的时延累加，<b>三者是同一种卷面</b>。
+        ⚠️ 本枢纽最贵的一个坑在 <a href="精读版/OS_第5章.html#s5-3-3">OS 5.3.3</a>：
+        <b>C-SCAN 的返程算不算距离，2024 年算（399 整段计入）、2010 年不算（120→30 只记 90）——两年官方口径不同</b>，
+        考场上按题干给的图例走。另一处：数构 <a href="精读版/第6章.html#s6-4-5">6.4.5 关键路径</a>的
+        <b>时间余量</b>，就是实时调度里的<b>松弛度</b>。</p>
+    </article>
+
+    <!-- 枢纽 ⑥ -->
+    <article class="hubcard" id="hub6">
+      <h3><span class="hn">枢纽 ⑥</span>空间换时间
+        <span class="tagline">组原精读版原话：「以空间换时间这六个字，是 408 的第一大枢纽」</span></h3>
+      <p class="gist"><b>一句话：</b><b>多存一份东西，省掉一次昂贵的计算或访问。</b>
+        存的可能是<b>副本</b>（Cache / TLB / ARP 缓存）、<b>标记</b>（visited[] / 标记数组 / 有效位）、
+        或<b>一张换算表</b>（散列表 / 索引表）——代价都是内存，收益都是时间。</p>
+      <div class="tabwrap"><table class="hubtab">
+        <tr><th>科</th><th>它在这科叫什么</th><th>落点（可点）</th></tr>
+        <tr><td>组原</td>
+            <td class="alias">Cache（拿昂贵 SRAM 换访存时间）、<b>TLB / 快表</b>、隐藏位、有效位</td>
+            <td><a href="精读版/组原_第3章.html#s3-6-3">精读版 3.6.3 快表 TLB ⭐ 本枢纽最典型的一环</a> ·
+                <a href="精读版/组原_第2章.html#s2-3-4">2.3.4「以空间换时间」的原话出处</a> ·
+                <a href="精读版/组原_第3章.html#s3-8">3.8 枢纽总清单</a> ·
+                <a href="卡库_计算机组成原理.html#g_mem">卡库 存储系统 37 张</a></td></tr>
+        <tr><td>数构</td>
+            <td class="alias"><b>标记数组</b>（2015 真题）、visited[]、散列表、min 栈、线索二叉树</td>
+            <td><a href="精读版/第2章.html#s2-4">精读版 2.4 总攻 · 模板⑤ 标记数组</a> ·
+                <a href="精读版/第6章.html#s6-3-3">6.3.3 visited[] = 全书最朴素的空间换时间</a> ·
+                <a href="精读版/第3章.html#s35">3.5 总攻 · min 栈</a> ·
+                <a href="精读版/第7章.html#s7-5-1">7.5 散列表</a> ·
+                <a href="卡库_数据结构.html#g_search">卡库 查找 8 张</a></td></tr>
+        <tr><td>OS</td>
+            <td class="alias">快表、页表本身、目录项缓存、缓冲池；「虚拟」的两类复用</td>
+            <td><a href="精读版/OS_第1章.html#s1-1-3">精读版 1.1.3「虚拟」的两类复用</a> ·
+                <a href="精读版/OS_第3章.html#s3-1-3">3.1.3 TLB = 页表的 Cache</a> ·
+                <a href="精读版/OS_第5章.html#s5-2-2">5.2.2 高速缓存 vs 缓冲区</a> ·
+                <a href="练习系统/OS_套路库.html#C_TO5-10">套路 TO5-10 一个吃重复访问、一个吃速度差</a> ·
+                <a href="卡库_操作系统.html#g_vm">卡库 虚拟内存 21 张</a></td></tr>
+        <tr><td>网络</td>
+            <td class="alias"><b>ARP 缓存</b>（408 里最标准的一个）、交换机自学习表、DNS 缓存</td>
+            <td><a href="精读版/NET_第4章.html#s4-2-5">精读版 4.2.5 ARP 缓存 ⭐</a> ·
+                <a href="精读版/NET_第3章.html#s3-8">3.8 交换表（带老化时间的缓存）</a> ·
+                <a href="精读版/NET_第6章.html#s6-2-2">6.2.2 DNS 缓存（有缓存则 0 次查询）</a> ·
+                <a href="卡库_计算机网络.html#g_app">卡库 应用层 39 张</a></td></tr>
+      </table></div>
+      <p class="howexam">⭐ <b>它会怎么考：</b>两种问法。
+        ① <b>算收益</b>——给命中率求平均访问时间（Cache / TLB / DNS 缓存共用一个式子：
+        <code>命中率 × 快的 + (1−命中率) × 慢的</code>）；
+        ② <b>问代价</b>——「这张表要多大」「多存这一位值不值」。
+        ⚠️ 反向陷阱：<b>缓存不是永远划算</b>——OS <a href="精读版/OS_第3章.html#s3-2-4">3.2.4</a> 的
+        <b>Belady 异常</b>（FIFO 加页框，缺页可能不降反增）就是专门用来打这个直觉的；
+        数构 <a href="精读版/第7章.html#s7-5-3">7.5.3</a> 的「墓碑删除」则是这条路上的固定代价——
+        <b>三科都不敢真删</b>。</p>
+    </article>
+  </section>
+
+  <!-- ══════════ 07 附表 ══════════ -->
+  <section class="card">
+    <h2><span class="n">07</span>附表：另外三条次级枢纽（保留）</h2>
+    <p class="note">
+      这三条不在考纲主线的「六大枢纽」之列（它们更像<b>结构</b>而非<b>思想</b>），但每一条都实际串起三科以上，
+      按<b>不删只降级</b>的规矩留在这里。二轮串联时整表过一遍即可。
+    </p>
+    <div class="tabwrap"><table>
+      <tr><th>枢纽</th><th>它在四科的分身</th><th>落点</th></tr>
+      <tr><td><b>树</b></td>
+          <td>数构：二叉树 / 哈夫曼 / B+ 树；OS：<b>多级页表是树</b>、目录树；
+              文件系统与数据库索引 = B+ 树；网络：<b>DNS 域名空间是一棵有根树</b>、交换机生成树协议 STP</td>
+          <td><a href="精读版/第5章.html">精读版 数构 ch5</a> ·
+              <a href="精读版/第7章.html#s7-4">7.4 B 树</a> ·
+              <a href="精读版/NET_第6章.html#s6-2-2">NET 6.2.2 DNS</a> ·
+              <a href="卡库_数据结构.html#g_tree">卡库 树 11 张</a></td></tr>
+      <tr><td><b>栈</b></td>
+          <td>数构：栈本体、表达式求值、递归；组原：<b>函数调用栈帧</b>（4.3.4）、中断现场保护；
+              OS：内核栈。<b>「递归改非递归」大题 = 手工模拟调用栈</b></td>
+          <td><a href="精读版/第3章.html#s3-1">精读版 数构 3.1</a> ·
+              <a href="精读版/组原_第4章.html#s4-3-4">组原 4.3.4 过程调用</a> ·
+              <a href="练习系统/组原_套路库.html#C_TC4-15">套路 TC4-15 默画栈帧图</a></td></tr>
+      <tr><td><b>流水与并行</b></td>
+          <td>组原：五段流水线与三种冒险；网络：<b>连续 ARQ 本质是「发送流水线」</b>、HTTP 流水线；
+              OS：多道程序 = 宏观并行。<b>信道利用率公式与流水线吞吐率公式长得像，不是巧合</b></td>
+          <td><a href="精读版/组原_第5章.html#s5-6">精读版 组原 5.6 流水线</a> ·
+              <a href="精读版/NET_第3章.html#s3-4-3">NET 3.4.3 信道利用率</a> ·
+              <a href="精读版/NET_第6章.html#s6-5-4">NET 6.5.4 HTTP 流水线</a> ·
+              <a href="练习系统/组原_套路库.html#C_TC5-17">套路 TC5-17 判冒险</a></td></tr>
     </table></div>
   </section>
 
+  <!-- ══════════ 08 资源地图 ══════════ -->
   <section class="card">
-    <h2><span class="n">06</span>考纲覆盖对照:站内资源地图</h2>
-    <p class="note"><span class="ok">✓</span>=卡库/模拟器/手册已覆盖主干;<span class="gap">△</span>=依赖后续错题页补细节。408 错题页目前为 0——这是计划内的(先卡库后错题),不是遗漏。</p>
-    <div class="tblwrap"><table>
-      <tr><th>考纲科目</th><th>站内资源</th><th>覆盖</th></tr>
-      <tr><td>数据结构(45')</td><td><a href="卡库_数据结构.html">卡库 52 张</a> + <a href="练习系统/index.html">练习系统 813 题(第1–8章全)</a> + <a href="练习系统/套路库.html">套路库 73 张</a> + <a href="精读版/第1章.html">精读版第1–8章</a> + <a href="模拟器_排序过程.html">排序九合一+外排三件套</a>/<a href="模拟器_查找.html">查找四合一</a>/<a href="模拟器_图算法.html">图算法八合一</a>/<a href="模拟器_二叉树遍历.html">二叉树遍历</a>等模拟器 + <a href="算法题_代码手册.html">算法题代码手册 28 模板</a></td><td class="ok">✓</td></tr>
-      <tr><td>组成原理(45')</td><td><a href="卡库_计算机组成原理.html">卡库 39 张</a> + <a href="数感速查_数字直觉.html">数感页(补码/IEEE754/位数速算)</a></td><td class="ok">✓(浮点运算细节△)</td></tr>
-      <tr><td>操作系统(35')</td><td><a href="卡库_操作系统.html">卡库 184 张</a> + <a href="练习系统/OS_index.html">练习系统 五章 780 题</a> + <a href="练习系统/OS_套路库.html">套路库 114 卡</a> + <a href="精读版/OS_第5章.html">精读版 五章全</a> + <a href="PV_同步模板手册.html">PV 训练场 26 模板</a> + <a href="模拟器_页面置换.html">页面置换</a>/<a href="模拟器_地址转换.html">地址转换</a>模拟器</td><td class="ok">✓</td></tr>
-      <tr><td>计算机网络(25')</td><td><a href="卡库_计算机网络.html">卡库 40 张</a> + 数感页(帧长/端口/头部长度)</td><td class="ok">✓(应用层协议细节△)</td></tr>
+    <h2><span class="n">08</span>站内资源地图（数字为开页当天实测）</h2>
+    <p class="note">
+      下表每一个数字都是用脚本从 <code>练习系统/data_*.js</code>、<code>data_tricks*.js</code>、
+      <code>卡库_*.html</code> 的源数据里现算的。<span class="ok">✓</span> = 该科五件交付物齐备
+      （题库 / 精读版 / 套路库 / 卡库 / 手册或模拟器）。<br>
+      ⚠️ 顺带更正两处历史陈旧数字：<b>四科卡库合计是 682 张，不是 366</b>
+      （366 停留在 OS 63 张、网络 40 张的年代，实际已是 184 与 235）；
+      <b>统考真题合计是 798 道，不是 800</b>（800 那个数把 <code>data_*.js</code> 头部注释里
+      「<code>exam:2010</code>」那行示例误数进去了，OS 与网络各多算 1）。
+    </p>
+    <div class="tabwrap"><table>
+      <tr><th>科目</th><th>题库</th><th>精读版</th><th>套路库</th><th>卡库</th><th>专属工具</th><th>齐备</th></tr>
+      <tr>
+        <td><b>数据结构</b><br>45 分</td>
+        <td><a href="练习系统/index.html">813 题 / 220 真题</a><br>
+            <a href="练习系统/真题场.html">真题场</a> · <a href="练习系统/错题本.html">错题本</a></td>
+        <td><a href="精读版/第1章.html">8 章 393 页</a><br>🔴 513 / 🔵 278 · <b>7 节总攻</b></td>
+        <td><a href="练习系统/套路库.html">73 卡</a></td>
+        <td><a href="卡库_数据结构.html">52 张</a></td>
+        <td><a href="算法题_代码手册.html">算法题代码手册 42 模板</a><br>
+            <a href="模拟器_排序过程.html">排序九合一</a> · <a href="模拟器_查找.html">查找四合一</a> ·
+            <a href="模拟器_图算法.html">图算法八合一</a> · <a href="模拟器_二叉树遍历.html">二叉树遍历</a> ·
+            <a href="模拟器_KMP.html">KMP</a> · <a href="模拟器_出栈序列.html">出栈序列</a> ·
+            <a href="模拟器_循环队列.html">循环队列</a></td>
+        <td class="ok">✓</td>
+      </tr>
+      <tr>
+        <td><b>组成原理</b><br>45 分</td>
+        <td><a href="练习系统/组原_index.html">709 题 / 221 真题</a><br>
+            <a href="练习系统/组原_真题场.html">真题场</a> · <a href="练习系统/组原_错题本.html">错题本</a></td>
+        <td><a href="精读版/组原_第1章.html">7 章 327 页</a><br>🔴 416 / 🔵 215</td>
+        <td><a href="练习系统/组原_套路库.html">116 卡</a></td>
+        <td><a href="卡库_计算机组成原理.html">211 张</a></td>
+        <td><a href="计算题_公式模板手册.html">计算题公式模板手册 67 条</a><br>
+            <a href="数感速查_数字直觉.html">数感速查（补码 / IEEE754 / 位数速算）</a></td>
+        <td class="ok">✓</td>
+      </tr>
+      <tr>
+        <td><b>操作系统</b><br>35 分</td>
+        <td><a href="练习系统/OS_index.html">780 题 / 205 真题</a><br>
+            <a href="练习系统/OS_真题场.html">真题场</a> · <a href="练习系统/OS_错题本.html">错题本</a></td>
+        <td><a href="精读版/OS_第1章.html">5 章 359 页</a><br>🔴 459 / 🔵 236</td>
+        <td><a href="练习系统/OS_套路库.html">114 卡</a></td>
+        <td><a href="卡库_操作系统.html">184 张</a></td>
+        <td><a href="PV_同步模板手册.html">PV 同步模板手册 26 模板</a><br>
+            <a href="模拟器_页面置换.html">页面置换</a> · <a href="模拟器_地址转换.html">地址转换</a></td>
+        <td class="ok">✓</td>
+      </tr>
+      <tr>
+        <td><b>计算机网络</b><br>25 分</td>
+        <td><a href="练习系统/网络_index.html">982 题 / 152 真题</a><br>
+            <a href="练习系统/网络_真题场.html">真题场</a> · <a href="练习系统/网络_错题本.html">错题本</a></td>
+        <td><a href="精读版/NET_第1章.html">6 章 303 页</a><br>🔴 418 / 🔵 203</td>
+        <td><a href="练习系统/网络_套路库.html">157 卡</a></td>
+        <td><a href="卡库_计算机网络.html">235 张</a></td>
+        <td><a href="数感速查_数字直觉.html">数感速查（帧长 / 端口 / 头部长度）</a></td>
+        <td class="ok">✓</td>
+      </tr>
+      <tr>
+        <td colspan="1"><b>四科合计</b></td>
+        <td><b>3284 题 / 798 真题</b><br>2009–2025 十七年全覆盖</td>
+        <td><b>26 章 1382 页</b><br>🔴 1806 / 🔵 932</td>
+        <td><b>460 卡</b></td>
+        <td><b>682 张</b></td>
+        <td><a href="模考demo_2024.html">2024 全真模考 demo</a>（P3 冲刺期按这套流程做整卷模拟）</td>
+        <td class="ok">✓</td>
+      </tr>
     </table></div>
-    <div class="hub"><b>用法:</b>王道学到哪科哪章,先看该科主线图确认「自己在哪一格」,学完当天翻对应卡库 + 玩对应模拟器;跨科枢纽表在二轮串联时整表过一遍——408 选择题里约两成是跨科缝合题,枢纽表就是为它们准备的。</div>
+    <div class="hub">
+      <b>四科错题本都已建成且互不干扰</b>（localStorage 按科分家，键前缀 <code>ds_</code> /
+      <code>co_</code> / <code>os_</code> / <code>net_</code>），错因标签每科一套。
+      一轮里<b>每道错题当场进错题本并打错因标签</b>——到 11/20 用错题率反查该补哪一章，
+      这一步是 P2 后半段的全部依据，不做的话那两周就没有靶子。
+    </div>
   </section>
 
-  <footer>408 知识串联 · 四科主线 · 由 Claude 编写 · 与卡库/模拟器/数感页配套</footer>
+  <footer>408 知识串联 · 一轮导航 × 六大跨科枢纽 · 数字于 2026-09-02 由脚本实测生成 · 与精读版 / 练习系统 / 套路库 / 卡库配套</footer>
 </div>
 </body>
 </html>
