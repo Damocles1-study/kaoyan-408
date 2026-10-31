@@ -142,7 +142,7 @@ def render(src,ep,title):
                     code='\n'.join(buf)
                     o.append(f'<div class="code pop"><div class="h"><span>{E(ttl or lang.upper())}</span><button class="bl">默写</button></div><pre>{hl_code(code)}</pre></div>')
                     continue
-                inner=render_block('\n'.join(buf),k in('shu','domain'))
+                inner=render_block('\n'.join(buf),k in('shu','domain','after','recall'))
                 raw='\n'.join(buf)
                 if k=='say': o.append(f'<div class="say pop">{inner}</div>')
                 elif k=='think': o.append(f'<div class="say think pop">{inner}</div>')

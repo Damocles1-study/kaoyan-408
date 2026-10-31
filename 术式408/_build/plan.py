@@ -89,7 +89,7 @@ def _measure(id):
     t=_re.sub(r':::code.*?\n:::','',s,flags=_re.S);t=_re.sub(r'^@.*$','',t,flags=_re.M)
     c=len(_re.findall(r'[一-鿿]',t))
     qp=_os.path.join(H,'..','_src','q',id+'.txt');q=open(qp,encoding='utf8').read() if _os.path.exists(qp) else ''
-    ks=_re.findall(r'^@q (\S+)',q,_re.M);big=sum(1 for k in ks if '综' in k or '大题' in k)
+    ks=_re.findall(r'^@q (\S+)',q,_re.M);big=sum(1 for k in ks if '综' in k or 'zh' in k)
     return round(c/200+(len(ks)-big)*2+big*10)
 for _e in EPS: _e['min']=max(5,_measure(_e['id']))
 # 排期：用户每天只有下午几小时给 408，按每个下午约 3.5 小时切，顺序不动
