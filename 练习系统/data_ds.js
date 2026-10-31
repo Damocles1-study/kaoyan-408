@@ -1159,9 +1159,9 @@ window.DS_DATA = [
 
 {id:'3.2-21', ch:3, sec:'3.2 队列', type:'choice', tag:'2011 统考', exam:2011, kp:['循环队列·初值'],
  stem:'【2011】已知循环队列存储在一维数组 A[0..n−1] 中，且队列非空时 front 和 rear 分别指向队首元素和队尾元素。若初始时队列为空，且要求第一个进入队列的元素存储在 A[0] 处，则初始时 front 和 rear 的值分别是（　）。',
- opts:['0, 0','0, n−1','n−1, 0','n−1, n−1'], ans:'D',
- book:'rear 指队尾元素、入队先 rear=(rear+1)%n 再存。要让第一个元素落在 A[0]，须 (rear+1)%n==0→rear 初值 n−1。第一个元素入队只改 rear，front 应保持指向该元素 A[0]，故 front 初值也须使入队后 front 指 A[0]——初始 front=n−1，rear=n−1。',
- claude:'倒推：入队后 rear 指 0→初值 n−1；front 也取 n−1 保证非空时指 A[0]。选 D。', run:null, verdict:'ok'},
+ opts:['0, 0','0, n−1','n−1, 0','n−1, n−1'], ans:'B',
+ book:'入队先 rear=(rear+1)%n 再存。要让第一个元素落在 A[0]，rear 初值须为 n−1。入队只改 rear，不改 front；队列非空时 front 要指向队首元素 A[0]，所以 front 初值就是 0。官方答案 B。',
+ claude:'注意此时队空条件是 (rear+1)%n==front。排除法：若 front 与 rear 初值相等，则与「只有一个元素」时的 front==rear 分不清，排除 A、D；入队不改 front，故 front=0。', run:null, verdict:'ok'},
 
 {id:'3.2-22', ch:3, sec:'3.2 队列', type:'choice', tag:'2014 统考', exam:2014, kp:['循环队列·判空判满'],
  stem:'【2014】循环队列放在一维数组 A[0..M−1] 中，end1 指向队首元素，end2 指向队尾元素的后一个位置。假设循环队列两端均可进行入队和出队操作，队列中最多能容纳 M−1 个元素，初始时为空。下列判断队空和队满的条件中，正确的是（　）。',

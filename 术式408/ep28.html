@@ -1,0 +1,472 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第28话 PV 大题：五个模子｜术式408</title><link rel="stylesheet" href="assets/style.css?v=2"><script src="assets/app.js?v=2"></script></head><body data-ep="28"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="ink" x="-3%" y="-8%" width="106%" height="116%"><feTurbulence type="fractalNoise" baseFrequency=".035 .07" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3.2"/></filter></svg><div class="bar"><a class="logo" href="index.html">术式408</a><span class="now">第28话 PV 大题：五个模子</span><span class="sp"></span><a href="术式录.html">术式录</a><a href="咒灵录.html">咒灵录</a><button id="neg" title="切换黑白反转">反转</button></div><div class="prog"></div><nav class="toc"><a href="#steps">固定四步</a><a href="#pc">模子一：生产者-消费者</a><a href="#rw">模子二：读者-写者</a><a href="#phil">模子三：哲学家进餐</a><a href="#prec">模子四：前驱关系</a><a href="#barber">模子五：理发师（有界排队）</a></nav><main class="wrap"><div class="cover"><div class="kanji">縛</div><span class="vol">第七卷</span><div class="no">第28话</div><h1>PV 大题：五个模子</h1><div class="sub">每年 8 分。先把关系画出来，再落信号量</div><div class="meta"><span>操作系统</span><span>约 85 分钟</span></div></div><div class="freq pop"><b class="t">真题火力｜2009–2025 这一话的考点出现 13 题，覆盖 13/17 年</b><div class="yrs"><div class="y l1" title="2009：1 题">09</div><div class="y " title="2010：0 题">10</div><div class="y l1" title="2011：1 题">11</div><div class="y " title="2012：0 题">12</div><div class="y l1" title="2013：1 题">13</div><div class="y l1" title="2014：1 题">14</div><div class="y l1" title="2015：1 题">15</div><div class="y " title="2016：0 题">16</div><div class="y l1" title="2017：1 题">17</div><div class="y " title="2018：0 题">18</div><div class="y l1" title="2019：1 题">19</div><div class="y l1" title="2020：1 题">20</div><div class="y l1" title="2021：1 题">21</div><div class="y l1" title="2022：1 题">22</div><div class="y l1" title="2023：1 题">23</div><div class="y l1" title="2024：1 题">24</div><div class="y l1" title="2025：1 题">25</div></div><small>空白 = 没考 · 网点 = 1 题 · 黑 = 2 题 · 红 = 3 题及以上（由题库逐题统计）</small></div><div class="say pop"><p>408 每年一道 8 分左右的同步大题。这种题的难点不在语法，而是 <span class="r">你能否把题目翻译成「谁等谁、谁互斥」</span>。这一话给固定步骤，然后把历年常考的五个模子全部讲完。</p></div><h2 id="steps"><i>01</i>固定四步</h2><div class="vow pop"><span class="side">束缚</span><h4 style="margin:0 0 2px">PV 大题四步（卷面就这么写）</h4><p><b>① 关系分析</b>：列出谁和谁互斥、谁和谁同步。写在卷面上，这几句能拿过程分。 <b>② 定义信号量</b>：每个互斥一个 mutex=1；每种资源一个，初值=数量；每个同步一个，初值=0。写清楚含义和初值。 <b>③ 写进程</b>：先写出动作骨架，再插入 P、V。 <b>④ 检查</b>：同步 P 在互斥 P 之前；每个 P 都有配对的 V；是否最大并发。</p></div><div class="trap pop"><span class="side">咒灵</span><h5>三个扣分点</h5><p><b>① 只写 semaphore 不写初值和含义</b> 直接扣。 <b>② 互斥和同步 P 的次序错了导致死锁。</b> <b>③ 把判断写在 mutex 外面</b>：<code>if (count==0) P(rw)</code> 中的判断和修改必须在同一个 mutex 里。</p></div><h2 id="pc"><i>02</i>模子一：生产者-消费者</h2><div class="code pop"><div class="h"><span>生产者消费者（缓冲区 n）</span><button class="bl">默写</button></div><pre><span class="kw">semaphore</span> mutex = <span class="nu">1</span>, empty = n, full = <span class="nu">0</span>;
+
+producer() {
+    <span class="kw">while</span> (<span class="nu">1</span>) {
+        生产;
+        <span class="kw">P</span>(empty);       <span class="cm">// 先申请空位（同步）</span>
+        <span class="kw">P</span>(mutex);       <span class="cm">// 再申请缓冲区（互斥）</span>
+        放入;
+        <span class="kw">V</span>(mutex);
+        <span class="kw">V</span>(full);
+    }
+}
+consumer() {
+    <span class="kw">while</span> (<span class="nu">1</span>) {
+        <span class="kw">P</span>(full);
+        <span class="kw">P</span>(mutex);
+        取走;
+        <span class="kw">V</span>(mutex);
+        <span class="kw">V</span>(empty);
+        消费;
+    }
+}</pre></div><div class="rev pop"><div class="qq">如果把 producer 的 P(empty)、P(mutex) 交换，缓冲区满时会发生什么？</div><button class="open">想好了，翻开</button><div class="aa"><p>生产者先拿到 mutex，然后 P(empty) 阻塞。消费者要 P(mutex) 才能取走，也阻塞。两人互等：<span class="r">死锁</span>。所以「同步 P 在前，互斥 P 在后」。</p></div></div><p>下面这几道都是它的变形：</p><div class="q pop" id="q-os_2.3-综17" data-ans=""><div class="qh"><span class="yr">2009</span><span>实战</span><span class="tagq">一个生产者两个挑食的消费者 · full 按类型拆分</span></div><div class="stem">三个进程 P₁、P₂、P₃ <b>互斥使用</b>一个包含 <b>N（N &gt; 0）</b>个单元的缓冲区。P₁ 每次用 <code>produce()</code> 生成一个<b>正整数</b>并用 <code>put()</code> 送入缓冲区某一空单元；P₂ 每次用 <code>getodd()</code> 从该缓冲区中取出一个<b>奇数</b>并用 <code>countodd()</code> 统计奇数个数；P₃ 每次用 <code>geteven()</code> 从该缓冲区中取出一个<b>偶数</b>并用 <code>counteven()</code> 统计偶数个数。请用信号量机制实现这三个进程的同步与互斥活动，并<b>说明所定义的信号量的含义</b>（要求用伪代码描述）。</div><button class="showa">自己写完再翻参考答案</button><div class="ansb"><b>解：</b><br><b>互斥资源</b>：缓冲区只能互斥访问 ⟹ mutex。<br><b>同步问题</b>：P₁ 与 P₂ 因奇数的放置与取用而同步 ⟹ odd；P₁ 与 P₃ 因偶数的放置与取用而同步 ⟹ even；P₁、P₂、P₃ 因共享缓冲区而同步 ⟹ empty，初值为 N。<pre class="code">semaphore mutex = 1;      // 缓冲区操作的互斥信号量
+semaphore odd = 0;        // 缓冲区中奇数的个数
+semaphore even = 0;       // 缓冲区中偶数的个数
+semaphore empty = N;      // 缓冲区中空单元的个数
+
+Process P1(){ while(True){
+    x = produce();                    // 生成一个正整数
+    P(empty); P(mutex); Put(); V(mutex);
+    if(x % 2 == 0) V(even);           // 偶数，通知 P3
+    else           V(odd);            // 奇数，通知 P2
+}}
+
+Process P2(){ while(True){
+    P(odd);  P(mutex); getodd();  V(mutex);
+    V(empty); countodd();
+}}
+
+Process P3(){ while(True){
+    P(even); P(mutex); geteven(); V(mutex);
+    V(empty); counteven();
+}}</pre><div class="sensei">2009。缓冲区 + 两种产品：奇数信号量 odd，偶数信号量 even，一个 empty，一个 mutex。P1 生产后根据奇偶 V 不同的那个。这是模子一的直接分叉。</div><details><summary>再深一层</summary><div><b>一致。🐍 PV 穷举器验证（N=2，P₁ 依次产「奇偶奇」，276 个状态）：无死锁，缓冲区占用恒在 [0, N] ✓</b><br><br><b>💭 思路（动手前看）</b><ol><li><b>先照标准模型下笔</b>：<u>N 个单元的缓冲区 + 一放两取 ⟹ empty = N、mutex = 1</u>。写到 full 时停一下。</li><li><b>⭐ 核心一问：一个 full 够不够？</b><pre class="code">若只用一个 full：
+  缓冲区里全是偶数，full = 3
+  P₂（只吃奇数）执行 P(full) <b>顺利通过</b>
+  ⟹ 它进了临界区却<b>找不到奇数</b> ⟹ 逻辑崩溃
+⟹ 必须让「等待」这件事本身就区分类型</pre><b>⟹ full 拆成 odd 与 even 两个，各数各的。</b></li><li><b>谁来分流</b>：只有 P₁ 知道自己刚放的是奇是偶 ⟹ <u>由 P₁ 在放完之后判断 <code>x % 2</code>，决定 V(odd) 还是 V(even)。</u></li><li><b>empty 由谁 V</b>：P₂、P₃ 谁取走谁归还 ⟹ 两边都要写 V(empty)。</li></ol><b>✍️ 考场卷面（写完对照）</b><pre class="code"><b>解：</b>定义四个信号量： <b>⛳3 分</b>
+  mutex = 1   互斥使用缓冲区
+  empty = N   缓冲区中的空单元数
+  odd   = 0   缓冲区中已有的奇数个数
+  even  = 0   缓冲区中已有的偶数个数
+
+P₁：while(true){                       <b>⛳3 分</b>
+  x = produce();
+  P(empty);
+  P(mutex); put(x); V(mutex);
+  <b>if(x 为奇数) V(odd); else V(even);</b>
+}
+
+P₂：while(true){                       <b>⛳1 分</b>
+  P(odd);
+  P(mutex); getodd(); V(mutex);
+  V(empty);
+  countodd();
+}
+
+P₃：while(true){                       <b>⛳1 分</b>
+  P(even);
+  P(mutex); geteven(); V(mutex);
+  V(empty);
+  counteven();
+}
+
+<b>empty 保证不写满，odd/even 分别保证 P₂、P₃ 只在</b>
+<b>有对应类型数据时才取，mutex 保证互斥访问缓冲区。</b></pre><b>📌 批注（对照完校对）</b><br>⭐⭐ <b>本题的通用启示：<u>当消费者「挑食」时，full 必须按产品类型拆开</u></b>。<b>这是本章出现频率最高的一个变形</b>：<u>教材的「苹果橘子」（apple/orange 两个）、综 16 吸烟者（offer1/2/3 三个）、本题（odd/even 两个）——同一个手法的三种规模。</u><br>⚠️ <b>V(odd)/V(even) 必须写在 V(mutex) <u>之后</u>吗？</b><u>不必须——两个 V 都不会阻塞，顺序可换</u>。<b>但 <code>if</code> 判断本身要放在 put() 之后（此时才知道放进去的是什么），而且绝不能把 if 判断放到 P(mutex) 之前。</b><br>⚠️ <b>empty 不能拆</b>：<u>空单元就是空单元，不分奇偶</u>——<b>拆了反而会造成「奇数格空着但偶数格满了」这种不存在的限制。</b><u>判据：<b>拆的是「产品」，不是「空位」</b>。</u><br>⭐ <b>为什么 odd + even 不等于 full 就没关系</b>：<u>它们的和恒等于缓冲区中的数据个数</u>，<b>而 empty + (odd + even) = N 始终成立</b>——🐍 穷举器验证了这个不变式在全部 276 个状态中都保持。<br>🔗 <b>与综 04（两货架装配）恰成镜像</b>：<u>综 04 是「两个生产者、一个消费者要取两种货」，本题是「一个生产者、两个消费者各吃一种货」</u>。</div></details></div></div><div class="q pop" id="q-os_2.3-综20" data-ans=""><div class="qh"><span class="yr">2014</span><span>实战</span><span class="tagq">周期性独占 · 把 P(mutex) 提到循环外</span></div><div class="stem">系统中有多个生产者进程和多个消费者进程，共享一个能存放 <b>1000 件产品的环形缓冲区（初始为空）</b>。缓冲区未满时，生产者进程可以放入其生产的一件产品，否则等待；缓冲区未空时，消费者进程可以从缓冲区取走一件产品，否则等待。<b>要求一个消费者进程从缓冲区连续取出 10 件产品后，其他消费者进程才可以取产品。</b>请使用信号量 P、V 操作实现进程间的互斥与同步，要求写出完整的过程，并说明所用信号量的含义和初值。</div><button class="showa">自己写完再翻参考答案</button><div class="ansb"><b>解：</b>这是典型的生产者-消费者问题，只加了一个条件，只需在标准模型上<b>新加一个信号量</b>：mutex1 控制生产者之间互斥，<b>mutex2 控制一个消费者在一个周期（10 次）内对缓冲区的访问</b>。<pre class="code">semaphore empty = 1000;   // 空缓冲区数
+semaphore full = 0;       // 非空缓冲区数
+semaphore mutex1 = 1;     // 生产者之间的互斥
+semaphore mutex2 = 1;     // 消费者之间的互斥
+int in = 0, out = 0;
+
+生产者: while(TRUE){
+    produce;
+    P(empty); P(mutex1);
+    put an item into buf[in]; in = (in+1) % n;
+    V(mutex1); V(full);
+}
+
+消费者: while(TRUE){
+    <b>P(mutex2);</b>              // 10 次循环被一个消费者独占
+    for(int i = 0; i &lt; 10; i++){
+        P(full);
+        get an item from buf[out]; out = (out+1) % n;
+        V(empty);
+    }
+    <b>V(mutex2);</b>
+    Consume;
+}</pre><div class="sensei">2014。消费者要连续取 10 件：多一个 <code>mutex1</code> 让消费者之间排队，这样一个消费者取 10 件时不会被其他消费者穿插。<b>放在外面</b>，它保护的是「连续 10 次」这个动作。</div><details><summary>再深一层</summary><div><b>一致。🐍 PV 穷举器验证（缩为 n=4、连取 2 件、2 个消费者，783 个状态）：无死锁，且不变式「同一时刻至多 1 个消费者处于连取周期内」全程保持 ✓</b><br><br><b>💭 思路（动手前看）</b><ol><li><b>先把标准模型写出来</b>：empty = 1000、full = 0、互斥锁若干。<u>本题 90% 是模板，只有一句话是新的。</u></li><li><b>⭐ 读懂那句特殊要求</b>：<u>「一个消费者连续取出 10 件后，其他消费者才可以取」</u>⟹ <b>这不是「取一件要互斥」，而是「取 10 件这整件事要互斥」。</b><u>互斥的<b>粒度</b>从一次操作扩大到了一个周期。</u></li><li><b>于是唯一的技巧浮出水面</b>：<pre class="code">普通写法：for(10 次){ P(mutex); 取一件; V(mutex); }
+          ⟹ 每取一件都可能被别的消费者插队 ✗
+
+本题写法：<b>P(mutex2);</b> for(10 次){ 取一件; } <b>V(mutex2);</b>
+          ⟹ 整个周期被独占 ✓</pre></li><li><b>P(full) 留在循环内</b>：<u>每取一件都要确认「有货」，所以 P(full) 必须一件一次。</u></li></ol><b>✍️ 考场卷面（写完对照）</b><pre class="code"><b>解：</b>定义四个信号量： <b>⛳4 分</b>
+  empty  = 1000  缓冲区中的空闲单元数
+  full   = 0     缓冲区中的产品数
+  mutex1 = 1     生产者之间互斥使用缓冲区
+  mutex2 = 1     <b>消费者之间互斥（以 10 件为一个周期）</b>
+
+生产者：while(TRUE){                   <b>⛳2 分</b>
+  生产一件产品;
+  P(empty); P(mutex1);
+  将产品放入 buf[in]; in = (in+1) % 1000;
+  V(mutex1); V(full);
+}
+
+消费者：while(TRUE){                   <b>⛳4 分</b>
+  <b>P(mutex2);            // 申请连续取 10 件的独占权</b>
+  for(i = 0; i &lt; 10; i++){
+      P(full);
+      从 buf[out] 取一件; out = (out+1) % 1000;
+      V(empty);
+  }
+  <b>V(mutex2);            // 10 件取完，释放独占权</b>
+  消费这 10 件产品;
+}
+
+<b>P(mutex2) 置于 for 循环之外，使一个消费者一旦开始</b>
+<b>就会连续取满 10 件，其他消费者在此期间被阻塞。</b></pre><b>📌 批注（对照完校对）</b><br>⭐⭐ <b>「把 P 提到循环外」就是本题的全部技巧</b>，也是「周期性独占」的通用写法：<u>要让某一串操作作为整体不被打断，就把互斥锁罩在这一串的<b>外面</b></u>。<b>凡题目出现「连续 k 次」「一批」「一次性完成」等字眼，都往这个方向想。</b><br>⚠️ <b>P(full) 千万不能也提到循环外</b>：<u>提到外面就变成「只确认一件货就取 10 件」，缓冲区会被取空（full 变负 / 取到空单元）</u>。<b>判据：<u>同步信号量按「每件」申请，互斥信号量按「每批」申请</u>——两者粒度不同，这正是本题的精髓。</b><br>⭐ <b>为什么生产者和消费者用两把不同的锁</b>：<u>环形缓冲区有 in、out 两个指针，生产者只动 in、消费者只动 out</u>⟹ <b>它们操作的其实是不同的临界资源，可以并发。</b><u>若共用一把 mutex，生产和消费就无法同时进行，并发度减半</u>——<b>按 2017 真题的评分口径，这属于「降低并发度」，是要扣分的。</b><br>⚠️ <b>「消费」动作要放在 V(mutex2) 之后</b>：<u>消费（处理数据）不碰缓冲区</u>，<b>圈进临界区就白白拖长了独占时间。</b><br>🔗 <b>本题是 2.3 节里最「标准 + 一处变形」的一道</b>，适合作为背诵模板：<u>先默写标准生产者-消费者，再练这一处提锁。</u></div></details></div></div><div class="q pop" id="q-os_2.3-综21" data-ans=""><div class="qh"><span class="yr">2015</span><span>实战</span><span class="tagq">同步信号量初值非 0 · 双向有界缓冲</span></div><div class="stem">有 A、B 两人通过<b>信箱</b>进行辩论，每个人都从<b>自己的</b>信箱中取得对方的问题，将答案和向对方提出的新问题组成一个邮件放入<b>对方</b>的邮箱中。假设 <b>A 的信箱最多放 M 个</b>邮件，<b>B 的信箱最多放 N 个</b>邮件。<b>初始时 A 的信箱中有 x 个邮件（0 &lt; x &lt; M），B 的信箱中有 y 个邮件（0 &lt; y &lt; N）</b>。辩论者每取出一个邮件，邮件数减 1。当信箱不为空时，辩论者才能从信箱中取邮件，否则等待；当信箱不满时，辩论者才能将新邮件放入信箱，否则等待。请添加必要的信号量和 P、V 操作，以实现上述过程的同步。<b>要求写出完整的过程，并说明信号量的含义和初值。</b><pre>CoBegin
+A{                                    B{
+  while(TRUE){                          while(TRUE){
+    从 A 的信箱中取出一个邮件;              从 B 的信箱中取出一个邮件;
+    回答问题并提出一个新问题;               回答问题并提出一个新问题;
+    将新邮件放入 B 的信箱;                 将新邮件放入 A 的信箱;
+  }                                     }
+}                                     }
+CoEnd</pre></div><button class="showa">自己写完再翻参考答案</button><div class="ansb"><b>解：</b>为两个信箱各设一对同步信号量与一个互斥信号量。<pre class="code">semaphore Full_A  = x;      // A 的信箱中的邮件数量
+semaphore Empty_A = M - x;  // A 的信箱中还可存放的邮件数量
+semaphore Full_B  = y;      // B 的信箱中的邮件数量
+semaphore Empty_B = N - y;  // B 的信箱中还可存放的邮件数量
+semaphore mutex_A = 1;      // A 的信箱的互斥信号量
+semaphore mutex_B = 1;      // B 的信箱的互斥信号量
+
+A{ while(TRUE){
+    P(Full_A);  P(mutex_A);
+      从 A 信箱取一个邮件;
+    V(mutex_A); V(Empty_A);
+    回答问题并提出一个新问题;
+    P(Empty_B); P(mutex_B);
+      新邮件放入 B 信箱;
+    V(mutex_B); V(Full_B);
+}}
+
+B{ while(TRUE){
+    P(Full_B);  P(mutex_B);
+      从 B 信箱取一个邮件;
+    V(mutex_B); V(Empty_B);
+    回答问题并提出一个新问题;
+    P(Empty_A); P(mutex_A);
+      新邮件放入 A 信箱;
+    V(mutex_A); V(Full_A);
+}}</pre><div class="sensei">2015。两人互相给对方写信，就是两组「生产者-消费者」叠在一起。信箱 A：Full_A=x，Empty_A=M−x，mutex_A；信箱 B 同理。</div><details><summary>再深一层</summary><div><b>一致。🐍 PV 穷举器验证（M=N=2、x=y=1，各两轮，271 个状态）：无死锁，两信箱邮件数恒在 [0, M] 与 [0, N] 内 ✓</b><br><br><b>💭 思路（动手前看）</b><ol><li><b>认模型</b>：两个信箱 = 两个有界缓冲区。<u>每个缓冲区一对 Full/Empty + 一把 mutex ⟹ 共 6 个信号量。</u></li><li><b>⭐⭐ 本题的题眼：初值不是 0</b>。<pre class="code">选择题 2.3-18 的结论在这里兑现：
+  「期望的消息<b>尚未</b>产生 ⟹ 同步信号量初值 0」
+  「期望的消息<b>已存在</b> ⟹ 初值为非 0 正整数」  ← 本题
+
+  A 信箱已有 x 封    ⟹ Full_A  = <b>x</b>
+  A 信箱还能放 M−x 封 ⟹ Empty_A = <b>M−x</b>
+  （B 信箱同理，四个初值一个 0 都没有）</pre></li><li><b>看清「取自己的、放对方的」</b>：<u>A 从 A 信箱取（P(Full_A)），往 B 信箱放（P(Empty_B)）</u>——<b>下标很容易写串，写完务必逐行核一遍。</b></li><li><b>顺序</b>：每一段都是「同步 P → 互斥 P → 操作 → 互斥 V → 同步 V」。</li></ol><b>✍️ 考场卷面（写完对照）</b><pre class="code"><b>解：</b>定义六个信号量： <b>⛳4 分</b>
+  Full_A  = x      A 的信箱中现有的邮件数
+  Empty_A = M−x    A 的信箱中还可存放的邮件数
+  Full_B  = y      B 的信箱中现有的邮件数
+  Empty_B = N−y    B 的信箱中还可存放的邮件数
+  mutex_A = 1      互斥访问 A 的信箱
+  mutex_B = 1      互斥访问 B 的信箱
+
+A：while(TRUE){                       <b>⛳3 分</b>
+  P(Full_A);  P(mutex_A);
+  从 A 的信箱中取出一个邮件;
+  V(mutex_A); V(Empty_A);
+
+  回答问题并提出一个新问题;
+
+  P(Empty_B); P(mutex_B);
+  将新邮件放入 B 的信箱;
+  V(mutex_B); V(Full_B);
+}
+
+B：while(TRUE){ …与 A 完全对称…  }     <b>⛳3 分</b>
+  （取自 B 信箱：P(Full_B)/P(mutex_B)；
+    放入 A 信箱：P(Empty_A)/P(mutex_A)）
+
+<b>Full/Empty 保证信箱不空才取、不满才放；</b>
+<b>mutex 保证两人不会同时操作同一个信箱。</b></pre><b>📌 批注（对照完校对）</b><br>⭐⭐ <b>四个非 0 初值是本题的全部分量所在</b>：<u>若把 Full_A、Full_B 写成 0，就等于宣称「一开始两个信箱都是空的」</u>⟹ <b>A 和 B 都会阻塞在第一个 P 上，辩论永远开不了场（死锁）。</b><u>题目特意写了 0 &lt; x &lt; M、0 &lt; y &lt; N，就是在提示你「两边都已有邮件、都能立刻开始」。</u><br>⚠️ <b>下标写串是本题第二大失分点</b>：<u>记一句口诀——<b>「取自己的、放对方的」</b></u>。<b>A 的第一段全是下标 A，第二段全是下标 B；B 反之。</b><u>写完用手指着逐行核一遍下标，10 秒钟的事。</u><br>⭐ <b>「回答问题并提出新问题」为什么放在两段之间、且不在任何临界区里</b>：<u>这是纯思考动作，不碰任何信箱</u>——<b>圈进临界区会让对方在他思考期间也不能用信箱，白白降低并发。</b><br>⭐ <b>本题不会死锁的原因（值得多想一层）</b>：<u>A 在申请 Empty_B 时，手里<b>已经放掉了</b> mutex_A</u>⟹ <b>不存在「持 A 锁等 B 锁」的循环等待。</b><b>若把两段合并成 P(mutex_A); P(mutex_B); …，A 与 B 反向加锁就会死锁</b>（正是选择题 2.3-22 的场景）。<br>🔗 <b>与选择题 2.3-18 是明确的呼应关系</b>：<u>那道题给结论，这道题给分值。</u></div></details></div></div><h2 id="rw"><i>03</i>模子二：读者-写者</h2><p>读可以同时，写必须独占。<b>关键：第一个读者上锁，最后一个读者解锁</b>。</p><div class="code pop"><div class="h"><span>读者优先</span><button class="bl">默写</button></div><pre><span class="kw">int</span> count = <span class="nu">0</span>;
+<span class="kw">semaphore</span> mutex = <span class="nu">1</span>;    <span class="cm">// 保护 count</span>
+<span class="kw">semaphore</span> rw = <span class="nu">1</span>;       <span class="cm">// 读写互斥</span>
+
+writer() {
+    <span class="kw">P</span>(rw); 写; <span class="kw">V</span>(rw);
+}
+reader() {
+    <span class="kw">P</span>(mutex);
+    <span class="kw">if</span> (count == <span class="nu">0</span>) <span class="kw">P</span>(rw);     <span class="cm">// 第一个读者负责占坑</span>
+    count++;
+    <span class="kw">V</span>(mutex);
+    读;
+    <span class="kw">P</span>(mutex);
+    count--;
+    <span class="kw">if</span> (count == <span class="nu">0</span>) <span class="kw">V</span>(rw);     <span class="cm">// 最后一个读者负责放坑</span>
+    <span class="kw">V</span>(mutex);
+}</pre></div><div class="shu pop"><span class="side">术式</span><h5>写者优先（读写公平）的改法</h5><p>多加一个 <code>w=1</code>，读者和写者都先 <code>P(w)</code>，读者拿到 count 之后 <code>V(w)</code>，写者写完才 <code>V(w)</code>。这样写者来了之后，后面的读者进不去。</p></div><div class="flash pop"><h5>看到什么想到读者写者</h5><p>「多个 A 可以同时，但 A 和 B 互斥」「第一个开门、最后一个关门」：都是这个模子。过桥（同方向一起走）、复杂的共享变量。</p></div><div class="q pop" id="q-os_2.3-综22" data-ans=""><div class="qh"><span class="yr">2017</span><span>实战</span><span class="tagq">最大限度并发 · 读读不互斥、读写与写写互斥</span></div><div class="stem">某进程中有 3 个并发执行的线程 thread1、thread2 和 thread3，其伪代码如下所示。请添加必要的信号量和 P、V 操作，<b>要求确保线程互斥访问临界资源，并且最大限度地并发执行。</b><pre>// 复数的结构类型定义          thread1              thread3
+typedef struct               {                    {
+{                              cnum w;              cnum w;
+    float a;                   w = add(x, y);       w.a = 1;
+    float b;                   …                    w.b = 1;
+} cnum;                      }                      z = add(z, w);
+cnum x, y, z;  // 全局变量                          y = add(y, w);
+                             thread2                …
+// 计算两个复数之和           {                    }
+cnum add(cnum p, cnum q)       cnum w;
+{                              w = add(y, z);
+    cnum s;                    …
+    s.a = p.a + q.a;         }
+    s.b = p.b + q.b;
+    return s;
+}</pre></div><button class="showa">自己写完再翻参考答案</button><div class="ansb"><b>解：书上的通用方法论（这段比答案本身更重要）：</b><br>1) <b>只有全局变量才可能需要互斥访问</b>（局部变量不需要，即使不同进程里同名）。<br>2) ⭐⭐ <b>互斥是「进程之间对某个变量」的互斥，不能脱离具体进程谈某变量需不需要互斥。</b>一组互斥关系需要指出是<b>哪些进程对哪个变量</b>的互斥。<b>若题目给的是「只需 1 与 3、2 与 3 互斥」而你按「三者两两互斥」解，虽然满足了要求，但降低了并发度 ⟹ 扣分。</b>「这也是 PV 互斥的最大难点：在没有准确找准互斥关系的条件下，容易导致程序的并发度降低，从而扣分。」<br>3) <b>找互斥关系的原则 = 读者-写者原则：读与读不需要互斥，读与写、写与写需要互斥。</b><br><b>本题分析</b>：全局变量只有 x、y、z。thread1 涉及 x、y（<b>只读</b>）；thread2 涉及 y、z（<b>只读</b>）；thread3 涉及 y、z（<b>读和写</b>）。⟹ 三组互斥关系：① thread1 与 thread3 对 y；② thread2 与 thread3 对 y；③ thread2 与 thread3 对 z。⟹ 定义三个互斥信号量 <b>mutex_y1 = mutex_y2 = mutex_z = 1</b>：<pre class="code">thread1{                 thread2{
+  cnum w;                  cnum w;
+  wait(mutex_y1);          wait(mutex_y2);
+  w = add(x, y);           wait(mutex_z);
+  signal(mutex_y1);        w = add(y, z);
+  …                        signal(mutex_z);
+}                          signal(mutex_y2);
+                           …
+                         }
+
+thread3{
+  cnum w;
+  w.a = 1; w.b = 1;
+  wait(mutex_z);   z = add(z, w);   signal(mutex_z);
+  wait(mutex_y1);  wait(mutex_y2);
+  y = add(y, w);
+  signal(mutex_y1); signal(mutex_y2);
+  …
+}</pre><div class="sensei">2017。三个线程，读 x、y、z，修改 y、z。要最大并发：对每一对变量按读写分别加信号量，只有都是读时才不互斥。这题对「最大并发」要求很高。</div><details><summary>再深一层</summary><div><b>一致。🐍 PV 穷举器验证（190 个状态）：无死锁——因为 thread3 先释放 mutex_z 再申请 mutex_y，不构成循环等待；若改成「持 mz 抢 my」与 thread2 的「持 my 抢 mz」并存，23 个状态内即死锁 ✓</b><br><br><b>💭 思路（动手前看）</b><ol><li><b>第一步：画一张「谁读谁写」的表</b>（这一步做对，题就做完了一半）：<div class="tabwrap"><table class="qtab"><tr><th>线程</th><th>x</th><th>y</th><th>z</th></tr><tr><td>thread1</td><td>读</td><td><b>读</b></td><td>—</td></tr><tr><td>thread2</td><td>—</td><td><b>读</b></td><td><b>读</b></td></tr><tr><td>thread3</td><td>—</td><td><b>读+写</b></td><td><b>读+写</b></td></tr></table></div></li><li><b>第二步：用读者-写者原则逐对筛</b>：<pre class="code">t1 ↔ t2   对 y 都是<b>读</b>       ⟹ <b>不需要互斥</b> ⭐
+t1 ↔ t3   对 y 是读 vs 写   ⟹ 需要（mutex_y1）
+t2 ↔ t3   对 y 是读 vs 写   ⟹ 需要（mutex_y2）
+t2 ↔ t3   对 z 是读 vs 写   ⟹ 需要（mutex_z）
+t1 ↔ ?    对 x 只有它一个碰 ⟹ 不需要</pre><u>三组关系 ⟹ 三个信号量，一个不多一个不少。</u></li><li><b>第三步：为什么 y 要两个信号量而不是一个</b>：<u>因为 y 上的互斥关系是「t1↔t3」和「t2↔t3」两组，而<b>t1 与 t2 之间不互斥</b></u>。<b>若只用一个 mutex_y，t1 和 t2 就被迫互斥了 ⟹ 并发度下降 ⟹ 扣分。</b></li><li><b>第四步：检查加锁顺序，避免死锁</b>（见批注）。</li></ol><b>✍️ 考场卷面（写完对照）</b><pre class="code"><b>解：</b>全局变量只有 x、y、z。 <b>⛳3 分</b>
+  thread1 只读 x、y；thread2 只读 y、z；
+  thread3 对 z、y 既读又写。
+  由「读读不互斥、读写与写写互斥」得三组互斥关系：
+    ① thread1 与 thread3 对 y   ② thread2 与 thread3 对 y
+    ③ thread2 与 thread3 对 z
+  故设三个互斥信号量，初值均为 1：
+    mutex_y1、mutex_y2、mutex_z
+
+thread1{                             <b>⛳2 分</b>
+  wait(mutex_y1); w = add(x, y); signal(mutex_y1);
+}
+
+thread2{                             <b>⛳2 分</b>
+  wait(mutex_y2); wait(mutex_z);
+  w = add(y, z);
+  signal(mutex_z); signal(mutex_y2);
+}
+
+thread3{                             <b>⛳3 分</b>
+  w.a = 1; w.b = 1;
+  wait(mutex_z);  z = add(z, w);  signal(mutex_z);
+  wait(mutex_y1); wait(mutex_y2);
+  y = add(y, w);
+  signal(mutex_y1); signal(mutex_y2);
+}
+
+<b>thread1 与 thread2 之间无互斥关系，可并发执行，</b>
+<b>故在保证互斥的前提下达到了最大并发度。</b></pre><b>📌 批注（对照完校对）</b><br>⭐⭐⭐ <b>「最大限度地并发执行」这句话是本题的评分关键，也是它区别于其他 PV 题的地方</b>：<u>用一把大 mutex 把三个线程全锁起来，<b>互斥要求满足了，但并发度题干明确要求</b></u>⟹ <b>照样扣分。</b>教材原话：「这也是 PV 互斥的最大难点：在没有准确找准互斥关系的条件下，容易导致程序的并发度降低，从而扣分。」<br>⭐ <b>「互斥关系」必须说清是「哪些线程对哪个变量」</b>：<u>不能笼统地说「y 需要互斥」</u>，<b>要说「thread1 与 thread3 对 y 互斥、thread2 与 thread3 对 y 互斥，但 thread1 与 thread2 之间不互斥」。</b><u>这句分析本身就值分。</u><br>⚠️ <b>加锁顺序：thread3 必须先放掉 mutex_z 再去申请 mutex_y</b>：<u>thread2 的顺序是「先 y2 后 z」，thread3 若是「先 z 后 y2」且两把锁同时持有，就是反序加锁 ⟹ 死锁</u>（正是选择题 2.3-22 的场景）。<b>教材答案让 thread3 把 z 的操作完整做完、释放 mutex_z 之后，再去拿两把 y 锁</b>——🐍 <u>穷举器实测：这样写 190 个状态无死锁；改成同时持有则 23 个状态内死锁。</u><br>⭐ <b>x 为什么完全不需要保护</b>：<u>只有 thread1 碰它，且只是读</u>——<b>没有第二个线程参与，就不存在「互斥关系」。</b><u>再次印证：<b>互斥是一种「关系」，单个线程谈不上互斥。</b></u><br>🔗 <b>本题的方法论是 2.3 全节的总纲</b>，<u>2016 选择题（2.3-50）是它的选择题版，2024 真题的「尽可能少的信号量」是它的延续</u>。</div></details></div></div><h2 id="phil"><i>04</i>模子三：哲学家进餐</h2><div class="ana pop"><span class="side">比方</span><h4 style="margin:0 0 2px">问题和解法</h4><p>5 人 5 筷子，都拿左边那根，就死锁。解决方法：① 最多让 4 个人上桌；② 奇数号先左后右，偶数号先右后左；③ 拿两根筷子的动作用 mutex 保护（一起拿）。</p></div><div class="code pop"><div class="h"><span>限制上桌人数（最常用）</span><button class="bl">默写</button></div><pre><span class="kw">semaphore</span> chopstick[<span class="nu">5</span>] = {<span class="nu">1</span>,<span class="nu">1</span>,<span class="nu">1</span>,<span class="nu">1</span>,<span class="nu">1</span>};
+<span class="kw">semaphore</span> room = <span class="nu">4</span>;        <span class="cm">// 最多 4 人同时拿筷子</span>
+
+philosopher(<span class="kw">int</span> i) {
+    <span class="kw">while</span> (<span class="nu">1</span>) {
+        <span class="kw">P</span>(room);
+        <span class="kw">P</span>(chopstick[i]);
+        <span class="kw">P</span>(chopstick[(i + <span class="nu">1</span>) % <span class="nu">5</span>]);
+        吃;
+        <span class="kw">V</span>(chopstick[(i + <span class="nu">1</span>) % <span class="nu">5</span>]);
+        <span class="kw">V</span>(chopstick[i]);
+        <span class="kw">V</span>(room);
+        思考;
+    }
+}</pre></div><div class="q pop" id="q-os_2.3-综23" data-ans=""><div class="qh"><span class="yr">2019</span><span>实战</span><span class="tagq">哲学家变体 · 用第三种资源限制并发人数</span></div><div class="stem">有 <b>n（n ≥ 3）</b>名哲学家围坐在一张圆桌边，每名哲学家交替地就餐和思考。<b>在圆桌中心有 m（m ≥ 1）个碗</b>，每两名哲学家之间有一根筷子。<b>每名哲学家必须取到一个碗和两侧的筷子后，才能就餐</b>，进餐完毕，将碗和筷子放回原位，并继续思考。<b>为使尽可能多的哲学家同时就餐，且防止出现死锁现象</b>，请使用信号量的 P、V 操作描述上述过程中的互斥与同步，并说明所用信号量及初值的含义。</div><button class="showa">自己写完再翻参考答案</button><div class="ansb"><b>解：思路</b>：传统哲学家问题可用「限制至多允许 n−1 名哲学家同时抢筷子」避免死锁。<b>本题可用碗这个限制资源来避免死锁</b>：<br>· 当碗数 <b>m &lt; n</b> 时，直接让碗的资源量等于 <b>m</b>，确保不会出现所有哲学家都拿一侧筷子而无限等待另一侧的情况；<br>· 当 <b>m ≥ n</b> 时，为让碗起到同样的限制效果，让碗的资源量等于 <b>n−1</b>。<br>⟹ ⭐⭐ <b>碗的资源量 = min{n−1, m}</b>。<b>碗的资源量起限制哲学家取筷子的作用，所以必须先对碗做 P 操作。</b><pre class="code">semaphore bowl;                     // 协调哲学家对碗的使用
+semaphore chopsticks[n];            // 协调哲学家对筷子的使用
+for(int i = 0; i &lt; n; i++) chopsticks[i] = 1;
+bowl = min(n-1, m);                 // bowl ≤ n−1，确保不死锁
+
+while(TRUE){                        // 哲学家 i 的程序
+    思考;
+    P(bowl);                        // 取碗（必须放在最前）
+    P(chopsticks[i]);               // 取左边筷子
+    P(chopsticks[(i+1) % n]);       // 取右边筷子
+    就餐;
+    V(chopsticks[i]);
+    V(chopsticks[(i+1) % n]);
+    V(bowl);
+}</pre><div class="sensei">2019。m 个碗，就是天然的「room」：碗数 <code>bowl = min(n−1, m)</code>。为什么要取 min？碗比 n−1 多时也要限制 n−1，否则还是能死锁。一眼看出才是硬本事。</div><details><summary>再深一层</summary><div><b>一致。🐍 PV 穷举器三组参数验证：n=3/m=5（bowl=2，242 状态）、n=4/m=2（bowl=2，928 状态）、n=5/m=9（bowl=4，14642 状态）全部无死锁 ✓；若 m ≥ n 时不封顶（n=4 取 bowl=9），2401 个状态内即死锁 ✓</b><br><br><b>💭 思路（动手前看）</b><ol><li><b>先认出这是哲学家问题的变体</b>：<u>核心矛盾还是「每人要凑齐两根相邻筷子」⟹ 循环等待 ⟹ 死锁风险</u>。<b>题目还额外给了一种资源（碗）——这不是负担，是<u>送来的限制器</u>。</b></li><li><b>回忆 2.3-45 的结论</b>：<u>n 个哲学家，只要保证同时抢筷子的人不超过 n−1，就必然有人能凑齐两根</u>（抽屉原理）。<b>所以我们要的是一个「最多放 n−1 人进场」的门票。</b></li><li><b>⭐ 分情况把碗变成门票</b>：<pre class="code">m &lt; n−1 或 m = n−1  ⟹ 碗本来就不够，天然限制住了 ⟹ bowl = m
+m ≥ n            ⟹ 碗太多，起不到限制作用 ⟹ 人为压到 <b>n−1</b>
+
+合并写成一个式子： <b>bowl = min{n−1, m}</b></pre></li><li><b>⭐ 位置：P(bowl) 必须在两个 P(chopsticks) 之前</b>。<u>门票要在进场前检查才有意义</u>；<b>放在筷子之后，人已经把筷子抢完了，限制形同虚设。</b></li></ol><b>✍️ 考场卷面（写完对照）</b><pre class="code"><b>解：</b>设两类信号量： <b>⛳4 分</b>
+  chopsticks[i] = 1  (i = 0,1,…,n−1)
+      表示第 i 根筷子是否可用，共 n 个，初值均为 1
+  bowl = <b>min{n−1, m}</b>
+      表示可用的碗数；取 min 是因为：
+      · m &lt; n 时碗数本身已限制了同时就餐的人数；
+      · m ≥ n 时须人为限制至多 n−1 人同时取筷子，
+        以保证至少一人能取到两根筷子，从而不死锁。
+
+哲学家 i 的进程：while(TRUE){          <b>⛳6 分</b>
+  思考;
+  <b>P(bowl);</b>                    // 先取碗，限制并发人数
+  P(chopsticks[i]);            // 取左侧筷子
+  P(chopsticks[(i+1) % n]);    // 取右侧筷子
+  就餐;
+  V(chopsticks[i]);
+  V(chopsticks[(i+1) % n]);
+  V(bowl);
+}
+
+<b>由于同时取筷子的哲学家至多 min{n−1, m} 名，</b>
+<b>必有一人能同时获得两根筷子，故不会死锁；</b>
+<b>且该值已取到上限，故同时就餐的人数尽可能多。</b></pre><b>📌 批注（对照完校对）</b><br>⭐⭐ <b>「min」是本题唯一的得分点，而且两边都要讲理由</b>：<u>只写 bowl = m 会在 m ≥ n 时死锁；只写 bowl = n−1 会在 m &lt; n−1 时超发碗（碗不够用）</u>。<b>两种情况都要在卷面上说一句，这就是 4 分里的核心 2 分。</b><br>⭐ <b>题干「为使尽可能多的哲学家同时就餐」这句话在给你定上界</b>：<u>它是在说「别偷懒把 bowl 设成 1」</u>。<b>设成 1 确实不死锁，但同时只有一人吃饭，与题意相悖</b>——<u>这与 2017 真题「最大限度地并发执行」是同一种要求。</u><br>⚠️ <b>P(bowl) 的位置错了就全错</b>：<u>若写成 P(chopsticks[i]); P(bowl); …，那么 n 个人可以先各拿一根左筷再去抢碗</u>⟹ <b>筷子已经被瓜分干净，碗再怎么限制也救不回来 ⟹ 死锁。</b><u>通用判据：<b>限制器必须放在被限制的资源之前申请。</b></u><br>⭐ <b>两个 V(chopsticks) 的顺序可以换，V(bowl) 放最后</b>：<u>先还筷子再交碗，语义上更顺（人吃完了才离席）</u>，<b>但由于 V 不会阻塞，三个 V 的顺序其实都不影响正确性。</b><br>🔗 <b>与 2.3-45（seat 初值最大为 4）是同一条结论的两种问法</b>：<u>那道选择题问「限制器最大取多少」（答 n−1 = 4），本题问「限制器该怎么设」（答 min{n−1, m}）</u>。<b>先做那道选择题，本题就只剩一个 min 要写。</b></div></details></div></div><h2 id="prec"><i>05</i>模子四：前驱关系</h2><p>一个操作结束后，另一个才能开始。每一条边一个信号量，初值 0。</p><figure class="pop"><svg viewBox="0 0 440 150" width="440" role="img"><defs><pattern id="tone" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" style="fill:var(--ink);opacity:.45"/></pattern></defs><line x1="64.7692" y1="63.8462" x2="148.769" y2="28.8462" class="ln"/><polygon class="ha" points="155.231,26.1538 149.385,32.9231 146.308,25.5385"/><line x1="64.7692" y1="76.1538" x2="148.769" y2="111.154" class="ln"/><polygon class="ha" points="155.231,113.846 146.308,114.462 149.385,107.077"/><line x1="186" y1="20" x2="267" y2="20" class="ln"/><polygon class="ha" points="274,20 266,24 266,16"/><line x1="182.292" y1="30.243" x2="272.331" y2="105.276" class="ln"/><polygon class="ha" points="277.708,109.757 269.002,107.708 274.123,101.563"/><line x1="185.664" y1="116.737" x2="387.483" y2="74.6909" class="ln"/><polygon class="ha" points="394.336,73.2633 387.32,78.8108 385.689,70.979"/><line x1="304.769" y1="26.1538" x2="388.769" y2="61.1538" class="ln"/><polygon class="ha" points="395.231,63.8462 386.308,64.4615 389.385,57.0769"/><line x1="304.769" y1="113.846" x2="388.769" y2="78.8462" class="ln"/><polygon class="ha" points="395.231,76.1538 389.385,82.9231 386.308,75.5385"/><circle cx="50" cy="70" r="16" class="bx"/><text x="50" y="70" text-anchor="middle" dominant-baseline="central" font-size="14" class="" font-weight="800">S1</text><circle cx="170" cy="20" r="16" class="bx"/><text x="170" y="20" text-anchor="middle" dominant-baseline="central" font-size="14" class="" font-weight="800">S2</text><circle cx="170" cy="120" r="16" class="bx"/><text x="170" y="120" text-anchor="middle" dominant-baseline="central" font-size="14" class="" font-weight="800">S3</text><circle cx="290" cy="20" r="16" class="bx"/><text x="290" y="20" text-anchor="middle" dominant-baseline="central" font-size="14" class="" font-weight="800">S4</text><circle cx="290" cy="120" r="16" class="bx"/><text x="290" y="120" text-anchor="middle" dominant-baseline="central" font-size="14" class="" font-weight="800">S5</text><circle cx="410" cy="70" r="16" class="bx"/><text x="410" y="70" text-anchor="middle" dominant-baseline="central" font-size="14" class="" font-weight="800">S6</text></svg><figcaption>每条边 = 一个初值 0 的信号量。前驱做完 V，后继开始前 P</figcaption></figure><div class="code pop"><div class="h"><span>前驱图的写法</span><button class="bl">默写</button></div><pre><span class="kw">semaphore</span> a1=<span class="nu">0</span>, a2=<span class="nu">0</span>, b1=<span class="nu">0</span>, b2=<span class="nu">0</span>, c=<span class="nu">0</span>, d=<span class="nu">0</span>, e=<span class="nu">0</span>;
+S1() { 做; <span class="kw">V</span>(a1); <span class="kw">V</span>(a2); }
+S2() { <span class="kw">P</span>(a1); 做; <span class="kw">V</span>(b1); <span class="kw">V</span>(b2); }
+S3() { <span class="kw">P</span>(a2); 做; <span class="kw">V</span>(e); }
+S4() { <span class="kw">P</span>(b1); 做; <span class="kw">V</span>(c); }
+S5() { <span class="kw">P</span>(b2); 做; <span class="kw">V</span>(d); }
+S6() { <span class="kw">P</span>(c); <span class="kw">P</span>(d); <span class="kw">P</span>(e); 做; }</pre></div><h2 id="barber"><i>06</i>模子五：理发师（有界排队）</h2><p>银行取号、博物馆、公交车都是它：有座位数限制 + 服务员。</p><div class="code pop"><div class="h"><span>顾客与服务员</span><button class="bl">默写</button></div><pre><span class="kw">int</span> waiting = <span class="nu">0</span>;                 <span class="cm">// 等待人数，受 mutex 保护</span>
+<span class="kw">semaphore</span> mutex = <span class="nu">1</span>;
+<span class="kw">semaphore</span> customers = <span class="nu">0</span>;         <span class="cm">// 同步：有顾客了</span>
+<span class="kw">semaphore</span> barbers = <span class="nu">0</span>;           <span class="cm">// 同步：服务员准备好了</span>
+
+customer() {
+    <span class="kw">P</span>(mutex);
+    <span class="kw">if</span> (waiting &lt; N) {
+        waiting++;
+        <span class="kw">V</span>(customers);            <span class="cm">// 叫醒服务员</span>
+        <span class="kw">V</span>(mutex);
+        <span class="kw">P</span>(barbers);              <span class="cm">// 等服务员</span>
+        接受服务;
+    } <span class="kw">else</span> <span class="kw">V</span>(mutex);             <span class="cm">// 座位满，离开</span>
+}
+barber() {
+    <span class="kw">while</span> (<span class="nu">1</span>) {
+        <span class="kw">P</span>(customers);            <span class="cm">// 没顾客就睡</span>
+        <span class="kw">P</span>(mutex);
+        waiting--;
+        <span class="kw">V</span>(barbers);
+        <span class="kw">V</span>(mutex);
+        服务;
+    }
+}</pre></div><div class="q pop" id="q-os_2.3-综18" data-ans=""><div class="qh"><span class="yr">2011</span><span>实战</span><span class="tagq">座位+取号机+叫号三个节拍 · 服务型同步</span></div><div class="stem">某银行提供 <b>1 个服务窗口</b>和 <b>10 个供顾客等待的座位</b>。顾客到达银行时，若有空座位，则<b>取号机</b>上领取一个号，等待叫号。<b>取号机每次仅允许一位顾客使用</b>。当营业员空闲时，通过<b>叫号</b>选取一位顾客，并为其服务。顾客和营业员的活动过程描述如下。请添加必要的信号量和 P、V 操作，实现上述过程中的互斥与同步。<b>要求写出完整的过程，说明信号量的含义并赋初值。</b><pre>coBegin
+{
+    process 顾客 i
+    {
+        从取号机获取一个号码;
+        等待叫号;
+        获取服务;
+    }
+    process 营业员
+    {
+        While(TRUE)
+        {
+            叫号;
+            为客户服务;
+        }
+    }
+}coEnd</pre></div><button class="showa">自己写完再翻参考答案</button><div class="ansb"><b>解：</b><br><b>互斥资源</b>：取号机（一次只有一位顾客取号）⟹ mutex。<br><b>同步问题</b>：空座位的有无会影响等待顾客的数量、顾客的有无决定营业员是否能开始服务 ⟹ empty 与 full；顾客获得空座位后需要等待叫号和被服务 ⟹ <b>service</b>。<pre class="code">semaphore empty = 10;     // 空座位的数量，初值为 10
+semaphore mutex = 1;      // 互斥使用取号机
+semaphore full = 0;       // 已占座位的数量，初值 0
+semaphore service = 0;    // 等待叫号
+
+Process 顾客 i{
+    P(empty);             // 等空位
+    P(mutex);             // 申请使用取号机
+    从取号机上取号;
+    V(mutex);             // 取号完毕
+    V(full);              // 通知营业员有新顾客
+    P(service);           // 等待营业员叫号
+    接受服务;
+}
+
+Process 营业员{
+    while(True){
+        P(full);          // 没有顾客则休息
+        V(empty);         // 顾客离开座位
+        V(service);       // 叫号
+        为顾客服务;
+    }
+}</pre><div class="sensei">2011。取号机 = mutex，座位 = 计数，叫号 = 上面 customers/barbers 那一对同步。</div><details><summary>再深一层</summary><div><b>一致。⭐ 本题是「排队服务」类的标准答案，三个节拍的顺序是全题的采分核心。</b><br><br><b>💭 思路（动手前看）</b><ol><li><b>逐个名词归位</b>（PV 大题的第一步永远是这个）：<pre class="code">10 个座位   ⟹ 有多少个 ⟹ 计数信号量 <b>empty = 10</b>
+取号机      ⟹ 一次一人 ⟹ 互斥信号量 <b>mutex = 1</b>
+已有顾客数  ⟹ 营业员要等 ⟹ 同步信号量 <b>full = 0</b>
+被叫到号    ⟹ 顾客要等 ⟹ 同步信号量 <b>service = 0</b></pre></li><li><b>把「等待叫号」翻译成双向同步</b>：<u>顾客通知营业员「我来了」（V(full)）；营业员通知顾客「叫到你了」（V(service)）</u>——<b>两个方向各一个信号量，与综 13 司机-售票员同构。</b></li><li><b>⭐ 三个节拍的顺序（本题最容易写乱的地方）</b>：<pre class="code">V(full)    顾客取完号 ⟹ 告诉营业员「有人在等」
+V(empty)   营业员叫号时 ⟹ 该顾客<b>离座</b>，座位腾出
+V(service) 营业员叫号本身 ⟹ 让那位顾客去窗口</pre><u>三者的先后不能乱，尤其 V(empty) 归<b>营业员</b>执行。</u></li><li><b>顺序检查</b>：P(empty) 在 P(mutex) 之前——<u>不能占着取号机等座位。</u></li></ol><b>✍️ 考场卷面（写完对照）</b><pre class="code"><b>解：</b>定义四个信号量： <b>⛳4 分</b>
+  empty   = 10   可用的空座位数
+  mutex   = 1    取号机的互斥使用权
+  full    = 0    已在等待的顾客数（用于阻塞营业员）
+  service = 0    已被叫到号的顾客（用于阻塞顾客）
+
+process 顾客 i{                       <b>⛳4 分</b>
+  P(empty);            // 有空座位才进入
+  P(mutex);
+  从取号机获取一个号码;
+  V(mutex);
+  V(full);             // 通知营业员：有顾客在等
+  P(service);          // 等待叫号
+  获取服务;
+}
+
+process 营业员{                       <b>⛳2 分</b>
+  while(TRUE){
+    P(full);           // 无顾客则等待
+    V(empty);          // <b>被叫的顾客离座，空出一个座位</b>
+    V(service);        // 叫号
+    为客户服务;
+  }
+}
+
+<b>empty 限制等待人数不超过 10，mutex 保证取号机互斥使用，</b>
+<b>full 与 service 构成顾客与营业员之间的双向同步。</b></pre><b>📌 批注（对照完校对）</b><br>⭐⭐ <b>V(empty) 为什么写在营业员进程里（本题最精妙的一步）</b>：<u>座位是顾客<b>被叫到号、起身去窗口</b>时才腾出来的</u>，<b>而「叫号」这个动作发生在营业员进程里</b>。<u>若把 V(empty) 写在顾客的「获取服务」之后，就意味着顾客要坐到服务结束才让座</u>——<b>那么等待区的周转会白白慢一拍，与题意不符。</b>（这与 2025 真题「V(position) 放在放树苗之后而非填土之后」是<b>同一类推理</b>：<u>资源在「不再被占用的那一刻」就该释放，而不是等整件事全部做完。</u>）<br>⚠️ <b>「1 个服务窗口」为什么不需要一个信号量</b>：<u>因为营业员进程只有一个，它天然是串行的</u>——<b>一个进程自己就是自己的互斥。</b><u>若题目改成「3 个窗口」，才需要给窗口设一个计数信号量。</u><br>⚠️ <b>P(empty) 必须在 P(mutex) 之前</b>：<u>否则顾客会占着取号机等座位，后面的顾客连号都取不了</u>⟹ <b>违反「资源类 P 在前、互斥类 P 在后」的铁律。</b><br>🔗 <b>同族题</b>：<u>综 03 面包师取号（用整型变量比较）、综 11 理发师（用 waiting 计数）</u>——<b>三题都是「排队 + 叫号」，本题用的是纯信号量写法，最干净。</b></div></details></div></div><div class="q pop" id="q-os_2.3-综19" data-ans=""><div class="qh"><span class="yr">2013</span><span>实战</span><span class="tagq">容量限制 + 单出入口 · 进出共用一个 mutex</span></div><div class="stem">某博物馆<b>最多可容纳 500 人</b>同时参观，有<b>一个出入口</b>，该出入口<b>一次仅允许一人通过</b>。参观者的活动描述如下。请添加必要的信号量和 P、V 操作，以实现上述过程中的互斥与同步。<b>要求写出完整的过程，说明信号量的含义并赋初值。</b><pre>coBegin
+    参观者进程 i:
+    {
+        …
+        进门;
+        …
+        参观;
+        …
+        出门;
+        …
+    }
+coEnd</pre></div><button class="showa">自己写完再翻参考答案</button><div class="ansb"><b>解：</b>出入口一次仅允许一人通过 ⟹ mutex = 1；博物馆最多同时容纳 500 人 ⟹ empty = 500。<pre class="code">semaphore empty = 500;    // 博物馆可以容纳的最多人数
+semaphore mutex = 1;      // 用于出入口资源的控制
+
+参观者进程 i:{
+    P(empty);             // 可容纳人数减 1
+    P(mutex);             // 互斥使用门
+    进门;
+    V(mutex);
+    参观;
+    P(mutex);             // 互斥使用门
+    出门;
+    V(mutex);
+    V(empty);             // 可容纳人数增 1
+}</pre><div class="sensei">2013。两个互斥：博物馆容量 <code>empty=500</code>，出入口 <code>mutex=1</code>。进门、出门都要 P(mutex)。注意 empty 要在门外申请，<span class="r">否则人进不来也出不去</span>，这正是同步 P 先于互斥 P。</div><details><summary>再深一层</summary><div><b>一致。🐍 PV 穷举器双向验证（容量 2、3 名参观者）：教材顺序 392 个状态无死锁、馆内人数恒 ≤ 容量；把 P(mutex) 提到 P(empty) 前面后，365 个状态内即出现死锁 ✓</b><br><br><b>💭 思路（动手前看）</b><ol><li><b>两句话两个信号量，题目给得非常干净</b>：<pre class="code">「最多容纳 500 人」  ⟹ 数量限制 ⟹ <b>empty = 500</b>（同步/计数）
+「出入口一次一人」  ⟹ 互斥     ⟹ <b>mutex = 1</b></pre></li><li><b>⭐ 抓住「<u>一个</u>出入口」这五个字</b>：<u>进门和出门用的是同一扇门</u> ⟹ <b>必须共用同一把 mutex</b>。<b>设两把锁（mutex_in / mutex_out）就与题意不符了</b>——那样一个人进、一个人出可以同时挤在门口。</li><li><b>empty 的一进一出</b>：<u>进门前 P(empty)（占一个名额）、出门后 V(empty)（还一个名额）</u>。<b>注意 V(empty) 要放在 V(mutex) 之后（人已经完全离开了才算数）。</b></li><li><b>顺序检查（本题唯一的坑）</b>：<u>P(empty) 必须在 P(mutex) 之前</u>——理由见批注。</li></ol><b>✍️ 考场卷面（写完对照）</b><pre class="code"><b>解：</b>定义两个信号量： <b>⛳3 分</b>
+  empty = 500   博物馆还可容纳的参观者人数
+  mutex = 1     出入口的互斥使用权（进出共用同一个门）
+
+参观者进程 i：                        <b>⛳7 分</b>
+{
+  <b>P(empty);</b>          // 馆内有余量才允许进入
+  P(mutex);          // 互斥通过出入口
+  进门;
+  V(mutex);
+
+  参观;
+
+  P(mutex);          // 互斥通过出入口
+  出门;
+  V(mutex);
+  <b>V(empty);</b>          // 离开后归还一个名额
+}
+
+<b>empty 保证馆内人数不超过 500；mutex 保证任一时刻</b>
+<b>只有一人通过出入口，进门与出门共用同一信号量。</b></pre><b>📌 批注（对照完校对）</b><br>⭐⭐ <b>P(empty) 必须在 P(mutex) 之前——这是本题唯一会死人的地方</b>：<pre class="code">若写成 P(mutex); P(empty);
+  馆内已满（empty = 0）时，某人抢到了门（mutex = 0）
+  他卡在 P(empty) 上等名额
+  ⟹ 里面的人想出来，却<b>过不了这扇被占住的门</b>
+  ⟹ 名额永远不会释放 ⟹ <b>死锁</b></pre>🐍 <u>穷举器实测：容量 2、3 人时，颠倒顺序在 365 个状态内必然死锁。</u><b>这与生产者-消费者「先资源后互斥」是<u>同一条</u>铁律，本题是它最直观的现实版。</b><br>⚠️ <b>出门那段<u>不要</u>再写 P(empty)</b>：<u>出门是释放名额，不是申请名额</u>。<b>出门段只需 P(mutex) 保护过门这个动作。</b><br>⭐ <b>「参观」这一段为什么在临界区之外</b>：<u>参观时人在馆内，占的是「名额」（empty），但不占「门」（mutex）</u>。<b>把参观圈进 mutex 里是重大错误</b>——那意味着一次只能有一个人在馆内参观，500 的容量彻底浪费。<u>判据：<b>临界区只包含真正使用临界资源的那一小段。</b></u><br>🔗 <b>本题是「有限容量 + 互斥入口」的模板</b>，<u>与 2011 综 18（10 个座位 + 取号机）结构几乎一样</u>，<b>差别只在于本题的入口进出共用、且不需要叫号同步。</b></div></details></div></div><div class="domain"><h5>领域展开</h5><p><b>四步：</b>关系、定义（写初值）、骨架、检查。<br><b>五个模子：</b>生产消费、读者写者（首尾开关门）、哲学家（限人数）、前驱（每边一信号量）、理发师（计数 + 叫号）。<br><b>顺序：</b>同步 P 先，互斥 P 后。</p></div><button class="seal"></button><div class="fin"><a href="ep27.html"><small>◀ 上一话 · 第27话</small>互斥的实现：从锁到信号量</a><a href="ep29.html" style="text-align:right"><small>下一话 · 第29话 ▶</small>死锁</a></div></main></body></html>
