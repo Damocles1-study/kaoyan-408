@@ -8,7 +8,11 @@
   :::code c 标题 … :::   代码（文件名写在 _build/tests 校验）
   |a|b|  表格（首行为表头）
   @ 表达式             调 figs/algos 里的函数，返回 HTML
-  @q ds:5.3-39 | 老师点评   嵌入真题（超过 2019 的一律报错，留给套卷）
+  :::old  每行「问题 || 答案」：话首先答旧题，答案折叠
+  :::recall 提示语 … :::  节末「合上页面说一遍」，点开才看要点
+  :::deep 标题 … :::     冲高分细节，默认折叠，不打断主线
+  题目单独放 _src/q/NN.txt：@q ds:5.3-39 | 点评（超过 2019 的报错）；同文件可写 :::after 标题 … :::
+  题目和考法一律排在本话知识讲完之后（其之末「实战」），知识部分不许提真题问法
   行内：**粗** ==红== ~~蓝~~ !!金底!! __荧光下划__ `code` x_{1} x^{2} [[12|文字]]链到第12话
 """
 import os,re,sys,html,json,collections
@@ -151,6 +155,12 @@ def render(src,ep,title):
                     if k=='shu': SHU.append((ep,title,arg,inner))
                     if k=='trap': TRAPS.append((ep,title,arg,inner))
                     if k=='link': LINKS.append((ep,title,arg,inner))
+                elif k=='recall': o.append(f'<details class="recall"><summary>合上页面说一遍：{inline(arg)}</summary><div class="rb">{inner}</div></details>')
+                elif k=='deep': o.append(f'<details class="deep"><summary>再深一层：{inline(arg)}</summary><div class="rb">{inner}</div></details>')
+                elif k=='after': o.append(f'<details class="after"><summary>{inline(arg) or "做完再翻：这些题到底在问什么"}</summary><div class="rb">{inner}</div></details>')
+                elif k=='old':
+                    its=''.join('<details><summary>'+inline(a.split('||')[0].strip())+'</summary><div class="rb">'+inline(a.split('||')[1].strip())+'</div></details>' for a in buf if '||' in a)
+                    o.append(f'<div class="old"><h5>先答旧题</h5>{its}</div>')
                 elif k=='flash': o.append(f'<div class="flash pop">'+(f'<h5>{inline(arg)}</h5>' if arg else '')+f'{inner}</div>')
                 elif k=='domain': o.append(f'<div class="domain pop"><h5>领域展开</h5><div class="dtx">{inner}</div></div>')
                 elif k=='rev': o.append(f'<div class="rev pop"><div class="qq">{inline(arg)}</div><button class="open">想好了，翻开</button><div class="aa">{inner}</div></div>')
@@ -231,7 +241,12 @@ def main():
         if not os.path.exists(p): continue
         built.append(e['id'])
         src=open(p,encoding='utf8').read()
+        qp=os.path.join(SRC,'q',e['id']+'.txt')
+        fq=freq(e.get('secs',[]))
+        if os.path.exists(qp): src=src.rstrip()+'\n\n== 实战 {lab}\n@@FREQ\n'+open(qp,encoding='utf8').read()
         h,tc=render(src,e['id'],e['title'])
+        h=h.replace('@@FREQ',fq) if '@@FREQ' in h else h+fq
+        h=re.sub(r'<p>(<div class="freq.*?</div></div>|<div class="freq.*?</small></div>)</p>',r'\1',h,flags=re.S)
         vol=plan.VOLS[e['vol']]
         sj=' '.join(f'<span>{SJ[x]}</span>' for x in e['subj'])
         cover=f'''<div class="cover"><div class="spd"></div><img class="bigk" src="assets/ink/k/{e['id']}.webp" alt="" aria-hidden="true"><div class="cin"><span class="vol">{vol['name'].replace('卷','巻')}</span><div class="no">第 {e['id']} 話</div><h1><img class="ttl" src="assets/ink/t/{e['id']}.webp" alt="{E(e['title'])}"></h1><div class="sub">{E(e['sub'])}</div><div class="meta">{sj}<span>约 {e['min']} 分钟</span></div></div></div>'''
@@ -242,7 +257,7 @@ def main():
         if nx:fin+=f'<a href="ep{nx["id"]}.html" style="text-align:right"><small>下一话 · 第{nx["id"]}话 ▶</small>{E(nx["title"])}</a>'
         fin+='</div>'
         tochtml='<nav class="toc">'+''.join(f'<a href="#{a}">{re.sub("<[^>]+>","",inline(t))}</a>' for a,t in tc)+'</nav>'
-        page=f'{tochtml}<div class="vside" style="--u:url(ink/vs/{e["vol"]}.webp)" aria-hidden="true"></div><main class="wrap">{cover}{freq(e.get("secs",[]))}{h}{fin}</main>'
+        page=f'{tochtml}<div class="vside" style="--u:url(ink/vs/{e["vol"]}.webp)" aria-hidden="true"></div><main class="wrap">{cover}{h}{fin}</main>'
         open(os.path.join(OUT,f'ep{e["id"]}.html'),'w',encoding='utf8').write(shell(f'第{e["id"]}话 {e["title"]}｜术式408',page,e['id'],now=f'第{e["id"]}话 {e["title"]}'))
     import pages
     pages.build(OUT,eps,built,shell,inline,SHU,TRAPS,LINKS,QUSED,ANCH,plan,BANK,SJ,INK)

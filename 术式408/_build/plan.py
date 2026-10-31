@@ -1,5 +1,5 @@
 # 术式408 总体规划：知识顺序（按依赖而不是按书）、考频统计范围、14 天排期、考纲对照
-VER='4'
+VER='5'
 VOLS={
  0:dict(name='序章',title='开战之前',desc='先看清战场：150 分怎么分、大题长什么样、这个中心怎么读。'),
  1:dict(name='第一卷',title='基础术式｜线性结构与算法大题',desc='数据结构打头：不依赖任何硬件知识，还能把 C 语言手感捡回来。第 41 或 42 题那 13 分代码题从这里开练。'),
@@ -81,14 +81,25 @@ E('50',10,'net','应用层','DNS、FTP、邮件、HTTP 的 RTT 账本',60,'応',
 # 终
 E('51',11,'ds,co,os,net','一条请求穿过四科','六大枢纽 + 全栈串讲 + 套卷打法',60,'終'),
 ]
-# 14 天排期：按阅读时长顺序切分，顺序不动
-DAYS=[]
-_tot=sum(e['min'] for e in EPS);_cut=_tot/14;_acc=0;_d=[];_n=1
-for _i,_e in enumerate(EPS):
+# 每话时长按实测算：讲解 200 字/分钟（含停下来手算与回想）+ 选择题 2 分钟 + 综合题 10 分钟
+import os as _os,re as _re
+def _measure(id):
+    H=_os.path.dirname(_os.path.abspath(__file__));p=_os.path.join(H,'..','_src',id+'.txt')
+    s=open(p,encoding='utf8').read() if _os.path.exists(p) else ''
+    t=_re.sub(r':::code.*?\n:::','',s,flags=_re.S);t=_re.sub(r'^@.*$','',t,flags=_re.M)
+    c=len(_re.findall(r'[一-鿿]',t))
+    qp=_os.path.join(H,'..','_src','q',id+'.txt');q=open(qp,encoding='utf8').read() if _os.path.exists(qp) else ''
+    ks=_re.findall(r'^@q (\S+)',q,_re.M);big=sum(1 for k in ks if '综' in k or '大题' in k)
+    return round(c/200+(len(ks)-big)*2+big*10)
+for _e in EPS: _e['min']=max(5,_measure(_e['id']))
+# 排期：用户每天只有下午几小时给 408，按每个下午约 3.5 小时切，顺序不动
+AFTERNOON=210
+DAYS=[];_d=[];_acc=0
+for _e in EPS:
+    if _d and _acc+_e['min']/2>AFTERNOON:
+        DAYS.append((f'第{len(DAYS)+1}个下午',f"{_d[0]['title']} → {_d[-1]['title']}" if len(_d)>1 else _d[0]['title'],[x['id'] for x in _d]));_d=[];_acc=0
     _d.append(_e);_acc+=_e['min']
-    _rest=len(EPS)-_i-1
-    if (_acc>=_cut*_n-20 and _n<14) or _rest==0:
-        DAYS.append((f'D{_n}',f"{_d[0]['title']} → {_d[-1]['title']}" if len(_d)>1 else _d[0]['title'],[x['id'] for x in _d]));_d=[];_n+=1
+if _d: DAYS.append((f'第{len(DAYS)+1}个下午',f"{_d[0]['title']} → {_d[-1]['title']}" if len(_d)>1 else _d[0]['title'],[x['id'] for x in _d]))
 # 考纲（2027 年大纲原文逐条），格式：卷名 → [(条目, 第几话)]
 SYL={
 '数据结构':[('基本概念｜数据结构、算法','01'),('线性表｜概念、顺序存储','02'),('线性表｜链式存储、应用','03'),

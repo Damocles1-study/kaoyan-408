@@ -358,3 +358,18 @@ svg .har{fill:var(--red)}
 }
 @media print{.bar,.toc,.prog,.seal,.fin,.vside{display:none}.js .pop{opacity:1;transform:none;clip-path:none}}
 :root[data-mode="neg"] .shu{background:#1b1a17;--panel:#1b1a17}
+
+/* 记忆与折叠块：沿用手绘黑白风 */
+.old{margin:22px 0 26px;padding:10px 14px 12px;border:2.5px solid var(--ink);background:var(--panel);font:500 15.5px/1.75 var(--goth)}
+.old h5{margin:0 0 4px;font:900 15px/1.5 var(--disp);letter-spacing:.2em}
+.old details{border-top:1px dashed var(--hair);padding:4px 0}
+.old summary{cursor:pointer;font-weight:700;list-style-position:outside;margin-left:18px}
+.old .rb{padding:4px 0 4px 18px;color:var(--ink2)}
+details.recall,details.deep,details.after{margin:20px 0;padding:0;background:var(--panel);font:500 16px/1.8 var(--goth)}
+details.recall{border:2.5px dashed var(--ink)}
+details.deep{border:2.5px solid var(--ink);border-left-width:9px}
+details.after{border:3px double var(--ink)}
+details.recall>summary,details.deep>summary,details.after>summary{cursor:pointer;padding:9px 14px;font:800 15.5px/1.6 var(--goth)}
+details.recall[open]>summary,details.deep[open]>summary,details.after[open]>summary{background:var(--inv-bg);color:var(--inv-fg)}
+details>.rb{padding:6px 16px 12px}
+details>.rb>p:first-child{margin-top:.3em}
