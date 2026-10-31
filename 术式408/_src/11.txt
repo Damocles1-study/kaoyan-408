@@ -20,6 +20,26 @@ Floyd 最外层循环是什么？ || 中转点 k。
 **唯一性**：每一轮入度为 0 的顶点**恰好一个** ⟺ 拓扑序列唯一。
 :::
 
+:::code c 模板：拓扑排序（邻接矩阵）
+int TopoSort(MGraph *G, int order[]) {     // 返回 1 表示无环
+    int in[MaxV], S[MaxV], top = -1, cnt = 0;
+    for (int j = 0; j < G->numV; j++) {
+        in[j] = 0;
+        for (int i = 0; i < G->numV; i++) in[j] += (G->Edge[i][j] != 0);
+        if (in[j] == 0) S[++top] = j;
+    }
+    while (top >= 0) {
+        int v = S[top--];
+        order[cnt++] = v;
+        for (int w = 0; w < G->numV; w++)
+            if (G->Edge[v][w] && --in[w] == 0) S[++top] = w;
+    }
+    return cnt == G->numV;
+}
+:::
+
+要判断序列是否**唯一**，就在每次出栈前看栈里是否恰好一个元素。
+
 **逆拓扑排序**：反过来，每次删出度为 0 的顶点。用 DFS 也可以：DFS 退出的顺序就是逆拓扑序。
 
 :::flash 矩阵和拓扑序的关系
