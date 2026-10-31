@@ -21,8 +21,11 @@ except ImportError:
 OUT=os.path.join(HERE,'..');SRC=os.path.join(OUT,'_src')
 BANK=qbank.load();E=html.escape
 SPOIL_FROM=2020
-INK='<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="ink" x="-3%" y="-8%" width="106%" height="116%"><feTurbulence type="fractalNoise" baseFrequency=".035 .07" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3.2"/></filter></svg>'
+INK='<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough" x="-2%" y="-2%" width="104%" height="104%"><feTurbulence type="fractalNoise" baseFrequency=".055" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="1.7"/></filter></svg>'
 SHU=[];TRAPS=[];LINKS=[];QUSED={};ANCH={}
+def DA(n):
+    D='零壹貳參肆伍陸柒捌玖'
+    return D[n] if n<10 else ('拾' if n<20 else D[n//10]+'拾')+(D[n%10] if n%10 else '')
 
 def inline(s):
     codes=[]
@@ -82,7 +85,7 @@ def render_q(key,note,ep):
     code=''
     if q.get('code') and (q.get('codeStem') or q['type']=='choice'): stem+=f'<pre>{E(q["code"])}</pre>'
     elif q.get('code'): code=f'<pre>{E(q["code"])}</pre>'
-    head=f'<div class="qh"><span class="yr">{y if y else "教材"}</span><span>实战</span><span class="tagq">{E(" · ".join(q.get("kp",[]))[:40])}</span></div>'
+    head=f'<div class="qh"><span class="yr">{y if y else "教材"}</span><span class="lb">實戰</span><span class="tagq">{E(" · ".join(q.get("kp",[]))[:40])}</span></div>'
     book=rel(q.get('book',''));ext=rel(q.get('claude',''))
     ext=re.sub(r'^\s*(一致[。．.，,]?\s*(<br\s*/?>)?)','',ext)
     extra=''
@@ -149,7 +152,7 @@ def render(src,ep,title):
                     if k=='trap': TRAPS.append((ep,title,arg,inner))
                     if k=='link': LINKS.append((ep,title,arg,inner))
                 elif k=='flash': o.append(f'<div class="flash pop">'+(f'<h5>{inline(arg)}</h5>' if arg else '')+f'{inner}</div>')
-                elif k=='domain': o.append(f'<div class="domain"><h5>领域展开</h5>{inner}</div>')
+                elif k=='domain': o.append(f'<div class="domain pop"><h5>领域展开</h5><div class="dtx">{inner}</div></div>')
                 elif k=='rev': o.append(f'<div class="rev pop"><div class="qq">{inline(arg)}</div><button class="open">想好了，翻开</button><div class="aa">{inner}</div></div>')
                 elif k=='fml': o.append('<div class="fml">'+inline(raw.strip()).replace('\n','<br>')+'</div>')
                 elif k=='html': o.append(raw)
@@ -170,7 +173,7 @@ def render(src,ep,title):
                 fl();lv=len(m.group(1));t=m.group(2);a=m.group(3)
                 if lv==2:
                     secn+=1;a=a or f's{secn}';tc.append((a,t));ANCH[f'{ep}#{a}']=t
-                    o.append(f'<h2 id="{a}"><i>{secn:02d}</i>{inline(t)}</h2>')
+                    o.append(f'<h2 id="{a}"><i>其之{DA(secn)}</i>{inline(t)}</h2>')
                 elif lv==3:
                     idt=f' id="{a}"' if a else ''
                     if a: ANCH[f'{ep}#{a}']=t
@@ -216,7 +219,7 @@ def freq(secs):
     return f'<div class="freq pop"><b class="t">真题火力｜2009–2025 这一话的考点出现 {tot} 题，覆盖 {hit}/17 年</b><div class="yrs">{cells_}</div><small>空白 = 没考 · 网点 = 1 题 · 黑 = 2 题 · 红 = 3 题及以上（由题库逐题统计）</small></div>'
 
 def shell(title,body,ep='',toc='',now='',prog=True):
-    return f'''<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{E(title)}</title><link rel="stylesheet" href="assets/style.css?v={plan.VER}"><script src="assets/app.js?v={plan.VER}"></script></head><body data-ep="{ep}">{INK}<div class="bar"><a class="logo" href="index.html">术式408</a><span class="now">{E(now)}</span><span class="sp"></span><a href="术式录.html">术式录</a><a href="咒灵录.html">咒灵录</a><button id="neg" title="切换黑白反转">反转</button></div>{'<div class="prog"></div>' if prog else ''}{body}</body></html>'''
+    return f'''<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{E(title)}</title><link rel="stylesheet" href="assets/style.css?v={plan.VER}"><script src="assets/app.js?v={plan.VER}"></script></head><body data-ep="{ep}">{INK}<div class="bar"><a class="logo" href="index.html" aria-label="术式408"><img src="assets/ink/hero.webp" alt=""><b>408</b></a><span class="now">{E(now)}</span><span class="sp"></span><a href="术式录.html">术式录</a><a href="咒灵录.html">咒灵录</a><button id="neg" title="切换黑白反转">反转</button></div>{'<div class="prog"></div>' if prog else ''}{body}</body></html>'''
 
 SJ={'ds':'数据结构','co':'组成原理','os':'操作系统','net':'计算机网络'}
 def main():
@@ -231,7 +234,7 @@ def main():
         h,tc=render(src,e['id'],e['title'])
         vol=plan.VOLS[e['vol']]
         sj=' '.join(f'<span>{SJ[x]}</span>' for x in e['subj'])
-        cover=f'''<div class="cover"><div class="kanji">{e.get('kanji','術')}</div><span class="vol">{vol['name']}</span><div class="no">第{e['id']}话</div><h1>{E(e['title'])}</h1><div class="sub">{E(e['sub'])}</div><div class="meta">{sj}<span>约 {e['min']} 分钟</span></div></div>'''
+        cover=f'''<div class="cover"><div class="spd"></div><img class="bigk" src="assets/ink/k/{e['id']}.webp" alt="" aria-hidden="true"><div class="cin"><span class="vol">{vol['name'].replace('卷','巻')}</span><div class="no">第 {e['id']} 話</div><h1><img class="ttl" src="assets/ink/t/{e['id']}.webp" alt="{E(e['title'])}"></h1><div class="sub">{E(e['sub'])}</div><div class="meta">{sj}<span>约 {e['min']} 分钟</span></div></div></div>'''
         i=idx[e['id']]
         pv=eps[i-1] if i>0 else None;nx=eps[i+1] if i+1<len(eps) else None
         fin='<button class="seal"></button><div class="fin">'
@@ -239,7 +242,7 @@ def main():
         if nx:fin+=f'<a href="ep{nx["id"]}.html" style="text-align:right"><small>下一话 · 第{nx["id"]}话 ▶</small>{E(nx["title"])}</a>'
         fin+='</div>'
         tochtml='<nav class="toc">'+''.join(f'<a href="#{a}">{re.sub("<[^>]+>","",inline(t))}</a>' for a,t in tc)+'</nav>'
-        page=f'{tochtml}<main class="wrap">{cover}{freq(e.get("secs",[]))}{h}{fin}</main>'
+        page=f'{tochtml}<div class="vside" style="--u:url(ink/vs/{e["vol"]}.webp)" aria-hidden="true"></div><main class="wrap">{cover}{freq(e.get("secs",[]))}{h}{fin}</main>'
         open(os.path.join(OUT,f'ep{e["id"]}.html'),'w',encoding='utf8').write(shell(f'第{e["id"]}话 {e["title"]}｜术式408',page,e['id'],now=f'第{e["id"]}话 {e["title"]}'))
     import pages
     pages.build(OUT,eps,built,shell,inline,SHU,TRAPS,LINKS,QUSED,ANCH,plan,BANK,SJ,INK)

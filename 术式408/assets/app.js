@@ -24,18 +24,20 @@ D.addEventListener('DOMContentLoaded',function(){
  D.querySelectorAll('.rev .open').forEach(function(b){b.onclick=function(){b.parentNode.classList.add('on')}});
  // 代码默写遮挡
  D.querySelectorAll('.code .bl').forEach(function(b){b.onclick=function(){var c=b.closest('.code');c.classList.toggle('blind');b.textContent=c.classList.contains('blind')?'显示':'默写'}});
+ // 判定特效：对 = 黑闪，错 = 红墨
+ function fx(q,ok){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;var e=D.createElement('div');if(ok){e.className='fxbf';e.innerHTML='<i></i><u></u>';q.appendChild(e);setTimeout(function(){e.remove()},900)}else{e.className='fxsp';q.appendChild(e)}}
  // 题
  var rec=get('q',{}),ep=D.body.getAttribute('data-ep')||'';
  D.querySelectorAll('.q').forEach(function(q){var id=q.id.slice(2),a=q.getAttribute('data-ans'),os=q.querySelectorAll('.opt');
   function show(c,save){q.classList.add('done');os.forEach(function(o){var L=o.getAttribute('data-k');if(L===a)o.classList.add('yes');else if(L===c)o.classList.add('no')});var v=q.querySelector('.verdict');if(v&&c){v.textContent=c===a?'命中 —— 答案 '+a:'被咒灵咬了 —— 你选 '+c+'，答案 '+a;v.style.color=c===a?'':'var(--red)'}else if(v)v.textContent='答案 '+a;
    if(save){rec[id]={c:c,ok:c===a,ep:ep,t:Date.now(),s:(q.querySelector('.stem').textContent||'').slice(0,70)};set('q',rec)}}
-  os.forEach(function(o){o.onclick=function(){if(q.classList.contains('done'))return;show(o.getAttribute('data-k'),true)}});
+  os.forEach(function(o){o.onclick=function(){if(q.classList.contains('done'))return;var c=o.getAttribute('data-k');show(c,true);fx(q,c===a)}});
   var sa=q.querySelector('.showa');if(sa)sa.onclick=function(){q.classList.add('done');sa.remove();rec[id]={c:'',ok:true,ep:ep,t:Date.now(),s:(q.querySelector('.stem').textContent||'').slice(0,70)};set('q',rec)};
   if(rec[id]){if(os.length)show(rec[id].c,false);else{q.classList.add('done');if(sa)sa.remove()}
    var rb=D.createElement('button');rb.textContent='重做';rb.style.cssText='all:unset;cursor:pointer;margin-left:6px;font-size:11px;border:1px solid currentColor;padding:2px 5px';rb.onclick=function(){delete rec[id];set('q',rec);location.reload()};q.querySelector('.qh').appendChild(rb)}
  });
  // 盖章：读完
- var seal=D.querySelector('.seal');if(seal){var rd=get('read',{});function st(){var on=!!rd[ep];seal.classList.toggle('on',on);seal.textContent=on?'読 · 已读完（再点撤销）':'这一话读完了，盖章'}st();seal.onclick=function(){if(rd[ep])delete rd[ep];else rd[ep]=Date.now();set('read',rd);st()};set('last',ep)}
+ var seal=D.querySelector('.seal');if(seal){var rd=get('read',{});function st(){var on=!!rd[ep];seal.classList.toggle('on',on);seal.textContent=on?'已读完（再点撤销）':'这一话读完了，盖章'}st();seal.onclick=function(){if(rd[ep])delete rd[ep];else{rd[ep]=Date.now();seal.classList.remove('bang');void seal.offsetWidth;seal.classList.add('bang')}set('read',rd);st()};set('last',ep)}
  // 首页
  var rd2=get('read',{}),eps=D.querySelectorAll('.ep[data-ep]');if(eps.length){var c=0;eps.forEach(function(e){if(rd2[e.getAttribute('data-ep')]){e.classList.add('read');c++}});var bar=D.getElementById('pbar');if(bar){bar.style.width=(c/eps.length*100)+'%';D.getElementById('ptxt').textContent='已读 '+c+' / '+eps.length+' 话'}
   var last=get('last','');var ct=D.getElementById('cont');if(ct){var nxt=null;for(var i=0;i<eps.length;i++){if(!rd2[eps[i].getAttribute('data-ep')]){nxt=eps[i];break}}if(nxt){ct.href=nxt.getAttribute('href');ct.querySelector('small').textContent='下一话：'+nxt.querySelector('.tt').textContent}}
