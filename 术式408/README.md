@@ -9,3 +9,7 @@
 - `_build/wc.py` 量字数和时长，`cover.py` 查知识点词，`qs.py NN` 列本话题目，`patch.py` 按文字补丁改源文件。
 - `_build/plan.py` 里有 2027 考纲到话的对照（`SYL`）和排期（按实测字数和题量算时长，按每个下午 3.5 小时切分）。
 - `python3 _build/art.py [--force]`：生成笔墨素材到 `assets/ink`（毛笔标题、集中线、圆相、符、注连绳、黑闪等）。只在新增话或改标题时需要重跑，依赖 macOS 系统字体和 numpy/scipy/Pillow/fontTools；网页只用生成好的图片。
+
+## 在线真题套卷
+
+`真题套卷.html` + `assets/exam/`。`engine.js`、`exam.css` 与数学一重读报共用一份，改了要同步。`python3 _build/exam_build.py` 把练习系统题库按 `_build/exam_slots.json` 的题号拼回 2009–2025 整卷（题库改了要重跑）；`python3 _build/exam_2026.py` 单独生成 2026 回忆版。页面模板副本在 `_build/exam_page.html`。

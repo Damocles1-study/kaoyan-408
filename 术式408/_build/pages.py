@@ -8,7 +8,7 @@ def build(OUT,eps,built,shell,inline,SHU,TRAPS,LINKS,QUSED,ANCH,plan,BANK,SJ,INK
     fu=[('ep01','0','数据结构'),('ep16','1','组成原理'),('ep23','2','操作系统'),('ep41','3','计算机网络')]
     fus=''.join(f'<a class="fu fu{n}" href="{h}.html" title="{t}：从这里开始"><img src="assets/ink/fu{n}.webp" alt="{t}"></a>' for h,n,t in fu)
     hero=f'<div class="hero"><div class="spd"></div><div class="ens"></div><div class="fl"></div><div class="fus">{fus}</div><div class="in"><h1 aria-label="术式408"><img class="h1a" src="assets/ink/hero.webp" alt=""><img class="h1b" src="assets/ink/hero408.webp" alt=""></h1><div class="tl">四门课拆碎，按依赖重排的伪一轮。<br>读完去开套卷。目标：<b>100 分</b>。</div></div></div>'
-    go=f'''<div class="go"><a class="pri" id="cont" href="ep00.html">继续读<small>从第 00 话开始</small></a><a href="术式录.html">术式录<small>全部公式与模板，考前背这页</small></a><a href="咒灵录.html">咒灵录<small>全部陷阱汇总</small></a><a href="错题.html">错题<small>话内实战做错的自动进这里</small></a><a href="考纲.html">考纲对照<small>2027 大纲逐条 → 第几话</small></a></div>'''
+    go=f'''<div class="go"><a class="pri" id="cont" href="ep00.html">继续读<small>从第 00 话开始</small></a><a href="真题套卷.html">真题套卷<small>2009–2026 整卷在线做，可计时判分</small></a><a href="术式录.html">术式录<small>全部公式与模板，考前背这页</small></a><a href="咒灵录.html">咒灵录<small>全部陷阱汇总</small></a><a href="错题.html">错题<small>话内实战做错的自动进这里</small></a><a href="考纲.html">考纲对照<small>2027 大纲逐条 → 第几话</small></a></div>'''
     prog='<div class="pb"><i id="pbar" style="width:0"></i></div><div class="dim" id="ptxt" style="font-family:var(--goth);font-weight:700">已读 0 话</div>'
     day='<h2 style="margin-top:30px"><i>日程</i>'+f'{len(plan.DAYS)} 个下午'+'</h2><p style="font:500 15px/1.75 var(--goth)">只占每天下午那段（约 3.5 小时，含每话末尾的实战），早上数学、晚上英语政治不动。时长按实测字数和题量算。<b>顺序别动</b>——后面的话会直接用前面的结论。</p><div class="plan">'
     for d,t,l in plan.DAYS:
