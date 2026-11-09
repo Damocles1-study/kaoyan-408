@@ -13,3 +13,9 @@
 ## 在线真题套卷
 
 `真题套卷.html` + `assets/exam/`。`engine.js`、`exam.css` 与数学一重读报共用一份，改了要同步。`python3 _build/exam_build.py` 把练习系统题库按 `_build/exam_slots.json` 的题号拼回 2009–2025 整卷（题库改了要重跑）；`python3 _build/exam_2026.py` 单独生成 2026 回忆版。页面模板副本在 `_build/exam_page.html`。
+
+## 真题精研与做卷顺序
+
+- 交卷后每题下面的「精研卡」（考什么 · 本质 · 怎么出的 · 举一反三 · 联想搭配）写在 `_build/deep/YYYY.txt`，跑 `python3 _build/deep_build.py` 生成 `assets/exam/deep/dYYYY.js`。语法见脚本开头。没写精研的年份也会生成文件，只带「回第 N 话」的回链（按 `plan.EPS` 的 secs 自动对）。
+- 做卷顺序、档位、复盘限时、三天循环写在 `真题套卷.html` 的 `EXAM_CONF.plan`（模板 `_build/exam_page.html` 同步改）。
+- 已写：2020、2021。顺序里的下一张是 2022、2023。
