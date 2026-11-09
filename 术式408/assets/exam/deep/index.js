@@ -1,1 +1,1 @@
-window.EXAM_DEEP_YEARS=[2020];
+window.EXAM_DEEP_YEARS=[2020, 2021];
