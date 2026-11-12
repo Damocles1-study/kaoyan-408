@@ -2,12 +2,13 @@
 <html lang="zh-CN" data-skin="ink"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>真题套卷 · 术式408</title>
-<link rel="stylesheet" href="assets/exam/exam.css?v=6">
+<link rel="stylesheet" href="assets/exam/exam.css?v=7">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
 </head><body><div id="app"></div>
 <script src="assets/katex/katex.min.js"></script>
 <script src="assets/exam/deep/index.js?v=1"></script>
-<script src="assets/exam/rich/kp.js?v=3"></script>
+<script src="assets/exam/rich/kp.js?v=4"></script>
+<script src="assets/exam/tier.js?v=1"></script>
 <script>
 /* 精解里的公式：<span class="m">tex</span>（md＝独占一行），引擎每次重绘后调用 */
 window.renderMathInElement=function(root){ if(!window.katex) return; root.querySelectorAll('.m:not([data-k])').forEach(function(el){ try{ katex.render(el.textContent,el,{throwOnError:false,strict:false,displayMode:el.classList.contains('md')}); }catch(e){} el.setAttribute('data-k',1); }); };
@@ -15,7 +16,7 @@ window.renderMathInElement=function(root){ if(!window.katex) return; root.queryS
 <script>
 window.EXAM_CONF={
   key:'ss408',title:'真题套卷 · 术式408',heading:'读完开卷。目标 100 分。',
-  lead:'2009–2026 每年一整套，题号和原卷一致。讲义只用过 2009–2019，<b>2020 年以后没见过，留到读完再开</b>。<b>重制过的年份每题有逐步精解</b>（读题圈画 · 手绘草图 · 每一步 · 灰色＝考场可省 · 橙色＝秒杀 · 蓝虚线点开看知识点、紫框点开看跨年套路），原解析收在下面备查。交卷后每题下面还有一张<b>精研卡</b>（考什么 · 本质 · 怎么出的 · 举一反三 · 联想搭配），卷首给出这张卷的复盘限时和必吃透题。',
+  lead:'2009–2026 每年一整套，题号和原卷一致。讲义只用过 2009–2019，<b>2020 年以后没见过，留到读完再开</b>。<b>重制过的年份每题有逐步精解</b>（读题圈画 · 手绘草图 · 每一步 · 灰色＝考场可省 · 橙色＝秒杀 · 蓝虚线点开看知识点、紫框点开看跨年套路），原解析收在下面备查。交卷后每题下面还有一张<b>精研卡</b>（考什么 · 本质 · 怎么出的 · 举一反三 · 联想搭配），卷首给出这张卷的复盘限时和必吃透题。<b>每题标着分档和限时，成绩单给出保底、正常、冲刺三条线。</b>算法题代码没把握，先看 <a href="算法题速成.html">算法题速成</a>（六个骨架 ＋ 十八年保底解对照表）。',
   backHref:'index.html',backText:'术式408',
   years:[2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026],
   yearNote:{2026:'回忆版',2020:'讲义未用',2021:'讲义未用',2022:'讲义未用',2023:'讲义未用',2024:'讲义未用',2025:'讲义未用'},
@@ -26,7 +27,7 @@ window.EXAM_CONF={
   plan:{
     cut:'2026-12-16',pace:1.5,
     order:[[2020,'core','第一张：标准件多，测基本功全不全'],[2021,'core'],[2022,'core'],[2023,'core','FTP 题：应用层的外衣、TCP 的芯'],
-      [2019,'mid'],[2018,'mid'],[2017,'mid'],[2016,'mid'],[2015,'mid'],[2014,'mid'],[2013,'mid'],
+      [2019,'mid','数据结构选择最费时间，练「超时先蒙后标」'],[2018,'mid','算法题保底即最优'],[2017,'mid'],[2015,'mid','计数类选择多，最容易超时'],[2016,'mid','网络选择整体偏难'],[2014,'mid'],[2013,'mid'],
       [2012,'opt'],[2011,'opt'],[2010,'opt'],[2009,'opt'],
       [2024,'mock','最后一周，14:00 真实时段'],[2025,'mock'],[2026,'mock','回忆版，个别题不全']],
     tiers:{
@@ -35,10 +36,10 @@ window.EXAM_CONF={
       opt:{name:'补充卷',min:60,desc:'2009–2012：年代早、题型略旧。时间不够第一个砍。'},
       mock:{name:'模考卷',min:60,desc:'2024–2026：钉在最后一周，按 12/20 下午 14:00–17:00 的真实时段整卷做。只复盘失分题，不再开新坑。'}},
     rhythm:'<b>一天半一张＝三天一个循环，两科各做两张：</b><ul><li>第 1 天：上午数学卷（8:30–11:30）· 下午 408 卷（14:00–17:00）· 晚上英语、政治</li><li>第 2 天：上午两科复盘（各按卷首限时）· 下午数学第二张 · 晚上英语、政治</li><li>第 3 天：上午 408 第二张 · 下午两科复盘 · 晚上英语、政治</li></ul>做卷一口气做完、全程计时；复盘按交卷后卷首给的限时，<b>到点就停</b>，没看完的必吃透题塞进下一个循环的空档。',
-    why:'<ol><li><b>2020–2023 放最前</b>：讲义一道没用过、命题风格最接近今年，最值得花时间精研。先做它们，后面就算时间不够，最值钱的已经吃透。</li><li><b>2013–2019 是主力</b>：讲义里用过个别题（每话末尾的实战），做起来会有熟悉感，正好练速度和稳定性；复盘只过失分题和必吃透题。</li><li><b>2009–2012 放后面</b>：年代早，部分题型（如早年的计算题风格）和现在差得远，时间不够就砍。</li><li><b>2024–2026 钉在最后一周当模考</b>：最新的卷子留到最后检验状态，按真实时段做；2026 是回忆版，个别题干不全，当热身。</li><li>每张卷的复盘限时是硬的：真题的价值在于「一题吃透、同类全会」，不在于一张卷磨一周。</li></ol>'
+    why:'<ol><li><b>2020–2023 放最前</b>：讲义一道没用过、命题风格最接近今年，最值得花时间精研。先做它们，后面就算时间不够，最值钱的已经吃透。</li><li><b>2013–2019 是主力</b>：讲义里用过个别题（每话末尾的实战），做起来会有熟悉感，正好练速度和稳定性；复盘只过失分题和必吃透题。</li><li><b>2009–2012 放后面</b>：年代早，部分题型（如早年的计算题风格）和现在差得远，时间不够就砍。</li><li><b>2024–2026 钉在最后一周当模考</b>：最新的卷子留到最后检验状态，按真实时段做；2026 是回忆版，个别题干不全，当热身。</li><li><b>每张卷看三条线，不只看总分</b>：低于保底线，下一张之前先回讲义补必拿题丢分的那几话；到了正常线，才值得花时间啃冲刺题。主力卷里 2015 排在 2016 前面，因为 2016 的网络选择偏难、保底线最低，放后面做更稳。</li><li>每张卷的复盘限时是硬的：真题的价值在于「一题吃透、同类全会」，不在于一张卷磨一周。</li></ol>'
   },
   footHtml:'做题记录只存在这个浏览器里。综合题对照解答自评，选择题自动判分。'
 };
 </script>
-<script src="assets/exam/engine.js?v=6"></script>
+<script src="assets/exam/engine.js?v=7"></script>
 </body></html>
