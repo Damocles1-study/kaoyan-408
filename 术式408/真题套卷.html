@@ -2,12 +2,12 @@
 <html lang="zh-CN" data-skin="ink"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>真题套卷 · 术式408</title>
-<link rel="stylesheet" href="assets/exam/exam.css?v=4">
+<link rel="stylesheet" href="assets/exam/exam.css?v=5">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
 </head><body><div id="app"></div>
 <script src="assets/katex/katex.min.js"></script>
 <script src="assets/exam/deep/index.js?v=1"></script>
-<script src="assets/exam/rich/kp.js?v=1"></script>
+<script src="assets/exam/rich/kp.js?v=2"></script>
 <script>
 /* 精解里的公式：<span class="m">tex</span>（md＝独占一行），引擎每次重绘后调用 */
 window.renderMathInElement=function(root){ if(!window.katex) return; root.querySelectorAll('.m:not([data-k])').forEach(function(el){ try{ katex.render(el.textContent,el,{throwOnError:false,strict:false,displayMode:el.classList.contains('md')}); }catch(e){} el.setAttribute('data-k',1); }); };
@@ -21,7 +21,7 @@ window.EXAM_CONF={
   yearNote:{2026:'回忆版',2020:'讲义未用',2021:'讲义未用',2022:'讲义未用',2023:'讲义未用',2024:'讲义未用',2025:'讲义未用'},
   minutes:180,examAt:'2026-12-20T14:00:00+08:00',examName:'408 开考',examWhen:'2026 年 12 月 20 日 14:00（业务课二）',
   subjects:{ds:'数据结构',co:'组成原理',os:'操作系统',net:'计算机网络'},target:100,essayName:'综合',
-  dataPath:'assets/exam/y{Y}.js',ver:1,richPath:'assets/exam/rich/r{Y}.js',richVer:1,
+  dataPath:'assets/exam/y{Y}.js',ver:1,richPath:'assets/exam/rich/r{Y}.js',richVer:2,
   deepPath:'assets/exam/deep/d{Y}.js',deepVer:1,deepYears:window.EXAM_DEEP_YEARS||[],
   plan:{
     cut:'2026-12-16',pace:1.5,
@@ -40,5 +40,5 @@ window.EXAM_CONF={
   footHtml:'做题记录只存在这个浏览器里。综合题对照解答自评，选择题自动判分。'
 };
 </script>
-<script src="assets/exam/engine.js?v=4"></script>
+<script src="assets/exam/engine.js?v=5"></script>
 </body></html>
