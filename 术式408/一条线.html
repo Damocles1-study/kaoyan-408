@@ -1,0 +1,238 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>一条线｜术式408</title><link rel="stylesheet" href="assets/style.css?v=6"><script src="assets/app.js?v=6"></script>
+<style>
+.ln{max-width:860px;margin:0 auto}
+.ln p,.ln li,.ln td{font:500 15.5px/1.8 var(--goth);overflow-wrap:anywhere}
+.ln-bar{position:sticky;top:48px;z-index:9;background:var(--paper,#f6f4ec);border-bottom:2px solid var(--ink);padding:6px 0;display:flex;gap:8px;align-items:center;font:600 12.5px/1.4 var(--goth)}
+.ln-toc{flex:1;display:flex;gap:11px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.ln-toc::-webkit-scrollbar{display:none}
+.ln-toc a{text-decoration:none;color:var(--ink);opacity:.62}
+.ln-toc b a{opacity:1;font-weight:900}
+.ln-toc a.on{opacity:1;font-weight:900;border-bottom:2.5px solid var(--ink)}
+.ln-btn{font:700 12.5px/1 var(--goth);border:2px solid var(--ink);background:transparent;color:var(--ink);padding:5px 10px;cursor:pointer;flex:none}
+body.test .ln-btn{background:var(--inv-bg);color:var(--inv-fg)}
+.ln-part{margin:2.6em 0 .6em;background:var(--inv-bg);color:var(--inv-fg);padding:12px 16px;scroll-margin-top:100px}
+.ln-part h2{font:900 clamp(22px,4vw,30px)/1.3 var(--disp);margin:0;color:inherit}
+.ln-part p{margin:.35em 0 0;color:inherit;opacity:.9}
+.ln-st{border-left:3px solid var(--ink);padding:0 0 .2em 15px;margin:1.6em 0 0;scroll-margin-top:100px}
+.ln-st h3{font:900 21px/1.35 var(--disp);margin:0 0 .35em;display:flex;flex-wrap:wrap;align-items:baseline;gap:.45em}
+.ln-st .no{display:inline-block;min-width:1.7em;text-align:center;background:var(--inv-bg);color:var(--inv-fg);font:800 14px/1.5 var(--goth);padding:1px 4px;margin-left:-33px}
+.ln-st .fq{font:600 11.5px/1.6 var(--goth);border:1.5px solid var(--ink);padding:0 6px}
+.ln-pic{border:1.5px solid var(--ink);padding:.55em .85em;margin:.45em 0}
+.ln-pic::before{content:"画面　";font:900 12px/1 var(--goth)}
+.ln-next{margin:.9em 0 0;font-style:italic}
+.ln-next::before{content:"↓ 接下来　";font:900 12px/1 var(--goth);font-style:normal}
+.ln-mem,.ln-cue,.ln-open,.ln-trap{margin:.75em 0}
+.ln h4{font:900 12px/1.4 var(--goth);letter-spacing:.1em;margin:0 0 .25em}
+.ln ul,.ln ol{margin:0;padding-left:1.3em}
+.ln-mem li{border-bottom:1px dotted var(--hair);padding:.12em 0}
+.ln-mem .lk{opacity:.75;margin-right:.5em}
+.ln-mem .lk::after{content:" ＝"}
+.ln-mem .lv{font-weight:700}
+body.test .ln-mem .lv{filter:blur(7px);cursor:pointer;user-select:none;background:var(--hair)}
+body.test .ln-mem .lv.show{filter:none;background:none}
+.ln-cue .sig::after{content:" ⟶ ";font-weight:900}
+.ln-open{border:2.5px solid var(--ink);padding:.55em .85em;box-shadow:4px 4px 0 var(--ink)}
+.ln-open h4::before{content:"✍ "}
+.ln-trap h4::before{content:"⚠ "}
+.ln-trap li{opacity:.88}
+.ln mark{background:var(--inv-bg);color:var(--inv-fg);padding:0 3px}
+.ln code{font:600 .92em/1 ui-monospace,Menlo,monospace}
+.ln .tw{overflow-x:auto;margin:.7em 0}
+.ln table{border-collapse:collapse;min-width:100%}
+.ln th,.ln td{border:1.5px solid var(--ink);padding:5px 8px;vertical-align:top;text-align:left;font-size:14px}
+.ln th{background:var(--inv-bg);color:var(--inv-fg);white-space:nowrap;font:700 12.5px/1.5 var(--goth)}
+.ln td:first-child{font-weight:800}
+.ln-how{border:2.5px solid var(--ink);padding:.6em .95em;margin:.9em 0}
+@media(max-width:600px){.ln-st{padding-left:11px}.ln-st .no{margin-left:-29px}.ln th,.ln td{font-size:13px;padding:4px 6px}}
+</style></head><body data-ep=""><div class="bar"><a class="logo" href="index.html" aria-label="术式408"><img src="assets/ink/hero.webp" alt=""><b>408</b></a><span class="now"></span><span class="sp"></span><a href="真题套卷.html">真题套卷</a><a href="算法题速成.html">算法速成</a><a href="术式录.html">术式录</a><button id="neg" title="切换黑白反转">反转</button></div>
+<main class="wrap"><div class="ln">
+<h1 style="font:900 30px/1.3 var(--goth);margin:26px 0 6px">一条线</h1>
+<p>把历年 408 真题考过的东西倒推回来，四门课排成一条从上往下读的线。一页，只用上下滑。每做一张卷之前滑一遍。</p>
+<div class="ln-bar"><div class="ln-toc" id="toc"><b><a href="#p1">卷一 数据结构</a></b><a href="#s1">1 复杂度</a><a href="#s2">2 线性表、链表与算法大题</a><a href="#s3">3 栈、队列、数组与串</a><a href="#s4">4 树：遍历、哈夫曼、度数</a><a href="#s5">5 查找树：BST、AVL、B 树</a><a href="#s6">6 图：存储、最小生成树、最短路、拓扑、关键路径</a><a href="#s7">7 查找：折半、散列</a><a href="#s8">8 排序</a><b><a href="#p2">卷二 计算机组成原理</a></b><a href="#s9">9 数据的表示与运算</a><a href="#s10">10 存储器层次与 Cache</a><a href="#s11">11 指令系统与机器级代码</a><a href="#s12">12 CPU：数据通路与流水线</a><a href="#s13">13 总线与 I/O 方式</a><b><a href="#p3">卷三 操作系统</a></b><a href="#s14">14 OS 骨架：中断、内核态、系统调用</a><a href="#s15">15 进程、线程与调度</a><a href="#s16">16 同步互斥与 PV 大题</a><a href="#s17">17 死锁与银行家算法</a><a href="#s18">18 内存管理与虚拟内存</a><a href="#s19">19 文件、磁盘与 I/O 软件</a><b><a href="#p4">卷四 计算机网络</a></b><a href="#s20">20 体系结构与物理层</a><a href="#s21">21 链路层：可靠传输与介质访问</a><a href="#s22">22 网络层：IP、子网、NAT、路由</a><a href="#s23">23 传输层：TCP</a><a href="#s24">24 应用层与整条请求</a></div><button class="ln-btn" id="tb" onclick="LNTest()">自测</button></div>
+<div class="ln-how"><b>怎么用这一页</b><ol><li><b>第一遍</b>（约 60 分钟）：从上往下读。每一站先看「画面」，再看「必背」，最后看粗框里的「大题开头照写」。</li><li><b>以后每次做卷前</b>（约 15 分钟）：点右上角「自测」，必背的右半边会被遮住，看着左边说答案，点一下核对。说不出的那一行，就是今天会丢分的地方。</li><li><b>复盘时</b>：每道错题回到这页找它属于哪一站。找得到，是没记住；找不到，告诉我，我补进来。</li></ol></div>
+<p><b>先看账：408 的综合题（第 41–47 题，共 70 分）是固定席位。</b>七道题几乎年年是「数构两道、组原两道、操作系统两道、网络一道」。下表是 2010–2023 十四年的统计，一道题可能同时算进两类。</p>
+<div class="tw"><table><tr><th>席位</th><th>分值</th><th>2010–2023</th><th>2024–25</th><th>开头照写能拿</th><th>站</th></tr>
+<tr><td>算法设计（写代码）</td><td>13–15</td><td>14 年全有</td><td>2 年全有</td><td>保底解 8–10</td><td><a href="#s2">2</a></td></tr>
+<tr><td>数构手算（图、树、查找、排序）</td><td>8–10</td><td>14 年全有</td><td>2 年全有</td><td>6–8</td><td><a href="#s6">6</a>–<a href="#s8">8</a></td></tr>
+<tr><td>Cache／存储层次</td><td>10–15</td><td>9 年</td><td>1 年</td><td>地址划分 4–6</td><td><a href="#s10">10</a></td></tr>
+<tr><td>机器级代码／指令格式</td><td>9–16</td><td>8 年</td><td>2 年 3 题</td><td>4–6</td><td><a href="#s11">11</a></td></tr>
+<tr><td>数据表示与运算（补码、溢出、浮点）</td><td>11–15</td><td>4 年</td><td>—</td><td>4–6</td><td><a href="#s9">9</a></td></tr>
+<tr><td>数据通路／流水线</td><td>10–15</td><td>4 年</td><td>—</td><td>3–5</td><td><a href="#s12">12</a></td></tr>
+<tr><td>PV 与同步互斥</td><td>7–9</td><td>10 年</td><td>2 年全有</td><td>信号量定义＋框架 3–5</td><td><a href="#s16">16</a></td></tr>
+<tr><td>页表／虚拟内存</td><td>6–8</td><td>9 年</td><td>1 年</td><td>4–5</td><td><a href="#s18">18</a></td></tr>
+<tr><td>文件／磁盘／I/O</td><td>6–8</td><td>10 年</td><td>—</td><td>3–5</td><td><a href="#s19">19</a></td></tr>
+<tr><td>网络层（子网、NAT、路由）</td><td>9</td><td>8 年</td><td>2 年全有</td><td>4–5</td><td><a href="#s22">22</a></td></tr>
+<tr><td>TCP／链路层／整条请求</td><td>9</td><td>6 年</td><td>—</td><td>4</td><td><a href="#s21">21</a> <a href="#s23">23</a></td></tr></table></div>
+<p><b>第一个台阶</b>：选择题 40 道里，分档标为「必」的平均约 20 道、40 分（2010–2023 在 26–48 分之间，近三年只有 30–36 分），是读完这页就该对的；综合题七道每道都把「开头照写」那几行写上，约 35 分。==选择题必拿分 + 综合题开头 ≈ 75 分==，正好是各卷的保底线，不需要做出任何一道难题。从 75 到 110，靠的是「常」档题：选择题再对 15 道左右，综合题每道往下多写一两问。</p>
+<p>最近两年的变化：机器级代码两年考了三题，网络层和 PV 都是两年全有。</p>
+<div class="ln-part" id="p1"><h2>卷一 数据结构</h2><p>主线：程序里的数据怎么摆。先摆成一排（线性表），再摆成一棵（树），再摆成一张网（图）；摆好之后只做两件事——<b>找</b>（查找）和<b>排</b>（排序）。</p></div>
+<section class="ln-st" id="s1"><h3><span class="no">1</span>复杂度<span class="fq">选择每年 1 题 · <a href="ep01.html">第01话</a></span></h3>
+<p class="ln-pic">复杂度只问一件事：数据量翻倍时，要多干多少活。所以只留增长最快的那一项，常数全扔掉。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">增长快慢排序</span><span class="lv">O(1) &lt; O(log n) &lt; O(n) &lt; O(n log n) &lt; O(n²) &lt; O(2ⁿ) &lt; O(n!)</span></li><li><span class="lk"><code>for(i=1;i&lt;n;i*=2)</code></span><span class="lv">O(log n)</span></li><li><span class="lk">两重循环，内层从 i 跑到 n</span><span class="lv">O(n²)</span></li><li><span class="lk">递归 T(n)=2T(n/2)+O(n)</span><span class="lv">O(n log n)</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">单层循环，循环变量乘倍或平方增长</span><span class="do">设执行 k 次，写出第 k 次后循环变量的值，令它等于终止条件，解 k（考过 4 次）</span></li></ul></div>
+<p class="ln-next">最简单的摆法是排成一排。</p>
+</section>
+<section class="ln-st" id="s2"><h3><span class="no">2</span>线性表、链表与算法大题<span class="fq">算法大题年年 13–15 分 · <a href="ep02.html">第02话</a> <a href="ep03.html">第03话</a> · <a href="算法题速成.html">算法题速成</a></span></h3>
+<p class="ln-pic">顺序表是一排连号的座位：按号找人快，中间插人要整排挪。链表是一串手拉手的人：插人只要松两只手，但找第 i 个得从头数。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">顺序表 按位置访问 / 插入删除</span><span class="lv">O(1) ／ O(n)，平均移动约 n/2 个</span></li><li><span class="lk">链表 按位置访问 / 已知前驱的插入删除</span><span class="lv">O(n) ／ O(1)</span></li><li><span class="lk">单链表删除 p 的后继</span><span class="lv"><code>q=p->next; p->next=q->next; free(q);</code></span></li><li><span class="lk">双链表插入改几个指针 / 删除改几个</span><span class="lv">插入 4 个，删除 2 个</span></li><li><span class="lk">算法题的评分结构</span><span class="lv">基本思想（约 3 分）＋ 代码（约 7–8 分）＋ 复杂度（约 2 分），暴力解也给大半分</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">数组、值域有界、要求「时间尽可能高效」</span><span class="do">开一个标记数组或计数数组，一遍打标、一遍找（考过 3 次）</span></li><li><span class="sig">几个有序数组</span><span class="do">每个数组一个指针，每轮只动最小的那个（2 次）</span></li><li><span class="sig">链表求倒数第 k 个、找中点、找公共后缀</span><span class="do">两个指针，一个先走（2 次）</span></li><li><span class="sig">二叉树求 WPL、判 BST、加括号</span><span class="do">递归三行：空树返回什么、左右各递归、合起来（3 次）</span></li><li><span class="sig">图、邻接矩阵、数度</span><span class="do">两重循环：行是出边，列是入边（2021、2023、2024 三次）</span></li><li><span class="sig">完全没思路</span><span class="do">先排序再扫一遍，O(n log n) 的解也能拿 10 分左右</span></li></ul></div>
+<div class="ln-open"><h4>算法大题照写（三段，每段单独起头）</h4><ol><li>「(1) 基本设计思想」：用两三句话写清用什么数据结构、扫几遍、每遍做什么。</li><li>「(2) 算法实现」：先写函数头和变量，再写循环，最后写返回值；关键语句旁写一句注释。</li><li>「(3) 复杂度」：写「时间复杂度 O(…)，空间复杂度 O(…)」，与第 (1) 段说的一致。</li><li>想不出最优解就写暴力解，三段照样写全。</li></ol></div>
+<p class="ln-next">线性表只能在两端或中间操作。如果只许从一头进出，就是栈和队列。</p>
+</section>
+<section class="ln-st" id="s3"><h3><span class="no">3</span>栈、队列、数组与串<span class="fq">选择每年 2 题 · <a href="ep04.html">第04话</a> <a href="ep05.html">第05话</a></span></h3>
+<p class="ln-pic">栈是一摞盘子，后放的先拿；队列是排队打饭，先来的先走。循环队列是把队伍首尾接成一个圈，所以要空一个位置来区分「空」和「满」。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">n 个元素的出栈序列总数</span><span class="lv">卡特兰数 C(2n,n)/(n+1)</span></li><li><span class="lk">循环队列 队满 / 队空（牺牲一格）</span><span class="lv">(rear+1)%M<mark>front ／ rear</mark>front</span></li><li><span class="lk">循环队列 元素个数</span><span class="lv">(rear−front+M)%M</span></li><li><span class="lk">中缀转后缀</span><span class="lv">操作数直接输出；运算符入栈前先弹出栈里优先级≥它的；左括号直接入栈，右括号弹到左括号为止</span></li><li><span class="lk">对称矩阵 a<sub>ij</sub>（i≥j，下标从 1 起）存到一维数组的位置</span><span class="lv">前面有 i(i−1)/2+j−1 个元素</span></li><li><span class="lk">KMP 的 next</span><span class="lv">模式串第 j 位失配时，j 跳到「前 j−1 位的最长相等前后缀长度 + 1」</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">判断出栈序列是否可能</span><span class="do">草稿上画栈，一步一行（考过 5 次）</span></li><li><span class="sig">特殊矩阵压缩存储求下标</span><span class="do">只数「它前面有几个元素」，再看下标从 0 还是 1 开始（4 次）</span></li></ul></div>
+<p class="ln-next">一排摆不下有层级关系的数据，于是摆成一棵树。</p>
+</section>
+<section class="ln-st" id="s4"><h3><span class="no">4</span>树：遍历、哈夫曼、度数<span class="fq">选择每年 2–3 题 · 手算大题 3 年 · <a href="ep06.html">第06话</a> <a href="ep07.html">第07话</a></span></h3>
+<p class="ln-pic">树是一个家族谱。先序、中序、后序只是「根」在什么时候被念到：先念根、中间念根、最后念根。哈夫曼树是让「常用的字」离根最近，所以编码最短。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">结点数与度</span><span class="lv">n = n<sub>0</sub>+n<sub>1</sub>+n<sub>2</sub>+…，且 n = 分支数+1 = n<sub>1</sub>+2n<sub>2</sub>+3n<sub>3</sub>+…+1</span></li><li><span class="lk">二叉树</span><span class="lv">n<sub>0</sub> = n<sub>2</sub>+1</span></li><li><span class="lk">完全二叉树 n 个结点的高度</span><span class="lv">⌊log₂n⌋+1</span></li><li><span class="lk">高为 h 的 m 叉树最多结点</span><span class="lv">(m<sup>h</sup>−1)/(m−1)</span></li><li><span class="lk">能唯一确定二叉树</span><span class="lv">中序＋先序，或中序＋后序（先序＋后序不行）</span></li><li><span class="lk">森林 → 二叉树</span><span class="lv">左孩子右兄弟；森林的先根＝二叉树先序，森林的后根＝二叉树中序</span></li><li><span class="lk">哈夫曼树 WPL</span><span class="lv">等于所有非叶结点权值之和</span></li><li><span class="lk">哈夫曼树 n 个叶子共几个结点</span><span class="lv">2n−1，没有度为 1 的结点</span></li><li><span class="lk">并查集</span><span class="lv">找根、按秩合并；路径压缩后几乎是 O(1)</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">给结点总数、叶子数、某度结点数，求另一个</span><span class="do">列两个方程：结点数=各度之和，结点数=分支数+1（考过 5 次）</span></li><li><span class="sig">「最小 WPL」「最优编码」「最少比较次数的合并」</span><span class="do">构造哈夫曼树（8 次）</span></li><li><span class="sig">判断一组编码是不是前缀码、译码</span><span class="do">画一棵 0 左 1 右的二叉树（4 次）</span></li><li><span class="sig">给两种遍历序列</span><span class="do">先序第一个、后序最后一个是根，在中序里一刀切开（4 次）</span></li></ul></div>
+<div class="ln-open"><h4>手算大题照写（哈夫曼类）</h4><ol><li>写「构造哈夫曼树：每次取权值最小的两个合并」，然后逐步列出每次合并的两个数和结果。</li><li>画出最终的树，标出每个叶子的路径长度。</li><li>写「WPL = Σ 权值 × 路径长度 = …」。</li><li>问编码就在每条左边写 0、右边写 1，逐个读出。</li></ol></div>
+<p class="ln-next">树长歪了查找会变慢，于是要「让树保持矮」。</p>
+</section>
+<section class="ln-st" id="s5"><h3><span class="no">5</span>查找树：BST、AVL、B 树<span class="fq">选择每年 1–2 题 · <a href="ep08.html">第08话</a> <a href="ep13.html">第13话</a></span></h3>
+<p class="ln-pic">BST 是一棵「左小右大」的树，查找就是一路问「比我大还是比我小」。AVL 是给 BST 加一条规矩：左右子树高度差不超过 1，一旦歪了就转一下。B 树是把树压得又矮又胖，因为每下一层就是一次读磁盘。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">BST 中序遍历</span><span class="lv">得到递增序列</span></li><li><span class="lk">AVL 调平四种</span><span class="lv">LL 右旋一次；RR 左旋一次；LR 先左后右；RL 先右后左（看新结点在最低失衡点哪个孩子的哪棵子树）</span></li><li><span class="lk">高为 h 的 AVL 最少结点</span><span class="lv">n<sub>h</sub> = n<sub>h−1</sub>+n<sub>h−2</sub>+1，n<sub>1</sub>=1，n<sub>2</sub>=2</span></li><li><span class="lk">m 阶 B 树每个结点的关键字数</span><span class="lv">根 1 到 m−1；其余 ⌈m/2⌉−1 到 m−1</span></li><li><span class="lk">B 树插入满了</span><span class="lv">中间第 ⌈m/2⌉ 个关键字上提，结点一分为二；只从根长高</span></li><li><span class="lk">B 树删除不够了</span><span class="lv">先向兄弟借，借不到就与兄弟合并</span></li><li><span class="lk">B⁺ 树与 B 树的区别</span><span class="lv">B⁺ 树数据全在叶子，叶子串成链表，适合范围查找</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">AVL 插入后问根或某结点</span><span class="do">找最低的失衡结点 A，看新结点落在 A 的哪个孩子的哪棵子树（考过 4 次）</span></li><li><span class="sig">B 树最多最少几个关键字或结点</span><span class="do">一层一层数：最少时每个结点取 ⌈m/2⌉−1 个，关键字数+1=孩子数（4 次）</span></li></ul></div>
+<p class="ln-next">树是一对多。关系变成多对多，就是图。</p>
+</section>
+<section class="ln-st" id="s6"><h3><span class="no">6</span>图：存储、最小生成树、最短路、拓扑、关键路径<span class="fq">手算大题 5 年 · 2024、2025 都考 · <a href="ep09.html">第09话</a> <a href="ep10.html">第10话</a> <a href="ep11.html">第11话</a></span></h3>
+<p class="ln-pic">图是一张地图。最小生成树是「用最少的总路费把所有城市连通」；最短路径是「从我家出发去每个城市各要多远」。两件事不一样：最小生成树不保证任意两点间路最短。拓扑排序是排课表——先修课排在前面。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">无向图 n 个顶点最少几条边连通 / 完全图几条边</span><span class="lv">n−1 ／ n(n−1)/2</span></li><li><span class="lk">邻接矩阵 / 邻接表 存储与遍历</span><span class="lv">O(n²) ／ O(n+e)</span></li><li><span class="lk">无向图邻接矩阵第 i 行非零个数</span><span class="lv">顶点 i 的度；有向图行看出度、列看入度</span></li><li><span class="lk">Prim / Kruskal</span><span class="lv">Prim 从一个点向外长，每次加最近的点，O(n²)，适合稠密图；Kruskal 按边权从小到大加边、不成环就要，O(e log e)，适合稀疏图</span></li><li><span class="lk">Dijkstra</span><span class="lv">每轮选一个未确定的最小 dist，用它更新邻居；不能有负权边</span></li><li><span class="lk">Floyd</span><span class="lv">三重循环 O(n³)，以每个顶点为中转试一遍</span></li><li><span class="lk">拓扑序列唯一</span><span class="lv">每一步入度为 0 的顶点都恰好一个</span></li><li><span class="lk">关键路径</span><span class="lv">正推 ve 取最大，逆推 vl 取最小；活动余量 = l−e，余量为 0 的是关键活动</span></li><li><span class="lk">缩短关键活动</span><span class="lv">不一定缩短工期（可能有多条关键路径）；延长一定延期</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">「最小代价连通」「铺路」「布线」</span><span class="do">最小生成树，列边表一条条试（考过 3 次）</span></li><li><span class="sig">「从某点到其余各点的最短距离」</span><span class="do">Dijkstra，按轮列 dist 表（5 次）</span></li><li><span class="sig">「哪个不是拓扑序列」</span><span class="do">看前几位是不是入度为 0</span></li><li><span class="sig">「判断某序列是不是 DFS 序列」</span><span class="do">每走一步问：当前点还有没访问的邻居吗，有就必须走它</span></li></ul></div>
+<div class="ln-open"><h4>手算大题照写（Dijkstra 表）</h4><ol><li>画一张表：列是各个顶点，行是第 1、2、3… 轮。</li><li>第 1 轮写出源点到各点的直接距离，不相邻写 ∞。</li><li>每轮圈出本轮选中的最小值，写一行「选 X，用 X 更新：…」。</li><li>最后一行写出各点的最短距离和路径。</li></ol></div>
+<p class="ln-next">数据摆好之后，第一件事是找。</p>
+</section>
+<section class="ln-st" id="s7"><h3><span class="no">7</span>查找：折半、散列<span class="fq">手算大题 2 年 · 2024 又考 · <a href="ep12.html">第12话</a></span></h3>
+<p class="ln-pic">折半查找是翻字典：每次翻到中间，扔掉一半。散列是按名字直接算出柜子号，柜子被占了就按规则找下一个。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">折半查找判定树高度 / 查找长度上界</span><span class="lv">⌈log₂(n+1)⌉</span></li><li><span class="lk">折半 mid</span><span class="lv">⌊(low+high)/2⌋，判定树中每个结点左子树结点数 = 右子树或右子树−1</span></li><li><span class="lk">分块查找</span><span class="lv">块间有序、块内无序；长度 n 分 √n 块最优</span></li><li><span class="lk">线性探测</span><span class="lv">冲突就看下一个格子，(H+1)%m，(H+2)%m …</span></li><li><span class="lk">装填因子 α</span><span class="lv">表中元素数 ÷ 表长，α 越大冲突越多</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">散列表求 ASL</span><span class="do">先把表完整填出来，再逐个关键字数比较次数（成功），逐个地址数到空位的次数（失败）（考过 4 次）</span></li></ul></div>
+<div class="ln-open"><h4>手算大题照写（散列）</h4><ol><li>写出散列函数和处理冲突的方法。</li><li>逐个插入，每个关键字写一行「H(k)=…，冲突则…，放入地址 …」。</li><li>画出最终的表。</li><li>写「ASL成功 = (各关键字比较次数之和) ÷ 关键字个数 = …」；失败的分母是散列函数可能取到的地址个数，不是表长。</li></ol></div>
+<p class="ln-next">第二件事是排。</p>
+</section>
+<section class="ln-st" id="s8"><h3><span class="no">8</span>排序<span class="fq">选择每年 2–3 题 · 手算大题 3 年 · <a href="ep14.html">第14话</a> <a href="ep15.html">第15话</a></span></h3>
+<p class="ln-pic">插入排序像抓扑克牌，一张张插进手里已排好的部分；快排是选一个人当分界，比他矮的站左边、高的站右边；归并是把两摞已排好的牌合成一摞；堆排是每次从堆顶拿走最大的。</p>
+<div class="ln-mem"><h4>特性总表</h4><ul><li><span class="lk">直接插入</span><span class="lv">平均 O(n²)，基本有序时 O(n)，稳定</span></li><li><span class="lk">希尔</span><span class="lv">不稳定，省的是移动次数</span></li><li><span class="lk">冒泡</span><span class="lv">O(n²)，稳定，每趟把一个最大的放到最后</span></li><li><span class="lk">快排</span><span class="lv">平均 O(n log n)，有序时退化成 O(n²)，不稳定；每趟枢轴归位</span></li><li><span class="lk">简单选择</span><span class="lv">O(n²)，比较次数与初始序列无关，不稳定</span></li><li><span class="lk">堆排</span><span class="lv">O(n log n)，建堆 O(n)，不稳定，适合从大量数据里取前 k 个</span></li><li><span class="lk">归并</span><span class="lv">O(n log n)，空间 O(n)，稳定</span></li><li><span class="lk">基数</span><span class="lv">O(d(n+r))，稳定，不比较</span></li><li><span class="lk">稳定的口诀</span><span class="lv">插（直接插入）、冒（冒泡）、归（归并）、基（基数）</span></li><li><span class="lk">每趟至少一个元素到最终位置</span><span class="lv">冒泡、快排、简单选择、堆排</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">给出某趟结果问是哪种排序或枢轴</span><span class="do">与最终有序序列逐位对齐，看哪些已归位（考过 3 次）</span></li><li><span class="sig">「与初始序列无关」</span><span class="do">简单选择的比较次数、堆排、归并</span></li><li><span class="sig">「从大量数据中选前 k 个」</span><span class="do">小根堆（取最大 k 个）或大根堆（取最小 k 个）</span></li><li><span class="sig">k 路归并要补几个虚段</span><span class="do">(n−1) % (k−1) 不为 0 就补 (k−1)−余数 个</span></li></ul></div>
+</section>
+<div class="ln-part" id="p2"><h2>卷二 计算机组成原理</h2><p>主线：数据在机器里是什么。先把数变成<b>一串位</b>（数据表示），位放在<b>存储器</b>里（离 CPU 越近越快越小），<b>指令</b>告诉 CPU 去拿哪些位、做什么，<b>CPU</b> 一拍一拍执行指令，<b>总线和 I/O</b> 把机器和外面接起来。</p></div>
+<section class="ln-st" id="s9"><h3><span class="no">9</span>数据的表示与运算<span class="fq">选择每年 3–4 题 · 大题 4 年 · <a href="ep16.html">第16话</a> <a href="ep17.html">第17话</a> <a href="ep18.html">第18话</a></span></h3>
+<p class="ln-pic">同一串位，戴不同的眼镜读出不同的数：当无符号数读、当补码读、当浮点数读。机器只管加位，「溢出」是人戴着有符号眼镜看才发现的问题。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">n 位补码范围</span><span class="lv">−2<sup>n−1</sup> ～ 2<sup>n−1</sup>−1</span></li><li><span class="lk">求负数的补码</span><span class="lv">正数原码按位取反再加 1</span></li><li><span class="lk">有符号溢出 OF</span><span class="lv">两个同号数相加，结果符号变了；等价于最高位进位 ⊕ 次高位进位</span></li><li><span class="lk">无符号溢出 CF</span><span class="lv">加法看最高位有没有进位；减法看有没有借位</span></li><li><span class="lk">等长的有符号与无符号互相赋值</span><span class="lv">位模式不动，只换读法；负数当无符号读要加 2ⁿ</span></li><li><span class="lk">短数扩成长数</span><span class="lv">无符号补 0，有符号补符号位</span></li><li><span class="lk">IEEE 754 单精度</span><span class="lv">1 位符号、8 位阶码（偏置 127）、23 位尾数，值 = (−1)<sup>S</sup> × 1.M × 2<sup>E−127</sup></span></li><li><span class="lk">阶码全 0 / 全 1</span><span class="lv">全 0 是 0 或非规格化数；全 1 是无穷大或 NaN</span></li><li><span class="lk">逻辑右移 / 算术右移</span><span class="lv">补 0 ／ 补符号位；左移两者都补 0</span></li><li><span class="lk">CPU 时间</span><span class="lv">指令条数 × CPI × 时钟周期 = 指令条数 × CPI ÷ 主频</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">加减法问 OF、CF</span><span class="do">同一串位按两种眼镜各算一遍：OF 看有符号，CF 看无符号（考过 6 次）</span></li><li><span class="sig">十六进制串问浮点值</span><span class="do">先拆出阶码，看是不是全 0 或全 1，再套公式（5 次）</span></li><li><span class="sig">n 位乘法取低 n 位，问是否溢出</span><span class="do">无符号：高 n 位全 0 才不溢出；有符号：高 n+1 位全相同才不溢出（4 次）</span></li></ul></div>
+<div class="ln-open"><h4>大题开头照写（数据表示）</h4><ol><li>把每个变量写成二进制或十六进制，标明位数。</li><li>对每一问，先写「按无符号数／补码解释」，再写数值。</li><li>溢出问题写出判定依据（OF 的符号规则或 CF 的进位规则），再给结论。</li></ol></div>
+<p class="ln-next">数放在哪里？存储器分层：越近越快越小越贵。</p>
+</section>
+<section class="ln-st" id="s10"><h3><span class="no">10</span>存储器层次与 Cache<span class="fq">大题 9 年 · 选择每年 2–3 题 · <a href="ep30.html">第30话</a> <a href="ep31.html">第31话</a></span></h3>
+<p class="ln-pic">Cache 是书桌，主存是书架。常用的书先搬到书桌上。「局部性原理」说：你刚看过的书很可能还要看（时间），旁边那本也很可能要看（空间），所以搬书一次搬一整格（一个块）。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">地址划分（组相联）</span><span class="lv">主存地址 = 标记 | 组号 | 块内地址</span></li><li><span class="lk">块内地址位数</span><span class="lv">log₂(块大小，按编址单位算)</span></li><li><span class="lk">组号位数</span><span class="lv">log₂(Cache 行数 ÷ 每组行数)；直接映射每组 1 行，全相联没有组号</span></li><li><span class="lk">标记位数</span><span class="lv">地址总位数 − 组号位数 − 块内地址位数</span></li><li><span class="lk">Cache 总容量（含管理位）</span><span class="lv">行数 × (数据位 + 标记位 + 有效位 1 + 脏位 1（写回才有）+ 替换位)</span></li><li><span class="lk">命中率</span><span class="lv">命中次数 ÷ 访问次数；平均访问时间 = 命中时间 + 缺失率 × 缺失代价</span></li><li><span class="lk">写回 / 全写</span><span class="lv">写回只在换出时写主存，要脏位；全写每次同时写主存</span></li><li><span class="lk">芯片扩展</span><span class="lv">位扩展并联凑字长，字扩展用译码器选片；片数 = 总容量 ÷ 单片容量</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">Cache 任何问题</span><span class="do">第一步把主存地址切成「标记 | 组号 | 块内地址」（考过 12 次）</span></li><li><span class="sig">数组遍历问缺失次数</span><span class="do">先算一块装几个元素；按行遍历每块缺失 1 次，按列遍历可能每次都缺失（6 次）</span></li></ul></div>
+<div class="ln-open"><h4>大题开头照写（Cache）</h4><ol><li>写「主存地址 n 位，块大小 …B ⟹ 块内地址 … 位；Cache 共 … 行，… 路组相联 ⟹ … 组 ⟹ 组号 … 位；标记 = n − … − … = … 位」。这一段就有 3–4 分。</li><li>算容量就逐项列出每行的位：有效位、脏位、替换位、标记、数据。</li><li>算缺失率就写「每块 … 个元素，共访问 … 次，缺失 … 次」。</li></ol></div>
+<p class="ln-next">存储器里放着数据，也放着指令。指令说的是：去哪里拿数据、做什么。</p>
+</section>
+<section class="ln-st" id="s11"><h3><span class="no">11</span>指令系统与机器级代码<span class="fq">大题 8 年 · 2024、2025 连考三题 · <a href="ep19.html">第19话</a> <a href="ep20.html">第20话</a></span></h3>
+<p class="ln-pic">指令是一张便条：操作码写「做什么」，地址码写「对谁做」。寻址方式是告诉 CPU 去哪里找那个数：直接给数（立即）、给地址（直接）、给地址的地址（间接）、给寄存器加偏移（基址、变址、相对）。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">操作码位数</span><span class="lv">⌈log₂(指令种数)⌉</span></li><li><span class="lk">相对寻址的目标地址</span><span class="lv">(PC) + 偏移量，PC 已指向下一条指令</span></li><li><span class="lk">下一条指令地址</span><span class="lv">本条地址 + 本条指令字节数</span></li><li><span class="lk">基址 / 变址</span><span class="lv">基址寄存器由 OS 管、程序里不变；变址寄存器由程序改，适合数组</span></li><li><span class="lk">小端 / 大端</span><span class="lv">小端：低字节放低地址；大端：高字节放低地址</span></li><li><span class="lk">x86 条件转移</span><span class="lv">比较是做减法只设标志位；jg/jl 看有符号（OF、SF），ja/jb 看无符号（CF）</span></li><li><span class="lk">过程调用</span><span class="lv">call 把返回地址压栈；栈帧里依次是参数、返回地址、旧 ebp、局部变量</span></li><li><span class="lk">CISC 与 RISC</span><span class="lv">RISC 定长指令、只有 load/store 访存、多用寄存器和流水线</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">读汇编代码问某指令的地址、偏移量</span><span class="do">下一条地址 = 本条地址 + 本条长度；转移目标 = 下一条地址 + 偏移（补码）（考过 6 次）</span></li><li><span class="sig">多字节常数、内存里的字节</span><span class="do">先判大小端，再按地址顺序排</span></li><li><span class="sig">「最多能有几条指令」「寻址范围」</span><span class="do">字段位数做减法，再看是哪种寻址</span></li></ul></div>
+<div class="ln-open"><h4>大题开头照写（机器级代码）</h4><ol><li>把题里的代码对照 C 语句，逐行写「这条对应 C 的哪一句」。</li><li>求地址：写「下一条指令地址 = … + … = …H」。</li><li>求偏移：写「偏移量 = 目标地址 − 下一条地址 = …，补码为 …」。</li><li>问条件转移：写出比较的两个数、做的减法、标志位取值，再说跳不跳。</li></ol></div>
+<p class="ln-next">指令有了，CPU 怎么一拍一拍把它做完？</p>
+</section>
+<section class="ln-st" id="s12"><h3><span class="no">12</span>CPU：数据通路与流水线<span class="fq">大题 4 年 · 选择每年 2 题 · <a href="ep21.html">第21话</a> <a href="ep22.html">第22话</a></span></h3>
+<p class="ln-pic">CPU 是一间厨房：数据通路是灶台和传菜通道，控制器是看菜谱发号令的厨师长。流水线是把做菜拆成洗、切、炒、装盘几个工位，同时做好几道菜；冒险是「下一道菜要用上一道菜还没炒好的酱」。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">指令周期</span><span class="lv">取指 → （间址）→ 执行 → （中断）</span></li><li><span class="lk">单总线数据通路</span><span class="lv">一拍只能有一个数据上总线；每拍写「谁 out、谁 in」</span></li><li><span class="lk">硬布线 / 微程序</span><span class="lv">硬布线快、难改，RISC 用；微程序慢、好改，CISC 用</span></li><li><span class="lk">五段流水线</span><span class="lv">IF 取指、ID 译码、EX 执行、MEM 访存、WB 写回</span></li><li><span class="lk">k 段流水线执行 n 条指令</span><span class="lv">(k+n−1) 个周期；吞吐率 = n ÷ ((k+n−1) × 周期)</span></li><li><span class="lk">三种冒险</span><span class="lv">结构（抢同一部件）、数据（后一条要读前一条还没写回的寄存器）、控制（转移）</span></li><li><span class="lk">数据冒险的解决</span><span class="lv">插气泡（阻塞）或转发（旁路）</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">判断流水线是否冒险、要阻塞几拍</span><span class="do">先写每条指令「写谁、读谁」，再逐对相邻指令看（考过 6 次）</span></li><li><span class="sig">写微操作序列</span><span class="do">一拍一行，按「谁 out、谁 in」写，取指那几拍是固定的（3 次）</span></li></ul></div>
+<p class="ln-next">CPU 和存储器、外设之间靠总线连接；外设什么时候需要 CPU，靠中断告诉它。</p>
+</section>
+<section class="ln-st" id="s13"><h3><span class="no">13</span>总线与 I/O 方式<span class="fq">选择每年 3 题 · 大题 3 年 · <a href="ep38.html">第38话</a> <a href="ep39.html">第39话</a></span></h3>
+<p class="ln-pic">程序查询是 CPU 每隔一会儿去问「好了没」；中断是外设好了按门铃；DMA 是请一个搬运工，整块数据直接搬进内存，搬完才按一次门铃。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">总线带宽</span><span class="lv">每秒传送次数 × 每次传送的字节数；题给「时钟频率」要乘每周期传几次，给「工作频率 / MT/s」不再乘</span></li><li><span class="lk">中断方式 CPU 占用率</span><span class="lv">每秒中断次数 × 每次中断开销的周期数 ÷ 主频</span></li><li><span class="lk">DMA 方式 CPU 占用率</span><span class="lv">每秒 DMA 次数 × 每次预处理与后处理的周期数 ÷ 主频</span></li><li><span class="lk">中断响应的硬件三件事</span><span class="lv">关中断、保存断点（PC）、找到中断服务程序入口（中断隐指令完成）</span></li><li><span class="lk">多重中断</span><span class="lv">中断屏蔽字决定谁能打断谁，处理顺序可以和响应顺序不同</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">「CPU 用于 I/O 的时间占比」</span><span class="do">中断用每次中断，DMA 用每块数据，都换成周期再除以主频（考过 4 次）</span></li><li><span class="sig">「总线带宽」与「有效数据传输率」</span><span class="do">带宽只看宽度和频率；有效速率要用数据量除以整个事务时间</span></li></ul></div>
+</section>
+<div class="ln-part" id="p3"><h2>卷三 操作系统</h2><p>主线：谁来管这台机器。<b>中断</b>让 OS 拿回控制权；OS 把运行中的程序管成<b>进程</b>，决定谁先用 CPU（<b>调度</b>），防止它们抢东西抢乱（<b>同步</b>）和互相卡死（<b>死锁</b>）；再给每个进程一块假装很大的内存（<b>虚拟内存</b>），把磁盘上的数据组织成<b>文件</b>。</p></div>
+<section class="ln-st" id="s14"><h3><span class="no">14</span>OS 骨架：中断、内核态、系统调用<span class="fq">选择每年 2–3 题 · <a href="ep23.html">第23话</a> <a href="ep24.html">第24话</a></span></h3>
+<p class="ln-pic">用户程序是乘客，OS 是司机。乘客想下车（读文件、申请内存）不能自己去踩刹车，只能按铃（系统调用、陷入指令），司机接手后才动刹车（内核态）。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">外中断 / 异常</span><span class="lv">外中断来自 CPU 外部（I/O、时钟），与当前指令无关；异常由当前指令引起</span></li><li><span class="lk">异常返回到哪</span><span class="lv">故障（如缺页）返回到引起它的那条指令重新执行；陷入（如系统调用）返回到下一条</span></li><li><span class="lk">特权指令</span><span class="lv">只能在内核态执行，如开关中断、设置时钟、I/O 指令、修改页表基址</span></li><li><span class="lk">从用户态进内核态</span><span class="lv">唯一途径是中断或异常（包括 trap 指令）</span></li><li><span class="lk">陷入指令本身</span><span class="lv">在用户态执行</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">判断外中断、故障还是陷入</span><span class="do">看是谁触发的、处理完回到哪一条（考过 9 次）</span></li><li><span class="sig">「中断处理中哪一步是硬件做的」</span><span class="do">硬件只做三件事：关中断、保存断点、找入口；保存其他寄存器以后都是 OS（6 次）</span></li><li><span class="sig">「哪条指令只能在内核态执行」</span><span class="do">它会不会影响别的进程或整个系统（4 次）</span></li></ul></div>
+<p class="ln-next">OS 拿到控制权后，第一件要管的是正在运行的程序，也就是进程。</p>
+</section>
+<section class="ln-st" id="s15"><h3><span class="no">15</span>进程、线程与调度<span class="fq">选择每年 3 题 · <a href="ep25.html">第25话</a> <a href="ep26.html">第26话</a></span></h3>
+<p class="ln-pic">程序是菜谱，进程是正在照菜谱做菜的那一次。线程是同一个厨房里的几个厨师：共用灶台和食材（地址空间），各有各的手头动作（寄存器、栈）。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">三态转换</span><span class="lv">就绪→运行（被调度）；运行→就绪（时间片到）；运行→阻塞（等 I/O 或资源）；阻塞→就绪（等的东西来了）</span></li><li><span class="lk">阻塞→运行</span><span class="lv">不能直接发生，必须先到就绪</span></li><li><span class="lk">同一进程的线程共享 / 独有</span><span class="lv">共享地址空间、打开的文件；独有寄存器、栈、PC</span></li><li><span class="lk">周转时间 / 带权周转时间</span><span class="lv">完成时间 − 到达时间 ／ 周转时间 ÷ 运行时间</span></li><li><span class="lk">短作业优先</span><span class="lv">平均周转时间最短，长作业会饥饿</span></li><li><span class="lk">高响应比优先</span><span class="lv">响应比 = (等待时间 + 运行时间) ÷ 运行时间，兼顾短作业又不饥饿</span></li><li><span class="lk">时间片轮转</span><span class="lv">时间片太大退化成先来先服务，太小切换开销大</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">求周转时间、数调度次数</span><span class="do">画甘特图，每次换进程画一条竖线（考过 5 次）</span></li><li><span class="sig">「缺 CPU」还是「缺别的」</span><span class="do">缺 CPU 落就绪，缺别的落阻塞（5 次）</span></li></ul></div>
+<p class="ln-next">多个进程同时跑，抢同一样东西就会乱，于是要同步与互斥。</p>
+</section>
+<section class="ln-st" id="s16"><h3><span class="no">16</span>同步互斥与 PV 大题<span class="fq">大题 10 年 · 2024、2025 都考 · <a href="ep27.html">第27话</a> <a href="ep28.html">第28话</a></span></h3>
+<p class="ln-pic">信号量是一个计数器加一个排队的地方。P 是「拿一张票，没票就去排队」，V 是「还一张票，有人排队就叫醒一个」。互斥是只有一张票的门；同步是「我做完了给你发一张票，你才能开始」。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">P(S)</span><span class="lv">S−1；若 S &lt; 0，进程阻塞排队</span></li><li><span class="lk">V(S)</span><span class="lv">S+1；若 S ≤ 0，唤醒一个排队的进程</span></li><li><span class="lk">互斥信号量初值 / 同步信号量初值</span><span class="lv">1 ／ 0（或资源的初始个数）</span></li><li><span class="lk">互斥四准则</span><span class="lv">空闲让进、忙则等待、有限等待、让权等待；前三条必须满足</span></li><li><span class="lk">P 的顺序</span><span class="lv">先 P 同步信号量（如 empty、full），再 P 互斥信号量（mutex），反过来会死锁</span></li><li><span class="lk">生产者消费者</span><span class="lv">empty 初值 = 缓冲区大小，full 初值 0，mutex 初值 1</span></li><li><span class="lk">读者写者（读者优先）</span><span class="lv">count 记录读者数，第一个读者 P(rw)，最后一个读者 V(rw)，count 本身用 mutex 保护</span></li><li><span class="lk">前驱图</span><span class="lv">每条边 a→b 设一个初值 0 的信号量：a 做完 V，b 开始前 P</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">「互斥访问」「只能一个」</span><span class="do">一个初值为 1 的 mutex，临界区前后 P、V</span></li><li><span class="sig">「A 做完 B 才能做」</span><span class="do">一个初值为 0 的信号量：A 后 V，B 前 P（前驱图考过 2 次）</span></li><li><span class="sig">「最多 n 个同时」「既不死锁又尽量多并发」</span><span class="do">一个初值为 n 的计数信号量当门票，先 P 它再拿其他资源（2 次）</span></li><li><span class="sig">有界缓冲区</span><span class="do">生产者消费者模子：empty、full、mutex 三个</span></li></ul></div>
+<div class="ln-open"><h4>PV 大题照写</h4><ol><li>写「设信号量：mutex=1，用于…的互斥；empty=n，表示…；full=0，表示…」。每个信号量写清含义和初值，这一段 2–3 分。</li><li>按进程分别写 <code>process A(){ while(1){ … } }</code>，先写不带 PV 的动作。</li><li>在每个「要用公共资源」的动作前加 P、后加 V；同步关系按「谁先做谁 V」加。</li><li>检查一遍：同步的 P 在互斥的 P 前面；每个 P 都有对应的 V。</li></ol></div>
+<p class="ln-next">每个进程都拿着一部分资源又在等别人的，就会死锁。</p>
+</section>
+<section class="ln-st" id="s17"><h3><span class="no">17</span>死锁与银行家算法<span class="fq">选择每年 1–2 题 · <a href="ep29.html">第29话</a></span></h3>
+<p class="ln-pic">四辆车同时开进一个十字路口，每辆都占着一个角、等着前面那个角，谁也走不了。死锁的四个条件缺一个就不会发生，预防就是去掉其中一个。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">四个必要条件</span><span class="lv">互斥、请求并保持、不可剥夺、循环等待</span></li><li><span class="lk">n 个进程各需 k 个资源，不死锁的最少资源数</span><span class="lv">m = n(k−1)+1，即 m &gt; n(k−1)，注意是严格大于</span></li><li><span class="lk">银行家算法第一步</span><span class="lv">Need = Max − Allocation</span></li><li><span class="lk">安全性检查</span><span class="lv">Work = Available，找一个 Need ≤ Work 的进程，Work += 它的 Allocation（不是 Max），直到全部完成</span></li><li><span class="lk">不安全状态</span><span class="lv">不一定已经死锁，只是可能死锁</span></li><li><span class="lk">预防 / 避免 / 检测</span><span class="lv">预防破坏条件；避免靠银行家；检测靠资源分配图化简</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">「至少几个资源不会死锁」</span><span class="do">每人先给 k−1 个，再多给 1 个（考过 2 次，坑都在等号上）</span></li><li><span class="sig">银行家表格题</span><span class="do">先算 Need 和 Available，再用 Work 推进，写出安全序列（5 次）</span></li></ul></div>
+<p class="ln-next">进程要运行就得进内存。内存不够大，于是给每个进程一块「虚拟」的。这一站和组原的 Cache 是同一个道理。</p>
+</section>
+<section class="ln-st" id="s18"><h3><span class="no">18</span>内存管理与虚拟内存<span class="fq">大题 9 年 · 选择每年 3 题 · <a href="ep32.html">第32话</a> <a href="ep33.html">第33话</a> <a href="ep34.html">第34话</a></span></h3>
+<p class="ln-pic">分页是把内存切成一样大的格子，进程也切成同样大的页，页可以随便放进任何格子，页表记录「第几页放在第几格」。虚拟内存是只把正在用的页放进内存，其余留在磁盘，用到了再搬（缺页）。TLB 是页表的「书桌」，和 Cache 是同一个思路。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">逻辑地址</span><span class="lv">页号 | 页内偏移；偏移位数 = log₂(页大小)</span></li><li><span class="lk">地址转换</span><span class="lv">页号查页表得页框号，物理地址 = 页框号 | 页内偏移</span></li><li><span class="lk">页表项地址</span><span class="lv">页表起始地址 + 页号 × 页表项长度</span></li><li><span class="lk">二级页表</span><span class="lv">逻辑地址 = 一级页号 | 二级页号 | 页内偏移；一页正好装下一张二级页表</span></li><li><span class="lk">有 TLB 的访存次数</span><span class="lv">TLB 命中访存 1 次；不命中先查页表再访存（一级页表共 2 次）</span></li><li><span class="lk">缺页处理</span><span class="lv">缺页是异常（故障），处理完重新执行引起缺页的那条指令</span></li><li><span class="lk">FIFO / LRU / OPT</span><span class="lv">换最早进来的 ／ 换最久没用的 ／ 换以后最晚用到的；只有 FIFO 有 Belady 异常</span></li><li><span class="lk">CLOCK</span><span class="lv">访问位为 1 就清 0 跳过，遇到 0 就换掉</span></li><li><span class="lk">改进 CLOCK</span><span class="lv">按 (访问位, 修改位) 依次找 (0,0)，再找 (0,1) 并把经过的访问位清 0，循环</span></li><li><span class="lk">抖动</span><span class="lv">分给进程的页框太少，刚换出就要用，频繁缺页</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">二级页表求各种地址</span><span class="do">先按位切地址，再用「表项地址 = 表起址 + 序号 × 表项长」（考过 7 次）</span></li><li><span class="sig">页式虚实转换</span><span class="do">切地址 → 统一进制查表 → 看存在位 → 拼接（5 次）</span></li><li><span class="sig">页面置换手算</span><span class="do">画「访问串 × 页框」表，每列写一次访问后的内容，缺页打 √</span></li></ul></div>
+<div class="ln-open"><h4>大题开头照写（页式地址转换）</h4><ol><li>写「页大小 …B ⟹ 页内偏移 … 位；逻辑地址 … 位 ⟹ 页号 … 位」。2 分。</li><li>把要转换的地址写成二进制或十六进制，切出页号和偏移。</li><li>查页表：在页表里 ⟹ 写出页框号并拼出物理地址；不在 ⟹ 写「缺页，按 … 算法置换 …」。</li><li>置换算法问题列表，一次访问一列。</li></ol></div>
+<p class="ln-next">内存放不下的东西放在磁盘上，按文件组织。</p>
+</section>
+<section class="ln-st" id="s19"><h3><span class="no">19</span>文件、磁盘与 I/O 软件<span class="fq">大题 10 年 · 选择每年 3 题 · <a href="ep35.html">第35话</a> <a href="ep36.html">第36话</a> <a href="ep37.html">第37话</a> <a href="ep40.html">第40话</a></span></h3>
+<p class="ln-pic">文件系统是一个大仓库：目录是货物清单，索引结点（inode）是每件货的档案，记录它放在哪些格子（磁盘块）里。混合索引是档案里先直接写前几格的位置，再多就写「另一张清单在哪」。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">连续 / 链接 / 索引分配</span><span class="lv">连续支持随机访问但有外碎片；链接只能顺序访问；索引支持随机访问、可变长</span></li><li><span class="lk">混合索引最大文件</span><span class="lv">(直接块数 + 一级间接 × k + 二级间接 × k² + …) × 块大小，k = 块大小 ÷ 地址项长度</span></li><li><span class="lk">位图大小</span><span class="lv">被管理的块数 × 1 位 ÷ 8 = 字节数</span></li><li><span class="lk">磁盘访问时间</span><span class="lv">寻道时间 + 平均旋转延迟（转半圈）+ 传输时间（扇区划过磁头）</span></li><li><span class="lk">SSTF / SCAN / C-SCAN</span><span class="lv">最短寻道优先会饥饿；SCAN 电梯来回；C-SCAN 只单向服务，返程不服务（返程距离算不算看题目口径）</span></li><li><span class="lk">打开文件</span><span class="lv">系统打开文件表一份（有计数），每个进程的打开文件表各一份</span></li><li><span class="lk">I/O 软件四层（从上到下）</span><span class="lv">用户层 I/O 软件、设备独立性软件、设备驱动程序、中断处理程序</span></li><li><span class="lk">单缓冲 / 双缓冲每块时间</span><span class="lv">max(T, C)+M ／ max(T, C+M)；n 块总时间不等于每块时间 × n</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">「最多多少个文件」「单个文件最大多长」</span><span class="do">先分清问的是个数还是大小（考过 6 次）</span></li><li><span class="sig">文件大小已知，问访问某字节要读几次磁盘</span><span class="do">算出它在第几块，再看这块在直接、一级还是二级索引里（4 次）</span></li><li><span class="sig">磁盘调度算总移动距离</span><span class="do">一步一行写「当前位置 → 选谁 → 走多远」（4 次）</span></li><li><span class="sig">问「这件事归 I/O 软件哪一层」</span><span class="do">先把四层画出来（7 次）</span></li></ul></div>
+<div class="ln-open"><h4>大题开头照写（文件／磁盘）</h4><ol><li>写出块大小、地址项长度，算「一块能放 k = … 个地址」。</li><li>混合索引写「直接 … 块，一级间接 … 块，二级间接 … 块，共 … 块，最大 … B」。</li><li>磁盘调度写出初始位置和方向，再逐步列表。</li></ol></div>
+</section>
+<div class="ln-part" id="p4"><h2>卷四 计算机网络</h2><p>主线：数据离开这台机器。<b>物理层</b>把位变成信号；<b>链路层</b>负责一段线上的两台机器能可靠说话；<b>网络层</b>负责跨很多段线找到对方（IP、路由）；<b>传输层</b>负责两个进程之间不丢不乱（TCP）；<b>应用层</b>是人真正用的那些服务。</p></div>
+<section class="ln-st" id="s20"><h3><span class="no">20</span>体系结构与物理层<span class="fq">选择每年 2–3 题 · <a href="ep41.html">第41话</a> <a href="ep42.html">第42话</a></span></h3>
+<p class="ln-pic">发送时延是把一车货全部装上车的时间（与数据量和带宽有关）；传播时延是车在路上开的时间（与距离有关）。奈氏定理说的是「一条路最多能开多少种车」，香农定理说的是「路上有噪声时最多能拉多少货」。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">发送时延 / 传播时延</span><span class="lv">数据长度 ÷ 带宽 ／ 距离 ÷ 传播速度</span></li><li><span class="lk">分组交换发完 m 个分组、经过 k 段链路</span><span class="lv">(k+m−1) × 每个分组的发送时延（另加传播时延），k 数的是链路段数</span></li><li><span class="lk">奈氏准则</span><span class="lv">最大速率 = 2W × log₂V（W 带宽，V 状态数）</span></li><li><span class="lk">香农定理</span><span class="lv">最大速率 = W × log₂(1+S/N)；dB 换算 S/N = 10<sup>dB/10</sup></span></li><li><span class="lk">两个都给</span><span class="lv">取较小的那个</span></li><li><span class="lk">OSI 七层 / TCP/IP 四层</span><span class="lv">物理、链路、网络、传输、会话、表示、应用 ／ 网络接口、网际、传输、应用</span></li><li><span class="lk">曼彻斯特编码</span><span class="lv">每个码元中间必有一次跳变</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">求信道最大速率</span><span class="do">给状态数用奈氏，给信噪比用香农，都给取小（考过 5 次）</span></li><li><span class="sig">问某协议或设备属于哪一层</span><span class="do">看它解决什么问题，别看名字（5 次）</span></li></ul></div>
+<p class="ln-next">位能在线上传了，下一步是让一段线两头的机器可靠地说话。</p>
+</section>
+<section class="ln-st" id="s21"><h3><span class="no">21</span>链路层：可靠传输与介质访问<span class="fq">选择每年 4–5 题 · 大题 3 年 · <a href="ep43.html">第43话</a> <a href="ep44.html">第44话</a></span></h3>
+<p class="ln-pic">停等协议是寄一封信、等回信才寄下一封，线路大部分时间空着。滑动窗口是一口气寄好几封再等回信。CSMA/CD 是开会时先听有没有人在说话，同时开口了就都停下、各等一会儿再说。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">停等协议信道利用率</span><span class="lv">发送时间 ÷ (发送时间 + RTT + 确认帧发送时间)，确认帧小时忽略</span></li><li><span class="lk">滑动窗口利用率</span><span class="lv">min(1, 窗口数 × 发送时间 ÷ 一个发送周期)</span></li><li><span class="lk">序号 k 位时窗口上限</span><span class="lv">停等 1；GBN 发送窗口 ≤ 2<sup>k</sup>−1；SR 发送窗口和接收窗口都 ≤ 2<sup>k−1</sup></span></li><li><span class="lk">CSMA/CD 最短帧长</span><span class="lv">2 × 传播时延 × 数据率；以太网最短帧 64B</span></li><li><span class="lk">争用期</span><span class="lv">2τ，以太网争用期是 512 位的发送时间</span></li><li><span class="lk">冲突域 / 广播域</span><span class="lv">集线器不隔冲突也不隔广播；交换机每个端口一个冲突域；路由器隔广播域</span></li><li><span class="lk">交换机</span><span class="lv">按 MAC 地址表转发，学习源地址，目的未知就广播</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">信道利用率</span><span class="do">先画一个发送周期：从开始发第一帧到收到确认，再看这期间真正在发数据的时间（考过 7 次）</span></li><li><span class="sig">窗口最大能取多少</span><span class="do">停等 1、GBN 2<sup>k</sup>−1、SR 2<sup>k−1</sup>（5 次）</span></li><li><span class="sig">数冲突域和广播域</span><span class="do">从每台设备的端口往下看（5 次）</span></li></ul></div>
+<div class="ln-open"><h4>大题开头照写（链路层）</h4><ol><li>写出数据率、帧长、传播时延，算「发送一帧时间 = 帧长 ÷ 数据率 = …」。</li><li>写「一个发送周期 = 发送时间 + 2 × 传播时延（+ 确认帧时间）= …」。</li><li>写「利用率 = …」，再按题问的窗口数调整。</li></ol></div>
+<p class="ln-next">一段线解决了。跨过很多段线、找到地球另一边的主机，是网络层的事。</p>
+</section>
+<section class="ln-st" id="s22"><h3><span class="no">22</span>网络层：IP、子网、NAT、路由<span class="fq">大题 8 年 · 2024、2025 都考 · <a href="ep45.html">第45话</a> <a href="ep46.html">第46话</a> <a href="ep47.html">第47话</a></span></h3>
+<p class="ln-pic">IP 地址像「城市 + 门牌号」：子网掩码说清前面几位是城市（网络号）。路由器只看城市往哪走，到了城市再按门牌送。NAT 是公司前台：对外所有人用同一个总机号，前台记着哪通电话转给谁。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">网络地址</span><span class="lv">IP 地址与子网掩码按位与</span></li><li><span class="lk">可分配主机地址数</span><span class="lv">2<sup>主机位数</sup> − 2（全 0 网络地址、全 1 广播地址）</span></li><li><span class="lk">/30 子网</span><span class="lv">4 个地址，2 个可用，正好给点对点链路两端</span></li><li><span class="lk">等分 N 个子网</span><span class="lv">子网位 = log₂N，从主机位里借</span></li><li><span class="lk">路由聚合</span><span class="lv">把几个网络地址展开成二进制，数公共前缀位数</span></li><li><span class="lk">最长前缀匹配</span><span class="lv">多条路由都匹配时选前缀最长的</span></li><li><span class="lk">IP 首部</span><span class="lv">固定 20B；TTL 每过一个路由器减 1；首部长度单位 4B，片偏移单位 8B</span></li><li><span class="lk">IP 分片</span><span class="lv">除最后一片外，每片数据长度是 8 的倍数，MF=1</span></li><li><span class="lk">NAT</span><span class="lv">出去改源地址和端口，进来改目的地址和端口；外部要主动访问内部，得配静态映射</span></li><li><span class="lk">ARP</span><span class="lv">由 IP 查 MAC，请求广播、应答单播；只在一个局域网内用</span></li><li><span class="lk">RIP / OSPF / BGP</span><span class="lv">距离向量、跳数最多 15、UDP ／ 链路状态、Dijkstra、直接用 IP ／ 自治系统之间、TCP</span></li><li><span class="lk">DHCP</span><span class="lv">客户端用 0.0.0.0 发广播，服务器用 UDP 67、客户端 68</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">求网络地址、网关、是否同网段</span><span class="do">只把掩码不是 0 也不是 255 的那个字节写成二进制（考过 5 次）</span></li><li><span class="sig">NAT 表</span><span class="do">出站改源、入站改目的（6 次）</span></li><li><span class="sig">几条路由求聚合</span><span class="do">展开不同的那一字节，数公共前缀（4 次）</span></li><li><span class="sig">问某段链路上帧的源、目的地址</span><span class="do">MAC 地址每一跳都换，IP 地址端到端不变（3 次）</span></li></ul></div>
+<div class="ln-open"><h4>大题开头照写（IP）</h4><ol><li>把相关的 IP 和掩码写出来，标明前缀长度。</li><li>写「网络地址 = IP ∧ 掩码 = …」，逐个给出。</li><li>子网划分写「需 N 个子网 ⟹ 借 … 位 ⟹ 每个子网 … 个地址，可分配 … 个」，再列出每个子网的地址范围。</li><li>路由表按「目的网络 | 掩码 | 下一跳 | 接口」四列写，默认路由写 0.0.0.0/0。</li></ol></div>
+<p class="ln-next">网络层只管把分组送到那台主机；送到哪个进程、丢了怎么办，是传输层的事。</p>
+</section>
+<section class="ln-st" id="s23"><h3><span class="no">23</span>传输层：TCP<span class="fq">选择每年 3–4 题 · 大题 2 年 · <a href="ep48.html">第48话</a> <a href="ep49.html">第49话</a></span></h3>
+<p class="ln-pic">TCP 是打电话：先拨号确认对方在（三次握手），说话时每句都要对方回「收到」，挂电话要双方各说一次再见（四次挥手）。拥塞控制是开车：刚上路慢慢加速（慢开始，翻倍），快到经验速度时改成一点点加（拥塞避免），一出事故就踩刹车。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">三次握手</span><span class="lv">SYN → SYN+ACK → ACK；SYN 和 FIN 各占一个序号，纯 ACK 不占</span></li><li><span class="lk">确认号</span><span class="lv">期望收到的下一个字节的序号</span></li><li><span class="lk">发送窗口</span><span class="lv">min(rwnd, cwnd)，再减去已发出未确认的</span></li><li><span class="lk">慢开始</span><span class="lv">每过一个 RTT，cwnd 翻倍，但不超过 ssthresh</span></li><li><span class="lk">拥塞避免</span><span class="lv">cwnd ≥ ssthresh 后，每个 RTT 加 1</span></li><li><span class="lk">超时</span><span class="lv">ssthresh = cwnd/2，cwnd = 1，重新慢开始</span></li><li><span class="lk">收到 3 个重复 ACK</span><span class="lv">ssthresh = cwnd/2，cwnd = 新 ssthresh，直接进入拥塞避免（快恢复）</span></li><li><span class="lk">TIME_WAIT</span><span class="lv">主动关闭方最后要等 2MSL</span></li><li><span class="lk">UDP 首部 / TCP 首部</span><span class="lv">8B ／ 20B 起</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">拥塞窗口变化</span><span class="do">逐个 RTT 列表写 cwnd 和 ssthresh（考过 8 次）</span></li><li><span class="sig">TCP 序号和确认号</span><span class="do">SYN、FIN 各占一个序号，数据按字节编号（7 次）</span></li><li><span class="sig">还能发多少数据</span><span class="do">窗口从确认号开始，长度 min(rwnd, cwnd)，再扣掉已发的（5 次）</span></li></ul></div>
+<div class="ln-open"><h4>大题开头照写（拥塞窗口）</h4><ol><li>画一张表，列是「第几个 RTT | cwnd | ssthresh | 阶段」。</li><li>第一行写初始值；每行按规则推一步，阶段写「慢开始」或「拥塞避免」。</li><li>遇到超时或 3 个重复 ACK 单独写一行，写明 ssthresh 和 cwnd 的新值。</li></ol></div>
+<p class="ln-next">最上面一层是人真正用的服务。</p>
+</section>
+<section class="ln-st" id="s24"><h3><span class="no">24</span>应用层与整条请求<span class="fq">选择每年 2 题 · 综合题常把四层串起来 · <a href="ep50.html">第50话</a> <a href="ep51.html">第51话</a></span></h3>
+<p class="ln-pic">在浏览器输入网址到看到页面：先问 DNS「这个名字的 IP 是多少」，再和服务器 TCP 握手，然后发 HTTP 请求取页面，页面里的每张图再取一次。综合题经常让你把这一路上的每个包都数出来。</p>
+<div class="ln-mem"><h4>必背</h4><ul><li><span class="lk">端口</span><span class="lv">FTP 20/21、Telnet 23、SMTP 25、DNS 53、TFTP 69、HTTP 80、POP3 110、SNMP 161、HTTPS 443</span></li><li><span class="lk">用 UDP 的</span><span class="lv">DNS、TFTP、SNMP、DHCP；其余用 TCP</span></li><li><span class="lk">DNS</span><span class="lv">递归查询是让别人替你问到底；迭代查询是别人只告诉你下一个该问谁</span></li><li><span class="lk">FTP</span><span class="lv">控制连接 21 一直保持；数据连接 20 每传一个文件建一次</span></li><li><span class="lk">HTTP 非持续连接取 n 个对象（串行）</span><span class="lv">每个对象 2 个 RTT，加上主页面共 2(n+1) 个 RTT</span></li><li><span class="lk">HTTP 持续连接（流水线）</span><span class="lv">建连 1 RTT + 主页面 1 RTT + 所有对象 1 RTT</span></li><li><span class="lk">SMTP / POP3</span><span class="lv">SMTP 推（发信）；POP3、IMAP 拉（收信）</span></li></ul></div>
+<div class="ln-cue"><h4>题眼</h4><ul><li><span class="sig">「从点击到收到页面要多久」</span><span class="do">DNS 几个 RTT + TCP 握手 1 个 RTT + 取对象，起点是「点击」还是「已建连」差 1 个 RTT（考过 4 次）</span></li><li><span class="sig">题干给了 MSS 和文件大小</span><span class="do">别套 RTT 公式，逐轮画 cwnd</span></li><li><span class="sig">问传输层协议或端口</span><span class="do">背上面那张表</span></li></ul></div>
+<div class="ln-how"><b>最后：考场上怎么用这条线</b><ol><li>选择题每题限时约 2 分钟。超过 3 分钟没头绪：先蒙一个、题号画圈、走。</li><li>综合题读完先认席位（对照最上面那张表），把「开头照写」那几行写上，这部分分数先落袋。</li><li>算法题哪怕只会暴力解，也把三段写全：思想、代码、复杂度。</li><li>每道综合题最多给 20 分钟，写不动就去下一道。全卷最不值得的地方：算法题追求最优解、Cache 题最后一问的复杂计算、PV 题的极端情况讨论。</li></ol></div>
+</section>
+<script>
+function LNTest(){var on=document.body.classList.toggle('test');document.getElementById('tb').textContent=on?'退出自测':'自测';
+  document.querySelectorAll('.ln-mem .lv.show').forEach(function(e){e.classList.remove('show')});try{localStorage.setItem('sx_line_test',on?'1':'')}catch(e){}}
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.ln-mem .lv');if(a&&document.body.classList.contains('test'))a.classList.toggle('show')});
+try{if(localStorage.getItem('sx_line_test'))LNTest()}catch(e){}
+(function(){var links=[].slice.call(document.querySelectorAll('#toc a')),secs=[].slice.call(document.querySelectorAll('.ln-st,.ln-part')),cur=null,tk=0;
+  function upd(){tk=0;var y=130,hit=secs[0];for(var i=0;i<secs.length;i++){if(secs[i].getBoundingClientRect().top<=y)hit=secs[i];else break}
+    if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4)hit=secs[secs.length-1];
+    var l=links.filter(function(a){return a.getAttribute('href')==='#'+hit.id})[0];if(!l||l===cur)return;if(cur)cur.classList.remove('on');cur=l;l.classList.add('on');
+    var t=document.getElementById('toc');t.scrollLeft=l.offsetLeft-t.clientWidth/2+l.offsetWidth/2}
+  window.addEventListener('scroll',function(){if(!tk)tk=requestAnimationFrame(upd)},{passive:true});upd()})();
+</script>
+</div></main></body></html>
