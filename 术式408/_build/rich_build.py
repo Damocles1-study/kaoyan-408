@@ -260,7 +260,7 @@ def main():
     G = {}
     gp = os.path.join(SRC, 'kp.txt')
     if os.path.exists(gp): parse_defs(open(gp, encoding='utf-8').read(), 'kp.txt', G)
-    files = sorted(glob.glob(os.path.join(SRC, '[12][09][0-9][0-9].txt')))
+    files = sorted(glob.glob(os.path.join(SRC, '[0-9][0-9][0-9][0-9].txt')))
     uses, years, summary, cues = {}, [], [], {}
     for f in files:
         y = int(os.path.basename(f)[:4]); years.append(y)
@@ -272,7 +272,7 @@ def main():
             if k in G: err('%d.txt' % y, '本年 %s 与全局 kp.txt 重名' % k)
         ids = dict(G); ids.update(L)
         Q = parse_year(rest, os.path.basename(f))
-        for no, q in Q.items():
+        for no, q in (Q.items() if 2000 < y < 2100 else []):   # 模拟卷（3001…）不算进「真题里出现在」
             for t in q['tpl']:
                 uses.setdefault(t, []).append([y, no])
             if q['tpl']:   # 跨年字眼：本题读题块的第一句「原句 >> 想到什么」＋复盘块的「带走」，挂到它用的每张套路卡上

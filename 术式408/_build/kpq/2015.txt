@@ -1,0 +1,1 @@
+40. 给一段 HTTP 请求报文 ⟹ 逐行读：请求行（方法、对象、版本）、Host、Connection、Cookie 各说明了什么
