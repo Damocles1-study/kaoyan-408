@@ -8,7 +8,7 @@ var m=get('mode','');if(m)R.setAttribute('data-mode',m);
 var EMB=/[?&]embed=1(&|$)/.test(location.search),FROM=(location.search.match(/[?&]from=([^&#]+)/)||[])[1];
 if(EMB){R.classList.add('embed');D.write('<style>.embed .bar,.embed .prog,.embed .toc,.embed .seal{display:none!important}.embed body{padding-top:4px}</style>')}
 D.addEventListener('DOMContentLoaded',function(){
- if(FROM){try{var fu=decodeURIComponent(FROM),fm=fu.match(/^(真题套卷\.html)#y=(\d{4})&q=(\d{1,2})$/);if(fm){var y=+fm[2],bk=D.createElement('a');bk.href=fu;bk.className='frombk';bk.textContent='← 回到套卷 · '+(y>2900&&y<3010?'模拟'+['一','二','三','四','五','六','七','八','九'][y-3001]:y+' 年')+' 第 '+fm[3]+' 题';bk.style.cssText='position:fixed;left:12px;bottom:14px;z-index:40;background:#0b0b0b;color:#fff;font:700 14px/1 sans-serif;padding:11px 14px;border:2px solid #fff;box-shadow:3px 3px 0 #0b0b0b;text-decoration:none;max-width:calc(100vw - 24px)';D.body.appendChild(bk)}}catch(e){}}
+ if(FROM){try{var fu=decodeURIComponent(FROM),fm=fu.match(/^([\w\u4e00-\u9fff.-]+\.html)#y=(\d{4})&q=(\d{1,2})$/);if(fm){var y=+fm[2],bk=D.createElement('a');bk.href=fu;bk.className='frombk';bk.textContent='← 回到套卷 · '+(y>2900&&y<3010?'模拟'+['一','二','三','四','五','六','七','八','九'][y-3001]:y+' 年')+' 第 '+fm[3]+' 题';bk.style.cssText='position:fixed;left:12px;bottom:14px;z-index:40;background:#0b0b0b;color:#fff;font:700 14px/1 sans-serif;padding:11px 14px;border:2px solid #fff;box-shadow:3px 3px 0 #0b0b0b;text-decoration:none;max-width:calc(100vw - 24px)';D.body.appendChild(bk)}}catch(e){}}
  // 反转（深色）
  var t=D.getElementById('neg');if(t)t.onclick=function(){var n=R.getAttribute('data-mode')==='neg'?'':'neg';if(n)R.setAttribute('data-mode',n);else R.removeAttribute('data-mode');set('mode',n)};
  // 分格入场

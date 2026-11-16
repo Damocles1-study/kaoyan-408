@@ -8,7 +8,7 @@
  * 本题知识点（可选）：C.kpqPath 指向 kpq/qYYYY.js，设 EXAM_KPQ[年]={题号:{k:[卡id],cue 题眼,use 关键一步,trap 坑,take 带走,mn 口诀,ep:{n,t,s,st,lab}}}（_build/kpq_build.py 生成）。
  *   做题中「🧩 本题知识点」只给题眼、口诀、通用卡片和去讲解；判分或交卷后再给关键一步、坑、带走。卡片口诀在 kpq/cards.js（EXAM_KPX.mn）。
  *   去讲解：在本页弹出那一话（iframe，?embed=1#节），关掉回原题；「整页打开」带 ?from=，讲义页出回程钮。
- * 模拟卷（可选）：C.names（或 C.yearName）={3001:'模拟一'} 给非年份的卷子起名；C.mocks=[3001,…] 在首页单独成组；
+ * 模拟卷（可选）：C.mockDeep:false 表示模拟卷没有精研卡文件；C.names（或 C.yearName）={3001:'模拟一'} 给非年份的卷子起名；C.mocks=[3001,…] 在首页单独成组；
  *   也可写 C.groups=[{name:'真题',ys:[…]},{name:'模拟卷',ys:[…]}] 自己分组（有 groups 时忽略 mocks）。不在 C.years 里的卷子标题不拼「真题」。
  * 做卷顺序（可选）：C.plan = {order:[[年,档]],tiers:{档:{name,min,desc}},rhythm,cut,pace} */
 (function(){
@@ -30,7 +30,7 @@
   function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function fmt(sec){ sec=Math.max(0,Math.floor(sec)); var h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60; return (h?h+':':'')+(h&&m<10?'0':'')+m+':'+(s<10?'0':'')+s; }
   function nameOf(y){ var N=C.names||C.yearName||{}; return N[y]||String(y); }
-  function isMock(y){ return (C.years||[]).indexOf(y)<0; }   /* 不在 C.years 里的（模拟卷 3001…）都按模拟卷显示 */
+  function isMock(y){ return y>2100 || (C.years||[]).indexOf(y)<0; }   /* 3001 起的编号、或不在 C.years 里的，都按模拟卷显示（标题不拼「真题」） */
   function daysLeft(){ return Math.ceil((new Date(C.examAt)-Date.now())/864e5); }
   function countText(){
     var ms = new Date(C.examAt)-Date.now();
@@ -229,7 +229,7 @@
   function deepOf(no){ var D=cur&&window.EXAM_DEEP&&window.EXAM_DEEP[cur]; return D&&D.q&&D.q[no]; }
   function loadDeep(y){
     window.EXAM_DEEP = window.EXAM_DEEP||{};
-    if (!C.deepPath || window.EXAM_DEEP[y] || loadDeep['_'+y]) return;
+    if (!C.deepPath || window.EXAM_DEEP[y] || loadDeep['_'+y] || (isMock(y) && C.mockDeep===false)) return;   /* C.mockDeep:false ＝ 模拟卷没有精研卡，不去请求 */
     loadDeep['_'+y]=1;
     var s=document.createElement('script');
     s.src=C.deepPath.replace('{Y}',y)+'?v='+(C.deepVer||C.ver||1);
@@ -478,7 +478,7 @@
     if (canKq) acts += '<button class="solb kqb'+(ss.kq[q.no]?' on':'')+'" data-kq="'+q.no+'">🧩 本题知识点</button>';
     if (acts) h += '<div class="acts">'+acts+'</div>';
     if (canKq && ss.kq[q.no]) h += kqHtml(q, kqFull);
-    if (ss.done && !showNow) { var G=deepOf(q.no); h += '<div class="gist"><i>做对了，过一眼这行就走</i>'+(G&&G.core?G.core:'想再看一遍就点「看解析」。')+'</div>'; }
+    if (ss.done && !showNow) { var G=deepOf(q.no); h += '<div class="gist"><i>做对了，过一眼这行就走</i>'+(G&&G.core?G.core:(kqOf(q.no)&&kqOf(q.no).use)||'想再看一遍就点「看解析」。')+'</div>'; }
     if (showNow) h += '<div class="sol"><span class="soltab">解析</span>'+solHtml(q)+(jd||ss.done?selfHtml(q)+whyHtml(q):'')+noteHtml(q)
       + '<div class="solend"><button class="solb" data-sol="'+q.no+'">收起解析</button><button class="solb" data-step="1">下一题 →</button></div></div>';
     return h + '</article>';
@@ -702,6 +702,7 @@
   function curDeep(){ return cur&&window.EXAM_DEEP&&window.EXAM_DEEP[cur]; }
   function studyHtml(){
     var D=curDeep();
+    if (!D && isMock(cur)) return '<div class="study st0">模拟卷没有精研卡，复盘路线：对答案 → 失分题先看「🧩 本题知识点」里的题眼和坑，不看解析重做一遍 → 再读解析和三层卷面 → 每题记一行「卡在哪、回哪一话」。</div>';
     if (!D) return C.deepPath?'<div class="study st0">这张卷的精研还没写，先按通用路线复盘：对答案 → 错题不看解析重做 → 读解答找卡点 → 记一行到错题本。</div>':'';
     var wrong=P.q.filter(function(q){ var v=qScore(q); return v!=null&&v<q.score; }).map(function(q){ return q.no; });
     var core=(D.core||[]), must=core.slice();
@@ -723,7 +724,8 @@
   function epOpen(btn){
     epClose(); kpClose();
     var href=btn.getAttribute('data-epgo'), sec=btn.getAttribute('data-sec'), no=btn.getAttribute('data-no'), tt=btn.getAttribute('data-tt');
-    var back=location.pathname.split('/').pop()+'#y='+cur+'&q='+no;
+    var pg=location.pathname.split('/').pop(); try{ pg=decodeURIComponent(pg); }catch(x){}
+    var back=pg+'#y='+cur+'&q='+no;
     var full=href+'?from='+encodeURIComponent(back)+(sec?'#'+sec:'');
     var o=document.createElement('div'); o.id='epm'; o.className='epm'; o.setAttribute('data-no',no);
     o.innerHTML='<div class="epm-b" role="dialog" aria-label="讲解"><div class="epm-h"><b>'+esc(tt)+'</b><a href="'+esc(full)+'">整页打开</a><button class="epm-x" data-epx>回到第 '+esc(no)+' 题</button></div>'

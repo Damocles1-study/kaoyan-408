@@ -2,14 +2,14 @@
 <html lang="zh-CN" data-skin="ink"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>真题套卷 · 术式408</title>
-<link rel="stylesheet" href="assets/exam/exam.css?v=8">
+<link rel="stylesheet" href="assets/exam/exam.css?v=9">
 <link rel="stylesheet" href="assets/katex/katex.min.css">
 </head><body><div id="app"></div>
 <script src="assets/katex/katex.min.js"></script>
 <script src="assets/exam/deep/index.js?v=1"></script>
-<script src="assets/exam/rich/kp.js?v=7"></script>
+<script src="assets/exam/rich/kp.js?v=8"></script>
 <script src="assets/exam/tier.js?v=4"></script>
-<script src="assets/exam/kpq/cards.js?v=1"></script>
+<script src="assets/exam/kpq/cards.js?v=2"></script>
 <script>
 /* 精解里的公式：<span class="m">tex</span>（md＝独占一行），引擎每次重绘后调用 */
 window.renderMathInElement=function(root){ if(!window.katex) return; root.querySelectorAll('.m:not([data-k])').forEach(function(el){ try{ katex.render(el.textContent,el,{throwOnError:false,strict:false,displayMode:el.classList.contains('md')}); }catch(e){} el.setAttribute('data-k',1); }); };
@@ -20,10 +20,12 @@ window.EXAM_CONF={
   lead:'2009–2026 每年一整套，题号和原卷一致。讲义只用过 2009–2019，<b>2020 年以后没见过，留到读完再开</b>。<b>2009–2023 每题有逐步精解</b>（读题圈画 · 手绘草图 · 每一步 · 灰色＝考场可省 · 橙色＝秒杀 · 蓝虚线点开看知识点、紫框点开看跨年套路），原解析收在下面备查。交卷后每题下面还有一张<b>精研卡</b>（考什么 · 本质 · 怎么出的 · 举一反三 · 联想搭配），卷首给出这张卷的复盘限时和必吃透题。<b>每题标着分档和限时，成绩单给出保底、正常、冲刺三条线。</b>算法题代码没把握，先看 <a href="算法题速成.html">算法题速成</a>（六个骨架 ＋ 十八年保底解对照表）。',
   backHref:'index.html',backText:'术式408',
   years:[2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026],
+  mocks:[3001,3002,3003],mockDeep:false,names:{3001:'模拟一',3002:'模拟二',3003:'模拟三'},
+  mockLead:'按 2009–2026 统考的题位分布组的三套卷：选择题取自练习系统题库的非真题原题（不改题，解析底部写着题号），少数几题按 2024–2026 的新考点自编（题号旁标「自编」的在考点栏写着）。每题有「🧩 本题知识点」，综合题按「思路 → 考场卷面 → 批注」三层写，答案都用程序复算或对拍过。<b>做完 2024–2026 再开</b>，时间不够就只做一套。',
   yearNote:{2026:'回忆版',2020:'讲义未用',2021:'讲义未用',2022:'讲义未用',2023:'讲义未用',2024:'讲义未用',2025:'讲义未用'},
   minutes:180,examAt:'2026-12-20T14:00:00+08:00',examName:'408 开考',examWhen:'2026 年 12 月 20 日 14:00（业务课二）',
   subjects:{ds:'数据结构',co:'组成原理',os:'操作系统',net:'计算机网络'},target:100,essayName:'综合',
-  dataPath:'assets/exam/y{Y}.js',ver:1,richPath:'assets/exam/rich/r{Y}.js',richVer:3,kpqPath:'assets/exam/kpq/q{Y}.js',kpqVer:1,
+  dataPath:'assets/exam/y{Y}.js',ver:1,richPath:'assets/exam/rich/r{Y}.js',richVer:4,kpqPath:'assets/exam/kpq/q{Y}.js',kpqVer:2,
   deepPath:'assets/exam/deep/d{Y}.js',deepVer:1,deepYears:window.EXAM_DEEP_YEARS||[],
   plan:{
     cut:'2026-12-16',pace:1.5,
@@ -42,5 +44,5 @@ window.EXAM_CONF={
   footHtml:'做题记录只存在这个浏览器里。综合题对照解答自评，选择题自动判分。'
 };
 </script>
-<script src="assets/exam/engine.js?v=8"></script>
+<script src="assets/exam/engine.js?v=11"></script>
 </body></html>
