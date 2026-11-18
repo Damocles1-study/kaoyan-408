@@ -12,7 +12,7 @@
 
 ## 在线真题套卷
 
-`真题套卷.html` + `assets/exam/`。`engine.js`、`exam.css` 与数学一重读报共用一份，改了要同步。`python3 _build/exam_build.py` 把练习系统题库按 `_build/exam_slots.json` 的题号拼回 2009–2025 整卷（题库改了要重跑）；`python3 _build/exam_2026.py` 单独生成 2026 回忆版。页面模板副本在 `_build/exam_page.html`。
+`真题套卷.html` + `assets/exam/`。`engine.js`、`exam.css` 与数学一重读报共用一份，改了要同步。`python3 _build/exam_build.py` 把练习系统题库按 `_build/exam_slots.json` 的题号拼回 2009–2025 整卷（题库改了要重跑）；`python3 _build/exam_2026.py` 单独生成 2026 回忆版（第 37 题拓扑图由脚本画成 SVG，原裁图太淡看不清路由器名；第 44 题数据通路取自 `真题/2026…/2026年408考研真题-试题.pdf` 的重绘图，保留重绘者水印、图注写来源）。页面模板副本在 `_build/exam_page.html`。
 
 ## 真题精研与做卷顺序
 

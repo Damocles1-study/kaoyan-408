@@ -81,7 +81,7 @@ def build(y):
         it={'no':n,'type':'choice' if ch else 'essay','score':2 if ch else SCORES[str(y)][str(n)],'subj':q['subj'],'stem':h,'sol':sol}
         if ch: it['opts']=q['opts']; it['ans']=q['ans']
         if q.get('claude'): it['more']=q['claude']
-        if q.get('kp'): it['tag']='、'.join(q['kp'][:3])
+        if q.get('kp'): it['tag']=re.sub(r'</?(u|b|i|em|strong)>','','、'.join(q['kp'][:3]))
         if k: it['src']=k
         qs.append(it)
     P={'year':y,'q':qs,'secName':{'choice':'一、单项选择题（每题 2 分，共 80 分）','essay':'二、综合应用题（共 70 分）'}}

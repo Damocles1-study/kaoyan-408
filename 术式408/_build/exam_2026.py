@@ -14,8 +14,38 @@ def crop(pg,x0,y0,x1,y1,name):
     a=np.where(a>=165,255,np.clip((a-40)*255/125,0,255)).astype(np.uint8)   # 去掉浅色水印
     Image.fromarray(a).save(os.path.join(ROOT,'assets','exam','fig',name),'WEBP',quality=70)
 crop(7,83,188,515,345,'2026_36.webp')
-crop(7,83,583,480,730,'2026_37.webp')
-crop(11,90,385,505,594,'2026_44.webp')
+# 第 37 题：原裁图的线条、路由器名和水印同为浅灰，去水印后 R1～R4 几乎看不见，改为按原图重画的矢量图
+def svg37():
+    W,H=660,330
+    R={'R1':(230,190),'R2':(230,55),'R3':(420,190),'R4':(420,55)}
+    o=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %d %d" width="%d" height="%d" font-family="-apple-system,Helvetica,Arial,PingFang SC,sans-serif">'%(W,H,W,H),'<rect width="%d" height="%d" fill="#fff"/>'%(W,H),'<g stroke="#222" stroke-width="2" fill="none">']
+    def ln(a,b): o.append('<line x1="%d" y1="%d" x2="%d" y2="%d"/>'%(a+b))
+    for a,b in [('R2','R4'),('R1','R4'),('R1','R3'),('R4','R3')]: ln(R[a],R[b])
+    o.append('<line x1="230" y1="55" x2="230" y2="190" stroke-dasharray="7 5"/>')
+    nets=[((85,55),'199.10.20.0/27','R2'),((565,55),'199.10.20.32/27','R4'),((85,190),'Internet','R1'),((565,190),'199.10.20.64/27','R3'),((420,295),'199.10.20.128/25','R3')]
+    for (x,y),t,r in nets: ln((x,y),R[r])
+    ln((230,190),(230,270))
+    o.append('</g>')
+    for (x,y),t,r in nets:
+        o.append('<ellipse cx="%d" cy="%d" rx="76" ry="19" fill="#fff" stroke="#222" stroke-width="1.6"/><text x="%d" y="%d" text-anchor="middle" font-size="15">%s</text>'%(x,y,x,y+5,t))
+    for k,(x,y) in R.items():
+        o.append('<circle cx="%d" cy="%d" r="21" fill="#fff" stroke="#111" stroke-width="2.2"/><text x="%d" y="%d" text-anchor="middle" font-size="15" font-weight="700">%s</text>'%(x,y,x,y+5,k))
+    o.append('<rect x="212" y="268" width="36" height="46" rx="3" fill="#fff" stroke="#222" stroke-width="1.8"/><text x="256" y="300" font-size="13">服务器</text>')
+    def tx(x,y,t,sz=15,c='#111',w='400',a='middle'): o.append('<text x="%d" y="%d" text-anchor="%s" font-size="%d" fill="%s" font-weight="%s">%s</text>'%(x,y,a,sz,c,w,t))
+    tx(325,47,'5',16,w='700'); tx(330,110,'6',16,w='700'); tx(325,182,'3',16,w='700'); tx(432,127,'4',16,w='700',a='start')
+    tx(242,112,'2 → ∞',15,'#c00','700','start'); tx(222,112,'t1 时刻断开',12,'#c00','400','end')
+    for x,y,t in [(196,184,'S0'),(216,160,'S1'),(254,166,'S2'),(262,207,'S3'),(214,226,'S4')]: tx(x,y,t,12,'#555')
+    o.append('</svg>')
+    open(os.path.join(ROOT,'assets','exam','fig','2026_37.svg'),'w',encoding='utf-8').write(''.join(o))
+svg37()
+# 第 44 题：原图是手绘照片，换成新版回忆材料里的重绘图（保留重绘者的水印，图注写明来源）
+def fig44():
+    d=fitz.open(os.path.join(ROOT,'..','..','真题','2026年计算机408真题+答案','2026年408考研真题-试题.pdf'))
+    pg=d[7]; x=[i[0] for i in pg.get_images(full=True)][0]
+    import io
+    im=Image.open(io.BytesIO(d.extract_image(x)['image'])).convert('L')
+    im.save(os.path.join(ROOT,'assets','exam','fig','2026_44.webp'),'WEBP',quality=82)
+fig44()
 crop(13,90,238,432,340,'2026_46.webp')
 crop(14,143,83,393,292,'2026_47.webp')
 fig=lambda n:'<figure class="fg"><img src="assets/exam/fig/%s" alt=""></figure>'%n
@@ -57,7 +87,7 @@ C=[ # 题号, 科目, 题干, 选项, 答案, 解答
 (34,'net','若在带宽 200kHz、信噪比 S/N=1023 的信道上发送一个长度为 1500B 的分组，则发送该分组的传输时延至少是（　）。',['1ms','2ms','3ms','6ms'],'D','香农极限 200k×log₂1024=2Mb/s，12000b÷2Mb/s=6ms。'),
 (35,'net','假设采用 CSMA/CA 的 IEEE 802.11 无线局域网，其数据传输速率为 300Mb/s，DIFS=128μs，SIFS=28μs。忽略除数据帧以外的其他帧的传输时延及信号传播时延，主机 H 发送一个总长度为 1500B 的数据帧，则 H 从开始发送数据帧至确认接收方收到所需的时间至少是（　）。',['40μs','68μs','168μs','200μs'],'B','从开始发送数据帧算起，不含 DIFS：40μs+SIFS 28μs=68μs。'),
 (36,'net','支持 VLAN 划分的以太网交换机，已按端口划分了两个 VLAN。VLAN 划分结果及部分端口连接主机的 MAC 地址如图所示。下列具有不同目的 MAC 地址（DA）和源 MAC 地址（SA）的以太网帧 F1～F4 中，H3 会接收到的是（　）。'+fig('2026_36.webp')+'F1：(DA) 00-1A-2B-3C-4D-03；(SA) 00-1A-2B-3C-4D-01<br>F2：(DA) 00-1A-2B-3C-4D-04；(SA) 00-1A-2B-3C-4D-05<br>F3：(DA) FF-FF-FF-FF-FF-FF；(SA) 00-1A-2B-3C-4D-02<br>F4：(DA) 00-1A-2B-3C-4D-06；(SA) 00-1A-2B-3C-4D-03',['仅 F2、F4','仅 F1、F3','仅 F1、F2','仅 F3、F4'],'B','发给 H3 的单播和同 VLAN 的广播会到 H3。'),
-(37,'net','某网络在 t0 时刻的网络拓扑如下图所示。R1～R4 是路由器，基于链路状态路由算法计算路由。S0～S4 是路由器 R1 的接口，链路上的数值为链路费用。若 t1（t1&gt;t0）时刻，R1 检测到 R1 到 R2 的链路断开，则 R1 重新计算路由并进行充分路由聚合后的表中路由项的数量是（　）。'+fig('2026_37.webp'),['3','4','5','6'],'C','⚠️ 两份回忆版答案不一致（一份 C，一份说 4 个），且原题的 R1 路由表没有留下来。这题不计入判断水平。'),
+(37,'net','某网络在 t0 时刻的网络拓扑如下图所示。R1～R4 是路由器，基于链路状态路由算法计算路由。S0～S4 是路由器 R1 的接口，链路上的数值为链路费用。若 t1（t1&gt;t0）时刻，R1 检测到 R1 到 R2 的链路断开，则 R1 重新计算路由并进行充分路由聚合后的表中路由项的数量是（　）。'+fig('2026_37.svg'),['3','4','5','6'],'C','⚠️ 两份回忆版答案不一致（一份 C，一份说 4 个），且原题的 R1 路由表没有留下来。这题不计入判断水平。'),
 (38,'net','下列路由协议中，能将一个自治系统划分为多个区域的内部网关协议是（　）。<br>Ⅰ. OSPF　Ⅱ. RIP　Ⅲ. BGP',['仅 Ⅰ','仅 Ⅱ','仅 Ⅰ、Ⅲ','仅 Ⅱ、Ⅲ'],'A','OSPF 可分区；BGP 是外部网关协议。'),
 (39,'net','若将 IP 网络 123.4.4.0/22 划分为规模均衡的 32 个子网，则 IP 地址 123.4.5.11 所在的子网是（　）。',['123.4.4.0/27','123.4.4.32/27','123.4.5.0/27','123.4.5.192/27'],'C','/22 划 32 份是 /27，每段 32 个地址。11 落在 123.4.5.0 这一段。'),
 (40,'net','下列叙述中不属于 cookie 技术典型用途的是（　）。',['用户跟踪','个性化推荐','构建虚拟购物车','缩短 Web 对象的响应时间'],'D','缩短响应时间靠缓存和代理。'),
@@ -69,7 +99,7 @@ E=[
  '（1）逐个模拟入栈出栈，出现「要出的数已入栈却不在栈顶」即不合法。回忆材料的标答是：不能，6 先出之后 5、4 必须逆序。<br>（2）不合法的模式是 Pj&lt;Pk&lt;Pi，即 Pi&gt;Pk&gt;Pj。<br>（3）5 个：2134、2143、2314、2341、2431。<br>（4）以 1 开头 M 个；以 2 开头也是 M 个；总数为卡特兰数 C(2k,k)/(k+1)。'),
 (43,'co',10,'某 16 位计算机 C 按字节编址，通用寄存器 R0～R15 的编号为 0～15，存储器地址为 16 位，采用定长指令字，指令格式有 R、I 和 M 型如下所示。<table class="qtab"><tr><th>格式</th><th>4 位</th><th>4 位</th><th>4 位</th><th>4 位</th><th>功能说明</th></tr><tr><td>R 型</td><td>0000</td><td>rt</td><td>rs/num</td><td>op1</td><td>R[rt]←R[rt] op1 R[rs]；R[rt]←R[rt] op1 num</td></tr><tr><td>I 型</td><td>op2</td><td>rt</td><td colspan="2">imm8</td><td>R[rt]←R[rt] op2 imm8</td></tr><tr><td>M 型</td><td>op3</td><td colspan="3">offset</td><td>R[0]←M[R[15]+offset]；M[R[15]+offset]←R[0]</td></tr></table>其中 op1 为 0001、0010 分别表示加、左移指令，op2 为 0100 表示加立即数指令，op3 为 1110、1111 分别表示取数、存数指令。R[r] 表示寄存器 r 中的内容，num 表示移位位数，M[addr] 表示存储器地址 addr 中的内容。请回答下列问题。<br>（1）主存单元和通用寄存器的宽度分别为多少位？（2 分）<br>（2）op1 和 op2 的编码是否可以相同？op2 和 op3 的编码是否可以相同？（2 分）<br>（3）若 R[2]=ABCDH，R[9]=F001H，则指令 0000 0010 1001 0001 执行后，R2 和 R9 中内容分别是多少？（2 分）<br>（4）若变量 x、y 均为 16 位带符号整数，在存储器中依次从低地址向高地址连续存放，x 的地址在 R15 中，实现 y=16*x−5 的 4 条指令 I1～I4 如下，写出①～④处的内容。（4 分）<pre>I1： ①   0000 0000 0000\nI2： 0000 ②   0010\nI3： 0100 0000 ③\nI4： 1111 ④</pre>',
  '（1）主存单元 8 位，通用寄存器 16 位。<br>（2）op1 和 op2 可以相同（op1 与 R 型前 4 位 0000 区分开）；op2 和 op3 不可以相同。<br>（3）R 型加法，R2=ABCDH+F001H=9BCEH，R9 不变，仍为 F001H。<br>（4）①1110；②0000 0100；③1111 1011（−5）；④0000 0000 0010（y 在 x+2）。'),
-(44,'co',15,'假定题 43 中计算机 C 的部分数据通路如下图所示。图中带箭头虚线代表控制信号，IR.rt、IR.rs 分别表示 IR 中的 rt、rs 字段，IR<sub>11~0</sub> 为 IR 的低 12 位，要求取指令周期完成 PC 增量操作。请回答下列问题。'+fig('2026_44.webp')+'（1）①②是同一类部件，其名称是什么？<br>（2）I 型指令中 imm8 可以是带符号或无符号整数，M 型指令中 offset 是带符号整数，则 ExtOp 至少有几位？为什么？<br>（3）取指周期中 MARSrc、ALUASrc、ALUBSrc、RegWr 的取值各是什么？<br>（4）左移指令周期中 ALUBSrc、RegWSrc、RegDst、RegWr 的取值各是什么？ExtOp 是否可以与 M 型指令中的 ExtOp 相同？为什么？',
+(44,'co',15,'假定题 43 中计算机 C 的部分数据通路如下图所示。图中带箭头虚线代表控制信号，IR.rt、IR.rs 分别表示 IR 中的 rt、rs 字段，IR<sub>11~0</sub> 为 IR 的低 12 位，要求取指令周期完成 PC 增量操作。请回答下列问题。'+'<figure class="fg"><img src="assets/exam/fig/2026_44.webp" alt="题 44 数据通路"><figcaption>回忆版重绘图（图源：灰灰考研）。图中「ZR.rt」「ZR.rs」「ZR.」即题干的 IR.rt、IR.rs、IR<sub>11~0</sub>，「2R」应为 IR。</figcaption></figure>'+'（1）①②是同一类部件，其名称是什么？<br>（2）I 型指令中 imm8 可以是带符号或无符号整数，M 型指令中 offset 是带符号整数，则 ExtOp 至少有几位？为什么？<br>（3）取指周期中 MARSrc、ALUASrc、ALUBSrc、RegWr 的取值各是什么？<br>（4）左移指令周期中 ALUBSrc、RegWSrc、RegDst、RegWr 的取值各是什么？ExtOp 是否可以与 M 型指令中的 ExtOp 相同？为什么？',
  '（1）多路选择器。<br>（2）至少 1 位，只需区分符号扩展和零扩展。<br>（3）MARSrc=0，ALUASrc=0，ALUBSrc=1，RegWr=0。<br>（4）ALUBSrc=2，RegWSrc=1，RegDst=1，RegWr=1；不可以相同，左移的 num 需零扩展，offset 需符号扩展。<br><i>回忆版标答，控制信号取值以图为准。</i>'),
 (45,'os',7,'系统采用优先权（值越大优先级越高）和时间片轮转调度算法，只有在发生时钟中断的时候才允许抢占 CPU，时钟中断间隔是 10ms。进程进入就绪队列时时间片是 50ms；进程时间片用完重新回到就绪队列时，优先权值减 1；被更高优先级抢占回到就绪队列时，优先权值不变。优先权相等时，先进入就绪队列的优先调度。4 个进程如下表所示：<table class="qtab"><tr><th>进程</th><th>到达时刻</th><th>初始优先权</th><th>CPU 运行时间</th></tr><tr><td>P1</td><td>10ms</td><td>3</td><td>95ms</td></tr><tr><td>P2</td><td>10ms</td><td>4</td><td>20ms</td></tr><tr><td>P3</td><td>12ms</td><td>2</td><td>40ms</td></tr><tr><td>P4</td><td>14ms</td><td>5</td><td>60ms</td></tr></table>（1）在 10ms 的时候开始进行进程调度，4 个进程调度结束，中断次数和 CPU 调度次数分别是多少？P1、P2、P3、P4 在什么时刻进行第一次调度？（5 分）<br>（2）时间片由 50ms 改为 100ms，CPU 的调度次数会增大、不变还是减少？如果中断间隔从 10ms 变为 1ms，则系统开销会增大、不变还是减少？（2 分）',
  '（1）时间轴：10 调度 P2；20 P4 优先权最高，抢占；70 P4 时间片用完，优先权降为 4，回队。P2（优先权 4）先入队，运行到 80 结束；80 P4 再运行到 90 结束；90 P1 运行到 140，时间片用完优先权降为 2；P3（优先权 2）入队更早，运行到 180 结束；180 P1 运行到 225 结束。<br>时钟中断在 10、20、…、220，共 <b>22 次</b>；调度 P2、P4、P2、P4、P1、P3、P1，共 <b>7 次</b>。第一次调度时刻：P1 90ms，P2 10ms，P3 140ms，P4 20ms。<br>（2）减少；增大。'),
